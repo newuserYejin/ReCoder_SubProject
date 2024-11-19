@@ -10,10 +10,13 @@ body:
       label: Notice to Everyone
       description : 모두에게 공지할 공지사항을 작성해주세요.
       value : |
-        ### 공지사항
+        ### 공지사항 ###
+        종류 : ex) 디자인 공지 사항, 공통 코드 공지 사항, 공통 install 사항 등등.
         내용 : 
-        이유 : 
+
+        
         ...
       render: bash
     validations:
       required: true
+      
