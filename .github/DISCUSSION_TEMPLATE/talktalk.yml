@@ -8,8 +8,8 @@ body:
   - type: textarea
     id: improvements
     attributes:
-      label: Top 3 improvements
-      description: "What are the top 3 improvements we could make to this project?"
+      label: 얘기하고 싶은 내용
+      description: "자유롭게 얘기해주세요!"
       value: |
         1.
         2.
@@ -18,18 +18,7 @@ body:
       render: bash
     validations:
       required: true
-  - type: markdown
-    attributes:
-      value: |
-        ## Markdown header
-        And some more markdown
-  - type: input
-    id: has-id
-    attributes:
-      label: Suggestions
-      description: A description about suggestions to help you
-    validations:
-      required: true
+      
   - type: dropdown
     id: download
     attributes:
