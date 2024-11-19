@@ -18,5 +18,3 @@ body:
         ...
     validations:
       required: true
-    style:
-      width: 100%;
