@@ -16,7 +16,6 @@ body:
 
         
         ...
-      render: bash
     validations:
       required: true
     style:
