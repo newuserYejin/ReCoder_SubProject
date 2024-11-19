@@ -1,0 +1,19 @@
+title: "[General]"
+labels: ["General Introduction"]
+body:
+  - type: markdown
+    attributes:
+      value : 공지사항을 작성하는 공간입니다‼️
+  - type: textarea
+    id : Notice
+    attributes : 
+      label: Notice to Everyone
+      description : 모두에게 공지할 공지사항을 작성해주세요.
+      value : |
+        ### 공지사항
+        내용 : 
+        이유 : 
+        ...
+      render: bash
+    validations:
+      required: true
