@@ -4,10 +4,14 @@ body:
   - type: markdown
     attributes:
         value : |
-          🌟 **Daily Scrum Report** 🌟
+          ### [버그/기능 요청] 문제에 대한 간략한 설명과 답변
   - type : textarea
     id: Done
     attributes :
-      label: ✅ 1. 어제 한 일 (What I did yesterday) 
+      label: ### **😢질문 내용 (Body)**
       value : |
-       - 🔹 
+       - 질문 내용
+        
+       - 기대하는 결과
+      
+       - 추가 정보
