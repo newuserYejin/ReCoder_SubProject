@@ -2,8 +2,9 @@ title: "[General]"
 labels: ["General Introduction"]
 body:
   - type: markdown
-    value: |
-      # 💡 아이디어 제안 템플릿
+    attributes:
+        value : |
+          # 💡 아이디어 제안 템플릿
   - type: textarea
     id: Propose
     attributes : 
