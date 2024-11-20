@@ -6,6 +6,7 @@ body:
         value : |
           🌟 **Daily Scrum Report** 🌟
   - type : textarea
+    id: Done
     attributes : 
       value : |
        ### ✅ 1. 어제 한 일 (What I did yesterday) 
@@ -40,11 +41,13 @@ body:
         - label: 1번째
         - label: 2번째
   - type : textarea
+    id: Help
     attributes : 
       value : |
        ### ❓ 3. 문제점 및 도움 요청 (Any blockers or help needed?) 
         - 🔹
   - type : textarea
+    id: Link
     attributes : 
       value : |
        ### 🔗 ** 알게된 사실 및 유용한 참고 관련 링크 (Links)**  
