@@ -29,9 +29,8 @@ body:
   - type: textarea
     id: Link
     attributes : 
-      label: 📝 제안 배경
+      label: 📖 참고 자료
       description : 모두와 공유하실 문제를 얘기해주세요!
       value : |
-        ## 📖 참고 자료
         - 관련 링크나 참고할 자료를 여기에 추가하세요.
         - 예: [링크 이름](https://example.com)
