@@ -1,10 +1,21 @@
-### [버그/기능 요청] 문제에 대한 간략한 설명과 답변
+title: "[General]"
+labels: ["General Introduction"]
+body:
+  - type: markdown
+    attributes:
+        value : |
+          ### [버그/기능 요청] 문제에 대한 간략한 설명과 답변
+  - type: textarea
+    id: Propose
+    attributes : 
+      label: ### **😢질문 내용 (Body)**
+      value : |
+        - 질문 내용
 
-### **😢질문 내용 (Body)**
+        - 기대하는 결과
+        
+        - 추가 정보
 
-- 질문 내용
 
-- 기대하는 결과
 
-- 추가 정보
 
