@@ -6,12 +6,14 @@ body:
       value : | 
         # 💡 아이디어 제안 템플릿
   - type : textarea
+    id : Propose
     attribute:
       value: |
         ## 📝 제안 배경
         **어떤 문제**를 해결하고 싶으신가요?  
         (예: 성능 개선, 새로운 기능 추가 등)
     - type : textarea
+      id : Idea
       attribute:
         value: |
          ## 🌟 제안된 아이디어
@@ -23,6 +25,7 @@ body:
             - [ ] 성능 개선
             - [ ] 사용자 경험 개선
     - type : textarea
+      id : Link
       attribute:
         value: |
           ## 📖 참고 자료
