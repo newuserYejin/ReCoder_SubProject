@@ -4,11 +4,11 @@ body:
   - type: markdown
     attributes:
         value : |
-          ### [버그/기능 요청] 문제에 대한 간략한 설명과 답변
+          [버그/기능 요청] 문제에 대한 간략한 설명과 답변
   - type : textarea
     id: Done
     attributes :
-      label: ### **😢질문 내용 (Body)**
+      label: 😢질문 내용 (Body)
       value : |
        - 질문 내용
         
