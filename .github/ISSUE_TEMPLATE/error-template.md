@@ -1,6 +1,6 @@
 ---
 name: Error Template
-about: "\U0001F6A8에러 발생!!!!!!!!!!!!!!!!!!!!!!!\U0001F6A8"
+about: "\U0001F6A8!!!!!!!!!!!! 에러 발생 !!!!!!!!!!!!\U0001F6A8"
 title: ''
 labels: ''
 assignees: ''
