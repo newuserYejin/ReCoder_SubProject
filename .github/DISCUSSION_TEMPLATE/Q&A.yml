@@ -6,9 +6,9 @@ body:
         value : |
           ### [버그/기능 요청] 문제에 대한 간략한 설명과 답변
   - type: textarea
-    id: Propose
+    id: question
     attributes : 
-      label: ### **😢질문 내용 (Body)**
+      label: ### **😢질문 내용 **
       value : |
         - 질문 내용
 
