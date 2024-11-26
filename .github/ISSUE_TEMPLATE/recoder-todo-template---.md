@@ -1,7 +1,7 @@
 ---
 name: ReCoder Todo Template!!!
 about: "⭐할일 작성 템플릿 입니다!⭐"
-title: 2024/날짜 [이름] Todo
+title: "[FEAT] 2024/날짜 [이름] Todo"
 labels: "Issue\U0001F320"
 assignees: ''
 

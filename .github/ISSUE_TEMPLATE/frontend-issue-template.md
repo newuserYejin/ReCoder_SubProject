@@ -1,7 +1,7 @@
 ---
 name: FrontEnd Issue Template
 about: "\U0001F5A5️ 프론트 작업에 대한 이슈를 작성하는 template 입니다! \U0001F5A5️"
-title: ''
+title: "[Front] 2024/[날짜] [이름]"
 labels: "Issue\U0001F320, ☑️일거리 등록☑️"
 assignees: ''
 

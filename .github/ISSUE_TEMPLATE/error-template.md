@@ -1,7 +1,7 @@
 ---
 name: Error Template
 about: "\U0001F6A8!!!!!!!!!!!! 에러 발생 !!!!!!!!!!!!\U0001F6A8"
-title: ''
+title: "[Error] 2024/[날짜] [이름]"
 labels: "question\U0001F914, 도와주세요..\U0001F622, \U0001F514Error\U0001F514"
 assignees: ''
 

@@ -1,7 +1,7 @@
 ---
 name: BackEnd Issue Template
 about: "⚙️ 백엔드 작업에 대한 이슈를 작성하는 Template 입니다. ⚙️"
-title: ''
+title: "[Back] 2024/[날짜] [이름]"
 labels: "Issue\U0001F320, ☑️일거리 등록☑️"
 assignees: ''
 

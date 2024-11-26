@@ -1,7 +1,7 @@
 ---
 name: DataBase Issue Template
 about: 데이터 베이스 작업에 대한 이슈 작성 Template 입니다.
-title: ''
+title: "[DB] 2024/[날짜] [이름]"
 labels: "Issue\U0001F320, ☑️일거리 등록☑️, \U0001F4D3문서 작업\U0001F4D3"
 assignees: ''
 
