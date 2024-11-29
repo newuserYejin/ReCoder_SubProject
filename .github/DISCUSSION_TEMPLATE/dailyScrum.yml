@@ -1,5 +1,5 @@
-title: "[General] "
-labels: ["General Introduction"]
+title: "[오늘 날짜] 회의록 "
+labels: [아침 짧은 회의를 통한 할일 정리와 현 상황 파악]
 body:
   - type: markdown
     attributes:
