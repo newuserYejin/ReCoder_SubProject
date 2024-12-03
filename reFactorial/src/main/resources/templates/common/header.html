@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/header/header.css}">
+    <link rel="stylesheet" href="../../static/header/header.css">
+</head>
+<body>
+
+        <header th:fragment="headerFragment" class="hh">
+            <div class="headerBox">
+                <div class="headerLeft">
+                    <div>
+                        <img src="../image/logo_vertical.png" alt="로고">
+                    </div>
+                    <div class="menu_box">
+                        <div class="menu_item">게시판</div>
+                        <div class="menu_item">전자결재</div>
+                        <div class="menu_item">업무공유</div>
+                        <div class="menu_item">예 약</div>
+                        <div class="menu_item">골든 티켓🎫</div>
+                        <div class="menu_item">자사 페이지</div>
+                        <div class="menu_item">주소록</div>
+                    </div>
+                </div>
+                <div class="headerIconBox">
+<!--                    <img src="../../../../../image/question.svg">-->
+<!--                    <img src="../../../../../image/question.svg">-->
+<!--                    <img src="../../../../../image/question.svg">-->
+
+                    <div>
+                        <img src="../image/question.svg">
+<!--                        <img src="../../static/image/question.svg">-->
+                    </div>
+                    <div>
+                        <img src="../image/mail.svg">
+                    </div>
+                    <div>
+                        <img src="../image/user.svg">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+</body>
+</html>
