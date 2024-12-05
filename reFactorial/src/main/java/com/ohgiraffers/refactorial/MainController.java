@@ -11,4 +11,8 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/approvalMain")
+    public String approvalMainController(){
+        return "approvalMain";
+    }
 }
