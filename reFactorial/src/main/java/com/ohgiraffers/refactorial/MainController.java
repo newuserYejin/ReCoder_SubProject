@@ -11,8 +11,19 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/booking")
+    public String bookingPage() {
+        return "booking";
+    }
+
+    @GetMapping("/inquiry")
+    public String inquiryPage(){
+        return "inquiry";
+    }
+  
     @GetMapping("/approvalMain")
     public String approvalMainController(){
         return "approvalMain";
     }
+  
 }
