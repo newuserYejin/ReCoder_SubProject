@@ -25,5 +25,10 @@ public class MainController {
     public String approvalMainController(){
         return "approvalMain";
     }
+
+    @GetMapping("/board")
+    public String BoardPage(){
+        return "board";
+    }
   
 }
