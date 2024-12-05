@@ -15,4 +15,9 @@ public class MainController {
     public String bookingPage() {
         return "booking";
     }
+
+    @GetMapping("/inquiry")
+    public String inquiryPage(){
+        return "inquiry";
+    }
 }
