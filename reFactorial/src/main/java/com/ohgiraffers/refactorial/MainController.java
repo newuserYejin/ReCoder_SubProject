@@ -11,4 +11,8 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/booking")
+    public String bookingPage() {
+        return "booking";
+    }
 }
