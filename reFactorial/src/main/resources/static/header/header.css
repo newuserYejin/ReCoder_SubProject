@@ -1,7 +1,7 @@
 header{
     .headerBox{
         border-bottom: solid 2px #5C1915;
-        padding: 0 6.8%;
+        padding: 10px 6.8%;
 
         display: flex;
         justify-content: space-between;
