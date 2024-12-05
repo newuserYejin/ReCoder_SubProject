@@ -12,12 +12,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/header/header.css}">
-    <link rel="stylesheet" th:href="@{/header/style.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
 </head>
 <body>
 
     <header th:replace="~{/common/header::headerFragment}"></header>
+    <section th:replace="~{/common/test::testFragment}"></section>
+    <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 </body>
 </html>
