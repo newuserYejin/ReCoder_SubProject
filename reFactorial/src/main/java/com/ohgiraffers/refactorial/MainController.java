@@ -20,4 +20,10 @@ public class MainController {
     public String inquiryPage(){
         return "inquiry";
     }
+  
+    @GetMapping("/approvalMain")
+    public String approvalMainController(){
+        return "approvalMain";
+    }
+  
 }
