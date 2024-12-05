@@ -30,5 +30,10 @@ public class    MainController {
     public String BoardPage(){
         return "board";
     }
+
+    @GetMapping("sharedWork")
+    public String sharedWork(){
+        return "sharedWork";
+    }
   
 }
