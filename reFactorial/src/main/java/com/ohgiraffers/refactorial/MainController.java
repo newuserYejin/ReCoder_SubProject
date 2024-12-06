@@ -22,7 +22,7 @@ public class MainController {
     public String inquiryPage(){
         return "inquiry";
     }
-
+  
     @GetMapping("/approvalMain")
     public String approvalMainController(){
         return "approvalMain";
@@ -33,10 +33,12 @@ public class MainController {
         return "board";
     }
 
+    @GetMapping("sharedWork")
+    public String sharedWork(){
+        return "sharedWork";
+    }
+
     @GetMapping("/auth/login")
     public void loginPage(){};
-
-    @Autowired
-    private MemberService memberService;
 
 }
