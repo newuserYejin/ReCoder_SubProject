@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.user.model.dao.UserMapper">
+    <resultMap id="LoginUser" type="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+
+        <id property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="empNo" column="emp_no"/>
+        <result property="empAddress" column="emp_address"/>
+        <result property="empEmail" column="emp_email"/>
+        <result property="empJoined" column="emp_joined"/>
+        <result property="annualLeave" column="annual_leave"/>
+        <result property="empPwd" column="emp_pwd"/>
+        <result property="profile" column="profile"/>
+        <result property="empPhone" column="emp_phone"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="positionValue" column="position_value"/>
+        <result property="viewAuth" column="view_auth"/>
+    </resultMap>
+
+    <insert id="addEmployee" parameterType="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+        insert into employee
+        (emp_id, emp_name, emp_no, emp_address, emp_email, emp_joined,annual_leave,emp_pwd,profile,emp_phone,dept_code,position_value,view_auth)
+        values
+        (#{empId},#{empName},#{empNo},#{empAddress},#{empEmail},#{empJoined},#{annualLeave},#{empPwd},#{profile},#{empPhone},#{deptCode},#{positionValue},#{viewAuth})
+    </insert>
+
+    <select id="findByUsername" parameterType="String" resultMap="LoginUser">
+        SELECT
+            *
+        FROM
+            employee
+        WHERE
+            emp_id = #{username}
+    </select>
+
+
+</mapper>
