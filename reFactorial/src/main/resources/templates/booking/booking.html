@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Page</title>
+
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+    }
+
+    .sidebar {
+      width: 20%; /* 사이드바 너비 */
+      padding: 20px; /* 내부 여백 */
+      overflow-y: auto; /* 사이드바 내용이 넘칠 경우 스크롤 */
+      border-right: 1px solid black; /* 오른쪽 경계선 */
+    }
+
+    .sidebar-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 15px;
+      margin-top: 46px;
+      text-align: center;
+    }
+
+    .sidebar ul {
+      margin-top: 10px;
+      list-style: none;
+      padding: 0;
+      text-align: center;
+    }
+
+    .sidebar li {
+      position: relative;
+      padding: 10px 0;
+      cursor: pointer;
+    }
+
+    .sidebar li::after {
+      content: '';
+      display: block;
+      width: 35%;
+      height: 1px;
+      background-color: black;
+      margin: 5px auto 0;
+    }
+
+    .sidebar li:last-child::after {
+      display: none;
+    }
+
+    .sidebar li:hover {
+      font-family: 'Noto Sans KR', Arial, sans-serif;
+      color: #5C1915;
+      font-weight: 1000;
+    }
+
+    .main-content-wrap {
+      height: 80vh; /* 가상의 창 높이 설정 */
+      overflow-y: auto; /* 스크롤 가능 */
+      flex: 1; /* 남은 공간을 차지 */
+      padding:20px;
+    }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+    }
+
+    .room-img-content-flex {
+      display: flex;
+      align-items: flex-start;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .room-img-content {
+      padding-left: 5px;
+      align-self: center;
+    }
+
+    .room-text-content {
+      flex: 1;
+      margin-bottom: 10px;
+
+    }
+
+    .room-img-content-flex img {
+      max-width: 40%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .room-img-content-flex div {
+      max-width: 55%;
+    }
+
+    .room-img-content-flex h3 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    .room-img-content-flex p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .room-reservation-button {
+      align-self: center;
+    }
+
+    .room-reservation-button button {
+      padding: 10px 20px;
+      background-color: #5C1915;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .room-reservation-button button:hover {
+      background-color: #3d0f0a;
+    }
+  </style>
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-title">예약 관리</div>
+      <ul>
+        <li>예약하기</li>
+        <li>예약내역</li>
+      </ul>
+    </div>
+    <div class="main-content-wrap">
+      <div class="main-content">
+        <div class="room-img-content-flex">
+          <div class="room-img-content">
+            <img src="/image/회의실1.jpeg" alt="제 1 회의실">
+          </div>
+          <div class="room-text-content">
+            <h3>제 1 회의실</h3>
+            <p>위치 : 4층 홍보부 옆</p>
+            <p>구성 : 화이트 보드, 빔 프로젝트</p>
+          </div>
+          <div class="room-reservation-button">
+            <button>예약하기</button>
+          </div>
+        </div>
+
+        <div class="room-img-content-flex">
+          <div class="room-img-content">
+            <img src="/image/회의실2.jpg" alt="제 2 회의실">
+          </div>
+          <div class="room-text-content">
+            <h3>제 2 회의실</h3>
+            <p>위치 : 4층 홍보부 옆</p>
+            <p>구성 : 화이트 보드, 빔 프로젝트</p>
+          </div>
+          <div class="room-reservation-button">
+            <button>예약하기</button>
+          </div>
+        </div>
+
+        <div class="room-img-content-flex">
+          <div class="room-img-content">
+            <img src="/image/회의실3.jpg" alt="제 3 회의실">
+          </div>
+          <div class="room-text-content">
+            <h3>제 3 회의실</h3>
+            <p>위치 : 4층 홍보부 옆</p>
+            <p>구성 : 화이트 보드, 빔 프로젝트</p>
+          </div>
+          <div class="room-reservation-button">
+            <button>예약하기</button>
+          </div>
+        </div>
+
+        <div class="room-img-content-flex">
+          <div class="room-img-content">
+            <img src="/image/회의실3.jpg" alt="제 4 회의실">
+          </div>
+          <div class="room-text-content">
+            <h3>제 4 회의실</h3>
+            <p>위치 : 4층 홍보부 옆</p>
+            <p>구성 : 화이트 보드, 빔 프로젝트</p>
+          </div>
+          <div class="room-reservation-button">
+            <button>예약하기</button>
+          </div>
+        </div>
+
+        <div class="room-img-content-flex">
+          <div class="room-img-content">
+            <img src="/image/회의실3.jpg" alt="제 5 회의실">
+          </div>
+          <div class="room-text-content">
+            <h3>제 5 회의실</h3>
+            <p>위치 : 4층 홍보부 옆</p>
+            <p>구성 : 화이트 보드, 빔 프로젝트</p>
+          </div>
+          <div class="room-reservation-button">
+            <button>예약하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+</body>
+</html>

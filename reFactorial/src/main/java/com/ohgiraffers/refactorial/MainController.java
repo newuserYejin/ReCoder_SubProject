@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    @GetMapping("/")
-    public String mainControll() {
+    @GetMapping("/user")
+    public String mainControll(){
         return "index";
     }
 
@@ -22,13 +22,21 @@ public class MainController {
     }
 
     @GetMapping("/approvalMain")
-    public String approvalMainController() {
-        return "approvalMain";
+    public String approvalMainController(){
+        return "approvals/approvalMain";
     }
 
     @GetMapping("/notification")
     public String notification() {
         return "board/notification";
     }
+
+    @GetMapping("sharedWork")
+    public String sharedWork(){
+        return "sharedWork";
+    }
+  
+    @GetMapping("/auth/login")
+    public void loginPage(){};
 
 }
