@@ -53,6 +53,9 @@ public class SecurityConfig {
             login.passwordParameter("member_pwd");
             login.defaultSuccessUrl("/user",true);
             login.failureHandler(authFailHandler);
+        }).sessionManagement(session ->{
+            session.maximumSessions(2);         // session 의 허용 갯수 제한( 한 사용자가 동시에 여러 세션 활성화 )
+            session.invalidSessionUrl("/");     // 세션이 만료 되었을 때 효청할 URL
         }).csrf(csrf -> csrf.disable());
 
         return http.build();

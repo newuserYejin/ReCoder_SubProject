@@ -22,6 +22,15 @@
 
     <header th:replace="~{/common/header::headerFragment}"></header>
     <section th:replace="~{/common/test::testFragment}"></section>
+    <section>
+
+        <h1>Welcome, <span th:text="${userId}"></span>!</h1>
+        <h3>Your roles:</h3>
+        <ul>
+            <li th:each="role : ${roles}" th:text="${role}"></li>
+        </ul>
+
+    </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
     <script>
@@ -31,5 +40,26 @@
             console.log(message);
         }
     </script>
+
+    <script th:inline="javascript">
+        // userDTO 객체를 JavaScript로 전달
+        var userDTO = [[${userDTO}]];
+
+        // userDTO.viewAuth 값에 따라 버튼의 클릭 이벤트 설정
+        var userIcon = document.querySelector('.headerIconBox img[src="../images/user.svg"]');
+
+        // 클릭 이벤트 리스너 추가
+        userIcon.addEventListener('click', function() {
+            if (userDTO.viewAuth == 'USER') {
+                location.href = '/user/approvalMain';  // user 페이지로 이동
+            } else {
+                location.href = '/admin/main';  // admin 페이지로 이동
+            }
+        });
+
+        console.log(userDTO); // userDTO 확인용
+        console.log("viewAuth",userDTO.viewAuth)
+    </script>
+
 </body>
 </html>
