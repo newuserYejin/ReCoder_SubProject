@@ -4,10 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class    MainController {
+public class MainController {
 
     @GetMapping("/")
-    public String mainControll(){
+    public String mainControll() {
         return "index";
     }
 
@@ -17,23 +17,18 @@ public class    MainController {
     }
 
     @GetMapping("/inquiry")
-    public String inquiryPage(){
+    public String inquiryPage() {
         return "inquiry";
     }
-  
+
     @GetMapping("/approvalMain")
-    public String approvalMainController(){
+    public String approvalMainController() {
         return "approvalMain";
     }
 
-    @GetMapping("/board")
-    public String BoardPage(){
-        return "board";
+    @GetMapping("/notification")
+    public String notification() {
+        return "board/notification";
     }
 
-    @GetMapping("sharedWork")
-    public String sharedWork(){
-        return "sharedWork";
-    }
-  
 }
