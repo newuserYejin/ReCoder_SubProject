@@ -1,13 +1,14 @@
 package com.ohgiraffers.refactorial;
 
+import com.ohgiraffers.refactorial.user.model.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class MainController {
 
-    @GetMapping("user")
+    @GetMapping("/user")
     public String mainControll(){
         return "index";
     }
@@ -32,6 +33,10 @@ public class MainController {
         return "board";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/auth/login")
     public void loginPage(){};
+
+    @Autowired
+    private MemberService memberService;
+
 }

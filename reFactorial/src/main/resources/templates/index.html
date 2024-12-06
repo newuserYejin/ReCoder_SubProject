@@ -24,5 +24,12 @@
     <section th:replace="~{/common/test::testFragment}"></section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
+    <script>
+        const message = `[[${message}]]`
+
+        if (message){
+            console.log(message);
+        }
+    </script>
 </body>
 </html>
