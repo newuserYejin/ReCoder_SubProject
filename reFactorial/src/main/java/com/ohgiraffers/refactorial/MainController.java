@@ -17,25 +17,25 @@ public class MainController {
     }
 
     @GetMapping("/inquiry")
-    public String inquiryPage(){
+    public String inquiryPage() {
         return "inquiry";
     }
-  
+
     @GetMapping("/approvalMain")
     public String approvalMainController(){
         return "approvals/approvalMain";
     }
 
-    @GetMapping("/board")
-    public String BoardPage(){
-        return "board";
+    @GetMapping("/notification")
+    public String notification() {
+        return "board/notification";
     }
 
     @GetMapping("sharedWork")
     public String sharedWork(){
         return "sharedWork";
     }
-
+  
     @GetMapping("/auth/login")
     public void loginPage(){};
 
