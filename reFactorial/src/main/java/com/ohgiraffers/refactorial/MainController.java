@@ -25,7 +25,7 @@ public class MainController {
   
     @GetMapping("/approvalMain")
     public String approvalMainController(){
-        return "approvalMain";
+        return "approvals/approvalMain";
     }
 
     @GetMapping("/board")
