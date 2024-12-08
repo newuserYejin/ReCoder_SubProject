@@ -1,0 +1,30 @@
+title: " 공유하고 싶은 내용 "
+labels: [작업 중 알게 된 공유하면 좋을 것 같은 내용]
+body:
+  - type: markdown
+    attributes:
+        value : |
+          🌟 **공유 내용** 🌟
+  - type : textarea
+    id: title
+    attributes :
+      label: ✏️ 제목 ✏️
+      value : |
+       ##  
+  - type : textarea
+    id: Done
+    attributes :
+      label: ✅ 공유 내용
+      value : |
+       - 
+  - type : textarea
+    id: Link
+    attributes :
+      label: 🔗 알게된 사실 및 유용한 참고 관련 링크 (Links)
+      value : |
+        - 🔹  
+  - type : textarea
+    id: photo
+    attributes :
+      label: 📷 참고 사진
+      value : |
