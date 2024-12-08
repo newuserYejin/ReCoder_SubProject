@@ -18,46 +18,7 @@ public class MainController {
 
     @GetMapping("/user")
     public String mainControll(Model model){
-
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        String id = authentication.getName();
-//
-//        // AuthDetails 객체 가져오기
-//        AuthDetails authDetails = (AuthDetails) authentication.getPrincipal();
-//
-//        UserDTO user = authDetails.getUser(); // AuthDetails 내부의 UserDTO 객체
-//
-//        // 사용자 ID를 모델에 추가
-//        model.addAttribute("userId", user.getEmpId());  // 또는 user.getEmpId(), user.getUsername() 등을 사용
-//
-//        // 역할 정보 가져오기 (예시)
-//        model.addAttribute("roles", authDetails.getAuthorities());
-
-        // 현재 인증된 사용자 정보를 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // AuthDetails 객체 가져오기
-        AuthDetails authDetails = (AuthDetails) authentication.getPrincipal();
-
-        // AuthDetails 객체에서 사용자 정보 가져오기
-        UserDTO user = authDetails.getUser(); // AuthDetails 내부의 UserDTO 객체
-
-        // 사용자 ID를 모델에 추가
-        model.addAttribute("userId", user.getEmpId());  // 또는 user.getEmpId(), user.getUsername() 등을 사용
-
-        // 권한 정보 가져오기
-        Collection<? extends GrantedAuthority> authorities = authDetails.getAuthorities();
-
-        // 권한 정보를 모델에 추가
-        model.addAttribute("roles", authorities);
-
-
-        System.out.println("user = " + user);
-
-        model.addAttribute("userDTO", user);
-
-        return "/index";
+        return "index";
     }
 
     @GetMapping("/user/booking")
@@ -92,5 +53,11 @@ public class MainController {
     public String adminPage(){
         return "admin/admin_main";
     };
+
+    @GetMapping("user/myPage")
+    public String myPage(){
+        return "myPage/myPage";
+    }
+
 }
 

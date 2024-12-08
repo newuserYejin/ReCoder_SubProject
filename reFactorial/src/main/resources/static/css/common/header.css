@@ -112,11 +112,14 @@ header{
                 cursor: pointer;
             }
 
-            div:last-child{
-                min-width: 15px;
-                border: solid 3px black;
-                border-radius: 50%;
-                padding: 5px;
+            div:last-child {
+                a{
+                    width: 15px;
+                    height: 15px;
+                    border: solid 3px black;
+                    border-radius: 50%;
+                    padding: 5px;
+                }
             }
         }
 
