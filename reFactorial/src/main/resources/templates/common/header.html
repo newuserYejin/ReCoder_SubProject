@@ -90,12 +90,6 @@
                                        : '/auth/login'}">
                             <img src="../images/user.svg" th:alt="${LoginUserInfo != null && LoginUserInfo.getRole() != null && LoginUserInfo.getRole().size() > 0 ? LoginUserInfo.getRole()[0] : 'Guest'}">
                         </a>
-
-                        <!--                        <a class="myPage"-->
-<!--                           th:href="${LoginUserInfo?.getRole()[0] == 'USER' ? '/user/myPage' : ( ${LoginUserInfo.getRole()[0] == 'ADMIN' ? '/admin/main' : '/auth/login')}">-->
-<!--                            <img src="../images/user.svg" th:alt="${LoginUserInfo.getRole()[0]}">-->
-<!--                        </a>-->
-<!--                        <img src="../images/user.svg" th:alt="${LoginUserInfo.getRole()[0]}">-->
                     </div>
 
                 </div>
