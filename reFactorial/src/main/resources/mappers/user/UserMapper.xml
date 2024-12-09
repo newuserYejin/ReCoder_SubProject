@@ -36,5 +36,24 @@
             emp_id = #{username}
     </select>
 
+    <select id="findDeptName" parameterType="int">
+
+        SELECT
+            dept_name
+        FROM
+            tbl_dept
+        WHERE
+            dept_code = #{deptCode};
+
+    </select>
+
+    <select id="findPositionName" parameterType="int">
+        SELECT
+            position_name
+        FROM
+            tbl_position
+        where
+            position_value = #{positionValue};
+    </select>
 
 </mapper>
