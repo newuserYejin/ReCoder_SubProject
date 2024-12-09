@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -49,20 +50,24 @@ public class BoardController {
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
                             Model model, HttpSession session) {
 
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+
+        // post_id
+        // 일단 조회 갯수
+
         BoardDTO board = new BoardDTO();
         board.setPostTitle(title);
-        board.setCategoryCode(category);
         board.setPostContent(content);
-        
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        board.setPostCreationDate(LocalDateTime.now());
+        board.setEmpId(user.getEmpId());
+        board.setPostModificationDate(LocalDateTime.now());
+        board.setCategoryCode(category);
 
         System.out.println("글쓴이 = " + user);
 
-//        boardService.post(board);
+        boardService.post(board);
 
         return "redirect:/user/freeBoard";
     }
-
-
 
 }
