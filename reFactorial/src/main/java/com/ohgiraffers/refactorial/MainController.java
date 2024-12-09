@@ -49,6 +49,11 @@ public class MainController {
     @GetMapping("/auth/login")
     public void loginPage(){};
 
+    @GetMapping("/user/addressBookMain")
+    public String addressBookPage(){
+        return "/addressbook/addressBookMain";
+    }
+
     @GetMapping("/admin/main")
     public String adminPage(){
         return "admin/admin_main";

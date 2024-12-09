@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/approvals") // 공통 경로 설정
+@RequestMapping("/user/approvals") // 공통 경로 설정
 public class ApprovalController {
 
     private final ApprovalService approvalService;
@@ -32,17 +32,22 @@ public class ApprovalController {
 
     @GetMapping("approvalPage")
     public String paymentPage(){
-    return "approvals/approvalPage";
+
+        return "approvals/approvalPage";
 }
 
-    @GetMapping("searchEmployee")
+    @GetMapping("searchEmployeePage")
     public String searchEmployeeController(@RequestParam("name") String name, Model model){
         List<EmployeeDTO> employees = approvalService.searchEmployee(name);
 
         model.addAttribute("employees",employees);
 
-        return "approvals/searchEmployee";
+        return "approvals/searchEmployeePage";
     }
+
+
+
+
 
 
 
