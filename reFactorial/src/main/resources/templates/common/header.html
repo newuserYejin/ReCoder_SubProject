@@ -85,11 +85,18 @@
                     </div>
                     <div>
                         <a class="myPage"
-                           th:href="${LoginUserInfo != null ? (LoginUserInfo.getRole()[0] == 'USER' ? '/user/myPage'
-                                       : (LoginUserInfo.getRole()[0] == 'ADMIN' ? '/admin/main' : '/auth/login'))
-                                       : '/auth/login'}">
-                            <img src="../images/user.svg" th:alt="${LoginUserInfo != null && LoginUserInfo.getRole() != null && LoginUserInfo.getRole().size() > 0 ? LoginUserInfo.getRole()[0] : 'Guest'}">
+                           th:href="${LoginUserInfo != null
+                                ? (LoginUserInfo.viewAuth != null
+                                   ? (LoginUserInfo.getRole()[0] == 'USER'
+                                      ? '/user/myPage'
+                                      : (LoginUserInfo.getRole()[0] == 'ADMIN'
+                                         ? '/admin/main'
+                                         : '/auth/login'))
+                                   : '/auth/login')
+                                : '/auth/login'}">
+                            <img src="../images/user.svg" alt="마이페이지">
                         </a>
+
                     </div>
 
                 </div>
