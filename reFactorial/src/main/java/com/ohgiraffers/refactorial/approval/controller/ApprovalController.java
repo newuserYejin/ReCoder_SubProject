@@ -38,7 +38,17 @@ public class ApprovalController {
 
     @GetMapping("searchEmployeePage")
     public String searchEmployeeController(@RequestParam("name") String name, Model model){
-        List<EmployeeDTO> employees = approvalService.searchEmployee(name);
+        List<EmployeeDTO> employees;
+        if (name != null && !name.isEmpty()) {
+            // 입력된 이름을 기반으로 검색
+            employees = approvalService.searchByName(name);
+        } else {
+            // 이름이 없으면 전체 리스트 반환
+            employees = approvalService.findAllEmployees();
+        }
+
+
+
 
         model.addAttribute("employees",employees);
 
