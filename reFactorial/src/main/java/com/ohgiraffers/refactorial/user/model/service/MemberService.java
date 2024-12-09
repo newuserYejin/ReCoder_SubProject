@@ -40,4 +40,17 @@ public class MemberService {
             return user;
         }
     }
+
+    public String findDeptName(int deptCode) {
+
+        String deptName = userMapper.findDeptName(deptCode);
+
+        return deptName;
+    }
+
+    public String findPositionName(int positionValue) {
+        String positionName = userMapper.findPositionName(positionValue);
+
+        return positionName;
+    }
 }

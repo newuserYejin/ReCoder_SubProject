@@ -83,22 +83,33 @@
                     <div>
                         <img src="/images/mail.svg">
                     </div>
-                    <div>
-                        <a class="myPage"
-                           th:href="${LoginUserInfo != null
-                                ? (LoginUserInfo.viewAuth != null
-                                   ? (LoginUserInfo.getRole()[0] == 'USER'
-                                      ? '/user/myPage'
-                                      : (LoginUserInfo.getRole()[0] == 'ADMIN'
-                                         ? '/admin/main'
-                                         : '/auth/login'))
-                                   : '/auth/login')
-                                : '/auth/login'}">
-                            <img src="/images/user.svg" alt="마이페이지">
-                        </a>
+                    <div class="myPageIcon">
+                        <img src="/images/user.svg" alt="마이페이지">
 
+                        <div class="submenuBox">
+                            <div th:text="|안녕하세요, ${LoginUserInfo.empName}님|">
+                            </div>
+
+                            <ul>
+                                <form action="/auth/logout" method="post">
+                                    <button  type="submit">로그아웃</button>
+                                </form>
+                                <li>
+                                    <a class="myPage" th:href="${LoginUserInfo != null
+                                                    ? (LoginUserInfo.viewAuth != null
+                                                    ? (LoginUserInfo.getRole()[0] == 'USER'
+                                                    ? '/user/myPage'
+                                                    : (LoginUserInfo.getRole()[0] == 'ADMIN'
+                                                    ? '/admin/main'
+                                                    : '/auth/login'))
+                                                    : '/auth/login')
+                                                    : '/auth/login'}">
+                                        마이페이지
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </header>
@@ -110,6 +121,5 @@
 <!--            /*]]>*/-->
 <!--        </script>-->
 <!--        <script type="text/javascript" th:src="@{/js/header/header.js}"></script>-->
-
 </body>
 </html>
