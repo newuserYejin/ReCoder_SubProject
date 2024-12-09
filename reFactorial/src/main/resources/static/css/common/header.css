@@ -1,7 +1,7 @@
 header{
     .headerBox{
         border-bottom: solid 2px #5C1915;
-        padding: 10px 6.8%;
+        padding:10px 6.8%;
 
         display: flex;
         justify-content: space-between;
@@ -12,6 +12,7 @@ header{
             img{
                 max-height: 85px;
                 width: fit-content;
+                cursor: pointer;
             }
 
             .menu_box{
@@ -19,22 +20,80 @@ header{
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 100%;
 
-                :first-child{
-                    border-left: solid 2px #5C1915;
-                }
-
-                .menu_item{
-                    width: 110px;
-                    font-weight: 800;
-                    font-size: 20px;
+                .menu_item {
+                    width: 130px;
+                    font-weight: 400;
+                    font-size: 23px;
                     color: #5C1915;
-                    height: fit-content;
-                    padding: 0 10px;
-                    border-right: solid 2px #5C1915;
+                    /*height: fit-content;*/
+                    padding: 10px 0;
                     text-align: center;
-
                     cursor: pointer;
+                    position: relative;
+
+                    .menu_title {
+                        width: inherit;
+                        margin: 0 10px;
+                        border-right: solid 2px #5C1915;
+                        text-align: center;
+                    }
+
+                    .submenuBox {
+                        display: none;
+                        position: absolute;
+                        top: 100%; /* 부모 요소의 바로 아래에 위치 */
+                        left: 10px;
+                        background-color: white;
+                        border: none;
+                        padding: 0;
+                        margin: 0;
+                        justify-content: center;
+                        flex-direction: column;
+                        list-style: none;
+
+                        opacity: 0;
+                        /* 서브 메뉴가 처음엔 보이지 않음 */
+                        visibility: hidden;
+                        /* 서브 메뉴 보이지 않도록 설정 */
+
+                        width: inherit;
+                        transform: translateY(-10px); /* 처음 위치 */
+                        /*transition: transform 0.3s ease-out, opacity 0.3s ease-out;*/
+                        animation: slideDown 0.3s ease-out forwards; /* 애니메이션 추가 */
+
+                        li {
+                            border: none;
+                            font-size: 0.8em;
+                            padding: 5px;
+                            color: black;
+                            border: solid 2px #5C1915;
+                            border-bottom: none;
+                        }
+
+                        li:hover {
+                            background-color: #ddd;
+                            /* hover 시 배경색 */
+                        }
+
+                        :last-child {
+                            border-bottom: solid 2px #5C1915;
+                            border-bottom-left-radius: 10px;
+                            border-bottom-right-radius: 10px;
+                        }
+
+                        :first-child {
+                            border-top-left-radius: 10px;
+                            border-top-right-radius: 10px;
+                        }
+                    }
+                }
+                .menu_item:hover .submenuBox {
+                    display: flex;
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0px);
                 }
             }
         }
@@ -53,13 +112,28 @@ header{
                 cursor: pointer;
             }
 
-            div:last-child{
-                min-width: 15px;
-                border: solid 3px black;
-                border-radius: 50%;
-                padding: 5px;
+            div:last-child {
+                a{
+                    width: 15px;
+                    height: 15px;
+                    border: solid 3px black;
+                    border-radius: 50%;
+                    padding: 5px;
+                }
             }
         }
 
+    }
+}
+
+/* keyframes 정의 */
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px); /* 시작 위치 */
+        opacity: 0; /* 보이지 않음 */
+    }
+    to {
+        transform: translateY(0); /* 최종 위치 */
+        opacity: 1; /* 완전히 보임 */
     }
 }

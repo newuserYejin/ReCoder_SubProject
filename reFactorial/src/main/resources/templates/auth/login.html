@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-<!--폰트 적용-->
+    <!--폰트 적용-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
@@ -15,29 +15,24 @@
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
-    <!--여기까지 공동 복사-->
 
 </head>
 <body>
-
-    <header th:replace="~{/common/header::headerFragment}"></header>
-    <section th:replace="~{/common/test::testFragment}"></section>
     <section>
 
-<!--        <h1>Welcome, <span th:text="${userId}"></span>!</h1>-->
-        <h3>Main Page</h3>
-        <p th:text="${LoginUserInfo?.empId ?: 'No User'}"></p>
-        <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
-    </section>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+        <form action="/auth/login" method="post">
+            <label for="member_id">사번: </label>
+            <input type="text" id="member_id" name="member_id">
+            <label for="member_pwd">비밀번호: </label>
+            <input type="text" id="member_pwd" name="member_pwd">
+            <button type="submit">로그인</button>
+        </form>
 
-    <script>
-        const message = `[[${message}]]`
+        <script>
+            const message = `[[${message}]]`;
 
-        if (message){
             console.log(message);
-        }
-    </script>
-
+        </script>
+    </section>
 </body>
 </html>

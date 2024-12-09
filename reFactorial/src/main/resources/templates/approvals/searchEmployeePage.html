@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>담당자 검색</title>
+</head>
+<body>
+<h1>담당자 검색</h1>
+<form action="/user/approvals/searchEmployeePage" method="get">
+    <input type="text" name="name" placeholder="담당자 이름 입력">
+    <button type="submit">검색</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>사원번호</th>
+        <th>이름</th>
+        <th>부서</th>
+        <th>직책</th>
+        <th>이메일</th>
+        <th>선택</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="employee : ${employees}">
+        <td th:text="${employee.id}"></td>
+        <td th:text="${employee.name}"></td>
+        <td th:text="${employee.deptCode}"></td>
+        <td th:text="${employee.positionValue}"></td>
+        <td th:text="${employee.email}"></td>
+        <td>
+            <button type="button" onclick="selectEmployee('${employee.name}')">선택</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    function selectEmployee(name) {
+        opener.document.getElementById('person').value = name;
+        window.close();
+    }
+</script>
+</body>
+</html>

@@ -9,7 +9,39 @@
 </head>
 <body>
     <section th:fragment="testFragment">
-        <div>test</div>
+
+        <form action="/user/addEmployee" method="post">
+
+            <label for="empName">이름 : </label>
+            <input type="text" id="empName" name="empName"><br>
+            <label for="empNo">주민번호 : </label>
+            <input type="text" id="empNo" name="empNo"><br>
+            <label for="empAddress">주소 : </label>
+            <input type="text" id="empAddress" name="empAddress"><br>
+            <label for="empEmail">이메일 : </label>
+            <input type="text" id="empEmail" name="empEmail"><br>
+            <label for="empId">사원번호 : </label>
+            <input type="number" id="empId" name="empId"><br>
+            <label for="empJoined">입사일 : </label>
+            <input type="date" id="empJoined" name="empJoined"><br>
+            <label for="annualLeave">연차 : </label>
+            <input type="text" id="annualLeave" name="annualLeave"><br>
+            <label for="empPwd">비밀번호 : </label>
+            <input type="text" id="empPwd" name="empPwd"><br>
+            <label for="profile">프로필 사진 : </label>
+            <input type="text" id="profile" name="profile"><br>
+            <label for="empPhone">연락처 : </label>
+            <input type="text" id="empPhone" name="empPhone"><br>
+            <label for="deptCode">부서 번호 : </label>
+            <input type="number" id="deptCode" name="deptCode"><br>
+            <label for="positionValue">직급 번호 : </label>
+            <input type="number" id="positionValue" name="positionValue"><br>
+            <label for="viewAuth">권한 : </label>
+            <input type="text" id="viewAuth" name="viewAuth"><br>
+
+            <input type="submit" value="등록">
+        </form>
+
     </section>
 </body>
 </html>
