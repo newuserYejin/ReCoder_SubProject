@@ -109,17 +109,17 @@
             <div class="form-group">
                 <label for="firstApprover">최초 승인자:</label>
                 <input type="text" id="firstApprover" name="firstApprover">
-                <button type="button" onclick="openSearchPopup('firstApprover')">검색</button>
+                <button type="button" onclick="openFirstApproverPopup('firstApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="midApprover">중간 승인자:</label>
                 <input type="text" id="midApprover" name="midApprover">
-                <button type="button" onclick="openSearchPopup('midApprover')">검색</button>
+                <button type="button" onclick="openMidApproverPopup('midApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="finalApprover">최종 승인자:</label>
                 <input type="text" id="finalApprover" name="finalApprover">
-                <button type="button" onclick="openSearchPopup('finalApprover')">검색</button>
+                <button type="button" onclick="openFinalApproverPopup('finalApprover')">검색</button>
             </div>
 
             <!-- 분류 -->
@@ -154,11 +154,28 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
-    // 검색 팝업 열기
-    function openSearchPopup(targetInputId) {
-        const targetInput = document.getElementById(targetInputId).value || '';
-        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(targetInput)}`;
+    // 최초 승인자 검색 팝업 열기
+    function openFirstApproverPopup(firstApprover) {
+        const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
         window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'firstApprover';
+    }
+
+    // 중간 승인자 검색 팝업 열기
+    function openMidApproverPopup(midApprover) {
+        const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
+        window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'midApprover';
+    }
+
+    // 최종 승인자 검색 팝업 열기
+    function openFinalApproverPopup(finalApprover) {
+        const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
+        window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'finalApprover';
     }
 
     // 엔터 키 입력 처리
@@ -167,10 +184,21 @@
             const activeElement = document.activeElement;
             if (activeElement.tagName === 'INPUT' && activeElement.type === 'text') {
                 event.preventDefault();
-                openSearchPopup(activeElement.id);
+
+                const inputId = activeElement.id; // 현재 포커스된 input의 ID를 가져와 변수로 저장
+                console.log('현재 포커스된 Input ID:', inputId); // 디버깅용 로그 추가
+
+                if (inputId === 'firstApprover') {
+                    openFirstApproverPopup('firstApprover');
+                } else if (inputId === 'midApprover') {
+                    openMidApproverPopup('midApprover');
+                } else if (inputId === 'finalApprover') {
+                    openFinalApproverPopup('finalApprover');
+                }
             }
         }
     });
+
 </script>
 
 </body>
