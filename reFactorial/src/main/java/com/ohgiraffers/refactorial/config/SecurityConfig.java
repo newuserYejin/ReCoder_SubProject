@@ -44,11 +44,11 @@ public class SecurityConfig {
             auth.requestMatchers("auth/login").permitAll();
 
             // /user/* 은 일반회원 권한을 가진 사람들만 접근 가능
-            auth.requestMatchers("/user/approvalPage",
+            auth.requestMatchers("/user","/user/approvalPage",
                     "/user/searchEmployeePage").hasAnyAuthority(UserRole.USER.getRole(),UserRole.ADMIN.getRole());
 
             // hasAnyAuthority(필요 권한) -> 해당 URL 은 ()의 권한을 가진 사람만 접근 할 수 있다.
-            auth.requestMatchers("/admin/*").hasAnyAuthority(UserRole.ADMIN.getRole());
+            auth.requestMatchers("/admin/*","/user/addEmployee").hasAnyAuthority(UserRole.ADMIN.getRole());
 
             auth.anyRequest().authenticated();
         }).formLogin(login ->{
@@ -61,7 +61,7 @@ public class SecurityConfig {
         }).sessionManagement(session ->{
             session.maximumSessions(2);         // session 의 허용 갯수 제한( 한 사용자가 동시에 여러 세션 활성화 )
             session.invalidSessionUrl("/");     // 세션이 만료 되었을 때 효청할 URL
-//            session.sessionFixation().newSession();       로그인 할때마다 새로운 세션 생성
+            session.sessionFixation().newSession();       // 로그인 할때마다 새로운 세션 생성
         }).csrf(csrf -> csrf.disable());
 
         return http.build();
