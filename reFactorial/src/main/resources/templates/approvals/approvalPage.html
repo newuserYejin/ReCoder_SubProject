@@ -139,12 +139,7 @@
                 </div>
 
                 <!-- 담당자와 분류 -->
-                <div class="form-group">
-                    <label for="person">담당자:</label>
-                    <input type="text" id="person" name="person">
-                    <!-- 검색 버튼 -->
-                    <button type="button" name="searchButton" onclick="openSearchPopup()">검색</button>
-                </div>
+
 
                 <!-- 분류 -->
                 <div class="form-group">
@@ -161,6 +156,18 @@
                     <label for="file">첨부파일:</label>
                     <input type="file" id="file" name="file">
                 </div>
+
+
+                <div class="form-group">
+                    <label for="person">담당자:</label>
+                    <input type="text" id="person" name="person">
+                    <!-- 검색 버튼 -->
+                    <button type="button" name="searchButton" onclick="openSearchPopup()">검색</button>
+                </div>
+
+
+
+
 
                 <!-- 내용 -->
                 <div class="form-group">
@@ -180,6 +187,14 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
+
+    function handleEnterSearch(event) {
+        // 엔터 키의 기본 동작 처리
+        if (event.key === 'Enter') {
+            openSearchPopup();
+            return false; // 기본 form 제출 동작 막기
+        }
+
     function openSearchPopup() {
         const personInput = document.getElementById('person').value || '';
         const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(personInput)}`;
