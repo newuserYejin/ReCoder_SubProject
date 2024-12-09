@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Slf4j
 @Configuration
@@ -58,6 +59,11 @@ public class SecurityConfig {
             login.defaultSuccessUrl("/user",true);
             login.successHandler(authSuccessHandler);
             login.failureHandler(authFailHandler);
+        }).logout(logout -> {
+            logout.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"));   // 로그아웃을 담당할 핸들러 메소드 요청 URL 기술
+            logout.deleteCookies("JSESSIONID");     // session은 쿠키 방식으로 JSESSIONID 의 이름으로 저장되어 있기 때문에 로그아웃하면서 삭제한다.
+            logout.invalidateHttpSession(true);     // 서버쪽 세션 만료 시키기
+            logout.logoutSuccessUrl("/auth/login");       // 로그아웃 성공 시 요청 URL
         }).sessionManagement(session ->{
             session.maximumSessions(2);         // session 의 허용 갯수 제한( 한 사용자가 동시에 여러 세션 활성화 )
             session.invalidSessionUrl("/");     // 세션이 만료 되었을 때 효청할 URL
