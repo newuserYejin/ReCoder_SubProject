@@ -1,4 +1,4 @@
-package com.ohgiraffers.refactorial.board;
+package com.ohgiraffers.refactorial.board.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
