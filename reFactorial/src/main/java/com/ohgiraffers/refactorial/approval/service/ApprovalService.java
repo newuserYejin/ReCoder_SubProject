@@ -17,8 +17,14 @@ public class ApprovalService {
         this.employeeMapper = employeeMapper;
     }
 
-    public List<EmployeeDTO> searchEmployee(String name) {
 
-        return employeeMapper.searchEmployee(name);
+
+    public List<EmployeeDTO> searchByName(String name) {
+
+        return employeeMapper.searchByName(name);
+    }
+
+    public List<EmployeeDTO> findAllEmployees() {
+        return employeeMapper.findAllEmployees();
     }
 }

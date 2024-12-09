@@ -18,23 +18,21 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
     <style>
+        /* 스타일은 동일하게 유지 */
         html, body {
-            height: 100%; /* 전체 페이지 높이를 100%로 설정 */
-            margin: 0; /* 페이지 외부 여백 제거 */
-            padding: 0; /* 페이지 내부 여백 제거 */
-            box-sizing: border-box; /* 요소 크기 계산 방식을 테두리 포함으로 설정 */
-            overflow: hidden; /* 스크롤바를 숨김 */
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
         }
-
         .wrapper {
-            display: flex; /* 사이드바와 메인 컨테이너를 나란히 배치 */
-            flex-direction: row; /* 자식 요소를 가로로 배치 */
+            display: flex;
+            flex-direction: row;
             height: 100%;
         }
-
-        /* Sidebar 스타일 */
         .sidebar {
-            width: 20%; /* 사이드바 너비 */
+            width: 20%;
             background-color: #ffffff;
             border-right: 1px solid black;
             padding: 20px;
@@ -42,77 +40,48 @@
             flex-direction: column;
             align-items: center;
         }
-
         .sidebar-title {
             font-size: 32px;
             font-weight: bold;
             color: #000;
-            margin-top: 46px; /* 위쪽 여백 설정 */
-
+            margin-top: 46px;
         }
-
-        /* Main Content 스타일 */
         .main-content {
-            flex: 1; /* 남은 공간 모두 차지 */
-            padding: 20px; /* 내부 여백 */
+            flex: 1;
+            padding: 20px;
             display: flex;
-            flex-direction: column; /* 세로 방향 정렬 */
-            align-items: flex-start; /* 왼쪽 정렬 */
-            justify-content: flex-start; /* 위쪽 정렬 */
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
         }
-
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
         .form-group {
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            width: 1000px; /* 폼 필드가 가로 전체를 차지 */
+            width: 100%;
         }
-
         .form-group label {
-            width: 100px;
+            width: 120px;
             font-weight: bold;
             margin-right: 10px;
         }
-
-        .form-group input, .form-group select {
+        .form-group input {
             flex: 1;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
         }
-
-        textarea {
-            height: 439px; /* 기본 높이 설정, 직접 숫자로 조절 가능 */
-            width: 100%; /* 가로 전체 사용 */
-            resize: none; /* 크기 조절 비활성화 */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .button-group {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .submit-btn {
+        .form-group button {
+            margin-left: 10px;
+            padding: 8px 12px;
             background-color: #5C1915;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
         }
-
-        .submit-btn:hover {
+        .form-group button:hover {
             background-color: #7e2411;
         }
     </style>
@@ -128,64 +97,109 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="title"></div>
+        <div class="title">전자 결제 신청</div>
         <form action="/approval/submit" method="post">
             <!-- 제목 -->
-            <form>
-                <!-- 제목 -->
-                <div class="form-group">
-                    <label for="title">제목:</label>
-                    <input type="text" id="title" name="title">
-                </div>
+            <div class="form-group">
+                <label for="title">제목:</label>
+                <input type="text" id="title" name="title">
+            </div>
 
-                <!-- 담당자와 분류 -->
-                <div class="form-group">
-                    <label for="person">담당자:</label>
-                    <input type="text" id="person" name="person">
-                    <!-- 검색 버튼 -->
-                    <button type="button" name="searchButton" onclick="openSearchPopup()">검색</button>
-                </div>
+            <!-- 승인자 입력 -->
+            <div class="form-group">
+                <label for="firstApprover">최초 승인자:</label>
+                <input type="text" id="firstApprover" name="firstApprover">
+                <button type="button" onclick="openFirstApproverPopup('firstApprover')">검색</button>
+            </div>
+            <div class="form-group">
+                <label for="midApprover">중간 승인자:</label>
+                <input type="text" id="midApprover" name="midApprover">
+                <button type="button" onclick="openMidApproverPopup('midApprover')">검색</button>
+            </div>
+            <div class="form-group">
+                <label for="finalApprover">최종 승인자:</label>
+                <input type="text" id="finalApprover" name="finalApprover">
+                <button type="button" onclick="openFinalApproverPopup('finalApprover')">검색</button>
+            </div>
 
-                <!-- 분류 -->
-                <div class="form-group">
-                    <label for="category">분류:</label>
-                    <select id="category" name="category">
-                        <option value="">선택</option>
-                        <option value="category1">분류 1</option>
-                        <option value="category2">분류 2</option>
-                    </select>
-                </div>
+            <!-- 분류 -->
+            <div class="form-group">
+                <label for="category">분류:</label>
+                <select id="category" name="category">
+                    <option value="">선택</option>
+                    <option value="category1">분류 1</option>
+                    <option value="category2">분류 2</option>
+                </select>
+            </div>
 
-                <!-- 첨부파일 -->
-                <div class="form-group">
-                    <label for="file">첨부파일:</label>
-                    <input type="file" id="file" name="file">
-                </div>
+            <!-- 첨부파일 -->
+            <div class="form-group">
+                <label for="file">첨부파일:</label>
+                <input type="file" id="file" name="file">
+            </div>
 
-                <!-- 내용 -->
-                <div class="form-group">
-                    <label for="content">내용:</label>
-                    <textarea id="content" name="content"></textarea>
-                </div>
+            <!-- 내용 -->
+            <div class="form-group">
+                <label for="content">내용:</label>
+                <textarea id="content" name="content"></textarea>
+            </div>
 
-                <!-- 제출 버튼 -->
-                <div class="button-group">
-                    <button type="submit" class="submit-btn">상신</button>
-                </div>
-            </form>
-
+            <!-- 제출 버튼 -->
+            <div class="button-group">
+                <button type="submit" class="submit-btn">상신</button>
+            </div>
         </form>
     </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
-    function openSearchPopup() {
-        const personInput = document.getElementById('person').value || '';
-        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(personInput)}`;
+    // 최초 승인자 검색 팝업 열기
+    function openFirstApproverPopup(firstApprover) {
+        const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
         window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'firstApprover';
     }
 
+    // 중간 승인자 검색 팝업 열기
+    function openMidApproverPopup(midApprover) {
+        const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
+        window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'midApprover';
+    }
+
+    // 최종 승인자 검색 팝업 열기
+    function openFinalApproverPopup(finalApprover) {
+        const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
+        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
+        window.open(url, 'searchPopup', 'width=600,height=400');
+        window.targetInputId = 'finalApprover';
+    }
+
+    // 엔터 키 입력 처리
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName === 'INPUT' && activeElement.type === 'text') {
+                event.preventDefault();
+
+                const inputId = activeElement.id; // 현재 포커스된 input의 ID를 가져와 변수로 저장
+                console.log('현재 포커스된 Input ID:', inputId); // 디버깅용 로그 추가
+
+                if (inputId === 'firstApprover') {
+                    openFirstApproverPopup('firstApprover');
+                } else if (inputId === 'midApprover') {
+                    openMidApproverPopup('midApprover');
+                } else if (inputId === 'finalApprover') {
+                    openFinalApproverPopup('finalApprover');
+                }
+            }
+        }
+    });
+
 </script>
+
 </body>
 </html>
