@@ -11,4 +11,8 @@ import java.util.List;
 public interface EmployeeMapper {
 
     List<EmployeeDTO> searchEmployee(String name);
+
+    List<EmployeeDTO> searchByName(String name);
+
+    List<EmployeeDTO> findAllEmployees();
 }
