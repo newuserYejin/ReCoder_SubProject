@@ -84,11 +84,25 @@
                         <img src="../images/mail.svg">
                     </div>
                     <div>
-                        <img src="../images/user.svg">
+                        <a class="myPage"
+                           th:href="${LoginUserInfo != null ? (LoginUserInfo.getRole()[0] == 'USER' ? '/user/myPage'
+                                       : (LoginUserInfo.getRole()[0] == 'ADMIN' ? '/admin/main' : '/auth/login'))
+                                       : '/auth/login'}">
+                            <img src="../images/user.svg" th:alt="${LoginUserInfo != null && LoginUserInfo.getRole() != null && LoginUserInfo.getRole().size() > 0 ? LoginUserInfo.getRole()[0] : 'Guest'}">
+                        </a>
                     </div>
+
                 </div>
             </div>
         </header>
+
+<!--        <script type="text/javascript" th:inline="javascript">-->
+<!--            // LoginUserInfo를 JSON 문자열로 안전하게 출력하여 JSON.parse로 파싱-->
+<!--            /*<![CDATA[*/-->
+<!--            let LoginUserInfo=[[${LoginUserInfo}]]-->
+<!--            /*]]>*/-->
+<!--        </script>-->
+<!--        <script type="text/javascript" th:src="@{/js/header/header.js}"></script>-->
 
 </body>
 </html>

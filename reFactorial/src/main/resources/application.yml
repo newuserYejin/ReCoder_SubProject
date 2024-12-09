@@ -6,3 +6,8 @@ spring:
     password: recoder
 mybatis:
   mapper-locations: mappers/**/*.xml
+
+server:
+  servlet:
+    session:
+      timeout=1800:
