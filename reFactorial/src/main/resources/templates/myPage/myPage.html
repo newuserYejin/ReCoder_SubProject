@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Page</title>
+
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <!--여기까지 공동 복사-->
+
+    <link rel="stylesheet" th:href="@{/css/myPage/myPage.css}">
+    <link rel="stylesheet" href="../../static/css/myPage/myPage.css">
+</head>
+<body>
+    <header th:replace="~{/common/header::headerFragment}"></header>
+    <section class="myPageSection">
+        <div class="pageTitle">마이페이지</div>
+
+        <div class="sectionBox">
+            <div class="topBox">
+<!--이미지 박스-->
+                <div class="profileImg">
+                    <img src="../images/loopy.jpg">
+<!--                    <img src="../../static/images/loopy.jpg">-->
+                </div>
+<!--개인 정보-->
+                <div class="personal_Info">
+                    <div>이름 :</div>
+                    <div>부서 : </div>
+                    <div>이메일 : </div>
+                    <div>주소 : </div>
+                    <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
+                </div>
+            </div>
+            <div class="underBox">
+<!--개인 근태-->
+                <div class="personalCalender">
+                    <div>캘린더 자리</div>
+                </div>
+<!--연차 사용-->
+                <div class="personalVacation">
+                    <div>사용 연차</div>
+                    <div>남은 연차</div>
+                    <div>근무 일수</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+</body>
+</html>

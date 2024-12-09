@@ -15,13 +15,20 @@
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
-<!--여기까지 공동 복사-->
+    <!--여기까지 공동 복사-->
 
 </head>
 <body>
 
     <header th:replace="~{/common/header::headerFragment}"></header>
     <section th:replace="~{/common/test::testFragment}"></section>
+    <section>
+
+<!--        <h1>Welcome, <span th:text="${userId}"></span>!</h1>-->
+        <h3>Main Page</h3>
+        <p th:text="${LoginUserInfo?.empId ?: 'No User'}"></p>
+        <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
+    </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
     <script>
@@ -31,5 +38,6 @@
             console.log(message);
         }
     </script>
+
 </body>
 </html>
