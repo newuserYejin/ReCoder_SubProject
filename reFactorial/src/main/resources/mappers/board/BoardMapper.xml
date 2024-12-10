@@ -18,14 +18,20 @@
         insert into tbl_post
         (
         post_title,
-        category_code,
-        post_content
+        post_content,
+        post_creationDate,
+        emp_id,
+        post_modificationDate,
+        category_code
         )
         values
         (
         #{postTitle},
-        #{categoryCode},
-        #{postContent}
+        #{postContent},
+        #{postCreationDate},
+        #{empId},
+        #{postModificationDate},
+        #{categoryCode}
         )
     </insert>
 
