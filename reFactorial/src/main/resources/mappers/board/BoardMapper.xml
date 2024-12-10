@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.board.model.dao.BoardMapper">
+    <resultMap id="boardResultMap" type="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
+        <id property="postId" column="post_id"/>
+        <result property="postTitle" column="post_title"/>
+        <result property="postContent" column="post_content"/>
+        <result property="postCreationDate" column="post_creationDate"/>
+        <result property="postModificationDate" column="post_modificationDate"/>
+        <result property="empId" column="emp_id"/>
+        <result property="categoryCode" column="category_code"/>
+    </resultMap>
+
+    <insert id="boardPost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
+        insert into tbl_post
+        (
+        post_title,
+        post_content,
+        post_creationDate,
+        emp_id,
+        post_modificationDate,
+        category_code
+        )
+        values
+        (
+        #{postTitle},
+        #{postContent},
+        #{postCreationDate},
+        #{empId},
+        #{postModificationDate},
+        #{categoryCode}
+        )
+    </insert>
+
+</mapper>

@@ -1,7 +1,10 @@
 package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import com.ohgiraffers.refactorial.user.model.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
+
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/user")
     public String mainControll(Model model){
@@ -60,7 +66,16 @@ public class MainController {
     };
 
     @GetMapping("user/myPage")
-    public String myPage(){
+    public String myPage(HttpSession session, Model model){
+
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+
+        String deptName = memberService.findDeptName(user.getDeptCode());
+        String positionName = memberService.findPositionName(user.getPositionValue());
+
+        model.addAttribute("deptName",deptName);
+        model.addAttribute("positionName",positionName);
+
         return "myPage/myPage";
     }
 

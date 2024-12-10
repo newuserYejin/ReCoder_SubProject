@@ -19,7 +19,7 @@ body{
     }
 
     .sectionBox{
-        border: solid 1px red;
+        /*border: solid 1px red;*/
 
         width: 100%;
         height: 100%;
@@ -34,7 +34,6 @@ body{
             justify-content: space-between;
 
             .profileImg{
-                border: solid 1px blue;
                 width: 31.1%;
 
                 display: flex;
@@ -53,9 +52,77 @@ body{
             }
 
             .personal_Info{
-                border: solid 1px blue;
                 width: 67%;
                 height: 100%;
+
+                padding: 2% 2%;
+                box-sizing: border-box;
+
+                border: solid 1px black;
+                border-radius: 10px;
+
+                font-size: 1.3em;
+
+                .InfoLine{
+                    display: flex;
+                    justify-content: start;
+                    margin-bottom: 3%;
+
+                    div:first-child{
+                        margin-right: 5%;
+                    }
+
+                    div{
+                        display: flex;
+                        margin-right: 9%;
+
+                        p{
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        p:first-child{
+                            margin-right: 10px;
+                        }
+
+                        .personal_InfoBtn{
+                            background: none;
+                            border: none;
+
+                            cursor: pointer;
+                        }
+                    }
+                    .personal_InfoBtnBox{
+                        min-width: 40%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 0 10px;
+
+                        border: solid 1px black;
+
+                        button{
+                            height: 50%;
+                            background-color: #5C1915;
+                            color: white;
+                            padding: 5%;
+                            border-radius: 10px;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    }
+                }
+
+                .InfoLine:last-child{
+                    margin-bottom: 0;
+                }
+
+                .InfoLine:first-child > div:last-child,
+                .InfoLine:last-child > div:last-child{
+                    margin-left: auto;
+                }
             }
         }
 

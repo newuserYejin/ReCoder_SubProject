@@ -34,11 +34,57 @@
                 </div>
 <!--개인 정보-->
                 <div class="personal_Info">
-                    <div>이름 :</div>
-                    <div>부서 : </div>
-                    <div>이메일 : </div>
-                    <div>주소 : </div>
-                    <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
+                    <div class="InfoLine">
+                        <div>
+                            <p>이름 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empName : null}"></p>
+                        </div>
+                        <div>
+                            <p>사번 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empId : null}"></p>
+                        </div>
+                        <div>
+                            <p>입사일 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empJoined : null}"></p>
+                        </div>
+                        <div>
+                            <button class="personal_InfoBtn">
+                                <img src="../images/updateIcon.svg">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="InfoLine">
+                        <div>
+                            <p>부서 :</p>
+                            <p th:text="${deptName}"></p>
+                        </div>
+
+                        <div>
+                            <p>직책 :</p>
+                            <p th:text="${positionName}"></p>
+                        </div>
+                    </div>
+                    <div class="InfoLine">
+                        <div>
+                            <p>이메일 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empEmail : null}"></p>
+                        </div>
+                        <div>
+                            <p>전화번호 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empPhone : null}"></p>
+                        </div>
+                    </div>
+                    <div class="InfoLine">
+                        <div>
+                            <p>주소 :</p>
+                            <p th:text="${LoginUserInfo != null? LoginUserInfo.empAddress : null}"></p>
+                        </div>
+                        <div class="personal_InfoBtnBox">
+                            <p>비밀번호</p>
+                            <button class="personal_InfoBtn">변경하기</button>
+                        </div>
+                    </div>
+<!--                        <p th:text="${LoginUserInfo != null?: 'User information is not available'}"></p>-->
                 </div>
             </div>
             <div class="underBox">
