@@ -10,9 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/board")
 public class BoardController {
 
     private final BoardService boardService;
@@ -22,46 +24,105 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @GetMapping("user/freeBoard")
-    public String freeBoard() {
-        return "board/freeBoard";
+    // 게시물 전체조회
+    @GetMapping("freeBoard")
+    public String freeBoard(Model model) {
+
+        List<BoardDTO> postList = boardService.postList();
+
+        model.addAttribute("postList",postList);    // 템플릿에 값 전달
+
+//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+
+        return "/board/freeBoard";
     }
 
-    @GetMapping("user/document")
-    public String document() {
-        return "board/document";
-    }
+    // 게시물 등록
+    @GetMapping("freeBoardRegist")
+    public String freeBoardRegist() { return "/board/freeBoardRegist"; }
 
-    @GetMapping("user/vote")
-    public String vote() {
-        return "board/vote";
-    }
-
-    @GetMapping("user/event")
-    public String event() {
-        return "board/event";
-    }
-
-    @GetMapping("user/freeBoardRegist")
-    public String freeBoardRegist() { return "board/freeBoardRegist"; }
-
-    @PostMapping("user/freeBoardRegist")
+    // 게시물 등록
+    @PostMapping("freeBoardRegist")
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
                             Model model, HttpSession session) {
 
-        BoardDTO board = new BoardDTO();
-        board.setPostTitle(title);
-        board.setCategoryCode(category);
-        board.setPostContent(content);
-        
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
-        System.out.println("글쓴이 = " + user);
+        BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
+        board.setPostId(board.getPostId());     // 게시물 번호
+        board.setPostTitle(title);              // 게시물 제목
+        board.setPostContent(content);          // 게시물 내용
+        board.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
+        board.setEmpId(user.getEmpId());        // 작성자 사원번호
+        board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
+        board.setCategoryCode(category);        // 게시물 카테고리 코드
 
-//        boardService.post(board);
+//        System.out.println("글쓴이 = " + user);
 
-        return "redirect:/user/freeBoard";
+        boardService.post(board);
+
+        return "redirect:/board/freeBoard";
     }
+
+    // 게시물 상세페이지
+    @GetMapping("postDetail")
+    public String postDetail(@RequestParam String title, Model model) {
+
+        BoardDTO postDetail = boardService.postDetail(title);
+
+//        System.out.println("postDetail = " + postDetail);
+
+        model.addAttribute("postDetail", postDetail);
+
+        return "/board/postDetail";
+
+    }
+
+    // 게시물 삭제
+    @GetMapping("postDelete")
+    public String deletePost() {
+        return "/board/postDelete";
+    }
+
+    @PostMapping("postDelete")
+    public String postDelete(@RequestParam int postId) {
+
+        boardService.postDelete(postId);
+
+        return "redirect:/board/freeBoard";
+    }
+
+    // 게시물 수정
+    @GetMapping("postUpdate")
+    public String postUpdate() {
+
+//        boardService.postUpdate();
+
+        return "/board/postUpdate";
+    }
+
+
+    @GetMapping("notification")
+    public String notification() {
+        return "/board/notification";
+    }
+
+    @GetMapping("document")
+    public String document() {
+        return "/board/document";
+    }
+
+    @GetMapping("vote")
+    public String vote() {
+        return "/board/vote";
+    }
+
+    @GetMapping("event")
+    public String event() {
+        return "/board/event";
+    }
+
+
 
 
 

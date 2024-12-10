@@ -14,19 +14,50 @@
         <result property="categoryCode" column="category_code"/>
     </resultMap>
 
+    <!-- 게시물 등록 -->
     <insert id="boardPost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
         insert into tbl_post
         (
         post_title,
-        category_code,
-        post_content
+        post_content,
+        post_creationDate,
+        emp_id,
+        post_modificationDate,
+        category_code
         )
         values
         (
         #{postTitle},
-        #{categoryCode},
-        #{postContent}
+        #{postContent},
+        #{postCreationDate},
+        #{empId},
+        #{postModificationDate},
+        #{categoryCode}
         )
     </insert>
+
+    <!-- 게시물 전체 조회 -->
+    <select id="postList" resultMap="boardResultMap">
+        select
+            *
+        from
+            tbl_post
+    </select>
+
+    <!-- 게시물 상세페이지 -->
+    <select id="postDetail" parameterType="String" resultMap="boardResultMap">
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            post_title = #{postDetail}
+    </select>
+
+    <delete id="postDelete" parameterType="int">
+        DELETE FROM tbl_post
+        WHERE post_id = #{postId}
+
+    </delete>
 
 </mapper>
