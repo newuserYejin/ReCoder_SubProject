@@ -50,20 +50,18 @@ public class BoardController {
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
                             Model model, HttpSession session) {
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
-        // post_id
-        // 일단 조회 갯수
+        BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
+        board.setPostId(board.getPostId());     // 게시물 번호
+        board.setPostTitle(title);              // 게시물 제목
+        board.setPostContent(content);          // 게시물 내용
+        board.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
+        board.setEmpId(user.getEmpId());        // 작성자 사원번호
+        board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
+        board.setCategoryCode(category);        // 게시물 카테고리 코드
 
-        BoardDTO board = new BoardDTO();
-        board.setPostTitle(title);
-        board.setPostContent(content);
-        board.setPostCreationDate(LocalDateTime.now());
-        board.setEmpId(user.getEmpId());
-        board.setPostModificationDate(LocalDateTime.now());
-        board.setCategoryCode(category);
-
-        System.out.println("글쓴이 = " + user);
+//        System.out.println("글쓴이 = " + user);
 
         boardService.post(board);
 
