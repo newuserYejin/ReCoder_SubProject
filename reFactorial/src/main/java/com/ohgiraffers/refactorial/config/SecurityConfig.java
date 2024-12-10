@@ -45,8 +45,7 @@ public class SecurityConfig {
             auth.requestMatchers("auth/login").permitAll();
 
             // /user/* 은 일반회원 권한을 가진 사람들만 접근 가능
-            auth.requestMatchers("/user","/user/approvalPage",
-                    "/user/searchEmployeePage").hasAnyAuthority(UserRole.USER.getRole(),UserRole.ADMIN.getRole());
+            auth.requestMatchers("/user","/approvals/*").hasAnyAuthority(UserRole.USER.getRole(),UserRole.ADMIN.getRole());
 
             // hasAnyAuthority(필요 권한) -> 해당 URL 은 ()의 권한을 가진 사람만 접근 할 수 있다.
             auth.requestMatchers("/admin/*","/user/addEmployee").hasAnyAuthority(UserRole.ADMIN.getRole());

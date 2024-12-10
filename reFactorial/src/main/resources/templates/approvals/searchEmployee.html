@@ -4,15 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>담당자 검색</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* 검색 입력창 스타일 */
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        form input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background-color: #603F26;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #6C4E31;
+        }
+
+        /* 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #AB886D;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        /* 선택 버튼 스타일 */
+        button {
+            padding: 5px 10px;
+            background-color: #603F26;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6C4E31;
+        }
+    </style>
 </head>
 <body>
 <h1>담당자 검색</h1>
-<form action="/user/approvals/searchEmployeePage" method="get">
+<form action="/approvals/searchEmployee" method="get">
     <input type="text" name="name" placeholder="담당자 이름 입력">
     <button type="submit">검색</button>
 </form>
 
-<table border="1">
+<table>
     <thead>
     <tr>
         <th>사원번호</th>
@@ -31,11 +113,8 @@
         <td th:text="${employee.positionValue}"></td>
         <td th:text="${employee.email}"></td>
         <td>
-        <td>
-        <td>
             <button type="button" th:data-name="${employee.name}" onclick="selectEmployee(this)">선택</button>
         </td>
-
     </tr>
     </tbody>
 </table>
@@ -59,8 +138,6 @@
             alert('부모 창이 없습니다.');
         }
     }
-
-
 </script>
 </body>
 </html>

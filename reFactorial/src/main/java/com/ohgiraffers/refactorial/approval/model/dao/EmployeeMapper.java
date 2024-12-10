@@ -15,4 +15,8 @@ public interface EmployeeMapper {
     List<EmployeeDTO> searchByName(String name);
 
     List<EmployeeDTO> findAllEmployees();
+
+    List<EmployeeDTO> searchByReferrersPageName(String name);
+
+    List<EmployeeDTO> findAllReferrers();
 }
