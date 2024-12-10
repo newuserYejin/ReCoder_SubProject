@@ -206,21 +206,31 @@
             console.log("null phone : ",phone)
             console.log("null address : ",address)
 
+            fetch('/user/updatePersonalInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    phone: phone,
+                    address: address
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
 
-            // fetch('/user/updateInfo', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         email: email,
-            //         phone: phone,
-            //         address: address
-            //     })
-            // })
-
+                // 데이터가 성공적으로 처리된 경우 페이지 새로고침
+                if (data.result > 0) {
+                    location.reload(); // 페이지 새로 고침
+                } else if (data.result === 0) {
+                    alert("데이터 업데이트 내용 없음");
+                } else {
+                    alert("업데이트 오류")
+                }
+            })
         })
-
     </script>
 
 </body>
