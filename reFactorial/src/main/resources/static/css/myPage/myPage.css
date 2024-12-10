@@ -66,7 +66,7 @@ body{
                 .InfoLine{
                     display: flex;
                     justify-content: start;
-                    margin-bottom: 3%;
+                    margin-bottom: 2.3%;
 
                     div:first-child{
                         margin-right: 5%;
@@ -91,22 +91,66 @@ body{
 
                             cursor: pointer;
                         }
+
+                        input,textarea{
+                            width: 65%;
+                            color: black;
+                            font-size: 1em;
+                            font-family: "jua", "Noto Sans KR", sans-serif;
+
+                            /*display: flex;*/
+                            /*align-items: center;*/
+                        }
+
+                        input[class="modifyInfo"]:disabled{
+                            background: none;
+                            color: black;
+                            border: none;
+                        }
+
+                        textarea:disabled {
+                            background: none;
+                            border: none;
+                            color: black;
+                            word-break: break-all;
+                            word-wrap: break-word;
+                            resize: none;
+                        }
                     }
+
                     .personal_InfoBtnBox{
                         min-width: 40%;
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
-                        padding: 0 10px;
+                        padding: 8px 10px;
 
                         border: solid 1px black;
 
+                        height: fit-content;
+
                         button{
-                            height: 50%;
+                            height: 30%;
                             background-color: #5C1915;
                             color: white;
-                            padding: 5%;
+                            padding: 5px 15px;
                             border-radius: 10px;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    }
+
+                    .modifyInfoSave{
+                        display: none;
+
+                        button{
+                            background-color: #5C1915;
+                            color: white;
+                            border-radius: 10px;
+                            padding: 10px;
+                            height: 70%;
 
                             display: flex;
                             align-items: center;
@@ -144,7 +188,119 @@ body{
                 width: 67%;
                 height: 100%;
             }
+        }
+    }
+}
 
+.modal{
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    z-index: 1050;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+
+    .modal-dialog{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        width: 90%;
+        max-width: 470px;
+        padding: 20px;
+
+        border-radius: 15px;
+        border: solid 2px #5C1915;
+
+        .modal-content {
+
+            .modal-header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                font-size: 1.5em;
+                border: none;
+
+                padding-bottom: 0;
+
+                button {
+                    align-self: end;
+
+                    height: 35px;
+                    margin: 0;
+                    padding: 0;
+
+                    background: none;
+                    border: none;
+
+                    cursor: pointer;
+                }
+
+            }
+
+            form {
+                padding: 0 10%;
+                color: #4F4F4F;
+
+                .modal-body {
+                    margin: 0;
+                    padding: 1em;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    input {
+                        padding: 5px 20px;
+                        font-size: 1.2em;
+                        border-radius: 20px;
+                        margin-bottom: 20px;
+                    }
+
+                    input:last-child{
+                        margin-bottom: 0;
+                    }
+
+                    input[class="error"]{
+                        margin-bottom: 0;
+                    }
+
+                    p {
+                        display: none;
+                    }
+
+                    p[class="error"] {
+                        color: #bf0603;
+                        display: block;
+                    }
+
+                }
+
+                .modal-footer {
+                    display: flex;
+                    justify-content: center;
+                    border: none;
+                    padding-top: 0;
+
+                    button {
+                        background-color: #5C1915;
+                        color: white;
+                        border: none;
+                        width: 100%;
+                        padding: 10px;
+                        font-size: 1.5em;
+                        text-align: center;
+
+                        border-radius: 30px;
+                        cursor: pointer;
+                    }
+
+                }
+            }
         }
     }
 }

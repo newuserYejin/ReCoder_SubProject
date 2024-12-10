@@ -56,4 +56,10 @@
             position_value = #{positionValue};
     </select>
 
+    <update id="changePW" parameterType="map">
+        UPDATE employee
+        SET emp_pwd = #{enChangePW}
+        WHERE emp_id = #{empId}
+    </update>
+
 </mapper>
