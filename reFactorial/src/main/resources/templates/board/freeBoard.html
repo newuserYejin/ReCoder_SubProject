@@ -152,11 +152,11 @@
         <div class="sidebar">
             <div class="sidebar-title">게시판</div>
             <ul>
-                <li onclick="location.href='notification'">공지사항</li>
-                <li onclick="location.href='freeBoard'">자유 게시판</li>
-                <li onclick="location.href='document'">문서 양식</li>
-                <li onclick="location.href='vote'">투표 게시판</li>
-                <li onclick="location.href='event'">이벤트</li>
+                <li onclick="location.href='/board/notification'">공지사항</li>
+                <li onclick="location.href='/board/freeBoard'">자유 게시판</li>
+                <li onclick="location.href='/board/document'">문서 양식</li>
+                <li onclick="location.href='/board/vote'">투표 게시판</li>
+                <li onclick="location.href='/board/event'">이벤트</li>
             </ul>
         </div>
 
@@ -174,25 +174,13 @@
                 <div class="table-cell">작성일</div>
             </div>
 
-            <div class="table-row">
-                <div class="table-cell">3</div>
-                <div class="table-cell">조평팔</div>
-                <div class="table-cell">게시판 사용 가능</div>
-                <div class="table-cell">2024.12.05</div>
-            </div>
-
-            <div class="table-row">
-                <div class="table-cell">2</div>
-                <div class="table-cell">조평철</div>
-                <div class="table-cell">게시판 테스트 중</div>
-                <div class="table-cell">2024.12.03</div>
-            </div>
-
-            <div class="table-row">
-                <div class="table-cell">1</div>
-                <div class="table-cell">조평만</div>
-                <div class="table-cell">게시판 테스트1</div>
-                <div class="table-cell">2024.12.01</div>
+            <div>
+                <div th:each="post : ${postList}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+                    <div style="width: 23%;" th:text="${post.postId}">1</div>
+                    <div style="width: 35%;" th:text="${post.empId}">Sample Title</div>
+                    <a style="width: 40%;" th:href="@{/board/postDetail(title=${post.postTitle})}" th:text="${post.postTitle}">Sample Writer</a>
+                    <div style="width: 30%;" th:text="${post.postCreationDate}">2024-01-01</div>
+                </div>
             </div>
 
             <!-- Pagination -->
