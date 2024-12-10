@@ -45,13 +45,13 @@
     </select>
 
     <!-- 게시물 상세페이지 -->
-    <select id="postDetail" parameterType="String" resultMap="boardResultMap">
+    <select id="postDetail" parameterType="int" resultMap="boardResultMap">
         SELECT
             *
         FROM
             tbl_post
         WHERE
-            post_title = #{postDetail}
+            post_id = #{postId}
     </select>
 
     <delete id="postDelete" parameterType="int">
@@ -64,7 +64,9 @@
         update tbl_post
         set
         post_title = #{postTitle},
-        post_content = #{postContent}
+        post_content = #{postContent},
+        category_code = #{categoryCode},
+        post_modificationDate = #{postModificationDate}
         where
         post_id = #{postId}
     </update>

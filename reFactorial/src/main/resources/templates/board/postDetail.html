@@ -25,7 +25,7 @@
   <!-- 수정 -->
   <form action="/board/postUpdate" method="get">
     <!-- 게시물 ID 전달 -->
-    <input type="hidden" name="title" th:value="${postDetail.postTitle}">
+    <input type="hidden" name="postId" th:value="${postDetail.postId}">
     <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
   </form>
 

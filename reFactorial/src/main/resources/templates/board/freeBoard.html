@@ -178,7 +178,7 @@
                 <div th:each="post : ${postList}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
                     <div style="width: 23%;" th:text="${post.postId}">1</div>
                     <div style="width: 35%;" th:text="${post.empId}">Sample Title</div>
-                    <a style="width: 40%;" th:href="@{/board/postDetail(title=${post.postTitle})}" th:text="${post.postTitle}">Sample Writer</a>
+                    <a style="width: 40%;" th:href="@{/board/postDetail(postId=${post.postId})}" th:text="${post.postTitle}">Sample Writer</a>
                     <div style="width: 30%;" th:text="${post.postCreationDate}">2024-01-01</div>
                 </div>
             </div>

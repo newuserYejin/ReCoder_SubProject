@@ -170,27 +170,29 @@
                 <!-- 제목 -->
                 <div class="form-group">
                     <label for="postTitle">제목:</label>
-                    <input type="text" id="postTitle" name="title" th:value="${modify.postTitle}">
+                    <input type="text" id="postTitle" name="postTitle" th:value="${modify.postTitle}">
+                </div>
+
+                <!-- 분류 -->
+                <div class="form-group">
+                    <label for="categoryCode">분류:</label>
+                    <select id="categoryCode" name="categoryCode">
+                        <option value="">선택</option>
+                        <option value=1 th:selected="${modify.categoryCode == 1}">공지사항</option>
+                        <option value=2 th:selected="${modify.categoryCode == 2}">자유게시판</option>
+                        <option value=3 th:selected="${modify.categoryCode == 3}">문서양식</option>
+                        <option value=4 th:selected="${modify.categoryCode == 4}">투표</option>
+                        <option value=5 th:selected="${modify.categoryCode == 5}">이벤트</option>
+                    </select>
                 </div>
 
                 <!-- 내용 -->
                 <div class="form-group">
                     <label for="postContent">내용:</label>
-                    <textarea id="postContent" name="content" th:text="${modify.postContent}"></textarea>
+                    <textarea id="postContent" name="postContent" th:text="${modify.postContent}"></textarea>
                 </div>
 
-                <!-- 분류 -->
-                <div class="form-group">
-                    <label for="category">분류:</label>
-                    <select id="category" name="category">
-                        <option value="">선택</option>
-                        <option value=1 th:selected="${modify.category == 1}">공지사항</option>
-                        <option value=2 th:selected="${modify.category == 2}">자유게시판</option>
-                        <option value=3 th:selected="${modify.category == 3}">문서양식</option>
-                        <option value=4 th:selected="${modify.category == 4}">투표</option>
-                        <option value=5 th:selected="${modify.category == 5}">이벤트</option>
-                    </select>
-                </div>
+
 
 
 

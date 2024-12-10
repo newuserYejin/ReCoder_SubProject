@@ -37,9 +37,11 @@ public class BoardController {
         return "/board/freeBoard";
     }
 
-    // 게시물 등록
+    // 게시물 등록 페이지로 이동
     @GetMapping("freeBoardRegist")
-    public String freeBoardRegist() { return "/board/freeBoardRegist"; }
+    public String freeBoardRegist() {
+        return "/board/freeBoardRegist";
+    }
 
     // 게시물 등록
     @PostMapping("freeBoardRegist")
@@ -66,9 +68,9 @@ public class BoardController {
 
     // 게시물 상세페이지
     @GetMapping("postDetail")
-    public String postDetail(@RequestParam String title, Model model) {
+    public String postDetail(@RequestParam int postId, Model model) {
 
-        BoardDTO postDetail = boardService.postDetail(title);
+        BoardDTO postDetail = boardService.postDetail(postId);
 
 //        System.out.println("postDetail = " + postDetail);
 
@@ -94,9 +96,9 @@ public class BoardController {
 
     // 게시물 수정
     @GetMapping("postUpdate")
-    public String postUpdate(@RequestParam String title, Model model) {
+    public String postUpdate(@RequestParam int postId, Model model) {
 
-        BoardDTO postDetail = boardService.postDetail(title);
+        BoardDTO postDetail = boardService.postDetail(postId);
 
 //        System.out.println("postDetail = " + postDetail);
 
@@ -108,9 +110,12 @@ public class BoardController {
     @PostMapping("postUpdate")
     public String updatePost(@ModelAttribute BoardDTO board) {
 
+        board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
         boardService.updatePost(board);
 
-        return "redirect:/board/postDetail?postId=" + board.getPostId();
+//        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
+        return "redirect:/board/freeBoard";  // 자유게시판
+
     }
 
 
