@@ -23,29 +23,24 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+    // 게시물 전체조회
     @GetMapping("user/freeBoard")
-    public String freeBoard() {
+    public String freeBoard(Model model) {
+
+        List<BoardDTO> postList = boardService.postList();
+
+        model.addAttribute("postList",postList);    // 템플릿에 값 전달
+
+//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+
         return "board/freeBoard";
     }
 
-    @GetMapping("user/document")
-    public String document() {
-        return "board/document";
-    }
-
-    @GetMapping("user/vote")
-    public String vote() {
-        return "board/vote";
-    }
-
-    @GetMapping("user/event")
-    public String event() {
-        return "board/event";
-    }
-
+    // 게시물 등록
     @GetMapping("user/freeBoardRegist")
     public String freeBoardRegist() { return "board/freeBoardRegist"; }
 
+    // 게시물 등록
     @PostMapping("user/freeBoardRegist")
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
                             Model model, HttpSession session) {
@@ -67,5 +62,52 @@ public class BoardController {
 
         return "redirect:/user/freeBoard";
     }
+
+    // 게시물 상세페이지
+    @GetMapping("user/postDetail")
+    public String postDetail(@RequestParam String title, Model model) {
+
+        BoardDTO postDetail = boardService.postDetail(title);
+
+//        System.out.println("postDetail = " + postDetail);
+
+        model.addAttribute("postDetail", postDetail);
+
+        return "board/postDetail";
+
+    }
+
+    // 게시물 삭제
+    @GetMapping("user/postDelete")
+    public String deletePost() {
+        return "user/postDelete";
+    }
+
+    @PostMapping("user/postDelete")
+    public String postDelete(@RequestParam int postId) {
+
+        boardService.postDelete(postId);
+
+        return "redirect:/user/freeBoard";
+    }
+
+    @GetMapping("user/document")
+    public String document() {
+        return "board/document";
+    }
+
+    @GetMapping("user/vote")
+    public String vote() {
+        return "board/vote";
+    }
+
+    @GetMapping("user/event")
+    public String event() {
+        return "board/event";
+    }
+
+
+
+
 
 }
