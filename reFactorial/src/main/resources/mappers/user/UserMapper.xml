@@ -62,4 +62,20 @@
         WHERE emp_id = #{empId}
     </update>
 
+    <update id="updatePersonalInfo" parameterType="map">
+        UPDATE employee
+        <set>
+            <if test="email != null">
+                emp_email = #{email},
+            </if>
+            <if test="phone != null">
+                emp_phone = #{phone},
+            </if>
+            <if test="address != null">
+                emp_address = #{address},
+            </if>
+        </set>
+        WHERE emp_id = #{userId}
+    </update>
+
 </mapper>
