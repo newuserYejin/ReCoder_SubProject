@@ -27,4 +27,12 @@ public class ApprovalService {
     public List<EmployeeDTO> findAllEmployees() {
         return employeeMapper.findAllEmployees();
     }
+
+    public List<EmployeeDTO> searchByReferrersPageName(String name) {
+        return employeeMapper.searchByReferrersPageName(name);
+    }
+
+    public List<EmployeeDTO> findAllReferrers() {
+        return employeeMapper.findAllReferrers();
+    }
 }

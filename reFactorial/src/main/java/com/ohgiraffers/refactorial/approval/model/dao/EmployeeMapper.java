@@ -10,9 +10,13 @@ import java.util.List;
 @Mapper
 public interface EmployeeMapper {
 
-    List<EmployeeDTO> searchEmployee(String name);
+
 
     List<EmployeeDTO> searchByName(String name);
 
     List<EmployeeDTO> findAllEmployees();
+
+    List<EmployeeDTO> searchByReferrersPageName(String name);
+
+    List<EmployeeDTO> findAllReferrers();
 }
