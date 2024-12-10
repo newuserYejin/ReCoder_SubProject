@@ -9,4 +9,8 @@ public interface UserMapper {
     UserDTO findByUsername(String username);
 
     int addEmployee(UserDTO userDTO);
+
+    String findDeptName(int deptCode);
+
+    String findPositionName(int positionValue);
 }

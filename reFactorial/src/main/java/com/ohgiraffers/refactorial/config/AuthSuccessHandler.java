@@ -2,10 +2,12 @@ package com.ohgiraffers.refactorial.config;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -25,8 +27,6 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         UserDTO user = authDetails.getUser();
 
         request.getSession().setAttribute("LoginUserInfo", user);
-
-        System.out.println("세션에 저장할 user = " + user);
 
         response.sendRedirect("/user");
     }
