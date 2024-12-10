@@ -94,12 +94,25 @@ public class BoardController {
 
     // 게시물 수정
     @GetMapping("postUpdate")
-    public String postUpdate() {
+    public String postUpdate(@RequestParam String title, Model model) {
 
-//        boardService.postUpdate();
+        BoardDTO postDetail = boardService.postDetail(title);
+
+//        System.out.println("postDetail = " + postDetail);
+
+        model.addAttribute("modify", postDetail);
 
         return "/board/postUpdate";
     }
+
+    @PostMapping("postUpdate")
+    public String updatePost(@ModelAttribute BoardDTO board) {
+
+        boardService.updatePost(board);
+
+        return "redirect:/board/postDetail?postId=" + board.getPostId();
+    }
+
 
 
     @GetMapping("notification")
@@ -121,9 +134,5 @@ public class BoardController {
     public String event() {
         return "/board/event";
     }
-
-
-
-
 
 }

@@ -37,4 +37,10 @@ public class BoardService {
     public void postDelete(int postId) {
         boardMapper.postDelete(postId);
     }
+
+    @Transactional
+    public void updatePost(BoardDTO board) {
+
+        boardMapper.updatePost(board);
+    }
 }
