@@ -24,7 +24,20 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    // 게시물 전체조회
+    // (공지)게시물 전체조회
+    @GetMapping("notification")
+    public String notification(Model model) {
+
+        List<BoardDTO> notiPostList = boardService.notiPostList();
+
+        model.addAttribute("notification",notiPostList);    // 템플릿에 값 전달
+
+//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+
+        return "/board/notification";
+    }
+
+    // (자유)게시물 전체조회
     @GetMapping("freeBoard")
     public String freeBoard(Model model) {
 
@@ -116,13 +129,6 @@ public class BoardController {
 //        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
         return "redirect:/board/freeBoard";  // 자유게시판
 
-    }
-
-
-
-    @GetMapping("notification")
-    public String notification() {
-        return "/board/notification";
     }
 
     @GetMapping("document")
