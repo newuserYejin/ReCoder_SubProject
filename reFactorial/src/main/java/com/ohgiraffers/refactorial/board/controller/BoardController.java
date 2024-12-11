@@ -24,32 +24,49 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    // (공지)게시물 전체조회
-    @GetMapping("notification")
-    public String notification(Model model) {
-
-        List<BoardDTO> notiPostList = boardService.notiPostList();
-
-        model.addAttribute("notification",notiPostList);    // 템플릿에 값 전달
-
-//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
-
-        return "/board/notification";
-    }
+//    // (공지)게시물 전체조회
+//    @GetMapping("notification")
+//    public String notification(Model model) {
+//
+//        List<BoardDTO> notiPostList = boardService.notiPostList();
+//
+//        model.addAttribute("notification",notiPostList);    // 템플릿에 값 전달
+//
+////        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+//
+//        return "/board/notification";
+//    }
 
     // 게시물 전체조회
-    @GetMapping("freeBoard")
-    public String freeBoard(Model model) {
+    @GetMapping("list")
+    public String list(@RequestParam("categoryCode") int categoryCode, Model model) {
 
-        List<BoardDTO> postList = boardService.postList();
+        if (categoryCode == 1) {
+            List<BoardDTO> postList = boardService.postList(categoryCode);
 
-        System.out.println("postList = " + postList);
+            System.out.println("postList = " + postList);
 
-        model.addAttribute("postList",postList);    // 템플릿에 값 전달
+            model.addAttribute("postList",postList);    // 템플릿에 값 전달
 
 //        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
 
-        return "/board/freeBoard";
+            return "/board/notification";
+        } else if (categoryCode == 2) {
+
+            List<BoardDTO> postList = boardService.postList(categoryCode);
+
+            System.out.println("postList = " + postList);
+
+            model.addAttribute("postList",postList);    // 템플릿에 값 전달
+
+//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+
+            return "/board/freeboard";
+
+        } else {
+            return "/board/freeboard";
+        }
+
     }
 
     // 게시물 등록 페이지로 이동
