@@ -7,14 +7,19 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
-    void post(BoardDTO board);
 
+    // 게시글 등록
     void boardPost(BoardDTO board);
 
+    // 전체조회
     List<BoardDTO> postList();
 
-    BoardDTO postDetail(String title);
+    // 상세페이지
+    BoardDTO postDetail(int postId);
 
+    // 게시글 삭제
     void postDelete(int postId);
 
+    // 게시글 수정
+    void updatePost(BoardDTO board);
 }

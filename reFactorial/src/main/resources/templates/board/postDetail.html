@@ -23,7 +23,11 @@
   </div>
 
   <!-- 수정 -->
-  <a th:href="@{/board/freeBoard}" style="display: block; margin-top: 20px;">수 정</a>
+  <form action="/board/postUpdate" method="get">
+    <!-- 게시물 ID 전달 -->
+    <input type="hidden" name="postId" th:value="${postDetail.postId}">
+    <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
+  </form>
 
   <!-- 삭제 -->
   <form action="/board/postDelete" method="post">
