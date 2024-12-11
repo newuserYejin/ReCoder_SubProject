@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.ReservationDAO">
+
+    <!-- 모든 회의실 번호를 가져오는 쿼리 -->
+    <select id="getAllRooms" resultType="java.math.BigDecimal">
+        SELECT ConferenceRoom_no
+        FROM tbl_reservation
+    </select>
+
+    <!-- 예약 정보를 데이터베이스에 삽입하는 쿼리 -->
+    <insert id="insertReservation" parameterType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
+        INSERT INTO tbl_reservation (reservation_id, reservation_date, emp_id, ConferenceRoom_no, reservationStartTime, reservationEndTime)
+        VALUES (#{reservationId}, #{reservationDate}, #{empId}, #{conferenceRoomNo}, #{reservationStartTime}, #{reservationEndTime})
+    </insert>
+
+</mapper>
