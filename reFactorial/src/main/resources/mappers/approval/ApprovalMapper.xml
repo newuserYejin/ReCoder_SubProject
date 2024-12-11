@@ -6,8 +6,18 @@
 <mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
 
     <insert id="insertPm" parameterType="map">
-        insert into tbl_pm (pm_id,pm_title,pm_creat,pm_category,pm_attachment)
-             values (#{emId},#{title},#{creatDate},#{category},#{attachment})
+        insert into tbl_pm (pm_id,pm_title,pm_create,pm_category,pm_attachment)
+             values (#{pmId},#{title},#{date},#{category},#{attachment})
+    </insert>
+
+    <insert id="insertApprover" parameterType="map">
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
+        VALUES (#{empId}, #{pmId}, #{pmStatus})
+    </insert>
+
+    <insert id="insertReferrer" parameterType="map">
+        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
+        VALUES (#{pmId}, #{empId})
     </insert>
 
 </mapper>

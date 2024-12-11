@@ -4,6 +4,7 @@ import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -61,16 +62,26 @@ public class ApprovalController {
         return "/approvals/searchReferrers";
     }
 
-    @PostMapping("submitApproval")
+    @PostMapping("/submitApproval")
     public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO){
 
-        // 1.이것은 결제문서저장
+        // 1.이것은 결제문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO);
 
+        // 2.이것은 승인자 저장
+        approvalService.saveApprovers(pmId,approvalRequestDTO.getApprovers());
 
+        // 3.이것은 참조자 저장
+        approvalService.saveReferrers(pmId,approvalRequestDTO.getReferrers());
 
-        // 결과 페이지 리다이렉트 (예: 제출 완료 페이지)
-        return "redirect:/approval/complete";
+        return "/approvals/approvalMain";
     }
+
+    @GetMapping("approvalMain")
+     public String getApprovalWaiting(Model model){
+        List<ApprovalRequestDTO> 
+    }
+
+
 
 }

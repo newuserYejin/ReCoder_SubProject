@@ -52,10 +52,20 @@ public class ApprovalService {
                 approvalRequestDTO.getAttachment()
 
         );
-                return pmId;
+        return pmId;
     }
 
 
+    public void saveApprovers(String pmId, List<String> approvers) {
+        for (String approver : approvers) {
+            approvalMapper.insertApprover(approver, pmId, false); // false = 승인상태를 나타냄 아직 승인하지않은상태
+        }
+    }
 
+    public void saveReferrers(String pmId, List<String> referrers) {
+        for (String referrer : referrers) {
+            approvalMapper.insertReferrer(pmId, referrer);
+        }
 
+    }
 }

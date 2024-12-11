@@ -16,4 +16,5 @@ public class ApprovalRequestDTO {
     private String attachment; // 첨부 파일 경로
     private List<String> approvers; // 승인자 리스트
     private List<String> referrers; // 참조자 리스트
+
 }
