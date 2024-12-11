@@ -23,13 +23,15 @@
         where
             category_code = 1
     </select>
-
+                                                <!--이거 쿼리문 2개 하나로 합치기-->
     <!-- 게시물 전체 조회(자유) -->
     <select id="postList" resultMap="boardResultMap">
         select
            *
         from
           tbl_post
+        where
+        category_code = 2
     </select>
 
     <!-- 게시물 등록 -->

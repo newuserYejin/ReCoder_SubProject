@@ -115,6 +115,15 @@
         .pagination button:hover {
             background-color: #e0e0e0; /* 마우스 오버 시 배경색 변경 */
         }
+        .table-header {
+            display: flex; /* 플렉스 박스 레이아웃 사용 */
+            justify-content: space-between; /* 요소 간의 공간을 균등 분배 */
+            align-items: center; /* 수직 중앙 정렬 */
+            padding: 10px 0; /* 상하 여백 설정 */
+            border-bottom: 2px solid black; /* 하단에 두꺼운 경계선 추가 */
+            font-weight: bold; /* 글씨를 굵게 설정 */
+            font-size: 1.1em; /* 글씨 크기 설정 */
+        }
     </style>
 
 </head>
@@ -137,7 +146,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="top-bar" onclick="location.href='freeBoardRegist'">
-                <button onclick="location.href='freeBoardRegist'">등 록</button>
+                <button onclick="location.href='freeBoardRegist?'">등 록</button>
             </div>
 
             <!-- Table -->

@@ -37,11 +37,13 @@ public class BoardController {
         return "/board/notification";
     }
 
-    // (자유)게시물 전체조회
+    // 게시물 전체조회
     @GetMapping("freeBoard")
     public String freeBoard(Model model) {
 
         List<BoardDTO> postList = boardService.postList();
+
+        System.out.println("postList = " + postList);
 
         model.addAttribute("postList",postList);    // 템플릿에 값 전달
 
@@ -53,8 +55,10 @@ public class BoardController {
     // 게시물 등록 페이지로 이동
     @GetMapping("freeBoardRegist")
     public String freeBoardRegist() {
+
         return "/board/freeBoardRegist";
     }
+
 
     // 게시물 등록
     @PostMapping("freeBoardRegist")
@@ -76,7 +80,20 @@ public class BoardController {
 
         boardService.post(board);
 
-        return "redirect:/board/freeBoard";
+        if (category == 1) {
+            return "redirect:/board/notification";
+        } else if (category == 2) {
+            return "redirect:/board/freeBoard";
+        } else if (category == 3) {
+            return "redirect:/board/freeBoard";
+        } else if (category == 4) {
+            return "redirect:/board/freeBoard";
+        } else if (category == 5) {
+            return "redirect:/board/freeBoard";
+        } else {
+            return "redirect:/board/freeBoard";
+        }
+
     }
 
     // 게시물 상세페이지
