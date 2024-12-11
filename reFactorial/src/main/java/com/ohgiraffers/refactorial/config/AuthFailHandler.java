@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.config;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;
@@ -39,12 +40,21 @@ public class AuthFailHandler extends SimpleUrlAuthenticationFailureHandler {
             errorMessage = "알 수 없는 에러 발생!!!!!!!!!! 비상!!!!!!!!!!!!";
         }
 
+        // 실패 시 쿠키 삭제
+        Cookie cookie = new Cookie("member_id", "");
+        cookie.setMaxAge(0); // 쿠키를 삭제
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         // 에러 메세지를 URL 을 통해 전달
         errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
 
         // 오류 발생시 이동 페이지 URL
-        setDefaultFailureUrl("/login?message=" + errorMessage);
+        setDefaultFailureUrl("/auth/login?errorMessage=" + errorMessage);
 
         super.onAuthenticationFailure(request, response, exception);
+
+
+
     }
 }

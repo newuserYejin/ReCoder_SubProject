@@ -24,6 +24,12 @@ public class MainController {
     @Autowired
     private MemberService memberService;
 
+
+    @GetMapping("/")
+    public String defaultURL(Model model){
+        return "auth/login";
+    }
+
     @Autowired
     private ReservationService reservationService;
     
