@@ -1,9 +1,7 @@
 package com.ohgiraffers.refactorial.approval.controller;
 
-import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user/approvals") // 공통 경로 설정
+@RequestMapping("/approvals") // 공통 경로 설정
 public class ApprovalController {
 
     private final ApprovalService approvalService;
@@ -33,10 +31,10 @@ public class ApprovalController {
     @GetMapping("approvalPage")
     public String paymentPage(){
 
-        return "approvals/approvalPage";
+        return "/approvals/approvalPage";
 }
 
-    @GetMapping("searchEmployeePage")
+    @GetMapping("searchEmployee")
     public String searchEmployeeController(@RequestParam("name") String name, Model model){
         List<EmployeeDTO> employees;
         if (name != null && !name.isEmpty()) {
@@ -47,18 +45,22 @@ public class ApprovalController {
             employees = approvalService.findAllEmployees();
         }
 
-
-
-
         model.addAttribute("employees",employees);
 
-        return "approvals/searchEmployeePage";
+        return "/approvals/searchEmployee";
     }
 
-
-
-
-
+    @GetMapping("searchReferrers")
+    public String searchReferrersController(@RequestParam(value = "name", required = false) String name, Model model) {
+        List<EmployeeDTO> referrers;
+        if (name != null && !name.isEmpty()) {
+            referrers = approvalService.searchByReferrersPageName(name);
+        } else {
+            referrers = approvalService.findAllReferrers();
+        }
+        model.addAttribute("referrers", referrers);
+        return "/approvals/searchReferrers";
+    }
 
 
 }

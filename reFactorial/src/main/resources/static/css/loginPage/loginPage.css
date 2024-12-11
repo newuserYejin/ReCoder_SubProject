@@ -92,7 +92,7 @@ body{
 
             input:focus,
             input:focus-visible{
-                border: solid 2px yellow;
+                /*border: solid 2px yellow;*/
             }
 
             .subLoginBox{

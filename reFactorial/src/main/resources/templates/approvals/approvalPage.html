@@ -17,74 +17,7 @@
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
-    <style>
-        /* 스타일은 동일하게 유지 */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-        .wrapper {
-            display: flex;
-            flex-direction: row;
-            height: 100%;
-        }
-        .sidebar {
-            width: 20%;
-            background-color: #ffffff;
-            border-right: 1px solid black;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .sidebar-title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #000;
-            margin-top: 46px;
-        }
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-        .form-group label {
-            width: 120px;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        .form-group input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .form-group button {
-            margin-left: 10px;
-            padding: 8px 12px;
-            background-color: #5C1915;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .form-group button:hover {
-            background-color: #7e2411;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/approval/approvalPage.css">
 </head>
 <body>
 
@@ -97,7 +30,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="title">전자 결제 신청</div>
+        <div class="title"></div>
         <form action="/approval/submit" method="post">
             <!-- 제목 -->
             <div class="form-group">
@@ -122,13 +55,24 @@
                 <button type="button" onclick="openFinalApproverPopup('finalApprover')">검색</button>
             </div>
 
+            <!--참조자-->
+            <div class="form-group">
+                <label for="referrers">참조자:</label>
+                <div id="referrer-container">
+                    <!-- 참조자 입력 필드가 동적으로 추가될 위치 -->
+                </div>
+                <button type="button" onclick="openReferrerPopup()">참조자 검색</button>
+            </div>
+            <input type="hidden" id="referrers" name="referrers"> <!-- 최종적으로 전송될 데이터 -->
+
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
                 <select id="category" name="category">
                     <option value="">선택</option>
-                    <option value="category1">분류 1</option>
-                    <option value="category2">분류 2</option>
+                    <option value="category1">품의서</option>
+                    <option value="category2">지출 결의서</option>
+                    <option value="category3">휴가 신청서</option>
                 </select>
             </div>
 
@@ -154,29 +98,136 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
+
     // 최초 승인자 검색 팝업 열기
+
     function openFirstApproverPopup(firstApprover) {
         const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
-        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
-        window.open(url, 'searchPopup', 'width=600,height=400');
+        console.log('입력된 값:', inputValue);
+
+        // 화면의 너비와 높이를 동적으로 계산
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        const popupWidth = 600; // 팝업 너비
+        const popupHeight = 500; // 팝업 높이
+
+        // 중앙 정렬 계산
+        const popupLeft = (screenWidth - popupWidth) / 2;
+        const popupTop = (screenHeight - popupHeight) / 2 - 50;
+
+        // 팝업 열기
+        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
+        window.open(
+            url,
+            'searchPopup',
+            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
+        );
         window.targetInputId = 'firstApprover';
     }
+
+
 
     // 중간 승인자 검색 팝업 열기
     function openMidApproverPopup(midApprover) {
         const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
-        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
-        window.open(url, 'searchPopup', 'width=600,height=400');
+        console.log('입력된 값:', inputValue);
+
+        // 화면의 너비와 높이를 동적으로 계산
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        const popupWidth = 600; // 팝업 너비
+        const popupHeight = 500; // 팝업 높이
+
+        // 중앙 정렬 계산
+        const popupLeft = (screenWidth - popupWidth) / 2;
+        const popupTop = (screenHeight - popupHeight) / 2 - 50;
+
+        // 팝업 열기
+        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
+        window.open(
+            url,
+            'searchPopup',
+            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
+        );
         window.targetInputId = 'midApprover';
     }
 
     // 최종 승인자 검색 팝업 열기
     function openFinalApproverPopup(finalApprover) {
         const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
-        const url = `/user/approvals/searchEmployeePage?name=${encodeURIComponent(inputValue)}`;
-        window.open(url, 'searchPopup', 'width=600,height=400');
+        console.log('입력된 값:', inputValue);
+
+        // 화면의 너비와 높이를 동적으로 계산
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        const popupWidth = 600; // 팝업 너비
+        const popupHeight = 500; // 팝업 높이
+
+        // 중앙 정렬 계산
+        const popupLeft = (screenWidth - popupWidth) / 2;
+        const popupTop = (screenHeight - popupHeight) / 2 - 50;
+
+        // 팝업 열기
+        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
+        window.open(
+            url,
+            'searchPopup',
+            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
+        );
         window.targetInputId = 'finalApprover';
     }
+
+    // 참조자 팝업 열기
+    function openReferrerPopup() {
+
+        // 화면의 너비와 높이를 동적으로 계산
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        const popupWidth = 600; // 팝업 너비
+        const popupHeight = 500; // 팝업 높이
+
+        // 중앙 정렬 계산
+        const popupLeft = (screenWidth - popupWidth) / 2;
+        const popupTop = (screenHeight - popupHeight) / 2 - 50;
+
+            const url = '/approvals/searchReferrers?name=';
+            window.open(url, 'referrerPopup',
+                `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
+
+        window.targetInputId = 'referrer-container';// 참조자 리스트에 추가
+    }
+
+
+
+    // 부모 창에서 호출되는 함수로 참조자를 동적으로추가
+    function addReferrer(name) {
+        const container = document.getElementById('referrer-container');
+
+        // 이미 추가된 참조자를 확인
+        const existingInputs = container.getElementsByClassName('referrer-input');
+        for (let i = 0; i < existingInputs.length; i++) {
+            if (existingInputs[i].value === name) {
+                alert('이미 추가된 참조자입니다.');
+                return; // 중복된 경우 함수 종료
+            }
+        }
+
+        // 중복이 없으면 참조자 추가
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'referrerNames';
+        input.value = name;
+        input.readOnly = true;
+        input.classList.add('referrer-input'); // 스타일 적용을 위한 클래스
+        container.appendChild(input);
+
+        // 확인용 로그
+        console.log(`참조자 추가: ${name}`);
+    }
+
+
+
+
 
     // 엔터 키 입력 처리
     document.addEventListener('keydown', function(event) {

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/board")
 public class BoardController {
 
     private final BoardService boardService;
@@ -23,30 +24,27 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @GetMapping("user/freeBoard")
-    public String freeBoard() {
-        return "board/freeBoard";
+    // 게시물 전체조회
+    @GetMapping("freeBoard")
+    public String freeBoard(Model model) {
+
+        List<BoardDTO> postList = boardService.postList();
+
+        model.addAttribute("postList",postList);    // 템플릿에 값 전달
+
+//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+
+        return "/board/freeBoard";
     }
 
-    @GetMapping("user/document")
-    public String document() {
-        return "board/document";
+    // 게시물 등록 페이지로 이동
+    @GetMapping("freeBoardRegist")
+    public String freeBoardRegist() {
+        return "/board/freeBoardRegist";
     }
 
-    @GetMapping("user/vote")
-    public String vote() {
-        return "board/vote";
-    }
-
-    @GetMapping("user/event")
-    public String event() {
-        return "board/event";
-    }
-
-    @GetMapping("user/freeBoardRegist")
-    public String freeBoardRegist() { return "board/freeBoardRegist"; }
-
-    @PostMapping("user/freeBoardRegist")
+    // 게시물 등록
+    @PostMapping("freeBoardRegist")
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
                             Model model, HttpSession session) {
 
@@ -65,7 +63,81 @@ public class BoardController {
 
         boardService.post(board);
 
-        return "redirect:/user/freeBoard";
+        return "redirect:/board/freeBoard";
+    }
+
+    // 게시물 상세페이지
+    @GetMapping("postDetail")
+    public String postDetail(@RequestParam int postId, Model model) {
+
+        BoardDTO postDetail = boardService.postDetail(postId);
+
+//        System.out.println("postDetail = " + postDetail);
+
+        model.addAttribute("postDetail", postDetail);
+
+        return "/board/postDetail";
+
+    }
+
+    // 게시물 삭제
+    @GetMapping("postDelete")
+    public String deletePost() {
+        return "/board/postDelete";
+    }
+
+    @PostMapping("postDelete")
+    public String postDelete(@RequestParam int postId) {
+
+        boardService.postDelete(postId);
+
+        return "redirect:/board/freeBoard";
+    }
+
+    // 게시물 수정
+    @GetMapping("postUpdate")
+    public String postUpdate(@RequestParam int postId, Model model) {
+
+        BoardDTO postDetail = boardService.postDetail(postId);
+
+//        System.out.println("postDetail = " + postDetail);
+
+        model.addAttribute("modify", postDetail);
+
+        return "/board/postUpdate";
+    }
+
+    @PostMapping("postUpdate")
+    public String updatePost(@ModelAttribute BoardDTO board) {
+
+        board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
+        boardService.updatePost(board);
+
+//        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
+        return "redirect:/board/freeBoard";  // 자유게시판
+
+    }
+
+
+
+    @GetMapping("notification")
+    public String notification() {
+        return "/board/notification";
+    }
+
+    @GetMapping("document")
+    public String document() {
+        return "/board/document";
+    }
+
+    @GetMapping("vote")
+    public String vote() {
+        return "/board/vote";
+    }
+
+    @GetMapping("event")
+    public String event() {
+        return "/board/event";
     }
 
 }

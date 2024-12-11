@@ -47,4 +47,46 @@
         FROM
             employee
     </select>
+
+    <select id="searchByReferrersPageName" parameterType="string" resultType="com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO">
+        SELECT
+            emp_id AS id,
+            emp_name AS name,
+            emp_no AS no,
+            emp_address AS address,
+            emp_email AS email,
+            emp_joined AS joined,
+            annual_leave AS annualLeave,
+            emp_pwd AS password,
+            profile AS profileImage,
+            emp_phone AS phone,
+            dept_code AS departmentCode,
+            position_value AS positionValue,
+            view_auth AS viewAuth
+        FROM employee
+        WHERE emp_name LIKE CONCAT('%', #{name}, '%')
+
+
+    </select>
+
+
+    <!--모든 직원 검색 -->
+    <select id="findAllReferrers" resultType="com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO">
+        SELECT
+            emp_id AS id,
+            emp_name AS name,
+            emp_no AS socialNumber,
+            emp_address AS address,
+            emp_email AS email,
+            emp_joined AS joinedDate,
+            annual_leave AS annualLeave,
+            emp_pwd AS password,
+            profile AS profileImage,
+            emp_phone AS phone,
+            dept_code AS deptCode,
+            position_value AS positionValue,
+            view_auth AS viewAuth
+        FROM
+            employee
+    </select>
 </mapper>
