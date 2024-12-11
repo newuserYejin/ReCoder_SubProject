@@ -15,7 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/loginPage/loginPage.css}">
-
 </head>
 <body>
     <div class="LoginPageBox">
@@ -52,12 +51,14 @@
             <form action="/auth/login" method="post" class="loginBox">
                 <label for="member_id">사원번호 </label>
                 <input type="text" id="member_id" name="member_id">
+                <p></p>
                 <label for="member_pwd">비밀번호 </label>
                 <input type="text" id="member_pwd" name="member_pwd">
+                <p></p>
 
                 <div class="subLoginBox">
                     <div>
-                        <input type="checkbox" id="saveId" name="saveId">
+                        <input type="checkbox" id="saveId" name="saveId" value="true">
                         <label for="saveId">사원번호 저장</label>
                     </div>
                     <div>
@@ -78,8 +79,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="/js/loginPage/loginPage.js"></script>
-<!--    <script src="../../static/js/loginPage/loginPage.js"></script>-->
+    <script th:src="@{/js/loginPage/loginPage.js}"></script>
 
 </body>
 </html>
