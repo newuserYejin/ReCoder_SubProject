@@ -2,12 +2,14 @@ package com.ohgiraffers.refactorial.user.controller;
 
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user/*")
@@ -44,4 +46,83 @@ public class UserController {
         return mv;
     }
 
+    // 비밀번호 일치 여부 확인
+    @PostMapping(value = "user/matchPW", produces = "application/json; charset=UTF-8;")
+    @ResponseBody
+    public Boolean matchPW(@RequestBody Map<String, String> request, HttpSession session){
+
+        String msg = null;
+        boolean matchStatus =false;
+
+        String insertPW = request.get("presentPW");
+
+        System.out.println("insertPW = " + insertPW);
+
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        String currentPW = user.getEmpPwd();
+
+        matchStatus = memberService.pwMatch(insertPW,currentPW);
+
+        System.out.println("matchStatus = " + matchStatus);
+
+        // 서버 응답으로 반환할 결과
+        Map<String, Object> response = new HashMap<>();
+        response.put("matchStatus", matchStatus);
+
+        return matchStatus;
+    }
+
+    @PostMapping("user/changePW")
+    public ModelAndView changePW(ModelAndView mv,@RequestParam String changePW, HttpSession session){
+
+        String msg = null;
+
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
+
+        Integer result = memberService.changePw(changePW, empId);
+
+        System.out.println("result = " + result);
+        System.out.println("변경 할 changePW = " + changePW);
+
+        if (result > 0){
+            msg = "비밀번호 변경 성공";
+            session.invalidate();
+            mv.setViewName("/auth/login");
+        } else {
+            msg = "비밀번호 변경 실패";
+            mv.setViewName("/myPage/myPage");
+        }
+
+        System.out.println("msg = " + msg);
+        mv.addObject("msg",msg);
+
+        return mv;
+    }
+
+    @PostMapping(value = "updatePersonalInfo", produces = "application/json; charset=UTF-8;")
+    @ResponseBody
+    public Map<String, Object> updatePersonalInfo(@RequestBody Map<String, String> request, HttpSession session){
+
+        String email = request.get("email");
+        String phone = request.get("phone");
+        String address = request.get("address");
+
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        String userId = user.getEmpId();
+
+        Integer result = memberService.updatePersonalInfo(email,phone,address,userId);
+
+        if (result > 0) {
+            if (email != null) user.setEmpEmail(email); // 변경된 이메일 저장
+            if (phone != null) user.setEmpPhone(phone); // 변경된 전화번호 저장
+            if (address != null) user.setEmpAddress(address); // 변경된 주소 저장
+
+            session.setAttribute("LoginUserInfo", user); // 세션 갱신
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", result);
+        return response;
+    }
 }

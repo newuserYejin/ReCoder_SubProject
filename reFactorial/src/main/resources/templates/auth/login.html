@@ -7,32 +7,79 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
     <!--폰트 적용-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{/css/loginPage/loginPage.css}">
 
 </head>
 <body>
-    <section>
+    <div class="LoginPageBox">
 
-        <form action="/auth/login" method="post">
-            <label for="member_id">사번: </label>
-            <input type="text" id="member_id" name="member_id">
-            <label for="member_pwd">비밀번호: </label>
-            <input type="text" id="member_pwd" name="member_pwd">
-            <button type="submit">로그인</button>
-        </form>
+        <div class="logobox">
+            <img src="/images/logo_horizontal2.png" alt="로고">
+        </div>
 
-        <script>
-            const message = `[[${message}]]`;
+        <div class="LoginPageMainBox">
+            <div class="swiperBox">
 
-            console.log(message);
-        </script>
-    </section>
+                <!-- Slider main container -->
+                <div class="swiper mySwiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <img src="/images/loginImg1.png" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="/images/loginImg2.webp" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="/images/loginImg3.webp" />
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+
+            <div class="centerLine">
+            </div>
+
+            <form action="/auth/login" method="post" class="loginBox">
+                <label for="member_id">사원번호 </label>
+                <input type="text" id="member_id" name="member_id">
+                <label for="member_pwd">비밀번호 </label>
+                <input type="text" id="member_pwd" name="member_pwd">
+
+                <div class="subLoginBox">
+                    <div>
+                        <input type="checkbox" id="saveId" name="saveId">
+                        <label for="saveId">사원번호 저장</label>
+                    </div>
+                    <div>
+                        비밀번호 찾기
+                    </div>
+                </div>
+
+                <button type="submit">LOGIN</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        const message = `[[${message}]]`;
+
+        console.log(message);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/js/loginPage/loginPage.js"></script>
+<!--    <script src="../../static/js/loginPage/loginPage.js"></script>-->
+
 </body>
 </html>

@@ -1,0 +1,119 @@
+body{
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100vh;
+}
+
+.LoginPageBox{
+    padding: 10px 10px;
+
+    width: 60%;
+    height: 62%;
+
+    .logobox{
+        height: 10%;
+
+        img{
+            height: 100%;
+        }
+    }
+
+    .LoginPageMainBox{
+        width: 100%;
+        height: 90%;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .swiperBox{
+            width: 60%;
+            height: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .swiper {
+                width: 450px;
+                height: 400px;
+
+                .swiper-slide {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover; /* 비율 유지하며 컨테이너 채우기 */
+                    }
+                }
+            }
+
+            .swiper-horizontal>.swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal, .swiper-pagination-custom, .swiper-pagination-fraction{
+                top: 420px;
+            }
+        }
+
+        .centerLine{
+            height: 80%;
+            border: solid 1px black;
+        }
+
+        .loginBox{
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            >label{
+                font-size: 0.8em;
+                margin-left: 10px;
+                color: #4F4F4F;
+            }
+
+            input[type=text]{
+                padding: 10px 20px;
+                margin: 5px 0 10px;
+                border-radius: 20px;
+                font-size: 1.2em;
+                background-color: #E2E2E1;
+                border: none;
+                box-shadow: 0 4px 1px rgba(0,0,0,0.25);
+            }
+
+            input:focus,
+            input:focus-visible{
+                /*border: solid 2px yellow;*/
+            }
+
+            .subLoginBox{
+                font-size: 0.8em;
+                color: #4F4F4F;
+                display: flex;
+                justify-content: space-around;
+                margin: 10px 0;
+            }
+
+            button{
+                padding: 13px ;
+                border-radius: 20px;
+                border: none;
+                color: white;
+                letter-spacing: 2px;
+                background-color: #5C1915;
+                font-size: 1.1em;
+                font-weight: bold;
+            }
+
+        }
+    }
+}

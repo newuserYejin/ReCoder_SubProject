@@ -36,5 +36,46 @@
             emp_id = #{username}
     </select>
 
+    <select id="findDeptName" parameterType="int">
+
+        SELECT
+            dept_name
+        FROM
+            tbl_dept
+        WHERE
+            dept_code = #{deptCode};
+
+    </select>
+
+    <select id="findPositionName" parameterType="int">
+        SELECT
+            position_name
+        FROM
+            tbl_position
+        where
+            position_value = #{positionValue};
+    </select>
+
+    <update id="changePW" parameterType="map">
+        UPDATE employee
+        SET emp_pwd = #{enChangePW}
+        WHERE emp_id = #{empId}
+    </update>
+
+    <update id="updatePersonalInfo" parameterType="map">
+        UPDATE employee
+        <set>
+            <if test="email != null">
+                emp_email = #{email},
+            </if>
+            <if test="phone != null">
+                emp_phone = #{phone},
+            </if>
+            <if test="address != null">
+                emp_address = #{address},
+            </if>
+        </set>
+        WHERE emp_id = #{userId}
+    </update>
 
 </mapper>
