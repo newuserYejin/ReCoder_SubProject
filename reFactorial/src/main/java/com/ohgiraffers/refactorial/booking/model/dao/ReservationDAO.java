@@ -23,4 +23,7 @@ public interface ReservationDAO {
     // 중복을 방지하는 메서드
     List<ReservationDTO> checkReservationConflict(LocalDate date, LocalTime startTime, LocalTime endTime);
 
+    // 개인회의실 저장내역 메서드
+    List<ReservationDTO> getUserReservations(String empId);
+
 }

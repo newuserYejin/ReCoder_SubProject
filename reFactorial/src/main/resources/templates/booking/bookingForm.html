@@ -9,9 +9,6 @@
 <body>
 <h1>회의실 예약 입력 폼</h1>
 
-<!-- 에러 메시지가 있을 경우 팝업 알림 -->
-<div th:if="${errorMessage}" th:onclick="showAlert(${errorMessage})"></div>
-
 <form action="/reserve" method="post">
     <input type="hidden" name="conferenceRoomNo" th:value="${roomNo}">
     <label for="empId">사번번호:</label>

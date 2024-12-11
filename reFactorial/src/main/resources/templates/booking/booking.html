@@ -7,25 +7,31 @@
   <title>회의실 예약</title>
 </head>
 <body>
-<h1>회의실 예약</h1>
-<ul>
-  <th:block th:each="reservation : ${reservations}">
-    <li>
-      <!-- 예약한 회의실 번호 -->
-      <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
-      <br>
-      <!-- 예약 ID -->
-      <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
-      <br>
-      <!-- 예약 페이지로 이동하는 링크 -->
+  <ul>
+    <h2>회의실 목록</h2>
+    <th:block th:each="reservation : ${allReservations}">
+      <li>
+        <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+        <br>
+        <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+      </li>
       <a th:href="@{/bookingForm(roomNo=${reservation.conferenceRoomNo})}">예약하기</a>
-      <!-- 예약 삭제 버튼 -->
-      <form action="/deleteReservation" method="post" style="display: inline;">
-        <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
-        <button type="submit">삭제</button>
-      </form>
-    </li>
-  </th:block>
-</ul>
+    </th:block>
+  </ul>
+  <ul>
+    <h2>개인 예약 목록</h2>
+    <th:block th:each="reservation : ${userReservations}">
+      <li>
+        <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+        <br>
+        <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+        <br>
+        <form action="/deleteReservation" method="post" style="display: inline;">
+          <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
+          <button type="submit">삭제</button>
+        </form>
+      </li>
+    </th:block>
+  </ul>
 </body>
 </html>
