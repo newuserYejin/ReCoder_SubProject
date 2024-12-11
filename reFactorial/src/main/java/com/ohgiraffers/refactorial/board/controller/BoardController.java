@@ -61,8 +61,6 @@ public class BoardController {
 
         model.addAttribute("categoryCode", categoryCode);
 
-
-
         return "/board/freeBoardRegist";
     }
 
@@ -112,11 +110,11 @@ public class BoardController {
     }
 
     @PostMapping("postDelete")
-    public String postDelete(@RequestParam int postId) {
+    public String postDelete(@RequestParam int postId, @RequestParam int categoryCode) {
 
         boardService.postDelete(postId);
 
-        return "redirect:/board/list";
+        return "redirect:/board/list?categoryCode=" + categoryCode;
     }
 
     // 게시물 수정
