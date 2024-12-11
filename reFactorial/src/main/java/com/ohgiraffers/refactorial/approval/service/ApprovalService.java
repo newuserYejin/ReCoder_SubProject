@@ -3,6 +3,7 @@ package com.ohgiraffers.refactorial.approval.service;
 import com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper;
 import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +68,17 @@ public class ApprovalService {
             approvalMapper.insertReferrer(pmId, referrer);
         }
 
+    }
+
+    public List<DocumentDTO> getDocumentsForProcessing() {
+        return approvalMapper.getDocuments(); // JOIN 데이터를 가져옴
+    }
+
+    public List<DocumentDTO> getWaitingDocuments() {
+        return approvalMapper.getWaitingDocuments();
+    }
+
+    public List<DocumentDTO> getReferenceDocuments() {
+        return approvalMapper.getReferenceDocuments();
     }
 }

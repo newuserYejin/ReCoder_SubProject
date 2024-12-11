@@ -20,4 +20,37 @@
         VALUES (#{pmId}, #{empId})
     </insert>
 
+
+    <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            pm.pm_status AS status,
+            pm.pm_attachment AS attachment,
+            pm.emp_id AS creator,
+            JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers, -- JSON 파싱
+            GROUP_CONCAT(ap.emp_id) AS approvers -- 승인자 리스트
+        FROM
+            tbl_pm pm
+                LEFT JOIN
+            tbl_approval ap ON pm.pm_id = ap.pm_id
+        GROUP BY
+            pm.pm_id;
+    </select>
+
+    <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT * FROM tbl_pm
+        WHERE pm_status = '대기 중';
+    </select>
+
+    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT pm.*
+        FROM tbl_pm pm
+                 JOIN tbl_pm_referrer ref ON pm.pm_id = ref.pm_id
+        WHERE ref.emp_id = #{empId};
+    </select>
+
+
 </mapper>

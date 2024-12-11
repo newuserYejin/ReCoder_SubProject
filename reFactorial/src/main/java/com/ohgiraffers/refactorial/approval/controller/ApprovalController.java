@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.approval.controller;
 
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,11 +78,19 @@ public class ApprovalController {
         return "/approvals/approvalMain";
     }
 
-    @GetMapping("approvalMain")
-     public String getApprovalWaiting(Model model){
-        List<ApprovalRequestDTO> 
+    @GetMapping("approvalWaiting")
+    public String getApprovalWaiting(Model model) {
+        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments();
+        model.addAttribute("documents", waitingDocs);
+        return "/approvals/approvalWaiting";
     }
 
-
+    @GetMapping("referenceDocuments")
+    public String getReferenceDocuments(Model model) {
+        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments();
+        model.addAttribute("documents", referenceDocs);
+        return "/approvals/referenceDocuments";
+    }
+    
 
 }

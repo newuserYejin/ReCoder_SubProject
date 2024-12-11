@@ -1,8 +1,10 @@
 package com.ohgiraffers.refactorial.approval.model.dao;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 public interface ApprovalMapper {
@@ -11,4 +13,10 @@ public interface ApprovalMapper {
     void insertApprover(String approver, String pmId, boolean b);
 
     void insertReferrer(String pmId, String referrer);
+
+    List<DocumentDTO> getDocuments();
+
+    List<DocumentDTO> getWaitingDocuments();
+
+    List<DocumentDTO> getReferenceDocuments();
 }
