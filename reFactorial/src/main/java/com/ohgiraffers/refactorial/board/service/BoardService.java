@@ -26,9 +26,9 @@ public class BoardService {
 //    }
 
     // 게시글 전체조회(자유)
-    public List<BoardDTO> postList() {
+    public List<BoardDTO> postList(int categoryCode) {
 
-        return boardMapper.postList();
+        return boardMapper.postList(categoryCode);
     }
 
     // 게시글 등록

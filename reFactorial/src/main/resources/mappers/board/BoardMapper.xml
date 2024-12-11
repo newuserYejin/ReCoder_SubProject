@@ -14,8 +14,7 @@
         <result property="categoryCode" column="category_code"/>
     </resultMap>
 
-              <!--이거 쿼리문 2개 하나로 합치기-->
-    <!-- 게시물 전체 조회(자유) -->
+    <!-- 게시물 전체 조회 -->
     <select id="postList" resultMap="boardResultMap">
         select
            *
