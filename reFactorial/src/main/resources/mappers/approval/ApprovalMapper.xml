@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
+
+    <insert id="insertPm" parameterType="map">
+        insert into tbl_pm (pm_id,pm_title,pm_creat,pm_category,pm_attachment)
+             values (#{emId},#{title},#{creatDate},#{category},#{attachment})
+    </insert>
+
+</mapper>

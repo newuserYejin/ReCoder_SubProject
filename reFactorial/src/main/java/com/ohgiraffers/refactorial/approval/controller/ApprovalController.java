@@ -1,14 +1,12 @@
 package com.ohgiraffers.refactorial.approval.controller;
 
+import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -63,5 +61,16 @@ public class ApprovalController {
         return "/approvals/searchReferrers";
     }
 
+    @PostMapping("submitApproval")
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO){
+
+        // 1.이것은 결제문서저장
+        String pmId = approvalService.saveApproval(approvalRequestDTO);
+
+
+
+        // 결과 페이지 리다이렉트 (예: 제출 완료 페이지)
+        return "redirect:/approval/complete";
+    }
 
 }

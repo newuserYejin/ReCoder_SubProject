@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.approval.model.dao;
 
+import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,4 +20,6 @@ public interface EmployeeMapper {
     List<EmployeeDTO> searchByReferrersPageName(String name);
 
     List<EmployeeDTO> findAllReferrers();
+
+
 }
