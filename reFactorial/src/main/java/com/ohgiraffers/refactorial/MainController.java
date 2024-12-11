@@ -1,6 +1,8 @@
 package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.booking.model.dao.ReservationDAO;
+import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
@@ -22,18 +24,26 @@ public class MainController {
     @Autowired
     private MemberService memberService;
 
+
     @GetMapping("/")
     public String defaultURL(Model model){
         return "auth/login";
     }
 
+    @Autowired
+    private ReservationService reservationService;
+    
     @GetMapping("/user")
     public String mainControll(Model model){
         return "index";
     }
 
     @GetMapping("/user/booking")
-    public String bookingPage() {
+    public String bookingPage(Model model) {
+        model.addAttribute("rooms", reservationService.getAllRooms());
+        System.out.println(reservationService.getAllRooms());
+//        return "booking/booking";
+
         return "/booking/booking";
     }
 
