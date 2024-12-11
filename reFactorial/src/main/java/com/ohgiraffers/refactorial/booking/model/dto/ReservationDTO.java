@@ -3,7 +3,8 @@ package com.ohgiraffers.refactorial.booking.model.dto;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +14,9 @@ import java.util.Date;
 public class ReservationDTO {
 
     private String reservationId;      // reservation_id (varchar)
-    private Date reservationDate;      // reservation_date (date)
+    private LocalDate reservationDate; // reservation_date (date)
     private String empId;              // emp_id (varchar)
-    private BigDecimal conferenceRoomNo; // conferenceRoom_no (decimal)
-
+    private BigDecimal conferenceRoomNo; // ConferenceRoom_no (decimal)
+    private LocalTime reservationStartTime; // reservationStartTime (time)
+    private LocalTime reservationEndTime;   // reservationEndTime (time)
 }

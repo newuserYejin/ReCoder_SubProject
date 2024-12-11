@@ -2,248 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BookingForm Page</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/common/style.css}">
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .container {
-            display: flex;
-            height: 100%;
-        }
-
-        .sidebar {
-            width: 20%; /* 사이드바 너비 */
-            padding: 20px; /* 내부 여백 */
-            overflow-y: auto; /* 사이드바 내용이 넘칠 경우 스크롤 */
-            border-right: 1px solid black; /* 오른쪽 경계선 */
-            height: 100%; /* 사이드바 높이 고정 */
-        }
-
-        .sidebar-title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #000;
-            margin-bottom: 15px;
-            margin-top: 46px;
-            text-align: center;
-        }
-
-        .sidebar ul {
-            margin-top: 10px;
-            list-style: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        .sidebar li {
-            position: relative;
-            padding: 10px 0;
-            cursor: pointer;
-        }
-
-        .sidebar li::after {
-            content: '';
-            display: block;
-            width: 35%;
-            height: 1px;
-            background-color: black;
-            margin: 5px auto 0;
-        }
-
-        .sidebar li:last-child::after {
-            display: none;
-        }
-
-        .sidebar li:hover {
-            font-family: 'Noto Sans KR', Arial, sans-serif;
-            color: #5C1915;
-            font-weight: 1000;
-        }
-
-        .main-content-wrap {
-            padding: 20px; /* 내부 여백 추가 */
-            flex: 1; /* 남은 공간을 차지 */
-            overflow-y: auto; /* 스크롤 가능 */
-            display: flex;
-            flex-direction: column; /* 수직 정렬 */
-        }
-
-        .room-img-content-flex {
-            display: flex; /* 가로 배치 */
-            margin-bottom: 20px; /* 이미지와 텍스트 사이 여백 추가 */
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .room-img-content {
-            margin-right: 20px; /* 이미지와 텍스트 사이 여백 */
-        }
-
-        .form-container {
-            display: block;
-            padding: 20px; /* 내부 여백 추가 */
-            overflow-y: auto; /* 스크롤 가능 */
-            border: 1px solid #ccc; /* 테두리 추가 */
-            border-radius: 8px; /* 모서리 둥글게 */
-            background-color: #f9f9f9; /* 배경색 추가 */
-            margin-top: 20px; /* form-container 상단에 여백 추가 */
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #5C1915;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #3d0f0a;
-        }
-    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Conference Room</title>
 </head>
 <body>
-<header th:replace="~{/common/header::headerFragment}"></header>
-<section>
-    <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-title">예약 관리</div>
-            <ul>
-                <li>예약하기</li>
-                <li>예약내역</li>
-            </ul>
-        </div>
-
-        <div class="main-content-wrap">
-            <div class="main-content" id="roomList">
-                <!-- JavaScript로 회의실 정보가 추가됩니다. -->
-            </div>
-
-            <div class="form-container">
-                <form action="/reserve" method="post">
-                    <input type="hidden" name="ConferenceRoomNo" th:value="${roomNo}"/>
-                    <input type="hidden" name="employeeId" th:value="${authenticatedUser != null ? authenticatedUser.user.empId : ''}"/>
-                    <!-- 자동으로 직원 ID 설정 -->
-
-                    <label for="reservationDate">예약 날짜:</label>
-                    <input type="date" id="reservationDate" name="reservationDate" required min="" oninput="setMinDate()">
-
-                    <label for="reservationTime">예약 시간:</label>
-                    <input type="time" id="reservationTime" name="reservationTime" required
-                           min="10:00" max="18:00" step="3600"> <!-- 1시간 간격 설정 -->
-
-                    <button type="submit">예약하기</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script>
-
-        function setMinDate() {
-            const dateInput = document.getElementById('reservationDate');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-            const day = String(today.getDate()).padStart(2, '0');
-
-            // 오늘 날짜를 최소값으로 설정
-            dateInput.min = `${year}-${month}-${day}`;
-        }
-
-        // 토요일과 일요일 비활성화
-        document.getElementById('reservationDate').addEventListener('input', function () {
-            const dateInput = this;
-            const selectedDate = new Date(dateInput.value);
-
-            if (selectedDate.getDay() === 0 || selectedDate.getDay() === 6) { // 0: Sunday, 6: Saturday
-                alert("토요일과 일요일은 예약할 수 없습니다.");
-                dateInput.value = ''; // 입력값 초기화
-            }
-        });
-
-        // 페이지 로드 시 초기 설정
-        window.onload = function () {
-            setMinDate();
-        };
-
-        // 회의실 정보 배열
-        const rooms = [
-            { no: 1, name: '제 1 회의실', location: '4F 홍보부 옆', configuration: '화이트 보드, 빔 프로젝트', imageUrl: '/image/회의실1.jpeg' },
-            { no: 2, name: '제 2 회의실', location: '4F 홍보부 옆', configuration: '화이트 보드, 빔 프로젝트', imageUrl: '/image/회의실2.jpg' },
-            { no: 3, name: '제 3 회의실', location: '4F 홍보부 옆', configuration: '화이트 보드, 빔 프로젝트', imageUrl: '/image/회의실3.jpg' },
-            { no: 4, name: '제 4 회의실', location: '4F 홍보부 옆', configuration: '화이트 보드, 빔 프로젝트', imageUrl: '/image/회의실4.jpg' },
-            { no: 5, name: '제 5 회의실', location: '4F 홍보부 옆', configuration: '화이트 보드, 빔 프로젝트', imageUrl: '/image/회의실5.jpg' }
-        ];
-
-        // URL에서 회의실 번호를 가져오는 함수
-        function getRoomNo() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('roomNo');
-        }
-
-        // 회의실 정보를 표시하는 함수
-        function renderRoomDetails() {
-            const roomNo = getRoomNo();
-            const room = rooms.find(r => r.no == roomNo);
-            const roomDetailsContainer = document.getElementById('roomList'); // roomList를 콘텐츠 영역으로 사용
-
-            // 회의실 정보가 있으면 렌더링, 없으면 기본 메시지 표시
-            if (room) {
-                roomDetailsContainer.innerHTML = `
-            <div class="room-img-content-flex">
-                <div class="room-img-content">
-                    <img src="${room.imageUrl}" alt="${room.name}">
-                </div>
-                <div class="room-text-content">
-                    <h3>${room.name}</h3>
-                    <p>위치 : ${room.location}</p>
-                    <p>구성 : ${room.configuration}</p>
-                </div>
-            </div>
-        `;
-
-                // 회의실 번호 폼에 설정
-                document.getElementById('conferenceRoomNo').value = room.no;
-
-                // 폼이 제대로 표시되도록 form-container도 추가
-                const formContainer = document.querySelector('.form-container');
-                formContainer.style.display = 'block'; // form-container가 숨겨져 있을 수 있으므로 표시
-
-            } else {
-                roomDetailsContainer.innerHTML = '<p>회의실 정보가 없습니다.</p>';
-            }
-        }
-        // 페이지 로드 시 회의실 정보를 렌더링
-        window.onload = renderRoomDetails;
-
-    </script>
-</section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<h1>Book Conference Room</h1>
+<form action="/reserve" method="post">
+    <input type="hidden" name="conferenceRoomNo" th:value="${roomNo}">
+    <label for="empId">Employee ID:</label>
+    <input type="hidden" name="empId" th:value="${session.LoginUserInfo.empId}">
+    <br>
+    <label for="reservationDate">Reservation Date:</label>
+    <input type="date" id="reservationDate" name="reservationDate" required>
+    <br>
+    <label for="reservationStartTime">Start Time:</label>
+    <input type="time" id="reservationStartTime" name="reservationStartTime" required>
+    <br>
+    <label for="reservationEndTime">End Time:</label>
+    <input type="time" id="reservationEndTime" name="reservationEndTime" required>
+    <br>
+    <button type="submit">Reserve</button>
+</form>
 </body>
 </html>
