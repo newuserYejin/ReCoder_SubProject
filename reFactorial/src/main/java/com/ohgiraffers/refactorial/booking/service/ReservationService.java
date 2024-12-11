@@ -25,4 +25,9 @@ public class ReservationService {
         return reservationDAO.getAllRooms();
     }
 
+    // 회의실 예약을 처리하는 메서드
+    public void reserveConferenceRoom(ReservationDTO reservationDTO) {
+        reservationDAO.insertReservation(reservationDTO);
+    }
+
 }
