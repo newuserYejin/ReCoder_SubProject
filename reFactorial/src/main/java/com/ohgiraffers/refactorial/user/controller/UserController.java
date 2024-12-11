@@ -100,15 +100,29 @@ public class UserController {
         return mv;
     }
 
-    @PostMapping("updateInfo")
-    public ModelAndView updateInfo(ModelAndView mv, @RequestBody Map<String, String> request){
+    @PostMapping(value = "updatePersonalInfo", produces = "application/json; charset=UTF-8;")
+    @ResponseBody
+    public Map<String, Object> updatePersonalInfo(@RequestBody Map<String, String> request, HttpSession session){
 
         String email = request.get("email");
         String phone = request.get("phone");
         String address = request.get("address");
 
-//        Integer result = memberService.
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        String userId = user.getEmpId();
 
-        return mv;
+        Integer result = memberService.updatePersonalInfo(email,phone,address,userId);
+
+        if (result > 0) {
+            if (email != null) user.setEmpEmail(email); // 변경된 이메일 저장
+            if (phone != null) user.setEmpPhone(phone); // 변경된 전화번호 저장
+            if (address != null) user.setEmpAddress(address); // 변경된 주소 저장
+
+            session.setAttribute("LoginUserInfo", user); // 세션 갱신
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("result", result);
+        return response;
     }
 }
