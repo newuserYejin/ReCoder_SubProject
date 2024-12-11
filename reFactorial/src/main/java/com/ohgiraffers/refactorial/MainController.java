@@ -41,9 +41,6 @@ public class MainController {
     @GetMapping("/user/booking")
     public String bookingPage(Model model) {
         model.addAttribute("rooms", reservationService.getAllRooms());
-        System.out.println(reservationService.getAllRooms());
-//        return "booking/booking";
-
         return "/booking/booking";
     }
 
