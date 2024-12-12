@@ -25,19 +25,21 @@ public class ReservationController {
 
     // 회의실을 선택하여 예약 폼을 띄우는 메서드
     @GetMapping("/bookingForm")
-    public String showBookingForm(@RequestParam("roomNo") BigDecimal roomNo, Model model) {
+    public String showBookingForm(@RequestParam("roomNo") String roomNo , Model model) {
         // Ensure roomNo is passed correctly to the booking form page
-        model.addAttribute("roomNo", roomNo);
+        model.addAttribute("roomNo",roomNo);
         return "/booking/bookingForm";
     }
 
     // 예약을 처리하는 메서드
     @PostMapping("/reserve")
     public String makeReservation(@ModelAttribute ReservationDTO reservationDTO, Model model) {
+
         reservationDTO.setReservationId(UUID.randomUUID().toString());
 
         // 예약 가능 여부 확인
-        boolean isAvailable = reservationService.isReservationAvailable(reservationDTO.getReservationDate(),
+        boolean isAvailable = reservationService.isReservationAvailable(reservationDTO.getConferenceRoomNo(),
+                reservationDTO.getReservationDate(),
                 reservationDTO.getReservationStartTime(),
                 reservationDTO.getReservationEndTime());
 

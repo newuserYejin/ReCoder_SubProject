@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.CabinetDAO">
+
+    <resultMap id="CabinetResultMap" type="com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO">
+        <result property="roomName" column="room_name"/>
+        <result property="conferenceRoomNo" column="ConferenceRoom_no"/>
+        <result property="fixtures" column="fixtures"/>
+        <result property="roomLocation" column="room_location"/>
+    </resultMap>
+
+    <select id="getAllCabinets" resultType="com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO" resultMap="CabinetResultMap">
+        select * from tbl_cabinet
+    </select>
+
+
+</mapper>

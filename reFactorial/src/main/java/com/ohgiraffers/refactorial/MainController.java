@@ -1,6 +1,8 @@
 package com.ohgiraffers.refactorial;
 
+import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
+import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
@@ -17,6 +19,8 @@ public class MainController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private CabinetService cabinetService;
 
 
     @GetMapping("/")
@@ -39,6 +43,9 @@ public class MainController {
         // 전체 예약 목록
         List<ReservationDTO> allReservations = reservationService.getAllReservations();
         model.addAttribute("allReservations", allReservations); // 전체 예약 정보 추가
+
+        List<CabinetDTO> allCabinets = cabinetService.getAllCabinets();
+        model.addAttribute("cabinets",allCabinets);
 
         // 사용자 예약 목록
         List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());

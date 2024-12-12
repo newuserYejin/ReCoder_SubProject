@@ -15,19 +15,22 @@
   <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
 </head>
-<header th:replace="~{/common/header::headerFragment}"></header>
+
 <body>
+<header th:replace="~{/common/header::headerFragment}"></header>
   <ul>
     <h2>회의실 목록</h2>
-    <th:block th:each="reservation : ${allReservations}">
-      <li>
-        <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
-        <br>
-        <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
-      </li>
-      <a th:href="@{/bookingForm(roomNo=${reservation.conferenceRoomNo})}">예약하기</a>
-    </th:block>
-  </ul>
+    <ul>
+      <th:block th:each="cabinet : ${cabinets}">
+        <li>
+          <div th:text="${cabinet.roomName}"></div>
+          <div th:text="${cabinet.conferenceRoomNo}"></div>
+          <div th:text="${cabinet.fixtures}"></div>
+          <div th:text="${cabinet.roomLocation}"></div>
+          <a th:href="@{/bookingForm(roomNo=${cabinet.conferenceRoomNo})}">예약하기</a>
+        </li>
+      </th:block>
+    </ul>
   <ul>
     <h2>개인 예약 목록</h2>
     <th:block th:each="reservation : ${userReservations}">
@@ -35,6 +38,12 @@
         <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
         <br>
         <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+        <br>
+        <span>예약 날짜 : <span th:text="${reservation.reservationDate}"></span></span>
+        <br>
+        <span>예약 시작 시간 : <span th:text="${reservation.reservationStartTime}"></span></span>
+        <br>
+        <span>예약 종료 시간 : <span th:text="${reservation.reservationEndTime}"></span></span>
         <br>
         <form action="/deleteReservation" method="post" style="display: inline;">
           <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">

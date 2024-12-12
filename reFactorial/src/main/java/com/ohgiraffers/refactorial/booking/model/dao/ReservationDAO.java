@@ -21,7 +21,7 @@ public interface ReservationDAO {
     void deleteReservationById(String reservationId);
 
     // 중복을 방지하는 메서드
-    List<ReservationDTO> checkReservationConflict(LocalDate date, LocalTime startTime, LocalTime endTime);
+    List<ReservationDTO> checkReservationConflict(BigDecimal conferenceRoomNo, LocalDate date, LocalTime startTime, LocalTime endTime);
 
     // 개인회의실 저장내역 메서드
     List<ReservationDTO> getUserReservations(String empId);

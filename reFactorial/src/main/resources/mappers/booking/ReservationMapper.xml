@@ -37,6 +37,7 @@
         SELECT *
         FROM tbl_reservation
         WHERE reservation_date = #{date}
+        AND conferenceRoom_no != #{conferenceRoomNo}
         AND (
         (reservationStartTime &lt; #{endTime} AND reservationEndTime &gt; #{startTime})
         )
