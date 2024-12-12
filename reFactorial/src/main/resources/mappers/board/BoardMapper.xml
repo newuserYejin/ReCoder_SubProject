@@ -14,6 +14,16 @@
         <result property="categoryCode" column="category_code"/>
     </resultMap>
 
+    <!-- 게시물 전체 조회 -->
+    <select id="postList" resultMap="boardResultMap">
+        select
+           *
+        from
+          tbl_post
+        where
+        category_code = #{categoryCode}
+    </select>
+
     <!-- 게시물 등록 -->
     <insert id="boardPost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
         insert into tbl_post
@@ -36,14 +46,6 @@
         )
     </insert>
 
-    <!-- 게시물 전체 조회 -->
-    <select id="postList" resultMap="boardResultMap">
-        select
-            *
-        from
-            tbl_post
-    </select>
-
     <!-- 게시물 상세페이지 -->
     <select id="postDetail" parameterType="int" resultMap="boardResultMap">
         SELECT
@@ -54,12 +56,7 @@
             post_id = #{postId}
     </select>
 
-    <delete id="postDelete" parameterType="int">
-        DELETE FROM tbl_post
-        WHERE post_id = #{postId}
-
-    </delete>
-
+    <!-- 게시물 수정 -->
     <update id="updatePost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
         update tbl_post
         set
@@ -70,5 +67,11 @@
         where
         post_id = #{postId}
     </update>
+
+    <!-- 게시물 삭제 -->
+    <delete id="postDelete" parameterType="int">
+        DELETE FROM tbl_post
+        WHERE post_id = #{postId}
+    </delete>
 
 </mapper>

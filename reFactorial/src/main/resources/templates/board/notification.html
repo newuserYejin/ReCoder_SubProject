@@ -115,6 +115,15 @@
         .pagination button:hover {
             background-color: #e0e0e0; /* 마우스 오버 시 배경색 변경 */
         }
+        .table-header {
+            display: flex; /* 플렉스 박스 레이아웃 사용 */
+            justify-content: space-between; /* 요소 간의 공간을 균등 분배 */
+            align-items: center; /* 수직 중앙 정렬 */
+            padding: 10px 0; /* 상하 여백 설정 */
+            border-bottom: 2px solid black; /* 하단에 두꺼운 경계선 추가 */
+            font-weight: bold; /* 글씨를 굵게 설정 */
+            font-size: 1.1em; /* 글씨 크기 설정 */
+        }
     </style>
 
 </head>
@@ -123,48 +132,30 @@
 <section>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-title">게시판</div>
-            <ul>
-                <li onclick="location.href='/board/notification'">공지사항</li>
-                <li onclick="location.href='/board/freeBoard'">자유 게시판</li>
-                <li onclick="location.href='/board/document'">문서 양식</li>
-                <li onclick="location.href='/board/vote'">투표 게시판</li>
-                <li onclick="location.href='/board/event'">이벤트</li>
-            </ul>
-        </div>
+        <div th:replace="~{/board/sidebar::sidebarFragment}"></div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="top-bar">
-                <button>등 록</button>
+            <div class="top-bar" onclick="location.href='freeBoardRegist'">
+                <button onclick="location.href='freeBoardRegist?'">등 록</button>
             </div>
 
             <!-- Table -->
-            <table>
-                <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>작성자</th>
-                    <th>제목</th>
-                    <th>작성일</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>2</td>
-                    <td>관리자</td>
-                    <td>공지사항 2 입니다.</td>
-                    <td>2024-12-06</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>관리자</td>
-                    <td>공지사항 입니다.</td>
-                    <td>2024-12-05</td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="table-header">
+                <div class="table-cell">번호</div>
+                <div class="table-cell">작성자</div>
+                <div class="table-cell">제목</div>
+                <div class="table-cell">작성일</div>
+            </div>
+
+            <div>
+                <div th:each="post : ${notification}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+                    <div style="width: 23%;" th:text="${post.postId}">1</div>
+                    <div style="width: 35%;" th:text="${post.empId}">Sample Title</div>
+                    <a style="width: 40%;" th:href="@{/board/postDetail(postId=${post.postId})}" th:text="${post.postTitle}">Sample Writer</a>
+                    <div style="width: 30%;" th:text="${post.postCreationDate}">2024-01-01</div>
+                </div>
+            </div>
 
             <!-- Pagination -->
             <div class="pagination">
@@ -174,6 +165,7 @@
                 <button>3</button>
                 <button>&gt;</button>
             </div>
+        </div>
         </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
