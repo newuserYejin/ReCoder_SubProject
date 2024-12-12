@@ -78,7 +78,7 @@ public class ApprovalController {
         return "/approvals/approvalMain";
     }
 
-    @GetMapping("approvalWaiting")
+    @GetMapping("Waiting")
     public String getApprovalWaiting(Model model) {
         List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments();
         model.addAttribute("documents", waitingDocs);
