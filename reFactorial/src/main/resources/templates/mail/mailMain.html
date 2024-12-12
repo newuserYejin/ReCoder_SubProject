@@ -6,6 +6,7 @@
     <title>이메일 메인 페이지</title>
 </head>
 <body>
-    <button onclick="location.href='writeEmail.html'"></button>
+    <button th:onclick="|location.href='@{/mail/writeMail}'|">메일 쓰기</button>
+
 </body>
 </html>

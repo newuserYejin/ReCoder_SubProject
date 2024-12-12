@@ -101,5 +101,10 @@ public class MainController {
         return "myPage/myPage";
     }
 
+    @GetMapping("/user/mail")
+    public String mailPage(){
+        return "/mail/mailMain";
+    }
+
 }
 
