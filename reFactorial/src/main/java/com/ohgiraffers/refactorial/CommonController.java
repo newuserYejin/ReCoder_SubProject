@@ -17,7 +17,6 @@ public class CommonController {
 
     @ModelAttribute("LoginUserInfo")
     public UserDTO LoginUserInfo(HttpSession session) {
-//        System.out.println("session.getAttribute(\"LoginUserInfo\") = " + session.getAttribute("LoginUserInfo"));
 
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 

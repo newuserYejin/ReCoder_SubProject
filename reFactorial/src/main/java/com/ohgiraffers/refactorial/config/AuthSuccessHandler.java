@@ -17,9 +17,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Configuration
 public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private static final String MYSQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    public static Date stringToDate(String dateStr) throws ParseException, ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
+        return formatter.parse(dateStr);
+    }
+
+    public static String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
+        return formatter.format(date);
+    }
+
+    public static String getCurrentDateTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
+        return formatter.format(new Date());
+    }
 
     @Override
     @ModelAttribute("LoginUserInfo")
@@ -34,6 +54,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         String memberId = user.getEmpId();
 
+        // 사번 저장 관려
         if (rememberMe) {
             Cookie cookie = new Cookie("member_id", memberId);
             cookie.setMaxAge(604800); // 7일 동안 유지
@@ -46,6 +67,15 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             response.addCookie(cookie);
         }
 
+        Date today = new Date();
+
+        System.out.println("LoginUserInfo = " + user);
+
+        System.out.println("today = " + dateToString(today));
+        System.out.println("time = " + getCurrentDateTime());
+
         response.sendRedirect("/user");
     }
+
+
 }
