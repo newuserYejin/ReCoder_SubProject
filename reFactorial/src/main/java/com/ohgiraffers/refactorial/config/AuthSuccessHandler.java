@@ -1,9 +1,9 @@
 package com.ohgiraffers.refactorial.config;
 
+import com.ohgiraffers.refactorial.attendence.service.AttendanceService;
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
-import com.ohgiraffers.refactorial.user.model.service.MemberService;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,35 +11,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Configuration
 public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final String MYSQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    public static Date stringToDate(String dateStr) throws ParseException, ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
-        return formatter.parse(dateStr);
-    }
-
-    public static String dateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
-        return formatter.format(date);
-    }
-
-    public static String getCurrentDateTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat(MYSQL_DATE_FORMAT);
-        return formatter.format(new Date());
-    }
+    @Autowired
+    private AttendanceService attendenceService;
 
     @Override
     @ModelAttribute("LoginUserInfo")
@@ -54,6 +37,8 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         String memberId = user.getEmpId();
 
+        System.out.println("LoginUserInfo = " + user);
+
         // 사번 저장 관려
         if (rememberMe) {
             Cookie cookie = new Cookie("member_id", memberId);
@@ -67,12 +52,22 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             response.addCookie(cookie);
         }
 
-        Date today = new Date();
+        // 로그인과 동시에 근태 체크
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
 
-        System.out.println("LoginUserInfo = " + user);
+        boolean att = time.isBefore(LocalTime.of(9, 0));
 
-        System.out.println("today = " + dateToString(today));
-        System.out.println("time = " + getCurrentDateTime());
+        String attStatus = null;
+
+        if (att){
+            attStatus = "정상 출근";
+        } else{
+            attStatus = "지각";
+        }
+
+        AttendanceDTO attendance = new AttendanceDTO(date,time,attStatus,user.getEmpId());
+        attendenceService.addEmpAttendance(attendance);
 
         response.sendRedirect("/user");
     }

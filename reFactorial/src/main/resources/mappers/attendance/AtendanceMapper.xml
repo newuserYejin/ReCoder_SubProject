@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.attendence.dao.AttendanceMapper">
+
+    <insert id="addEmpAttendance" parameterType="com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO">
+        insert into tbl_attendance
+        (att_date, att_time, att_status, emp_id)
+        values
+        (#{attDate},#{attTime},#{attStatus},#{empId})
+    </insert>
+
+    <select id="checkAttendance" parameterType="com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO">
+        SELECT COUNT(*)
+        FROM tbl_attendance
+        WHERE att_date = #{attDate} AND emp_id = #{empId}
+    </select>
+
+</mapper>

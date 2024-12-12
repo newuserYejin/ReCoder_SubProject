@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.user.model.dao;
 
+import com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,4 +20,5 @@ public interface UserMapper {
     int changePW(Map<String, String> updateData);
 
     int updatePersonalInfo(Map<String, String> updateData);
+
 }
