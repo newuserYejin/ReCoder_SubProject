@@ -4,7 +4,9 @@ import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
+import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,17 +22,15 @@ import java.util.List;
 public class ApprovalController {
 
     private final ApprovalService approvalService;
+    private final UserMapper userMapper; // UserMapper 주입
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService) {
+    public ApprovalController(ApprovalService approvalService,UserMapper userMapper) {
+
         this.approvalService = approvalService;
+        this.userMapper = userMapper;
     }
 
-
-//    @GetMapping("approvalWaiting")
-//    public String waitingPage(){
-//    return "/approvals/approvalWaiting";
-//}
 
     @GetMapping("approvalPage")
     public String paymentPage(){
@@ -48,6 +48,15 @@ public class ApprovalController {
             // 이름이 없으면 전체 리스트 반환
             employees = approvalService.findAllEmployees();
         }
+
+        // 부서명과 직책명을 추가로 조회하여 설정
+        for (EmployeeDTO employee : employees) {
+            String deptName = userMapper.findDeptName(employee.getDeptCode());
+            String positionName = userMapper.findPositionName(employee.getPositionValue());
+            employee.setDeptName(deptName);
+            employee.setPositionName(positionName);
+        }
+
 
         model.addAttribute("employees",employees);
 

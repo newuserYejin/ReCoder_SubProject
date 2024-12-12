@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -45,9 +46,13 @@ public class ApprovalService {
     public String saveApproval(ApprovalRequestDTO approvalRequestDTO, String creatorId) {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("pmId", UUID.randomUUID().toString()); // 고유 ID 생성
+
+        //5자리 랜덤 문자열 생성
+        String pmId = "PM" + String.format("%03d", (int) (Math.random() * 1000));
+
+        params.put("pmId", pmId);
         params.put("title", approvalRequestDTO.getTitle());
-        params.put("date", LocalDate.now()); // 현재 날짜
+        params.put("date", LocalDateTime.now()); // 현재 날짜
         params.put("category", approvalRequestDTO.getCategory());
         params.put("attachment", approvalRequestDTO.getAttachment());
         params.put("creatorId", creatorId); // 작성자 ID 추가
@@ -57,39 +62,33 @@ public class ApprovalService {
     }
 
 
-
-
     public void saveApprovers(String pmId, List<String> approvers) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("pmId", pmId);
-        params.put("approvers", approvers);
+        // 중복 제거
+        List<String> uniqueApprovers = new ArrayList<>(new HashSet<>(approvers));
 
-        approvalMapper.saveApprovers(params);
+        if (!uniqueApprovers.isEmpty()) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("pmId", pmId);
+            params.put("approvers", uniqueApprovers);
+
+            approvalMapper.saveApprovers(params);
+            }
     }
+        public void saveReferrers (String pmId, List < String > referrers){
+            for (String referrer : referrers) {
+                approvalMapper.insertReferrer(pmId, referrer);
+            }
 
-    public void saveReferrers(String pmId, List<String> referrers) {
-        for (String referrer : referrers) {
-            approvalMapper.insertReferrer(pmId, referrer);
         }
 
-    }
+        public List<DocumentDTO> getWaitingDocuments () {
+            return approvalMapper.getWaitingDocuments();
+        }
 
-    public List<DocumentDTO> getDocumentsForProcessing() {
 
-        return approvalMapper.getDocuments(); // JOIN 데이터를 가져옴
-    }
-
-    public List<DocumentDTO> getWaitingDocuments() {
-        return approvalMapper.getWaitingDocuments();
     }
 
 
-}
 
 
 
-
-//    public List<DocumentDTO> getReferenceDocuments() {
-//
-//        return approvalMapper.getReferenceDocuments();
-//    }

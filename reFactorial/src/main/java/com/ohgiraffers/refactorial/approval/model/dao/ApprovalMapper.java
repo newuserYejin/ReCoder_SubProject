@@ -16,8 +16,6 @@ public interface ApprovalMapper {
     void insertReferrer(@Param("pmId") String pmId, @Param("empId") String empId);
 
 
-    List<DocumentDTO> getDocuments();
-
     List<DocumentDTO> getWaitingDocuments();
 
 

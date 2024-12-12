@@ -42,11 +42,11 @@
                 <div class="table-cell">상태</div>
             </div>
             <div class="table-row" th:each="doc : ${documents}">
-                <div class="table-cell" th:text="${doc.pmId}"></div>
+                <div class="table-cell" th:text="${doc.rowNum}"></div>
                 <div class="table-cell" th:text="${doc.creatorName}"></div> <!-- 작성자 이름 -->
-                <div class="table-cell" th:text="${doc.pmTitle}"></div>
-                <div class="table-cell" th:text="${doc.pmCreate}"></div>
-                <div class="table-cell" th:text="${doc.pmStatus}"></div>
+                <div class="table-cell" th:text="${doc.title}"></div>
+                <div class="table-cell" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></div>
+                <div class="table-cell" th:text="${doc.status}"></div>
             </div>
         </div>
     </div>
