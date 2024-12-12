@@ -2,21 +2,24 @@ package com.ohgiraffers.refactorial.approval.model.dao;
 
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
-    void insertPm(String pmId, String title, String category, Date date, String attachment);
+    void insertPm(Map<String, Object> params);
 
-    void insertApprover(String approver, String pmId, boolean b);
 
-    void insertReferrer(String pmId, String referrer);
+    void insertReferrer(@Param("pmId") String pmId, @Param("empId") String empId);
+
 
     List<DocumentDTO> getDocuments();
 
     List<DocumentDTO> getWaitingDocuments();
 
-    String findEmployeeNameById(String employeeId);
+
+    void saveApprovers(Map<String, Object> params);
 }

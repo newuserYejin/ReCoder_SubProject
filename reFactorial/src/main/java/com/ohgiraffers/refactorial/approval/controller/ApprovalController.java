@@ -77,14 +77,15 @@ public class ApprovalController {
             return "redirect:/login"; // 로그인 페이지로 리다이렉트
         }
 
+        String creatorId = user.getEmpId(); // 세션 사용자 ID
+
+
         // 승인자 리스트 생성
         List<String> approvers = List.of(
-                        approvalRequestDTO.getFirstApprover(),
-                        approvalRequestDTO.getMidApprover(),
-                        approvalRequestDTO.getFinalApprover()
-                ).stream()
-                .filter(approver -> approver != null && !approver.isEmpty()) // null 또는 빈값 제거
-                .toList();
+                approvalRequestDTO.getFirstApprover(),
+                approvalRequestDTO.getMidApprover(),
+                approvalRequestDTO.getFinalApprover()
+        ).stream().filter(approver -> approver != null && !approver.isEmpty()).toList();
 
         if (approvers.isEmpty()) {
             model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
@@ -92,7 +93,7 @@ public class ApprovalController {
         }
 
         // 1.이것은 결제문서 저장
-        String pmId = approvalService.saveApproval(approvalRequestDTO);
+        String pmId = approvalService.saveApproval(approvalRequestDTO,creatorId);
 
         // 2.이것은 승인자 저장
         approvalService.saveApprovers(pmId,approvers);

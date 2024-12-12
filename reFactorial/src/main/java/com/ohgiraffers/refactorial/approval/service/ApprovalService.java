@@ -7,12 +7,11 @@ import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class ApprovalService {
@@ -43,27 +42,29 @@ public class ApprovalService {
     }
 
 
-    public String saveApproval(ApprovalRequestDTO approvalRequestDTO) {
-        String pmId = UUID.randomUUID().toString().substring(0, 5);  // 고유문자열생성(pk), 36자리 고유 문자열을 생성하고, 이를 잘라서 5자리만 사용함
+    public String saveApproval(ApprovalRequestDTO approvalRequestDTO, String creatorId) {
 
-        approvalMapper.insertPm(
-                pmId,
-                approvalRequestDTO.getTitle(),
-                approvalRequestDTO.getCategory(),
-                new Date(),
-                approvalRequestDTO.getAttachment()
+        Map<String, Object> params = new HashMap<>();
+        params.put("pmId", UUID.randomUUID().toString()); // 고유 ID 생성
+        params.put("title", approvalRequestDTO.getTitle());
+        params.put("date", LocalDate.now()); // 현재 날짜
+        params.put("category", approvalRequestDTO.getCategory());
+        params.put("attachment", approvalRequestDTO.getAttachment());
+        params.put("creatorId", creatorId); // 작성자 ID 추가
 
-
-
-        );
-        return pmId;
+        approvalMapper.insertPm(params); // 매퍼 호출
+        return (String) params.get("pmId"); // 생성된 pmId 반환
     }
 
 
+
+
     public void saveApprovers(String pmId, List<String> approvers) {
-        for (String approver : approvers) {
-            approvalMapper.insertApprover(approver, pmId, false); // false = 승인상태를 나타냄 아직 승인하지않은상태
-        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("pmId", pmId);
+        params.put("approvers", approvers);
+
+        approvalMapper.saveApprovers(params);
     }
 
     public void saveReferrers(String pmId, List<String> referrers) {

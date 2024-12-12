@@ -6,13 +6,17 @@
 <mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
 
     <insert id="insertPm" parameterType="map">
-        insert into tbl_pm (pm_id,pm_title,pm_create,pm_category,pm_attachment,emp_id)
-             values (#{pmId},#{title},#{date},#{category},#{attachment},#{creatorId})
+        INSERT INTO tbl_pm (pm_id, pm_title, pm_create, pm_category, pm_attachment, emp_id)
+        VALUES (#{pmId}, #{title}, #{date}, #{category}, #{attachment}, #{creatorId})
     </insert>
+
 
     <insert id="insertApprover" parameterType="map">
         INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
-        VALUES (#{empId}, #{pmId}, #{pmStatus})
+        VALUES
+        <foreach collection="approvers" item="approver" separator=",">
+            (#{approver}, #{pmId}, '대기 중')
+        </foreach>
     </insert>
 
     <insert id="insertReferrer" parameterType="map">
@@ -58,6 +62,14 @@
     <select id="findEmployeeNameById" resultType="String">
         SELECT emp_name FROM employee WHERE emp_id = #{employeeId}
     </select>
+
+    <insert id="saveApprovers" parameterType="map">
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
+        VALUES
+        <foreach collection="approvers" item="approver" separator=",">
+            (#{approver}, #{pmId}, '대기 중')
+        </foreach>
+    </insert>
 
 
 </mapper>
