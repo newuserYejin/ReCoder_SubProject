@@ -16,11 +16,7 @@ public interface UserMapper {
 
     String findPositionName(int positionValue);
 
-    int changePW(String enChangePW, String empId);
-
     int changePW(Map<String, String> updateData);
-
-    int updatePersonalInfo(String email, String phone, String address, String userId);
 
     int updatePersonalInfo(Map<String, String> updateData);
 }

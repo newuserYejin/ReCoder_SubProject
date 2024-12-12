@@ -32,6 +32,7 @@
   <!-- 삭제 -->
   <form action="/board/postDelete" method="post">
      <input type="hidden" name="postId" th:value="${postDetail.postId}">
+     <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
      <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
   </form>
 
