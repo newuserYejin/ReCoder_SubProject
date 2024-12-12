@@ -64,7 +64,12 @@ public class ApprovalController {
     }
 
     @PostMapping("/submitApproval")
-    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO){
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,Model model){
+
+        if (approvalRequestDTO.getApprovers() == null || approvalRequestDTO.getApprovers().isEmpty()) {
+            model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
+            return "/approvals/approvalPage";
+        }
 
         // 1.이것은 결제문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO);

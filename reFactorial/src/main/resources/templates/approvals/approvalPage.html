@@ -30,6 +30,11 @@
 
     <!-- Main Content -->
     <div class="main-content">
+
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            [[${errorMessage}]]
+        </div>
+
         <div class="title"></div>
         <form action="/approvals/submitApproval" method="post">
             <!-- 제목 -->
