@@ -28,6 +28,8 @@
         <h3>Main Page</h3>
         <p th:text="${LoginUserInfo?.empId ?: 'No User'}"></p>
         <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
+
+        <p id="todayAtt"></p>
     </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
@@ -36,6 +38,28 @@
 
         if (message){
             console.log(message);
+        }
+    </script>
+
+    <script>
+        const todayAttPtag = document.querySelector("#todayAtt")
+
+        window.onload = function () {
+            fetch("/attendance/getAttendance", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("근태 data: ", data)
+
+                    todayAttPtag.textContent = "오늘의 근태 : " + data.attStatus;
+                })
+                .catch(error => {
+                    console.error("Fetch error: ", error);
+                });
         }
     </script>
 

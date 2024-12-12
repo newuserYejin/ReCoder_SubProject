@@ -1,8 +1,8 @@
 package com.ohgiraffers.refactorial.config;
 
-import com.ohgiraffers.refactorial.attendence.service.AttendanceService;
+import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
-import com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO;
+import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
