@@ -1,13 +1,14 @@
 package com.ohgiraffers.refactorial.approval.controller;
 
+import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -62,5 +63,39 @@ public class ApprovalController {
         return "/approvals/searchReferrers";
     }
 
+    @PostMapping("/submitApproval")
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,Model model){
+
+        if (approvalRequestDTO.getApprovers() == null || approvalRequestDTO.getApprovers().isEmpty()) {
+            model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
+            return "/approvals/approvalPage";
+        }
+
+        // 1.이것은 결제문서 저장
+        String pmId = approvalService.saveApproval(approvalRequestDTO);
+
+        // 2.이것은 승인자 저장
+        approvalService.saveApprovers(pmId,approvalRequestDTO.getApprovers());
+
+        // 3.이것은 참조자 저장
+        approvalService.saveReferrers(pmId,approvalRequestDTO.getReferrers());
+
+        return "/approvals/approvalMain";
+    }
+
+    @GetMapping("Waiting")
+    public String getApprovalWaiting(Model model) {
+        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments();
+        model.addAttribute("documents", waitingDocs);
+        return "/approvals/approvalWaiting";
+    }
+
+    @GetMapping("referenceDocuments")
+    public String getReferenceDocuments(Model model) {
+        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments();
+        model.addAttribute("documents", referenceDocs);
+        return "/approvals/referenceDocuments";
+    }
+    
 
 }
