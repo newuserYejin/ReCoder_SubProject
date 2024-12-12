@@ -19,4 +19,5 @@ public interface UserMapper {
     int changePW(Map<String, String> updateData);
 
     int updatePersonalInfo(Map<String, String> updateData);
+
 }
