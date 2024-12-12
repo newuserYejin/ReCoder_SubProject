@@ -24,28 +24,50 @@ public class BoardController {
         this.boardService = boardService;
     }
 
+//    // (공지)게시물 전체조회
+//    @GetMapping("notification")
+//    public String notification(Model model) {
+//
+//        List<BoardDTO> notiPostList = boardService.notiPostList();
+//
+//        model.addAttribute("notification",notiPostList);    // 템플릿에 값 전달
+//
+////        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+//
+//        return "/board/notification";
+//    }
+
     // 게시물 전체조회
-    @GetMapping("freeBoard")
-    public String freeBoard(Model model) {
+    @GetMapping("list")
+    public String list(@RequestParam int categoryCode, Model model) {
 
-        List<BoardDTO> postList = boardService.postList();
+            List<BoardDTO> postList = boardService.postList(categoryCode);
 
-        model.addAttribute("postList",postList);    // 템플릿에 값 전달
+            System.out.println("postList = " + postList);
+
+            model.addAttribute("postList", postList);    // 템플릿에 값 전달
+
+            model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
 
 //        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
 
-        return "/board/freeBoard";
+        return "/board/list";
+
     }
 
     // 게시물 등록 페이지로 이동
     @GetMapping("freeBoardRegist")
-    public String freeBoardRegist() {
+    public String freeBoardRegist(@RequestParam int categoryCode, Model model) {
+
+        model.addAttribute("categoryCode", categoryCode);
+
         return "/board/freeBoardRegist";
     }
 
+
     // 게시물 등록
     @PostMapping("freeBoardRegist")
-    public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int category,
+    public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int categoryCode,
                             Model model, HttpSession session) {
 
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
@@ -57,13 +79,14 @@ public class BoardController {
         board.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
         board.setEmpId(user.getEmpId());        // 작성자 사원번호
         board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
-        board.setCategoryCode(category);        // 게시물 카테고리 코드
+        board.setCategoryCode(categoryCode);        // 게시물 카테고리 코드
 
 //        System.out.println("글쓴이 = " + user);
 
         boardService.post(board);
 
-        return "redirect:/board/freeBoard";
+        return "redirect:/board/list?categoryCode=" + categoryCode;
+
     }
 
     // 게시물 상세페이지
@@ -87,11 +110,11 @@ public class BoardController {
     }
 
     @PostMapping("postDelete")
-    public String postDelete(@RequestParam int postId) {
+    public String postDelete(@RequestParam int postId, @RequestParam int categoryCode) {
 
         boardService.postDelete(postId);
 
-        return "redirect:/board/freeBoard";
+        return "redirect:/board/list?categoryCode=" + categoryCode;
     }
 
     // 게시물 수정
@@ -114,15 +137,8 @@ public class BoardController {
         boardService.updatePost(board);
 
 //        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
-        return "redirect:/board/freeBoard";  // 자유게시판
+        return "redirect:/board/list?categoryCode="+board.getCategoryCode();  // 게시판 이동
 
-    }
-
-
-
-    @GetMapping("notification")
-    public String notification() {
-        return "/board/notification";
     }
 
     @GetMapping("document")

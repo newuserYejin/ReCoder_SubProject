@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Conference Room</title>
+    <title>회의실 예약 입력 폼</title>
 </head>
 <body>
-<h1>Book Conference Room</h1>
+<h1>회의실 예약 입력 폼</h1>
+
+<!-- 에러 메시지가 있을 경우 팝업 알림 -->
+<div th:if="${errorMessage}" th:onclick="showAlert(${errorMessage})"></div>
+
 <form action="/reserve" method="post">
     <input type="hidden" name="conferenceRoomNo" th:value="${roomNo}">
-    <label for="empId">Employee ID:</label>
+    <label for="empId">사번번호:</label>
     <input type="hidden" name="empId" th:value="${session.LoginUserInfo.empId}">
     <br>
-    <label for="reservationDate">Reservation Date:</label>
+    <label for="reservationDate">예약날짜:</label>
     <input type="date" id="reservationDate" name="reservationDate" required>
     <br>
-    <label for="reservationStartTime">Start Time:</label>
+    <label for="reservationStartTime">시작시간:</label>
     <input type="time" id="reservationStartTime" name="reservationStartTime" required>
     <br>
-    <label for="reservationEndTime">End Time:</label>
+    <label for="reservationEndTime">종료시간:</label>
     <input type="time" id="reservationEndTime" name="reservationEndTime" required>
     <br>
     <button type="submit">Reserve</button>
