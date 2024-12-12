@@ -1,17 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking</title>
+  <title>회의실 예약</title>
 </head>
 <body>
-<h1>Conference Room Booking</h1>
+<h1>회의실 예약</h1>
 <ul>
-  <th:block th:each="room : ${rooms}">
+  <th:block th:each="reservation : ${reservations}">
     <li>
-      <a th:href="@{/bookingForm(roomNo=${room})}">Room Number: <span th:text="${room}"></span></a>
+      <!-- 예약한 회의실 번호 -->
+      <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+      <br>
+      <!-- 예약 ID -->
+      <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+      <br>
+      <!-- 예약 페이지로 이동하는 링크 -->
+      <a th:href="@{/bookingForm(roomNo=${reservation.conferenceRoomNo})}">예약하기</a>
+      <!-- 예약 삭제 버튼 -->
+      <form action="/deleteReservation" method="post" style="display: inline;">
+        <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
+        <button type="submit">삭제</button>
+      </form>
     </li>
   </th:block>
 </ul>

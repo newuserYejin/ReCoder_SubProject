@@ -142,6 +142,7 @@
 
         .pagination button:hover {
             background-color: #ddd; /* 마우스 오버 시 배경색 변경 */
+        }
     </style>
 </head>
 <body>
@@ -149,21 +150,14 @@
 <section>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-title">게시판</div>
-            <ul>
-                <li onclick="location.href='/board/notification'">공지사항</li>
-                <li onclick="location.href='/board/freeBoard'">자유 게시판</li>
-                <li onclick="location.href='/board/document'">문서 양식</li>
-                <li onclick="location.href='/board/vote'">투표 게시판</li>
-                <li onclick="location.href='/board/event'">이벤트</li>
-            </ul>
-        </div>
+        <div th:replace="~{/board/sidebar::sidebarFragment}"></div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="top-bar" onclick="location.href='freeBoardRegist'">
-                <button onclick="location.href='freeBoardRegist'">등 록</button>
+            <div class="top-bar">
+                <button type="button" th:onclick="|location.href='@{freeBoardRegist(categoryCode=${categoryCode})}'|">
+                    등 록
+                </button>
             </div>
 
             <!-- Table -->
@@ -192,6 +186,7 @@
                 <button>&gt;</button>
             </div>
         </div>
+    </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
