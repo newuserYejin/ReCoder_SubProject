@@ -5,12 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회의실 예약 입력 폼</title>
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
 </head>
 <body>
+<header th:replace="~{/common/header::headerFragment}"></header>
 <h1>회의실 예약 입력 폼</h1>
-
-<!-- 에러 메시지가 있을 경우 팝업 알림 -->
-<div th:if="${errorMessage}" th:onclick="showAlert(${errorMessage})"></div>
 
 <form action="/reserve" method="post">
     <input type="hidden" name="conferenceRoomNo" th:value="${roomNo}">
@@ -28,5 +35,6 @@
     <br>
     <button type="submit">Reserve</button>
 </form>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>

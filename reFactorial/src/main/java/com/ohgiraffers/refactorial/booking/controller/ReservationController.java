@@ -28,7 +28,7 @@ public class ReservationController {
     public String showBookingForm(@RequestParam("roomNo") BigDecimal roomNo, Model model) {
         // Ensure roomNo is passed correctly to the booking form page
         model.addAttribute("roomNo", roomNo);
-        return "booking/bookingForm";
+        return "/booking/bookingForm";
     }
 
     // 예약을 처리하는 메서드

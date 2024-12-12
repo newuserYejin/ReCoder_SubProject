@@ -47,5 +47,4 @@
         FROM tbl_reservation
         WHERE emp_id = #{empId}
     </select>
-
 </mapper>

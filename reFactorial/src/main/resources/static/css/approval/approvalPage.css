@@ -149,3 +149,12 @@ html, body {
 .button-group .submit-btn:hover {
     background-color: #7e2411; /* hover 효과 */
 }
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
