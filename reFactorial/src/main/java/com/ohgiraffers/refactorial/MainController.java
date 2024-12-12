@@ -41,6 +41,7 @@ public class MainController {
         return "index";
     }
 
+    
     @GetMapping("/user/booking")
     public String showReservations(Model model) {
         List<ReservationDTO> reservations = reservationService.getAllReservations();
