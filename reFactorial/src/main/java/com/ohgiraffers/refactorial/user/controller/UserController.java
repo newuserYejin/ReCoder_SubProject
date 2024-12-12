@@ -25,8 +25,6 @@ public class UserController {
     @PostMapping("addEmployee")
     public ModelAndView addEmployee(ModelAndView mv, @ModelAttribute UserDTO userDTO){
 
-        System.out.println("userDTO = " + userDTO);
-
         Integer result = memberService.addEmployee(userDTO);
 
         String message = null;
@@ -56,14 +54,10 @@ public class UserController {
 
         String insertPW = request.get("presentPW");
 
-        System.out.println("insertPW = " + insertPW);
-
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
         String currentPW = user.getEmpPwd();
 
         matchStatus = memberService.pwMatch(insertPW,currentPW);
-
-        System.out.println("matchStatus = " + matchStatus);
 
         // 서버 응답으로 반환할 결과
         Map<String, Object> response = new HashMap<>();
@@ -82,8 +76,6 @@ public class UserController {
 
         Integer result = memberService.changePw(changePW, empId);
 
-        System.out.println("result = " + result);
-        System.out.println("변경 할 changePW = " + changePW);
 
         if (result > 0){
             msg = "비밀번호 변경 성공";
@@ -94,7 +86,6 @@ public class UserController {
             mv.setViewName("/myPage/myPage");
         }
 
-        System.out.println("msg = " + msg);
         mv.addObject("msg",msg);
 
         return mv;

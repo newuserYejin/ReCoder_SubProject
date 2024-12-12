@@ -32,8 +32,6 @@ public class MemberService {
     // 사용자가 입력한 ID를 입력받아 회원을 조회하는 메소드
     public UserDTO findUserId(String username) {
 
-        System.out.println("username = " + username);
-
         UserDTO user = userMapper.findByUsername(username);
 
         if (user == null){

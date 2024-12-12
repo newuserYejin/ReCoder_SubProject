@@ -110,7 +110,6 @@ public class EmailConfirmService {
             body += "<h3>" + "감사합니다." + "</h3>";
             message.setText(body,"UTF-8", "html");
         }catch (MessagingException e) {
-            System.out.println("email 전송 오류 = " + e);
             throw new RuntimeException(e);
         }
 
