@@ -32,6 +32,7 @@ public class MainController {
         return "index";
     }
 
+    
     @GetMapping("/user/booking")
     public String showReservations(HttpSession session , Model model) {
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");

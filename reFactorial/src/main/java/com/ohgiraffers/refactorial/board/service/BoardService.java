@@ -19,27 +19,28 @@ public class BoardService {
         this.boardMapper = boardMapper;
     }
 
+//    // 게시글 전체조회(공지)
+//    public List<BoardDTO> notiPostList() {
+//
+//        return boardMapper.notiPostList();
+//    }
+
+    // 게시글 전체조회(자유)
+    public List<BoardDTO> postList(int categoryCode) {
+
+        return boardMapper.postList(categoryCode);
+    }
+
     // 게시글 등록
     public void post(BoardDTO board) {
 
         boardMapper.boardPost(board);
     }
 
-    // 게시글 전체조회
-    public List<BoardDTO> postList() {
-
-        return boardMapper.postList();
-    }
-
     // 상세페이지
     public BoardDTO postDetail(int postId) {
-        return boardMapper.postDetail(postId);
-    }
 
-    // 게시글 삭제
-    @Transactional
-    public void postDelete(int postId) {
-        boardMapper.postDelete(postId);
+        return boardMapper.postDetail(postId);
     }
 
     // 게시글 수정
@@ -48,4 +49,12 @@ public class BoardService {
 
         boardMapper.updatePost(board);
     }
+
+    // 게시글 삭제
+    @Transactional
+    public void postDelete(int postId) {
+
+        boardMapper.postDelete(postId);
+    }
+
 }
