@@ -24,19 +24,6 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-//    // (공지)게시물 전체조회
-//    @GetMapping("notification")
-//    public String notification(Model model) {
-//
-//        List<BoardDTO> notiPostList = boardService.notiPostList();
-//
-//        model.addAttribute("notification",notiPostList);    // 템플릿에 값 전달
-//
-////        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
-//
-//        return "/board/notification";
-//    }
-
     // 게시물 전체조회
     @GetMapping("list")
     public String list(@RequestParam int categoryCode, Model model) {
@@ -83,7 +70,10 @@ public class BoardController {
 
 //        System.out.println("글쓴이 = " + user);
 
+
+
         boardService.post(board);
+
 
         return "redirect:/board/list?categoryCode=" + categoryCode;
 
