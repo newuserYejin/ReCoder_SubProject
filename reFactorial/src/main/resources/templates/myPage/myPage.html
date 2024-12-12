@@ -17,9 +17,11 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <!--여기까지 공동 복사-->
 
+    <!-- fullCalender -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css">
 
     <link rel="stylesheet" th:href="@{/css/myPage/myPage.css}">
-<!--    <link rel="stylesheet" href="../../static/css/myPage/myPage.css">-->
+    <link rel="stylesheet" href="../../static/css/myPage/myPage.css">
 
 </head>
 <body>
@@ -100,7 +102,8 @@
                 <div class="underBox">
     <!--개인 근태-->
                     <div class="personalCalender">
-                        <div>캘린더 자리</div>
+                        <!--캘린더-->
+                        <div id='calendar'></div>
                     </div>
     <!--연차 사용-->
                     <div class="personalVacation">
@@ -154,6 +157,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!--boostrap-->
 
+    <!--fullCalender-->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.js"></script>
+
     <script>
         const currentEmail = '[[${LoginUserInfo.empEmail}]]';
         const currentPhone = '[[${LoginUserInfo.empPhone}]]';
@@ -162,6 +170,30 @@
         console.log("currentEmail : ", currentEmail)
         console.log("currentPhone : ", currentPhone)
         console.log("currentAddress : ", currentAddress)
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView : 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+                headerToolbar : { // 헤더에 표시할 툴 바
+                    start : 'prev next today',
+                    center : 'title',
+                    end : 'dayGridMonth,dayGridWeek,dayGridDay'
+                },
+                titleFormat : function(date) {
+                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
+                },
+                //initialDate: '2021-07-15', // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+                selectable : false, // 달력 일자 드래그 설정가능
+                droppable : true,
+                // editable : true,
+                nowIndicator: true, // 현재 시간 마크
+                locale: 'ko' // 한국어 설정
+            });
+            calendar.render();
+        });
     </script>
 
     <script th:src="@{/js/myPage/myPage.js}"></script>

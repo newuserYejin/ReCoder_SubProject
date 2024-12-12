@@ -1,4 +1,4 @@
-package com.ohgiraffers.refactorial.user.model.dto;
+package com.ohgiraffers.refactorial.attendance.dto;
 
 import lombok.*;
 

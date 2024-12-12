@@ -77,7 +77,6 @@ public class EmailConfirmController {
 
         try {
             resetPw = String.valueOf( es.sendVerificationCode(sendToEmail,emailTitle,version) );
-            resetPw = (String)( es.sendVerificationCode(sendToEmail,emailTitle,version) );
 
             int updatePwResult = es.setResetPw(resetPw,targetEmpId);
 
