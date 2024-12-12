@@ -34,8 +34,14 @@ public class ReservationService {
         reservationDAO.deleteReservationById(reservationId);
     }
 
+    // 중복 방지 메서드
     public boolean isReservationAvailable(LocalDate date, LocalTime startTime, LocalTime endTime) {
         List<ReservationDTO> conflicts = reservationDAO.checkReservationConflict(date, startTime, endTime);
         return conflicts.isEmpty(); // 중복 예약이 없으면 true 반환
+    }
+
+    // 개인페이지 예약 내역 메서드
+    public List<ReservationDTO> getUserReservations(String empId) {
+        return reservationDAO.getUserReservations(empId);
     }
 }

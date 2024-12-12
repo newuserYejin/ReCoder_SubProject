@@ -5,27 +5,44 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>회의실 예약</title>
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
 </head>
+<header th:replace="~{/common/header::headerFragment}"></header>
 <body>
-<h1>회의실 예약</h1>
-<ul>
-  <th:block th:each="reservation : ${reservations}">
-    <li>
-      <!-- 예약한 회의실 번호 -->
-      <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
-      <br>
-      <!-- 예약 ID -->
-      <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
-      <br>
-      <!-- 예약 페이지로 이동하는 링크 -->
+  <ul>
+    <h2>회의실 목록</h2>
+    <th:block th:each="reservation : ${allReservations}">
+      <li>
+        <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+        <br>
+        <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+      </li>
       <a th:href="@{/bookingForm(roomNo=${reservation.conferenceRoomNo})}">예약하기</a>
-      <!-- 예약 삭제 버튼 -->
-      <form action="/deleteReservation" method="post" style="display: inline;">
-        <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
-        <button type="submit">삭제</button>
-      </form>
-    </li>
-  </th:block>
-</ul>
+    </th:block>
+  </ul>
+  <ul>
+    <h2>개인 예약 목록</h2>
+    <th:block th:each="reservation : ${userReservations}">
+      <li>
+        <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+        <br>
+        <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+        <br>
+        <form action="/deleteReservation" method="post" style="display: inline;">
+          <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
+          <button type="submit">삭제</button>
+        </form>
+      </li>
+    </th:block>
+  </ul>
+  <footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>
