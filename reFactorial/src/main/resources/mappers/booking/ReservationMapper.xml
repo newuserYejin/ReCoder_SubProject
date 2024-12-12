@@ -36,8 +36,7 @@
     <select id="checkReservationConflict" resultType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
         SELECT *
         FROM tbl_reservation
-        WHERE reservation_date = #{date}
-        AND conferenceRoom_no != #{conferenceRoomNo}
+        WHERE conferenceRoom_no = #{conferenceRoomNo}
         AND (
         (reservationStartTime &lt; #{endTime} AND reservationEndTime &gt; #{startTime})
         )
@@ -47,5 +46,6 @@
         SELECT *
         FROM tbl_reservation
         WHERE emp_id = #{empId}
+        ORDER BY ConferenceRoom_no ASC, reservation_date ASC, reservationStartTime ASC
     </select>
 </mapper>
