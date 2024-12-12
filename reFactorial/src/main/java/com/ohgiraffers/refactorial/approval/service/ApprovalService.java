@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +53,8 @@ public class ApprovalService {
                 new Date(),
                 approvalRequestDTO.getAttachment()
 
+
+
         );
         return pmId;
     }
@@ -71,6 +74,7 @@ public class ApprovalService {
     }
 
     public List<DocumentDTO> getDocumentsForProcessing() {
+
         return approvalMapper.getDocuments(); // JOIN 데이터를 가져옴
     }
 
@@ -78,7 +82,13 @@ public class ApprovalService {
         return approvalMapper.getWaitingDocuments();
     }
 
-    public List<DocumentDTO> getReferenceDocuments() {
-        return approvalMapper.getReferenceDocuments();
-    }
+
 }
+
+
+
+
+//    public List<DocumentDTO> getReferenceDocuments() {
+//
+//        return approvalMapper.getReferenceDocuments();
+//    }

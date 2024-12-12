@@ -18,5 +18,5 @@ public interface ApprovalMapper {
 
     List<DocumentDTO> getWaitingDocuments();
 
-    List<DocumentDTO> getReferenceDocuments();
+    String findEmployeeNameById(String employeeId);
 }

@@ -4,8 +4,11 @@ import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
+import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +27,10 @@ public class ApprovalController {
     }
 
 
-    @GetMapping("approvalWaiting")
-    public String waitingPage(){
-    return "/approvals/approvalWaiting";
-}
+//    @GetMapping("approvalWaiting")
+//    public String waitingPage(){
+//    return "/approvals/approvalWaiting";
+//}
 
     @GetMapping("approvalPage")
     public String paymentPage(){
@@ -64,9 +67,26 @@ public class ApprovalController {
     }
 
     @PostMapping("/submitApproval")
-    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,Model model){
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO, Model model, HttpSession session){
 
-        if (approvalRequestDTO.getApprovers() == null || approvalRequestDTO.getApprovers().isEmpty()) {
+        // 세션에서 로그인 정보 가져오기
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        }
+
+        // 승인자 리스트 생성
+        List<String> approvers = List.of(
+                        approvalRequestDTO.getFirstApprover(),
+                        approvalRequestDTO.getMidApprover(),
+                        approvalRequestDTO.getFinalApprover()
+                ).stream()
+                .filter(approver -> approver != null && !approver.isEmpty()) // null 또는 빈값 제거
+                .toList();
+
+        if (approvers.isEmpty()) {
             model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
             return "/approvals/approvalPage";
         }
@@ -75,7 +95,7 @@ public class ApprovalController {
         String pmId = approvalService.saveApproval(approvalRequestDTO);
 
         // 2.이것은 승인자 저장
-        approvalService.saveApprovers(pmId,approvalRequestDTO.getApprovers());
+        approvalService.saveApprovers(pmId,approvers);
 
         // 3.이것은 참조자 저장
         approvalService.saveReferrers(pmId,approvalRequestDTO.getReferrers());
@@ -83,19 +103,35 @@ public class ApprovalController {
         return "/approvals/approvalMain";
     }
 
-    @GetMapping("Waiting")
+    // 대기 중
+    @GetMapping("waiting")
     public String getApprovalWaiting(Model model) {
+        // 대기 중 문서 조회
         List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments();
         model.addAttribute("documents", waitingDocs);
-        return "/approvals/approvalWaiting";
+
+        return "/approvals/waiting";
     }
 
-    @GetMapping("referenceDocuments")
-    public String getReferenceDocuments(Model model) {
-        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments();
-        model.addAttribute("documents", referenceDocs);
-        return "/approvals/referenceDocuments";
+
+//    @GetMapping("referenceDocuments")
+//    public String getReferenceDocuments(Model model) {
+//        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments();
+//        model.addAttribute("documents", referenceDocs);
+//        return "/approvals/referenceDocuments";
+//    }
+
+
+
+    private String getLoggedInUserName() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
     }
-    
+
 
 }
