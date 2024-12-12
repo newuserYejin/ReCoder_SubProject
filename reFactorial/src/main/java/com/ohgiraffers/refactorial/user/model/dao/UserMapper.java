@@ -1,6 +1,5 @@
 package com.ohgiraffers.refactorial.user.model.dao;
 
-import com.ohgiraffers.refactorial.user.model.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
