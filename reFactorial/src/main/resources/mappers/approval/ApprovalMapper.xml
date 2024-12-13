@@ -6,13 +6,17 @@
 <mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
 
     <insert id="insertPm" parameterType="map">
-        insert into tbl_pm (pm_id,pm_title,pm_create,pm_category,pm_attachment)
-             values (#{pmId},#{title},#{date},#{category},#{attachment})
+        INSERT INTO tbl_pm (pm_id, pm_title, pm_create, pm_category, pm_attachment, emp_id)
+        VALUES (#{pmId}, #{title}, #{date}, #{category}, #{attachment}, #{creatorId})
     </insert>
+
 
     <insert id="insertApprover" parameterType="map">
         INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
-        VALUES (#{empId}, #{pmId}, #{pmStatus})
+        VALUES
+        <foreach collection="approvers" item="approver" separator=",">
+            (#{approver}, #{pmId}, '대기 중')
+        </foreach>
     </insert>
 
     <insert id="insertReferrer" parameterType="map">
@@ -41,9 +45,37 @@
     </select>
 
     <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
-        SELECT * FROM tbl_pm
-        WHERE pm_status = '대기 중';
+        SELECT
+            temp.*,
+            (@total - @rownum := @rownum + 1) + 1 AS rowNum
+        FROM (
+                 SELECT
+                     pm.pm_id AS pmId,
+                     pm.pm_title AS title,
+                     pm.pm_create AS createDate,
+                     pm.pm_category AS category,
+                     pm.pm_status AS status,
+                     pm.pm_attachment AS attachment,
+                     emp.emp_name AS creatorName,
+                     GROUP_CONCAT(ap.emp_id) AS approvers
+                 FROM
+                     tbl_pm pm
+                         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                         LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                 WHERE
+                     pm.pm_status = '대기 중'
+                 GROUP BY
+                     pm.pm_id, pm.pm_create
+                 ORDER BY
+                     pm.pm_create DESC
+             ) temp,
+             (SELECT @rownum := 0, @total := (
+        SELECT COUNT(*)
+        FROM tbl_pm
+        WHERE pm_status = '대기 중'
+    )) r
     </select>
+
 
     <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT pm.*
@@ -51,6 +83,18 @@
                  JOIN tbl_pm_referrer ref ON pm.pm_id = ref.pm_id
         WHERE ref.emp_id = #{empId};
     </select>
+
+    <select id="findEmployeeNameById" resultType="String">
+        SELECT emp_name FROM employee WHERE emp_id = #{employeeId}
+    </select>
+
+    <insert id="saveApprovers" parameterType="map">
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
+        VALUES
+        <foreach collection="approvers" item="approver" index="index" separator=",">
+            (#{approver}, #{pmId}, '대기 중')
+        </foreach>
+    </insert>
 
 
 </mapper>

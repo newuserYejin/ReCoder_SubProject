@@ -10,6 +10,7 @@ import java.util.Date;
 @Getter
 @ToString
 public class DocumentDTO {
+        private int rowNum;
         private String pmId;         // 문서 ID
         private String title;        // 제목
         private Date createDate;     // 생성일
@@ -19,6 +20,7 @@ public class DocumentDTO {
         private String creator;      // 작성자 (사원번호)
         private String approvers;    // 승인자 리스트 (Comma-separated)
         private String referrers;    // 참조자 리스트 (JSON String)
+        private String creatorName;  // 작성자 이름 추가
 
 
     }
