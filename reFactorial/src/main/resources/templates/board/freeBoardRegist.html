@@ -15,76 +15,8 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
     <link rel="stylesheet" th:href="@{/css/board/freeBoardRegist.css}">
+    <link rel="stylesheet" href="../../static/css/board/freeBoardRegist.css">
 
-        /* Main Content 스타일 */
-        .form-container {
-            flex: 1; /* 남은 공간 모두 차지 */
-            padding: 20px; /* 내부 여백 */
-            display: flex;
-            flex-direction: column; /* 세로 방향 정렬 */
-            align-items: flex-start; /* 왼쪽 정렬 */
-            justify-content: flex-start; /* 위쪽 정렬 */
-        }
-
-        /* 테이블 제목 스타일 */
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 2px solid black;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            width: 1000px; /* 폼 필드가 가로 전체를 차지 */
-        }
-
-        .form-group label {
-            width: 100px;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        textarea {
-            height: 439px; /* 기본 높이 설정, 직접 숫자로 조절 가능 */
-            resize: none; /* 크기 조절 비활성화 */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .button-group {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .submit-btn {
-            background-color: #5C1915;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background-color: #7e2411;
-        }
-    </style>
 </head>
 <body>
 <header th:replace="~{/common/header::headerFragment}"></header>
@@ -96,49 +28,66 @@
         <div class="form-container">
             <form id="freeBoardForm" action="/board/freeBoardRegist" method="post">
 
-                <!-- 제출 버튼 -->
-                <div class="button-group">
-                    <button type="submit" class="submit-btn">등 록</button>
+                <div class="topBox">
+
+                    <!-- 제출 버튼 -->
+                    <div class="button-group">
+                        <button type="submit" class="submit-btn">등 록</button>
+                    </div>
+
+                    <!-- 제목 -->
+                    <div class="form-group">
+                        <label for="title">제목:</label>
+                        <input type="text" id="title" name="title">
+                    </div>
+
+                    <!-- 분류 -->
+                    <div class="form-group">
+                        <label for="categoryCode">분류:</label>
+                        <select id="categoryCode" name="categoryCode">
+                            <option value="">선택</option>
+                            <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
+                            <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
+                            <option value=3 th:selected="${categoryCode == 3}">문서양식</option>
+                            <option value=4 th:selected="${categoryCode == 4}" >투표</option>
+                            <option value=5 th:selected="${categoryCode == 5}">이벤트</option>
+                        </select>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-group content">
+                        <label for="content">내용:</label>
+                        <textarea id="content" name="content"></textarea>
+                    </div>
                 </div>
 
-                <!-- 제목 -->
-                <div class="form-group">
-                    <label for="title">제목:</label>
-                    <input type="text" id="title" name="title">
-                </div>
+                <div class="footerBox">
+                    <!-- 투표게시판 조건부 input -->
+                    <div class="form-group" th:if="${categoryCode == 4}">
+                        <!-- 투표 내용 -->
+                        <div class="poll-container">
+                            <div class="container">
 
-                <!-- 분류 -->
-                <div class="form-group">
-                    <label for="categoryCode">분류:</label>
-                    <select id="categoryCode" name="categoryCode">
-                        <option value="">선택</option>
-                        <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
-                        <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
-                        <option value=3 th:selected="${categoryCode == 3}">문서양식</option>
-                        <option value=4 th:selected="${categoryCode == 4}" >투표</option>
-                        <option value=5 th:selected="${categoryCode == 5}">이벤트</option>
-                    </select>
-                </div>
-
-                <!-- 내용 -->
-                <div class="form-group content">
-                    <label for="content">내용:</label>
-                    <textarea id="content" name="content"></textarea>
-                </div>
-
-                <!-- 투표게시판 조건부 input -->
-                <div class="form-group" th:if="${categoryCode == 4}">
-                    <!-- 투표 내용 -->
-                    <div class="poll-container">
-                        <div class="container">
-
-                            <div class="input-group">
-                                <label for="option1">항목 1 : </label>
-                                <input type="text" id="option1" placeholder="내용을 입력하세요">
-                            </div>
-                            <div class="input-group">
-                                <label for="option2">항목 2 : </label>
-                                <input type="text" id="option2" placeholder="내용을 입력하세요">
+                                <div class="input-group">
+                                    <label for="option1">항목 1 : </label>
+                                    <input type="text" id="option1" placeholder="내용을 입력하세요">
+                                </div>
+                                <div class="input-group">
+                                    <label for="option2">항목 2 : </label>
+                                    <input type="text" id="option2" placeholder="내용을 입력하세요">
+                                </div>
+                                <div class="input-group">
+                                    <label for="option2">항목 3 : </label>
+                                    <input type="text" id="option3" placeholder="내용을 입력하세요">
+                                </div>
+                                <div class="input-group">
+                                    <label for="option2">항목 4 : </label>
+                                    <input type="text" id="option4" placeholder="내용을 입력하세요">
+                                </div>
+                                <div class="input-group">
+                                    <label for="option2">항목 5 : </label>
+                                    <input type="text" id="option5" placeholder="내용을 입력하세요">
+                                </div>
                             </div>
                         </div>
                     </div>
