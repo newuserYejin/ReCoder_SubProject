@@ -70,13 +70,9 @@ public class BoardController {
 
 //        System.out.println("글쓴이 = " + user);
 
-
-
         boardService.post(board);
 
-
         return "redirect:/board/list?categoryCode=" + categoryCode;
-
     }
 
     // 게시물 상세페이지
@@ -90,7 +86,6 @@ public class BoardController {
         model.addAttribute("postDetail", postDetail);
 
         return "/board/postDetail";
-
     }
 
     // 게시물 삭제
