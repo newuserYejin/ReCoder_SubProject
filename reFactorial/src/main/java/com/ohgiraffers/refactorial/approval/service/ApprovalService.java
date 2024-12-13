@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -24,6 +25,8 @@ public class ApprovalService {
     @Autowired
     private EmployeeMapper employeeMapper;
 
+    @Autowired
+    private UserMapper userMapper;
 
     public List<EmployeeDTO> searchByName(String name) {
 
@@ -81,12 +84,19 @@ public class ApprovalService {
 
         }
 
-        public List<DocumentDTO> getWaitingDocuments () {
-            return approvalMapper.getWaitingDocuments();
+    public List<DocumentDTO> getWaitingDocuments(String empId) {
+        if (empId == null || empId.isEmpty()) {
+            throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
         }
-
-
+        return approvalMapper.getWaitingDocuments(empId);
     }
+
+
+
+    public String findEmpIdByName(String name) {
+        return userMapper.findEmpIdByName(name); // 이름으로 emp_id 조회
+    }
+}
 
 
 

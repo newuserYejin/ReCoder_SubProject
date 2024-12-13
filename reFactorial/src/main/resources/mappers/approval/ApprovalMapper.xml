@@ -47,7 +47,7 @@
     <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
             temp.*,
-            (@total - @rownum := @rownum + 1) + 1 AS rowNum
+            (@rownum := @rownum + 1) AS rowNum
         FROM (
                  SELECT
                      pm.pm_id AS pmId,
@@ -60,20 +60,18 @@
                      GROUP_CONCAT(ap.emp_id) AS approvers
                  FROM
                      tbl_pm pm
-                         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                         LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                         INNER JOIN employee emp ON pm.emp_id = emp.emp_id
+                         INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
                  WHERE
                      pm.pm_status = '대기 중'
+                   AND  ap.emp_id = #{empId}
                  GROUP BY
                      pm.pm_id, pm.pm_create
                  ORDER BY
                      pm.pm_create DESC
              ) temp,
-             (SELECT @rownum := 0, @total := (
-        SELECT COUNT(*)
-        FROM tbl_pm
-        WHERE pm_status = '대기 중'
-    )) r
+             (SELECT @rownum := 0) r;
+
     </select>
 
 
@@ -95,6 +93,8 @@
             (#{approver}, #{pmId}, '대기 중')
         </foreach>
     </insert>
+
+
 
 
 </mapper>

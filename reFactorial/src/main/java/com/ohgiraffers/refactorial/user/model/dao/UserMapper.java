@@ -20,4 +20,5 @@ public interface UserMapper {
 
     int updatePersonalInfo(Map<String, String> updateData);
 
+    String findEmpIdByName(String name);
 }

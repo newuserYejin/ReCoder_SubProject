@@ -86,52 +86,76 @@ public class ApprovalController {
     }
 
     @PostMapping("/submitApproval")
-    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO, Model model, HttpSession session){
-
-        // 세션에서 로그인 정보 가져오기
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO, Model model, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
-            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+            return "redirect:/login";
         }
 
-        String creatorId = user.getEmpId(); // 세션 사용자 ID
+        String creatorId = user.getEmpId();
 
+        // 승인자들의 이름 리스트 가져오기
+        List<String> approverNames = List.of(
+                        approvalRequestDTO.getFirstApprover(),
+                        approvalRequestDTO.getMidApprover(),
+                        approvalRequestDTO.getFinalApprover()
+                ).stream()
+                .filter(name -> name != null && !name.trim().isEmpty()) // 이름이 null이거나 공백인 경우 필터링
+                .toList();
 
-        // 승인자 리스트 생성
-        List<String> approvers = List.of(
-                approvalRequestDTO.getFirstApprover(),
-                approvalRequestDTO.getMidApprover(),
-                approvalRequestDTO.getFinalApprover()
-        ).stream().filter(approver -> approver != null && !approver.isEmpty()).toList();
-
-        if (approvers.isEmpty()) {
+        if (approverNames.isEmpty()) {
             model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
             return "/approvals/approvalPage";
         }
 
-        // 1.이것은 결제문서 저장
-        String pmId = approvalService.saveApproval(approvalRequestDTO,creatorId);
+        // 이름으로 emp_id를 조회
+        List<String> approverIds = approverNames.stream()
+                .map(name -> approvalService.findEmpIdByName(name)) // 이름을 기반으로 emp_id 조회
+                .filter(id -> id != null && !id.trim().isEmpty()) // null 또는 빈 값 필터링
+                .toList();
 
-        // 2.이것은 승인자 저장
-        approvalService.saveApprovers(pmId,approvers);
+        if (approverIds.isEmpty()) {
+            model.addAttribute("errorMessage", "유효한 승인자가 없습니다.");
+            return "/approvals/approvalPage";
+        }
 
-        // 3.이것은 참조자 저장
-        approvalService.saveReferrers(pmId,approvalRequestDTO.getReferrers());
+        // 1. 결재문서 저장
+        String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
+
+        // 2. 승인자 저장 (emp_id 사용)
+        approvalService.saveApprovers(pmId, approverIds);
+
+        // 3. 참조자 저장
+        approvalService.saveReferrers(pmId, approvalRequestDTO.getReferrers());
 
         return "/approvals/approvalMain";
     }
 
+
+
     // 대기 중
     @GetMapping("waiting")
-    public String getApprovalWaiting(Model model) {
+    public String getApprovalWaiting(Model model, HttpSession session) {
+        // 세션에서 로그인한 사용자 정보 가져오기
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // emp_id를 로그로 확인
+        String loggedInEmpId = user.getEmpId();
+        System.out.println("현재 로그인한 사용자 ID: " + loggedInEmpId);
+
         // 대기 중 문서 조회
-        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments();
+        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId);
         model.addAttribute("documents", waitingDocs);
 
         return "/approvals/waiting";
     }
+
 
 
 //    @GetMapping("referenceDocuments")
