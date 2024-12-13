@@ -53,7 +53,7 @@ public class AttendanceController {
 
         LocalDateTime startDateTime = LocalDateTime.parse(searchDate.replace("Z", ""));
 
-        // 번달 받은 값에 1달 더하고 LocalDate 형태로 형변환
+        // 전달 받은 값에 1달 더하고 LocalDate 형태로 형변환
         LocalDate startDate = startDateTime.plusMonths(1).toLocalDate();
 
         // 해당 월의 첫날

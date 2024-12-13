@@ -12,6 +12,7 @@
         <result property="empEmail" column="emp_email"/>
         <result property="empJoined" column="emp_joined"/>
         <result property="annualLeave" column="annual_leave"/>
+        <result property="usedAnnualLeave" column="used_annual_leave"/>
         <result property="empPwd" column="emp_pwd"/>
         <result property="profile" column="profile"/>
         <result property="empPhone" column="emp_phone"/>
