@@ -130,25 +130,28 @@ public class BoardController {
 
     // 댓글 등록
     @PostMapping("comment")
-    public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session) {
+    public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session, Model model) {
 
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
         CommentDTO commentDetail = new CommentDTO();
 
-        System.out.println("comment = " + comment);
-        System.out.println("postId = " + postId);
+//        System.out.println("comment = " + comment);
+//        System.out.println("postId = " + postId);
 
         LocalDate commentTime = LocalDate.now();
 
-        System.out.println("commentTime = " + commentTime);
+//        System.out.println("commentTime = " + commentTime);
 
         commentDetail.setCommentContent(comment);
         commentDetail.setPostId(postId);
         commentDetail.setEmpId(user.getEmpId());
         commentDetail.setCommentCreationDate(commentTime);
 
+        model.addAttribute("comment", comment);
+
         boardService.comment(commentDetail);
+
 
 
         return "redirect:/board/postDetail?postId="+postId;

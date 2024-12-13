@@ -92,5 +92,13 @@
         )
     </insert>
 
+    <!-- 댓글 조회 -->
+    <select id="commentView">
+        select
+            *
+        from
+            tbl_comment
+    </select>
+
 
 </mapper>
