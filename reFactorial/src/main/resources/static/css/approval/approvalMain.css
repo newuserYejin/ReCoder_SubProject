@@ -137,4 +137,20 @@ html, body {
 .table-cell:last-child {
     color: #5C1915; /* 마지막 셀의 텍스트 색상 설정 */
     font-weight: bold; /* 마지막 셀의 텍스트 굵게 설정 */
+
+
+
+
+    .snow {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.7; /* 약간 투명하게 */
+        filter: blur(1px); /* 약간의 블러 효과 */
+
+    }
 }
