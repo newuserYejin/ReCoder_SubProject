@@ -107,8 +107,8 @@
     <div class="sidebar">
       <div class="sidebar-title">회의실 목록</div>
       <ul>
-        <li>예약 하기</li>
-        <li>예약 내역</li>
+        <li th:onclick="|location.href='@{/user/booking}'|">예약 하기</li>
+        <li th:onclick="|location.href='@{/booking/bookingList}'|">예약 내역</li>
       </ul>
     </div>
   <ul>
@@ -147,6 +147,5 @@
   </ul>
   </div>
 </section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>

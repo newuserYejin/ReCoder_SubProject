@@ -2,6 +2,8 @@ package com.ohgiraffers.refactorial.booking.controller;
 
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -29,6 +32,14 @@ public class ReservationController {
         // Ensure roomNo is passed correctly to the booking form page
         model.addAttribute("roomNo",roomNo);
         return "/booking/bookingForm";
+    }
+
+    @GetMapping("/booking/bookingList")
+    public String showBookingList(HttpSession session, Model model) {
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
+        model.addAttribute("userReservations", userReservations);
+        return "booking/bookingList"; // 수정된 부분
     }
 
     // 예약을 처리하는 메서드

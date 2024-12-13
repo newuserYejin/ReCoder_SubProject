@@ -25,5 +25,4 @@ public interface ReservationDAO {
 
     // 개인회의실 저장내역 메서드
     List<ReservationDTO> getUserReservations(String empId);
-
 }

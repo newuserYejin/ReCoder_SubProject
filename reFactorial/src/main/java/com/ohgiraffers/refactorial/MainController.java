@@ -39,7 +39,7 @@ public class MainController {
     
     @GetMapping("/user/booking")
     public String showReservations(HttpSession session , Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        // UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
         // 전체 예약 목록
         List<ReservationDTO> allReservations = reservationService.getAllReservations();
         model.addAttribute("allReservations", allReservations); // 전체 예약 정보 추가
@@ -48,8 +48,8 @@ public class MainController {
         model.addAttribute("cabinets",allCabinets);
 
         // 사용자 예약 목록
-        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
-        model.addAttribute("userReservations", userReservations); // 사용자 예약 정보 추가
+//        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
+//        model.addAttribute("userReservations", userReservations); // 사용자 예약 정보 추가
 
         return "/booking/booking"; // 예약 페이지로 반환
     }

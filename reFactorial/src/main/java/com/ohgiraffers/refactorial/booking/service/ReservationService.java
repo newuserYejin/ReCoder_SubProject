@@ -38,7 +38,7 @@ public class ReservationService {
     // 중복 방지 메서드
     public boolean isReservationAvailable(BigDecimal conferenceRoomNo,LocalDate date, LocalTime startTime, LocalTime endTime) {
         // 모든 회의실에 대해 예약 충돌을 확인
-        List<ReservationDTO> conflicts = reservationDAO.checkReservationConflict(conferenceRoomNo,date, startTime, endTime);
+        List<ReservationDTO> conflicts = reservationDAO.checkReservationConflict(conferenceRoomNo, date, startTime, endTime);
         return conflicts.isEmpty(); // 충돌이 없으면 true 반환
     }
 
