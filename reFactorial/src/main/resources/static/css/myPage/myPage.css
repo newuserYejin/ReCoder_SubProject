@@ -11,6 +11,8 @@ body{
 
 .myPageSection{
     padding: 30px 55px 60px;
+    height: 100%;
+    box-sizing: border-box;
 
     .pageTitle{
         font-weight: bold;
@@ -303,4 +305,21 @@ body{
             }
         }
     }
+}
+
+/*캘린더*/
+
+#calendar{
+    height: 100%;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1em;
+}
+
+.fc .fc-scroller-liquid-absolute{
+    overflow: hidden;
+}
+
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events{
+    display: none;
 }

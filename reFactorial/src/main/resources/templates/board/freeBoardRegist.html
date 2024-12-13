@@ -15,6 +15,8 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
     <link rel="stylesheet" th:href="@{/css/board/freeBoardRegist.css}">
+    <link rel="stylesheet" href="../../static/css/board/freeBoardRegist.css">
+
 
 </head>
 <body>
@@ -27,34 +29,37 @@
         <div class="form-container">
             <form id="freeBoardForm" action="/board/freeBoardRegist" method="post">
 
-                <!-- 제출 버튼 -->
-                <div class="button-group">
-                    <button type="submit" class="submit-btn">등 록</button>
-                </div>
+                <div class="topBox">
 
-                <!-- 제목 -->
-                <div class="form-group">
-                    <label for="title">제목:</label>
-                    <input type="text" id="title" name="title">
-                </div>
+                    <!-- 제출 버튼 -->
+                    <div class="button-group">
+                        <button type="submit" class="submit-btn">등 록</button>
+                    </div>
 
-                <!-- 분류 -->
-                <div class="form-group">
-                    <label for="categoryCode">분류:</label>
-                    <select id="categoryCode" name="categoryCode" onchange="onChangeSelectOption()">
-                        <option value="">선택</option>
-                        <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
-                        <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
-                        <option value=3 th:selected="${categoryCode == 3}">문서양식</option>
-                        <option value=4 th:selected="${categoryCode == 4}" >투표</option>
-                        <option value=5 th:selected="${categoryCode == 5}">이벤트</option>
-                    </select>
-                </div>
+                    <!-- 제목 -->
+                    <div class="form-group">
+                        <label for="title">제목:</label>
+                        <input type="text" id="title" name="title">
+                    </div>
 
-                <!-- 내용 -->
-                <div class="form-group content">
-                    <label for="content">내용:</label>
-                    <textarea id="content" name="content"></textarea>
+                    <!-- 분류 -->
+                    <div class="form-group">
+                        <label for="categoryCode">분류:</label>
+                        <select id="categoryCode" name="categoryCode">
+                            <option value="">선택</option>
+                            <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
+                            <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
+                            <option value=3 th:selected="${categoryCode == 3}">문서양식</option>
+                            <option value=4 th:selected="${categoryCode == 4}" >투표</option>
+                            <option value=5 th:selected="${categoryCode == 5}">이벤트</option>
+                        </select>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-group content">
+                        <label for="content">내용:</label>
+                        <textarea id="content" name="content"></textarea>
+                    </div>
                 </div>
 
                 <!-- 투표게시판 조건부 input -->
