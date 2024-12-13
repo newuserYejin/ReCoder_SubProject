@@ -41,7 +41,7 @@
                 <!-- 분류 -->
                 <div class="form-group">
                     <label for="categoryCode">분류:</label>
-                    <select id="categoryCode" name="categoryCode">
+                    <select id="categoryCode" name="categoryCode" onchange="onChangeSelectOption()">
                         <option value="">선택</option>
                         <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
                         <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
@@ -58,17 +58,17 @@
                 </div>
 
                 <!-- 투표게시판 조건부 input -->
-                <div class="form-group" th:if="${categoryCode == 4}">
+                <div id="vote-container" class="form-group">
                     <!-- 투표 내용 -->
                     <div class="poll-container">
                         <!-- 아래로 항목 추가를 위한 컨테이너 -->
                         <div id="poll-options" class="container">
                             <!-- 기본 항목 1과 2는 삭제 버튼을 없애고 항상 표시 -->
-                            <div class="input-group">
+                            <div class="input-group-item">
                                 <label for="option1">항목 1 : </label>
                                 <input type="text" id="option1" placeholder="내용을 입력하세요">
                             </div>
-                            <div class="input-group">
+                            <div class="input-group-item">
                                 <label for="option2">항목 2 : </label>
                                 <input type="text" id="option2" placeholder="내용을 입력하세요">
                             </div>
@@ -80,7 +80,7 @@
                 </div>
 
 
-                <script>
+                <script th:inline="javascript">
                     let optionCount = 2; // 기본 항목 개수
                     const maxOptions = 5; // 최대 항목 수 설정
                     const minOptions = 2; // 최소 항목 수 설정
@@ -103,12 +103,11 @@
 
                         // 새 항목 추가
                         const newOption = document.createElement('div');
-                        newOption.classList.add('input-group');
+                        newOption.classList.add('input-group-item');
                         newOption.innerHTML = `
-        <label for="option${optionCount}">항목 ${optionCount} : </label>
-        <input type="text" id="option${optionCount}" placeholder="내용을 입력하세요">
-        <button type="button" class="delete-option">삭제</button>
-    `;
+                            <label for="option${optionCount}">항목 ${optionCount} : </label>
+                            <input type="text" id="option${optionCount}" placeholder="내용을 입력하세요">
+                            <button type="button" class="delete-option">삭제</button>`;
                         pollContainer.appendChild(newOption);
 
                         // 삭제 버튼 이벤트 추가
@@ -152,7 +151,7 @@
                                 return; // 최소 항목 수 이하로 삭제 방지
                             }
 
-                            const optionGroup = button.closest('.input-group');
+                            const optionGroup = button.closest('.input-group-item');
                             optionGroup.remove(); // 항목 삭제
                             optionCount--; // 항목 개수 감소
 
@@ -172,7 +171,7 @@
                     // 삭제 후 항목 번호를 재정렬하는 함수
                     function updateOptionNumbers() {
                         const pollContainer = document.getElementById('poll-options');
-                        const options = pollContainer.querySelectorAll('.input-group');
+                        const options = pollContainer.querySelectorAll('.input-group-item');
 
                         // 각 항목에 대해 번호를 다시 매김
                         options.forEach((option, index) => {
@@ -210,8 +209,35 @@
                         }
                     }
 
+                    function onChangeSelectOption(){
+                        const categoryCode = document.querySelector('#categoryCode').value;
+                        const voteContainer = document.querySelector('#vote-container');
+
+
+                        if(categoryCode === "4"){
+                            voteContainer.style.visibility = 'visible';
+                        }else{
+                            voteContainer.style.visibility = 'hidden';
+                        }
+
+                    }
+
+                    function initSelectOption(){
+                        const categoryCode =  /*[[${categoryCode}]]*/ 1;
+                        const voteContainer = document.querySelector('#vote-container');
+
+                        if(categoryCode.toString() === "4"){
+                            voteContainer.style.visibility = 'visible';
+                        }else{
+                            voteContainer.style.visibility = 'hidden';
+                        }
+                    }
+
                     // 처음 페이지 로딩 시 최소 항목 수 보장
                     updateDeleteButtons();
+                    initSelectOption();
+
+
 
                 </script>
 
