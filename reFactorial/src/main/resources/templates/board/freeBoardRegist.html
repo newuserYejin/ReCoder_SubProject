@@ -45,7 +45,7 @@
                     <!-- 분류 -->
                     <div class="form-group">
                         <label for="categoryCode">분류:</label>
-                        <select id="categoryCode" name="categoryCode">
+                        <select id="categoryCode" name="categoryCode" onchange="onChangeSelectOption()">
                             <option value="">선택</option>
                             <option value=1 th:selected="${categoryCode == 1}">공지사항</option>
                             <option value=2 th:selected="${categoryCode == 2}">자유게시판</option>
@@ -241,8 +241,6 @@
                     // 처음 페이지 로딩 시 최소 항목 수 보장
                     updateDeleteButtons();
                     initSelectOption();
-
-
 
                 </script>
 
