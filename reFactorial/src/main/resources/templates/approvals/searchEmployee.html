@@ -31,8 +31,8 @@
     <tr th:each="employee : ${employees}">
         <td th:text="${employee.id}"></td>
         <td th:text="${employee.name}"></td>
-        <td th:text="${employee.deptName}"></td> <!-- 부서명 -->
-        <td th:text="${employee.positionName}"></td> <!-- 직책명 -->
+        <td th:text="${employee.deptName}"></td>
+        <td th:text="${employee.positionName}"></td>
         <td th:text="${employee.email}"></td>
         <td>
             <button type="button" th:data-name="${employee.name}" onclick="selectEmployee(this)">선택</button>

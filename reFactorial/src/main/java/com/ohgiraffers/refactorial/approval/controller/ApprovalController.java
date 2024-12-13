@@ -71,6 +71,16 @@ public class ApprovalController {
         } else {
             referrers = approvalService.findAllReferrers();
         }
+
+        // 부서와 직책 이름 설정
+        for (EmployeeDTO referrer : referrers) {
+            String deptName = userMapper.findDeptName(referrer.getDeptCode());
+            String positionName = userMapper.findPositionName(referrer.getPositionValue());
+            referrer.setDeptName(deptName);
+            referrer.setPositionName(positionName);
+        }
+
+
         model.addAttribute("referrers", referrers);
         return "/approvals/searchReferrers";
     }

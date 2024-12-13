@@ -36,8 +36,8 @@
     <tr th:each="referrer : ${referrers}">
         <td th:text="${referrer.id}"></td>
         <td th:text="${referrer.name}"></td>
-        <td th:text="${referrer.deptCode}"></td>
-        <td th:text="${referrer.positionValue}"></td>
+        <td th:text="${referrer.deptName}"></td>
+        <td th:text="${referrer.positionName}"></td>
         <td th:text="${referrer.email}"></td>
         <td>
             <button type="button" th:data-name="${referrer.name}" onclick="selectReferrer(this)">선택</button>
