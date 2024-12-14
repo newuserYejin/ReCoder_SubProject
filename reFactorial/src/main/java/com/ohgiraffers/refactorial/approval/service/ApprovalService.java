@@ -109,6 +109,25 @@ public class ApprovalService {
     }
 
 
+    public List<DocumentDTO> getMyDocuments(String empId) {
+        if (empId == null || empId.isEmpty()) {
+            throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+        }
+
+        // 작성자가 작성한 문서 가져오기
+        List<DocumentDTO> myDocuments = approvalMapper.getMyDocuments(empId);
+
+        // 문서 목록 출력 (디버깅)
+        if (myDocuments == null || myDocuments.isEmpty()) {
+            System.out.println("작성한 문서가 없습니다.");
+        } else {
+            System.out.println("작성한 문서 목록: " + myDocuments);  // 작성한 문서가 있을 경우 출력
+        }
+
+        return myDocuments;  // 결과 반환
+    }
+
+
 
 }
 

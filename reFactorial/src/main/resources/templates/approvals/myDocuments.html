@@ -20,20 +20,39 @@
 <body>
 <header th:replace="~{/common/header::headerFragment}"></header>
 <section>
-<div class="table-header">
-    <div class="table-cell">번호</div>
-    <div class="table-cell">제목</div>
-    <div class="table-cell">작성일</div>
-    <div class="table-cell">상태</div>
-</div>
-    <div class="table-row" th:each="doc : ${documents}">
-        <div class="table-cell" th:text="${doc.pmId}"></div>
-        <div class="table-cell" th:text="${doc.creatorName}"></div> <!-- 작성자 이름 -->
-        <div class="table-cell" th:text="${doc.title}"></div>
-        <div class="table-cell" th:text="${doc.createDate}"></div>
-        <div class="table-cell" th:text="${doc.status}"></div>
-</div>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-title">전자결제</div>
+            <ul>
+                <li><a href="/approvals/waiting">대기 중</a></li>
+                <li><a href="/approvals/inProgress">진행 중</a></li>
+                <li><a href="/approvals/completed">완료</a></li>
+                <li><a href="/approvals/rejected">반려</a></li>
+                <li><a href="/approvals/canceled">취소</a></li>
+                <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+                <li><a href="/approvals/referenceDocuments">참조 문서</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>참조 문서</h1>
+            <div class="table-header">
+                <div class="table-cell">번호</div>
+
+                <div class="table-cell">제목</div>
+                <div class="table-cell">작성일</div>
+                <div class="table-cell">상태</div>
+            </div>
+            <div class="table-row" th:each="doc : ${documents}">
+                <div class="table-cell" th:text="${doc.rowNum}"></div>
+
+                <div class="table-cell" th:text="${doc.title}"></div>
+                <div class="table-cell" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></div>
+                <div class="table-cell" th:text="${doc.status}"></div>
+            </div>
+        </div>
+    </div>
 </section>
+
 
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>

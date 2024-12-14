@@ -27,4 +27,6 @@ public interface ApprovalMapper {
 
 
     void saveReferrers(String pmId, List<String> referrers);
+
+    List<DocumentDTO> getMyDocuments(String empId);
 }

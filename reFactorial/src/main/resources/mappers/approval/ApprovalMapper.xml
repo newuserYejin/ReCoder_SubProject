@@ -123,5 +123,25 @@
         </foreach>
     </insert>
 
+    <select id="getMyDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        pm.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers
+        FROM
+        tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE
+        pm.emp_id = #{empId}  <!-- 작성자(emp_id)로 필터링 -->
+        ORDER BY
+        pm.pm_create DESC
+    </select>
+
+
 
 </mapper>
