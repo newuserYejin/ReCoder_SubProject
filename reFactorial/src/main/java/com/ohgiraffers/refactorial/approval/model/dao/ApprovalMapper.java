@@ -27,5 +27,5 @@ public interface ApprovalMapper {
     int getMyDocumentsCount(String empId);
 
 
-
+    void insertApprovalFile(Map<String, Object> params);
 }

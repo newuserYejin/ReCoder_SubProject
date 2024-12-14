@@ -167,4 +167,11 @@
         WHERE pm.emp_id = #{empId}  <!-- empId는 Map에서 가져옵니다 -->
     </select>
 
+
+
+    <insert id="insertApprovalFile" parameterType="map">
+        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type, uploaded_at)
+        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, NOW())
+    </insert>
+
 </mapper>

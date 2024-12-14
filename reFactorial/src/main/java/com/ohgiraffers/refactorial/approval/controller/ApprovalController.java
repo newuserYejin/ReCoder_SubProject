@@ -13,7 +13,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -86,7 +89,11 @@ public class ApprovalController {
     }
 
     @PostMapping("/submitApproval")
-    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO, Model model, HttpSession session) {
+    public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
+                                 @RequestParam("file") MultipartFile file,
+                                 Model model,
+                                 HttpSession session) {
+
         System.out.println("상신된 참조자 리스트: " + approvalRequestDTO.getReferrers()); // 폼에서 넘어온 참조자 확인
 
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
@@ -142,8 +149,39 @@ public class ApprovalController {
         // 참조자 저장
         approvalService.saveReferrers(pmId, referrerIds);
 
+        // 4. 첨부파일 저장
+        if (!file.isEmpty()) {
+            // 업로드할 파일 이름과 경로 설정
+            String fileName = file.getOriginalFilename();
+            String uploadDirPath = "C:/uploads";  // 파일 저장 경로 (절대 경로로 설정)
+
+            // 디렉토리가 존재하지 않으면 생성
+            File uploadDir = new File(uploadDirPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();  // 디렉토리 생성
+            }
+
+            String filePath = uploadDirPath + "/" + fileName; // 파일 경로
+            long fileSize = file.getSize();
+            String fileType = file.getContentType();
+
+            // 파일을 서버에 저장
+            File destinationFile = new File(filePath);  // 서버에 저장될 파일 경로
+            try {
+                file.transferTo(destinationFile);  // 파일 업로드
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "파일 업로드 실패");
+                return "/approvals/approvalPage";  // 파일 업로드 실패 시 처리
+            }
+
+            // 파일 정보를 DB에 저장
+            approvalService.saveApprovalFile(pmId, fileName, filePath, fileSize, fileType);
+        }
+
         return "/approvals/approvalMain";
     }
+
 
 
 

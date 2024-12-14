@@ -76,7 +76,7 @@ public class ApprovalService {
             params.put("approvers", uniqueApprovers);
 
             approvalMapper.saveApprovers(params);
-            }
+        }
     }
 
 
@@ -157,8 +157,6 @@ public class ApprovalService {
     }
 
 
-
-
     public int getMyDocumentsCount(String empId) {
         if (empId == null || empId.isEmpty()) {
             throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
@@ -169,9 +167,20 @@ public class ApprovalService {
     }
 
 
+    public void saveApprovalFile(String pmId, String fileName, String filePath, long fileSize, String fileType) {
+        // 파일 정보 저장을 위한 로직
+        Map<String, Object> fileInfo = new HashMap<>();
+        fileInfo.put("pmId", pmId);
+        fileInfo.put("fileName", fileName);
+        fileInfo.put("filePath", filePath);
+        fileInfo.put("fileSize", fileSize);
+        fileInfo.put("fileType", fileType);
+
+        // DB에 파일 정보 저장
+        approvalMapper.insertApprovalFile(fileInfo);
+    }
+
+
 }
-
-
-
 
 
