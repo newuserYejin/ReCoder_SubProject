@@ -109,13 +109,19 @@ public class ApprovalService {
     }
 
 
-    public List<DocumentDTO> getMyDocuments(String empId) {
+    public List<DocumentDTO> getMyDocuments(String empId, int limit, int offset) {
         if (empId == null || empId.isEmpty()) {
             throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
         }
 
-        // 작성자가 작성한 문서 가져오기
-        List<DocumentDTO> myDocuments = approvalMapper.getMyDocuments(empId);
+        // 파라미터를 Map으로 묶어 매퍼에 전달
+        Map<String, Object> params = new HashMap<>();
+        params.put("empId", empId);
+        params.put("limit", limit);
+        params.put("offset", offset);
+
+        // 작성자가 작성한 문서 가져오기 (LIMIT과 OFFSET을 적용한 쿼리 호출)
+        List<DocumentDTO> myDocuments = approvalMapper.getMyDocuments(params);
 
         // 문서 목록 출력 (디버깅)
         if (myDocuments == null || myDocuments.isEmpty()) {
@@ -129,6 +135,15 @@ public class ApprovalService {
 
 
 
+
+    public int getMyDocumentsCount(String empId) {
+        if (empId == null || empId.isEmpty()) {
+            throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+        }
+
+        // 작성자가 작성한 문서의 총 개수 조회
+        return approvalMapper.getMyDocumentsCount(empId);
+    }
 }
 
 

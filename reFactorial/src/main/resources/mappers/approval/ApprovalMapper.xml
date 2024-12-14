@@ -140,8 +140,15 @@
         pm.emp_id = #{empId}  <!-- 작성자(emp_id)로 필터링 -->
         ORDER BY
         pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset}  <!-- LIMIT과 OFFSET을 사용하여 페이지네이션 처리 -->
+
     </select>
 
 
+    <select id="getMyDocumentsCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+        WHERE pm.emp_id = #{empId}  <!-- empId는 Map에서 가져옵니다 -->
+    </select>
 
 </mapper>

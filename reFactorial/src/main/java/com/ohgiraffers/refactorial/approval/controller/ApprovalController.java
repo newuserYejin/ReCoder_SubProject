@@ -207,7 +207,7 @@ public class ApprovalController {
     }
 
     @GetMapping("myDocuments")
-    public String getMyDocuments(Model model, HttpSession session) {
+    public String getMyDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
@@ -215,23 +215,37 @@ public class ApprovalController {
             return "redirect:/login";
         }
 
-        // 로그인한 사용자의 emp_id 가져오기
         String loggedInEmpId = user.getEmpId();
-        System.out.println("현재 로그인한 사용자 ID: " + loggedInEmpId);
+        int limit = 14;  // 한 페이지에 14개 문서
+        int offset = (currentPage - 1) * limit;  // offset 계산
 
-        // 작성자가 작성한 문서 조회
-        List<DocumentDTO> myDocs = approvalService.getMyDocuments(loggedInEmpId);
+        // 작성자가 작성한 문서 가져오기
+        List<DocumentDTO> myDocuments = approvalService.getMyDocuments(loggedInEmpId, limit, offset);
 
-        // 최신 글이 위로 정렬되도록 번호를 매기기
-        int totalCount = myDocs.size();
-        for (int i = 0; i < myDocs.size(); i++) {
-            myDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
+        // 전체 문서 개수 가져오기
+        int totalDocuments = approvalService.getMyDocumentsCount(loggedInEmpId);
+        int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
+
+        // 문서 번호 설정 (현재 페이지에 맞는 번호)
+        for (int i = 0; i < myDocuments.size(); i++) {
+            myDocuments.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
         }
 
-        model.addAttribute("documents", myDocs);
+        // 이전 페이지 번호 계산
+        int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
+        // 다음 페이지 번호 계산
+        int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
 
-        return "/approvals/myDocuments";  // '내가 작성한 문서' 페이지로 이동
+        model.addAttribute("documents", myDocuments);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
+
+        return "/approvals/myDocuments";
     }
+
+
 
 
 
