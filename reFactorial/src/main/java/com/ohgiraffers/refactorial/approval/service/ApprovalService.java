@@ -86,13 +86,30 @@ public class ApprovalService {
     }
 
 
-    public List<DocumentDTO> getWaitingDocuments(String empId) {
+    public List<DocumentDTO> getWaitingDocuments(String empId, int limit, int offset) {
         if (empId == null || empId.isEmpty()) {
             throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
         }
+
+
+        // 참조자 문서 조회
+        Map<String, Object> params = new HashMap<>();
+        params.put("empId", empId);
+        params.put("limit", limit);
+        params.put("offset", offset);
+
         return approvalMapper.getWaitingDocuments(empId);
     }
 
+    public int getWaitingCount(String empId) {
+        if (empId == null || empId.isEmpty()) {
+            throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+        }
+
+        // 작성자가 작성한 문서의 총 개수 조회
+        return approvalMapper.getWaitingCount(empId);
+
+    }
 
 
     public String findEmpIdByName(String name) {
@@ -150,6 +167,8 @@ public class ApprovalService {
         // 작성자가 작성한 문서의 총 개수 조회
         return approvalMapper.getMyDocumentsCount(empId);
     }
+
+
 }
 
 

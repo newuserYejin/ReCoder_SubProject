@@ -150,7 +150,7 @@ public class ApprovalController {
 
     // 대기 중
     @GetMapping("waiting")
-    public String getApprovalWaiting(Model model, HttpSession session) {
+    public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage,Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
@@ -162,18 +162,32 @@ public class ApprovalController {
         String loggedInEmpId = user.getEmpId();
         System.out.println("현재 로그인한 사용자 ID: " + loggedInEmpId);
 
+        int limit = 14;  // 한 페이지에 14개 문서
+        int offset = (currentPage - 1) * limit;  // offset 계산
+
         // 대기 중 문서 조회
-        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId);
+        List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId, limit, offset);
 
 
-        // 최신 글이 위로 정렬되도록 번호를 매기기
-        int totalCount = waitingDocs.size();
+        int totalDocuments = approvalService.getWaitingCount(loggedInEmpId);
+        int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
+
+        // 문서 번호 설정 (현재 페이지에 맞는 번호)
         for (int i = 0; i < waitingDocs.size(); i++) {
-            waitingDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
+            waitingDocs.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
         }
 
+        // 이전 페이지 번호 계산
+        int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
+        // 다음 페이지 번호 계산
+        int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
 
         model.addAttribute("documents", waitingDocs);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
+
 
         return "/approvals/waiting";
     }

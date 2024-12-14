@@ -74,6 +74,13 @@
 
     </select>
 
+    <select id="getWaitingCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+                 INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE pm.pm_status = '대기 중'
+          AND ap.emp_id = #{empId}
+    </select>
 
     <select id="findEmployeeNameById" resultType="String">
         SELECT emp_name FROM employee WHERE emp_id = #{employeeId}
@@ -84,6 +91,15 @@
         VALUES
         <foreach collection="approvers" item="approver" index="index" separator=",">
             (#{approver}, #{pmId}, '대기 중')
+        </foreach>
+    </insert>
+
+    <!-- 참조자 저장 -->
+    <insert id="saveReferrers" parameterType="map">
+        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
+        VALUES
+        <foreach collection="referrers" item="referrer" separator=",">
+            (#{pmId}, #{referrer})
         </foreach>
     </insert>
 
@@ -121,14 +137,7 @@
         )
     </select>
 
-    <!-- 참조자 저장 -->
-    <insert id="saveReferrers" parameterType="map">
-        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
-        VALUES
-        <foreach collection="referrers" item="referrer" separator=",">
-            (#{pmId}, #{referrer})
-        </foreach>
-    </insert>
+
 
     <select id="getMyDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT

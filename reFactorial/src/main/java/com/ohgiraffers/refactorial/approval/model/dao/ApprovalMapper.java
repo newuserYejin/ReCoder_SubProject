@@ -13,7 +13,7 @@ public interface ApprovalMapper {
     void insertPm(Map<String, Object> params);
 
     List<DocumentDTO> getWaitingDocuments(String empId);
-
+    int getWaitingCount(String empId);
 
     void saveApprovers(Map<String, Object> params);
     void saveReferrers(String pmId, List<String> referrers);
