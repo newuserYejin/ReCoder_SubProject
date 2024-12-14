@@ -73,11 +73,20 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category">
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()">
                     <option value="">선택</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
                     <option value="category3">휴가 신청서</option>
+                </select>
+            </div>
+
+            <!-- 연차, 반차 선택 드롭다운 -->
+            <div class="form-group" id="leaveTypeDropdown" style="display:none;">
+                <label for="leaveType">휴가 유형:</label>
+                <select id="leaveType" name="leaveType">
+                    <option value="annual">연차</option>
+                    <option value="half">반차</option>
                 </select>
             </div>
 
@@ -223,6 +232,20 @@
         document.getElementById('referrers').value = referrers.join(',');
         console.log("referrers hidden field에 저장된 값: ", document.getElementById('referrers').value);
     }
+
+    // 휴가신청서를 클릭하면 드롭다운 표시
+    function showLeaveTypeDropdown() {
+        const category = document.getElementById('category').value;
+        const leaveTypeDropdown = document.getElementById('leaveTypeDropdown');
+
+        if (category === "category3") {  // 휴가 신청서 선택 시
+            leaveTypeDropdown.style.display = 'block';  // 드롭다운 보이기
+        } else {
+            leaveTypeDropdown.style.display = 'none';  // 다른 카테고리 선택 시 드롭다운 숨기기
+        }
+    }
+
+
 </script>
 
 </body>
