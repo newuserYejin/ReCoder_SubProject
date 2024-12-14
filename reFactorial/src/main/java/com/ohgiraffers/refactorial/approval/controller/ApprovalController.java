@@ -181,7 +181,7 @@ public class ApprovalController {
 
 
     @GetMapping("referenceDocuments")
-    public String getReferenceDocuments(Model model, HttpSession session) {
+    public String getReferenceDocuments(@RequestParam(defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
@@ -191,20 +191,44 @@ public class ApprovalController {
 
         String loggedInEmpId = user.getEmpId();
 
-        // 참조자 문서 조회
-        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments(loggedInEmpId);
-        System.out.println("참조 문서 목록: " + referenceDocs);  // 디버깅: 참조 문서 확인
+        int limit = 14;  // 한 페이지에 14개 문서
+        int offset = (currentPage - 1) * limit;  // offset 계산
 
+        // 참조자 문서 조회 (limit, offset 추가)
+        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments(loggedInEmpId, limit, offset);
+
+        // 참조 문서 목록 출력 (디버깅)
+        System.out.println("참조 문서 목록: " + referenceDocs);
 
         // 최신 글이 위로 정렬되도록 번호를 매기기
         int totalCount = referenceDocs.size();
         for (int i = 0; i < referenceDocs.size(); i++) {
             referenceDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
         }
-        model.addAttribute("documents", referenceDocs);
 
+        // 총 문서 개수로 페이지 수 계산
+        int totalDocuments = approvalService.getTotalReferenceDocuments(loggedInEmpId);
+        int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
+
+        // 문서 번호 설정 (현재 페이지에 맞는 번호)
+        for (int i = 0; i < referenceDocs.size(); i++) {
+            referenceDocs.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
+        }
+
+        // 이전 페이지 번호 계산
+        int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
+        // 다음 페이지 번호 계산
+        int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
+
+        model.addAttribute("documents", referenceDocs);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
         return "approvals/referenceDocuments";
     }
+
+
 
     @GetMapping("myDocuments")
     public String getMyDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {

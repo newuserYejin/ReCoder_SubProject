@@ -87,32 +87,39 @@
         </foreach>
     </insert>
 
-        <!-- 참조 문서 조회 -->
-        <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        pm.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers
+        FROM tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+        SELECT 1
+        FROM tbl_pm_referrer pr
+        WHERE pr.pm_id = pm.pm_id
+        AND pr.emp_id = #{empId}
+        )
+        ORDER BY pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset} <!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
+    </select>
 
-                SELECT
-                    pm.pm_id AS pmId,
-                    pm.pm_title AS title,
-                    pm.pm_create AS createDate,
-                    pm.pm_category AS category,
-                    pm.pm_status AS status,
-                    pm.pm_attachment AS attachment,
-                    emp.emp_name AS creatorName,
-                    pm.pm_referrer AS referrers
-                FROM tbl_pm pm
-                         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                WHERE EXISTS (
-                    SELECT 1
-                    FROM tbl_pm_referrer pr
-                    WHERE pr.pm_id = pm.pm_id
-                      AND pr.emp_id = #{empId}
-                )
-                ORDER BY pm.pm_create DESC
-
-
-
-        </select>
-
+    <select id="getTotalReferenceDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+            SELECT 1
+            FROM tbl_pm_referrer pr
+            WHERE pr.pm_id = pm.pm_id
+              AND pr.emp_id = #{empId}
+        )
+    </select>
 
     <!-- 참조자 저장 -->
     <insert id="saveReferrers" parameterType="map">

@@ -12,25 +12,20 @@ import java.util.Map;
 public interface ApprovalMapper {
     void insertPm(Map<String, Object> params);
 
-
-//    void insertReferrer(@Param("pmId") String pmId, @Param("empId") String empId);
-
-
     List<DocumentDTO> getWaitingDocuments(String empId);
 
 
     void saveApprovers(Map<String, Object> params);
-
-
-    List<DocumentDTO> getReferenceDocuments(@Param("empId") String empId);
-
-
-
     void saveReferrers(String pmId, List<String> referrers);
 
 
+    List<DocumentDTO> getReferenceDocuments(Map<String, Object> params);
+    int getTotalReferenceDocuments(@Param("empId") String empId);
+
 
     List<DocumentDTO> getMyDocuments(Map<String, Object> params);
-
     int getMyDocumentsCount(String empId);
+
+
+
 }
