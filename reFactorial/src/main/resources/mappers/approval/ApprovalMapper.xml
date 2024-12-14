@@ -19,10 +19,10 @@
         </foreach>
     </insert>
 
-    <insert id="insertReferrer" parameterType="map">
-        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
-        VALUES (#{pmId}, #{empId})
-    </insert>
+<!--    <insert id="insertReferrer" parameterType="map">-->
+<!--        INSERT INTO tbl_pm_referrer (pm_id, emp_id)-->
+<!--        VALUES (#{pmId}, #{empId})-->
+<!--    </insert>-->
 
 
     <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
@@ -75,13 +75,6 @@
     </select>
 
 
-    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
-        SELECT pm.*
-        FROM tbl_pm pm
-                 JOIN tbl_pm_referrer ref ON pm.pm_id = ref.pm_id
-        WHERE ref.emp_id = #{empId};
-    </select>
-
     <select id="findEmployeeNameById" resultType="String">
         SELECT emp_name FROM employee WHERE emp_id = #{employeeId}
     </select>
@@ -94,7 +87,41 @@
         </foreach>
     </insert>
 
+        <!-- 참조 문서 조회 -->
+        <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
 
+                SELECT
+                    pm.pm_id AS pmId,
+                    pm.pm_title AS title,
+                    pm.pm_create AS createDate,
+                    pm.pm_category AS category,
+                    pm.pm_status AS status,
+                    pm.pm_attachment AS attachment,
+                    emp.emp_name AS creatorName,
+                    pm.pm_referrer AS referrers
+                FROM tbl_pm pm
+                         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM tbl_pm_referrer pr
+                    WHERE pr.pm_id = pm.pm_id
+                      AND pr.emp_id = #{empId}
+                )
+                ORDER BY pm.pm_create DESC
+
+
+
+        </select>
+
+
+    <!-- 참조자 저장 -->
+    <insert id="saveReferrers" parameterType="map">
+        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
+        VALUES
+        <foreach collection="referrers" item="referrer" separator=",">
+            (#{pmId}, #{referrer})
+        </foreach>
+    </insert>
 
 
 </mapper>

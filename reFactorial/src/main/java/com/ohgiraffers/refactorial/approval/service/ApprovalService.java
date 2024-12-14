@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ApprovalService {
@@ -77,12 +78,13 @@ public class ApprovalService {
             approvalMapper.saveApprovers(params);
             }
     }
-        public void saveReferrers (String pmId, List < String > referrers){
-            for (String referrer : referrers) {
-                approvalMapper.insertReferrer(pmId, referrer);
-            }
 
-        }
+
+    // 참조자 저장
+    public void saveReferrers(String pmId, List<String> referrers) {
+        approvalMapper.saveReferrers(pmId, referrers);
+    }
+
 
     public List<DocumentDTO> getWaitingDocuments(String empId) {
         if (empId == null || empId.isEmpty()) {
@@ -96,6 +98,18 @@ public class ApprovalService {
     public String findEmpIdByName(String name) {
         return userMapper.findEmpIdByName(name); // 이름으로 emp_id 조회
     }
+
+    public List<DocumentDTO> getReferenceDocuments(String empId) {
+        if (empId == null || empId.isEmpty()) {
+            throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+        }
+
+        // 참조 문서 가져오기
+        return approvalMapper.getReferenceDocuments(empId);
+    }
+
+
+
 }
 
 

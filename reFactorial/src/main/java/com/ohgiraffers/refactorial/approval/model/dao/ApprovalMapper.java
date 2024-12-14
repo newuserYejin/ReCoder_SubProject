@@ -13,7 +13,7 @@ public interface ApprovalMapper {
     void insertPm(Map<String, Object> params);
 
 
-    void insertReferrer(@Param("pmId") String pmId, @Param("empId") String empId);
+//    void insertReferrer(@Param("pmId") String pmId, @Param("empId") String empId);
 
 
     List<DocumentDTO> getWaitingDocuments(String empId);
@@ -22,4 +22,9 @@ public interface ApprovalMapper {
     void saveApprovers(Map<String, Object> params);
 
 
+    List<DocumentDTO> getReferenceDocuments(@Param("empId") String empId);
+
+
+
+    void saveReferrers(String pmId, List<String> referrers);
 }

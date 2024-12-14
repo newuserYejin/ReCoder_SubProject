@@ -10,6 +10,7 @@ import java.util.Date;
 @Getter
 @ToString
 public class DocumentDTO {
+
         private int rowNum;
         private String pmId;         // 문서 ID
         private String title;        // 제목

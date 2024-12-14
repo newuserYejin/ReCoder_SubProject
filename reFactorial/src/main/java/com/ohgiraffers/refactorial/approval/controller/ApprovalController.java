@@ -6,7 +6,6 @@ import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
-import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +36,7 @@ public class ApprovalController {
 
         return "/approvals/approvalPage";
 }
+
 
     @GetMapping("searchEmployee")
     public String searchEmployeeController(@RequestParam("name") String name, Model model){
@@ -87,6 +87,8 @@ public class ApprovalController {
 
     @PostMapping("/submitApproval")
     public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO, Model model, HttpSession session) {
+        System.out.println("상신된 참조자 리스트: " + approvalRequestDTO.getReferrers()); // 폼에서 넘어온 참조자 확인
+
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
@@ -104,6 +106,10 @@ public class ApprovalController {
                 ).stream()
                 .filter(name -> name != null && !name.trim().isEmpty()) // 이름이 null이거나 공백인 경우 필터링
                 .toList();
+
+        // 참조자 리스트 확인
+        List<String> referrers = approvalRequestDTO.getReferrers();
+        System.out.println("참조자 리스트: " + referrers);  // 참조자 리스트가 제대로 전달되는지 확인
 
         if (approverNames.isEmpty()) {
             model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
@@ -127,11 +133,18 @@ public class ApprovalController {
         // 2. 승인자 저장 (emp_id 사용)
         approvalService.saveApprovers(pmId, approverIds);
 
-        // 3. 참조자 저장
-        approvalService.saveReferrers(pmId, approvalRequestDTO.getReferrers());
+        // 3. 참조자 저장 (emp_id 사용)
+        List<String> referrerIds = referrers.stream()
+                .map(name -> approvalService.findEmpIdByName(name)) // 이름을 기반으로 emp_id 조회
+                .filter(id -> id != null && !id.trim().isEmpty()) // null 또는 빈 값 필터링
+                .toList();
+
+        // 참조자 저장
+        approvalService.saveReferrers(pmId, referrerIds);
 
         return "/approvals/approvalMain";
     }
+
 
 
 
@@ -151,6 +164,15 @@ public class ApprovalController {
 
         // 대기 중 문서 조회
         List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId);
+
+
+        // 최신 글이 위로 정렬되도록 번호를 매기기
+        int totalCount = waitingDocs.size();
+        for (int i = 0; i < waitingDocs.size(); i++) {
+            waitingDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
+        }
+
+
         model.addAttribute("documents", waitingDocs);
 
         return "/approvals/waiting";
@@ -158,24 +180,41 @@ public class ApprovalController {
 
 
 
-//    @GetMapping("referenceDocuments")
-//    public String getReferenceDocuments(Model model) {
-//        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments();
-//        model.addAttribute("documents", referenceDocs);
-//        return "/approvals/referenceDocuments";
-//    }
+    @GetMapping("referenceDocuments")
+    public String getReferenceDocuments(Model model, HttpSession session) {
+        // 세션에서 로그인한 사용자 정보 가져오기
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
 
-
-
-    private String getLoggedInUserName() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            return principal.toString();
+        if (user == null) {
+            return "redirect:/login";
         }
+
+        String loggedInEmpId = user.getEmpId();
+
+        // 참조자 문서 조회
+        List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments(loggedInEmpId);
+        System.out.println("참조 문서 목록: " + referenceDocs);  // 디버깅: 참조 문서 확인
+
+
+        // 최신 글이 위로 정렬되도록 번호를 매기기
+        int totalCount = referenceDocs.size();
+        for (int i = 0; i < referenceDocs.size(); i++) {
+            referenceDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
+        }
+        model.addAttribute("documents", referenceDocs);
+
+        return "approvals/referenceDocuments";
     }
+
+
+
+
+
+
+
+
+
+
 
 
 }
