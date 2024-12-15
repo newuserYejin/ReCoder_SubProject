@@ -1,145 +1,256 @@
+/* 기본 설정 */
 html, body {
-    height: 100%; /* 전체 페이지 높이를 100%로 설정 */
-    margin: 0; /* 페이지 외부 여백 제거 */
-    padding: 0; /* 페이지 내부 여백 제거 */
-    box-sizing: border-box; /* 요소 크기 계산 방식을 테두리 포함으로 설정 */
-    overflow: hidden; /* 스크롤바를 숨김 */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.container {
-    display: flex; /* 플렉스 박스 레이아웃 사용 */
-    flex-direction: row; /* 자식 요소를 가로로 배치 */
-    height: 100%; /* 컨테이너 높이를 전체 화면에 맞춤 */
+/* 전체 컨테이너 */
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; /* 전체 화면 높이로 설정 */
+    overflow: hidden; /* wrapper에 오버플로우 설정 */
 }
 
+/* 사이드바 */
 .sidebar {
-    width: 20%; /* 사이드바 너비를 화면의 20%로 설정 */
-    border-right: 1px solid black; /* 오른쪽 경계선을 검은색으로 추가 */
-    padding: 20px; /* 내부 여백 설정 */
-    overflow-y: auto; /* 내용이 넘칠 경우 수직 스크롤바 추가 */
+    width: 20%;
+    border-right: 1px solid black;
+    padding: 20px;
+    overflow-y: auto;
 }
 
+/* 사이드바 제목 */
 .sidebar-title {
-    font-size: 32px; /* 제목 글꼴 크기 설정 */
-    font-weight: bold; /* 제목 글꼴을 굵게 설정 */
-    color: #000; /* 제목 색상을 검은색으로 설정 */
-    margin-bottom: 15px; /* 아래 여백 설정 */
-    margin-top: 46px; /* 위쪽 여백 설정 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+    margin-top: 46px;
+    text-align: center;
 }
 
+/* 사이드바 메뉴 리스트 */
 .sidebar ul {
-    margin-top: 10px; /* 리스트의 상단 여백 설정 */
-    list-style: none; /* 리스트 스타일 제거 */
-    padding: 0; /* 내부 여백 제거 */
-    text-align: center; /* 리스트 항목을 중앙 정렬 */
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: center;
     font-size: 18px;
 }
 
+/* 사이드바 메뉴 항목 */
 .sidebar li {
-    position: relative; /* 가상 요소 위치를 설정하기 위한 기준 위치 */
-    padding: 10px 0; /* 리스트 항목의 상하 여백 설정 */
-    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-}
-
-.sidebar li::after {
-    content: ''; /* 구분선을 추가하기 위한 가상 요소 */
-    display: block; /* 블록 요소로 설정 */
-    width: 45%; /* 구분선 길이를 리스트 항목 너비의 45%로 설정 */
-    height: 2px; /* 구분선 두께 설정 */
-    background-color: black; /* 구분선 색상을 검은색으로 설정 */
-    margin: 5px auto 0; /* 구분선을 중앙 정렬 및 여백 추가 */
-}
-
-.sidebar li:last-child::after {
-    display: none; /* 마지막 항목의 구분선을 제거 */
-}
-
-.sidebar li:hover {
-    font-family: 'Noto Sans KR', Arial, sans-serif; /* 마우스 오버 시 글꼴 설정 */
-    color: #5C1915; /* 마우스 오버 시 글씨 색상 설정 */
-    font-weight: 1000; /* 마우스 오버 시 글씨 굵게 설정 */
-}
-
-.sidebar li a {
-    text-decoration: none; /* 링크 밑줄 제거 */
-    color: inherit; /* 부모 요소의 색상을 상속 */
-    font-weight: inherit; /* 부모 요소의 글씨 굵기 상속 */
-    font-family: inherit; /* 부모 요소의 글꼴 상속 */
-}
-
-.sidebar li a:hover {
-    color: #5C1915; /* 마우스 오버 시 링크 색상 설정 */
-    font-weight: bold; /* 마우스 오버 시 링크 굵게 설정 */
-}
-
-
-.main-content {
-    flex: 1; /* 메인 콘텐츠가 남은 공간을 차지하도록 설정 */
-    padding: 20px; /* 내부 여백 설정 */
-    overflow-y: auto; /* 내용이 넘칠 경우 수직 스크롤바 추가 */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-}
-
-/* 문서 상세 정보 카드 스타일 */
-.detail-card {
-    width: 100%; /* 카드 너비 100%로 설정 */
-    padding: 20px; /* 카드 내부 여백 */
-    margin-top: 20px; /* 카드 위쪽 여백 */
-    border: 1px solid #ccc; /* 카드 경계선 */
-    border-radius: 8px; /* 경계선 둥글게 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-    background-color: #fff; /* 배경색 */
-}
-
-/* 문서 상세 제목 스타일 */
-.detail-card h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-/* 문서 상세 내용 영역 */
-.detail-card .content {
-    margin-bottom: 20px;
-    font-size: 16px;
-}
-
-/* 첨부파일 다운로드 링크 */
-.detail-card .file-link {
-    font-size: 14px;
-    color: #5C1915;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.detail-card .file-link:hover {
-    text-decoration: underline;
-}
-
-/* 문서 상세 버튼 */
-.button-group {
-    display: flex;
-    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
-    margin-top: 20px; /* 위 요소들과 간격 */
-}
-
-/* 제출 버튼 스타일 */
-.button-group .submit-btn {
-    padding: 6px 12px;
-    background-color: #5C1915;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    height: 30px; /* 버튼 높이 */
+    position: relative;
+    padding: 10px 0;
     cursor: pointer;
 }
 
-.button-group .submit-btn:hover {
-    background-color: #7e2411; /* hover 효과 */
+/* 사이드바 항목 구분 바 */
+.sidebar li::after {
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
+}
+
+/* 마지막 항목 구분 바 제거 */
+.sidebar li:last-child::after {
+    display: none;
+}
+
+/* 사이드바 메뉴 항목 호버 */
+.sidebar li:hover {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    color: #5C1915;
+    font-weight: 1000;
+}
+
+/* 사이드바 링크 스타일 */
+.sidebar li a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+/* 사이드바 링크 호버 */
+.sidebar li a:hover {
+    color: #5C1915;
+    font-weight: bold;
+}
+
+/* 메인 콘텐츠 컨테이너 스타일링 */
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: calc(100vh - 160px); /* 헤더(60px) + 푸터(100px) 높이 제외 */
+}
+
+/* 문서 상세 카드 스타일링 */
+.detail-card {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+/* 문서 제목 스타일링 */
+.detail-card h2 {
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #5C1915;
+    font-weight: 700;
+}
+
+/* 문서 내용 섹션 스타일링 */
+.content {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.content p {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    line-height: 1.6;
+}
+
+.content strong {
+    min-width: 80px;
+    color: #5C1915;
+    font-weight: 600;
+}
+
+.content span {
+    color: #4a4a4a;
+    flex: 1;
+}
+
+/* 추가 정보 섹션 스타일링 */
+.additional-info {
+    background-color: #f8f9fa;
+    padding: 24px;
+    border-radius: 12px;
+    margin: 24px 0;
+}
+
+.additional-info p {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.additional-info p:last-child {
+    margin-bottom: 0;
+}
+
+.additional-info strong {
+    min-width: 80px;
+    color: #5C1915;
+    font-weight: 600;
+}
+
+/* 첨부파일 링크 스타일링 */
+.file-link {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.file-link a {
+    color: #5C1915;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.file-link a::before {
+    content: "📎";
+    font-size: 18px;
+}
+
+.file-link:hover {
+    background-color: #f8f9fa;
+    border-color: #5C1915;
+}
+
+/* 버튼 그룹 스타일링 */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* 버튼 스타일링 */
+.submit-btn {
+    padding: 10px 24px;
+    background-color: #5C1915;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #7e2411;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(92, 25, 21, 0.2);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 20px;
+    }
+
+    .detail-card {
+        padding: 24px;
+    }
+
+    .detail-card h2 {
+        font-size: 24px;
+    }
+
+    .content p {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .content strong {
+        min-width: auto;
+    }
 }

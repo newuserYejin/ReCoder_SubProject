@@ -134,13 +134,13 @@ public class ApprovalController {
             return "/approvals/approvalPage";
         }
 
-        // 1. 결재문서 저장
+        // 1. 이것은 결재문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
 
-        // 2. 승인자 저장 (emp_id 사용)
+        // 2. 이것은 승인자 저장 (emp_id 사용)
         approvalService.saveApprovers(pmId, approverIds);
 
-        // 3. 참조자 저장 (emp_id 사용)
+        // 3.이것은  참조자 저장 (emp_id 사용)
         List<String> referrerIds = referrers.stream()
                 .map(name -> approvalService.findEmpIdByName(name)) // 이름을 기반으로 emp_id 조회
                 .filter(id -> id != null && !id.trim().isEmpty()) // null 또는 빈 값 필터링
@@ -321,7 +321,25 @@ public class ApprovalController {
         return "/approvals/myDocuments";
     }
 
+    // 결제문서 상세페이지 조회
+    @GetMapping("Detail/{pmId}")
+        public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model){
 
+        // pmId에 해당하는 결제 문서 정보 조회
+        DocumentDTO document = approvalService.getDocumentById(pmId);
+        System.out.println("Fetched document: " + document); // 데이터 확인용 로그
+
+        // 문서가 없으면 에러 메시지 반환
+        if (document == null) {
+                model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
+            return "errorPage"; // 에러 페이지로 리디렉션 (errorPage.html)
+        }
+
+        model.addAttribute("document",document);
+
+        return "approvals/Detail";
+
+    }
 
 
 

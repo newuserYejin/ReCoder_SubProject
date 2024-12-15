@@ -28,4 +28,6 @@ public interface ApprovalMapper {
 
 
     void insertApprovalFile(Map<String, Object> params);
+
+    DocumentDTO getDocumentById(String pmId);
 }

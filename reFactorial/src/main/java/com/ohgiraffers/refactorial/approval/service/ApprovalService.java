@@ -60,6 +60,7 @@ public class ApprovalService {
         params.put("category", approvalRequestDTO.getCategory());
         params.put("attachment", approvalRequestDTO.getAttachment());
         params.put("creatorId", creatorId); // 작성자 ID 추가
+        params.put("content", approvalRequestDTO.getContent()); // 추가된 내용
 
         approvalMapper.insertPm(params); // 매퍼 호출
         return String.valueOf(params.get("pmId")); // 생성된 pmId 반환
@@ -181,6 +182,9 @@ public class ApprovalService {
     }
 
 
+    public DocumentDTO getDocumentById(String pmId) {
+        return  approvalMapper.getDocumentById(pmId);
+    }
 }
 
 

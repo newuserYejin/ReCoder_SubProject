@@ -22,7 +22,7 @@ public class DocumentDTO {
         private String approvers;    // 승인자 리스트 (Comma-separated)
         private String referrers;    // 참조자 리스트 (JSON String)
         private String creatorName;  // 작성자 이름 추가
-
+        private String content;
 
     }
 
