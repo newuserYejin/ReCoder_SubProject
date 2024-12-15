@@ -28,5 +28,9 @@ public interface BoardMapper {
     void comment(CommentDTO comment);
 
     // 댓글 조회
-    void commentView(CommentDTO comment);
+    List<CommentDTO> commentView (int postId);
+
+    // 댓글 삭제
+    void commentDelete(int commentId);
+
 }

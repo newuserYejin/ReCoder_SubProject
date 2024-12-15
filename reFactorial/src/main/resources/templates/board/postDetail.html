@@ -69,9 +69,49 @@
             <span th:text="${comment}">댓글 내용이 여기에 표시됩니다.</span>
           </div>
         </form>
+        <!-- 댓글 조회 -->
+        <div id="comment-list">
+          <div th:each="comment : ${commentView}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+            <div style="width: 23%;" th:text="${comment.commentId}">1</div>
+            <div style="width: 35%;" th:text="${comment.empId}">사번</div>
+            <div style="width: 30%;" th:text="${comment.commentContent}">댓글</div>
+            <div style="width: 30%;" th:text="${comment.commentCreationDate}">2024-01-01</div>
+
+            <button type="button" th:onclick="|deleteComment(${comment.commentId},${comment.postId})|">삭제</button>
+          </div>
+        </div>
 
       </div>
     </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
+<script>
+  // 댓글 삭제
+  function deleteComment(commentId, postId){
+
+    fetch("http://localhost:8080/board/commentDelete?commentId="+commentId+"&postId="+postId)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      const commentListArea = document.querySelector(('#comment-list'));
+
+      let commentList = '';
+
+      for(let i=0; i < data.length; i++) {
+        commentList += `<div id="comment-list" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">`
+        commentList += `<div style='width: 23%;'>${data[i].commentId}</div>`;
+        commentList += `<div style='width: 35%;'>${data[i].empId}</div>`;
+        commentList += `<div style='width: 30%;'>${data[i].commentContent}</div>`;
+        commentList += `<div style='width: 30%;'>${data[i].commentCreationDate}</div>`;
+        commentList += `<button type='button' onclick='deleteComment(${data[i].commentId}, ${data[i].postId})'>삭제</button>`;
+        commentList += `</div>`;
+      }
+
+      alert('삭제 되었습니다.')
+
+      commentListArea.innerHTML = commentList;
+
+    });
+  }
+</script>
 </body>
