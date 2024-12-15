@@ -26,4 +26,7 @@ public interface BoardMapper {
 
     // 댓글 등록
     void comment(CommentDTO comment);
+
+    // 댓글 조회
+    void commentView(CommentDTO comment);
 }

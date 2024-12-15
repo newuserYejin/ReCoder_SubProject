@@ -93,7 +93,7 @@
     </insert>
 
     <!-- 댓글 조회 -->
-    <select id="commentView">
+    <select id="commentView" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO">
         select
             *
         from

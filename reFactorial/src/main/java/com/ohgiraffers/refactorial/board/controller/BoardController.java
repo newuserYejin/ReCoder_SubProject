@@ -157,6 +157,14 @@ public class BoardController {
         return "redirect:/board/postDetail?postId="+postId;
     }
 
+    // 댓글 조회
+    @GetMapping("commentView")
+    public String commentView(@RequestParam int postId, Model model) {
+        model.addAttribute("commentView", postId);
+
+        return "/board/postDetail";
+    }
+
     @GetMapping("document")
     public String document() {
         return "/board/document";

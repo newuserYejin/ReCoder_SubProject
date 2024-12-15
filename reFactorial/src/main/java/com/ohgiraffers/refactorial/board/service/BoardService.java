@@ -63,4 +63,10 @@ public class BoardService {
 
         boardMapper.comment(comment);
     }
+
+    // 댓글 조회
+    public void commentView(CommentDTO comment) {
+
+        boardMapper.commentView(comment);
+    }
 }
