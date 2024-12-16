@@ -143,7 +143,7 @@ public class BoardController {
 //        System.out.println("comment = " + comment);
 //        System.out.println("postId = " + postId);
 
-        LocalDate commentTime = LocalDate.now();
+        LocalDateTime commentTime = LocalDateTime.now();
 
 //        System.out.println("commentTime = " + commentTime);
 
