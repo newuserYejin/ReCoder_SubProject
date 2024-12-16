@@ -31,13 +31,13 @@ public class BoardController {
     @GetMapping("list") // url로 이동
     public String list(@RequestParam int categoryCode, Model model) {
 
-            List<BoardDTO> postList = boardService.postList(categoryCode);
+        List<BoardDTO> postList = boardService.postList(categoryCode);
 
 //            System.out.println("postList = " + postList);
 
-            model.addAttribute("postList", postList);    // 템플릿에 값 전달
+        model.addAttribute("postList", postList);    // 템플릿에 값 전달
 
-            model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
+        model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
 
 //        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
 
@@ -129,7 +129,7 @@ public class BoardController {
         boardService.updatePost(board);
 
 //        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
-        return "redirect:/board/list?categoryCode="+board.getCategoryCode();  // 게시판 이동
+        return "redirect:/board/list?categoryCode=" + board.getCategoryCode();  // 게시판 이동
 
     }
 
