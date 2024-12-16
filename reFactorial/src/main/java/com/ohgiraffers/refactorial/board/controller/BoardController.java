@@ -163,6 +163,9 @@ public class BoardController {
     @ResponseBody   // 화면 이동이 아닌 데이터만 넘겨주기 위해 사용
     public List<CommentDTO> commentDelete(@RequestParam int commentId, @RequestParam int postId) {
 
+        System.out.println("commentId = " + commentId);
+        System.out.println("commentId = " + postId);
+
         // 댓글을 삭제하는 기능
         boardService.commentDelete(commentId);
 
