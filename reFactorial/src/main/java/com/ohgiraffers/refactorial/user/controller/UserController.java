@@ -117,4 +117,18 @@ public class UserController {
         response.put("result", result);
         return response;
     }
+
+    @PostMapping("getNameById")
+    @ResponseBody
+    public Map<String, Object> getNameById (@RequestBody Map<String,Object> res){
+        Map<String, Object> result = new HashMap<>();
+
+        String empId = String.valueOf(res.get("empId"));
+
+        String empName = memberService.getNameById(empId);
+
+        result.put("empName",empName);
+
+        return result;
+    }
 }
