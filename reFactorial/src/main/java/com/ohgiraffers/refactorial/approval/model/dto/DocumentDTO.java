@@ -23,6 +23,7 @@ public class DocumentDTO {
         private String referrers;    // 참조자 리스트 (JSON String)
         private String creatorName;  // 작성자 이름 추가
         private String content;
+        private String fileUrl;
 
     }
 

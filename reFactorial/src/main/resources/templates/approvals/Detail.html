@@ -36,38 +36,38 @@
   <div class="main-content">
     <!-- 문서 상세 카드 -->
     <div class="detail-card">
-      <h2 th:text="${doc != null ? doc.title : '제목 없음'}">문서 제목</h2> <!-- 문서 제목 -->
+      <h2 th:text="${document != null ? document.title : '제목 없음'}">문서 제목</h2> <!-- 문서 제목 -->
 
       <div class="content">
         <p><strong>작성자:</strong>
-          <span th:text="${doc != null ? doc.creatorName : '작성자 정보 없음'}">작성자 이름</span>
+          <span th:text="${document != null ? document.creatorName : '작성자 정보 없음'}">작성자 이름</span>
         </p>
         <p><strong>작성일:</strong>
-          <span th:text="${doc != null ? #dates.format(doc.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
+          <span th:text="${document != null ? #dates.format(document.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
         </p>
         <p><strong>상태:</strong>
-          <span th:text="${doc != null ? doc.status : '상태 정보 없음'}">상태</span>
+          <span th:text="${document != null ? document.status : '상태 정보 없음'}">상태</span>
         </p>
         <p><strong>내용:</strong>
-          <span th:text="${doc != null ? doc.content : '내용 없음'}">내용</span>
+          <span th:text="${document != null ? document.content : '내용 없음'}">내용</span>
         </p>
       </div>
 
       <!-- 승인자 및 참조자 정보 -->
       <div class="additional-info">
         <p><strong>승인자:</strong>
-          <span th:text="${doc != null && doc.approvers != null ? doc.approvers : '승인자 정보 없음'}"></span>
+          <span th:text="${document != null && document.approvers != null ? document.approvers : '승인자 정보 없음'}"></span>
         </p>
         <p><strong>참조자:</strong>
-          <span th:text="${doc != null && doc.referrers != null ? doc.referrers : '참조자 정보 없음'}"></span>
+          <span th:text="${document != null && document.referrers != null ? document.referrers : '참조자 정보 없음'}"></span>
         </p>
       </div>
 
       <!-- 첨부파일 링크 -->
-      <div class="file-link" th:if="${doc != null && doc.fileUrl != null}">
-        <a th:href="${doc.fileUrl}" download>첨부파일 다운로드</a>
+      <div class="file-link" th:if="${document != null && document.fileUrl != null}">
+        <a th:href="${document.fileUrl}" download>첨부파일 다운로드</a>
       </div>
-      <p th:if="${doc == null}">문서 정보가 없습니다.</p>
+      <p th:if="${document == null}">문서 정보가 없습니다.</p>
     </div>
 
     <!-- 뒤로가기 버튼 -->
