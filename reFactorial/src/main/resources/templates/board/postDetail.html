@@ -86,8 +86,6 @@
               <button type="button" data-toggle="modal" data-target="#commentDeleteModal" th:data-comment-id="${comment.commentId}"
                       th:data-post-id="${comment.postId}" class="deleteBtn">삭제</button>
 
-<!--              th:onclick="|deleteComment(${comment.commentId},${comment.postId})|"-->
-
             </div>
           </div>
         </div>
@@ -107,11 +105,10 @@
                             <img src="/images/close.svg" alt="닫기 버튼">
                         </span>
           </button>
-          <div>비밀번호 변경</div>
+          <div>삭제 하시겠습니까?</div>
         </div>
         <form action="#" method="post" id="changePWForm">
           <div class="modal-body">
-            <div>삭제 하시겠습니까?</div>
           </div>
           <div class="modal-footer">
             <button type="button" id="confirmDeleteBtn" data-dismiss="modal">확 인</button>
