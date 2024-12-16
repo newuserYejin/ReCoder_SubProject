@@ -88,10 +88,10 @@
     </select>
 
     <insert id="saveApprovers" parameterType="map">
-        INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status, approval_order)
         VALUES
         <foreach collection="approvers" item="approver" index="index" separator=",">
-            (#{approver}, #{pmId}, '대기 중')
+            (#{approver.empId}, #{pmId}, '대기 중', #{approver.order})
         </foreach>
     </insert>
 
@@ -183,19 +183,20 @@
             pm.pm_category AS category,
             pm.pm_status AS status,
             pm.pm_attachment AS attachment,
-            emp.emp_name AS creatorName,
-            GROUP_CONCAT(ap.emp_id) AS approvers,
-            GROUP_CONCAT(pr.emp_id) AS referrers,
+            emp.emp_name AS creatorName, -- 작성자 이름
+            GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers, -- 승인자 목록 (순서 보장)
+            GROUP_CONCAT(DISTINCT pr.emp_id) AS referrers, -- 참조자 목록
             pm.pm_content AS content,
-            GROUP_CONCAT(af.file_path) AS fileUrl
+            GROUP_CONCAT(DISTINCT af.file_path) AS fileUrl -- 첨부 파일 경로
         FROM tbl_pm pm
-                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
-                 LEFT JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id
-                 LEFT JOIN tbl_approval_files af ON pm.pm_id = af.pm_id
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id -- 작성자 정보
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id -- 승인자 정보
+                 LEFT JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id -- 참조자 정보
+                 LEFT JOIN tbl_approval_files af ON pm.pm_id = af.pm_id -- 첨부 파일 정보
         WHERE pm.pm_id = #{pmId}
         GROUP BY pm.pm_id;
     </select>
+
 
 
 

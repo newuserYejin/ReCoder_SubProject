@@ -67,15 +67,11 @@ public class ApprovalService {
     }
 
 
-    public void saveApprovers(String pmId, List<String> approvers) {
-        // 중복 제거
-        List<String> uniqueApprovers = new ArrayList<>(new HashSet<>(approvers));
-
-        if (!uniqueApprovers.isEmpty()) {
+    public void saveApprovers(String pmId, List<Map<String, Object>> approvers) {
+        if (approvers != null && !approvers.isEmpty()) {
             Map<String, Object> params = new HashMap<>();
             params.put("pmId", pmId);
-            params.put("approvers", uniqueApprovers);
-
+            params.put("approvers", approvers);
             approvalMapper.saveApprovers(params);
         }
     }
@@ -84,13 +80,14 @@ public class ApprovalService {
     // 참조자 저장
     public void saveReferrers(String pmId, List<String> referrers) {
         if (referrers != null && !referrers.isEmpty()) {
+            List<String> uniqueReferrers = new ArrayList<>(new HashSet<>(referrers));
             Map<String, Object> params = new HashMap<>();
             params.put("pmId", pmId);
-            params.put("referrers", referrers);
-            approvalMapper.saveReferrers(params); // 수정된 Mapper 호출
+            params.put("referrers", uniqueReferrers);
+            approvalMapper.saveReferrers(params);
         }
     }
-      
+
 
 
 
@@ -220,6 +217,12 @@ public class ApprovalService {
                 .collect(Collectors.toList());
 
     }
+
+    public String findEmpNameById(String empId) {
+        return employeeMapper.findNameByEmpId(empId);
+    }
+
+
 //
 //    public List<String> findEmpNamesByIds(List<String> empIds) {
 //        return empIds.stream()
