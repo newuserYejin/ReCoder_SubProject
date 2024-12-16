@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.admin.model.dao.AdminMapper">
+
+    <select id="getAllEmployee" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
+        SELECT
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            e.emp_no AS empNo,
+            e.emp_address AS empAddress,
+            e.emp_email AS empEmail,
+            e.emp_joined AS empJoined,
+            e.annual_leave AS annualLeave,
+            e.used_annual_leave as usedAnnualLeave,
+            e.emp_pwd AS empPwd,
+            e.profile AS profile,
+            e.emp_phone AS empPhone,
+            e.dept_code AS deptCode,
+            d.dept_name AS deptName,
+            e.position_value AS positionValue,
+            p.position_name AS positionName,
+            e.view_auth AS viewAuth
+        FROM employee e , tbl_dept d, tbl_position p
+        where e.dept_code = d.dept_code
+        and e.position_value = p.position_value
+    </select>
+
+    <update id="modifyEmpInfoUpdate" parameterType="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+        UPDATE employee
+        SET
+            emp_name = #{empName},
+            emp_no = #{empNo},
+            emp_address = #{empAddress},
+            emp_email = #{empEmail},
+            emp_joined = #{empJoined},
+            annual_leave = #{annualLeave},
+            emp_pwd = #{empPwd},
+            profile = #{profile},
+            emp_phone = #{empPhone},
+            dept_code = #{deptCode},
+            position_value = #{positionValue},
+            view_auth = #{viewAuth}
+        WHERE emp_id = #{empId}
+    </update>
+
+
+</mapper>

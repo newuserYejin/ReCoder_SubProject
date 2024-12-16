@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.user.controller;
 
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -54,7 +55,7 @@ public class UserController {
 
         String insertPW = request.get("presentPW");
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String currentPW = user.getEmpPwd();
 
         matchStatus = memberService.pwMatch(insertPW,currentPW);
@@ -71,7 +72,7 @@ public class UserController {
 
         String msg = null;
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = user.getEmpId();
 
         Integer result = memberService.changePw(changePW, empId);
@@ -99,7 +100,7 @@ public class UserController {
         String phone = request.get("phone");
         String address = request.get("address");
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String userId = user.getEmpId();
 
         Integer result = memberService.updatePersonalInfo(email,phone,address,userId);

@@ -4,6 +4,7 @@ import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -85,7 +86,7 @@ public class MainController {
     @GetMapping("user/myPage")
     public String myPage(HttpSession session, Model model){
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         String deptName = memberService.findDeptName(user.getDeptCode());
         String positionName = memberService.findPositionName(user.getPositionValue());

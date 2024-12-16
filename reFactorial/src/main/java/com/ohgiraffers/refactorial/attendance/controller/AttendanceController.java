@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.attendance.controller;
 
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class AttendanceController {
 
         Map<String, Object> res = new HashMap<>();
 
-        UserDTO LoginUserInfo = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO LoginUserInfo = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         String userId = LoginUserInfo.getEmpId();
 
@@ -46,7 +47,7 @@ public class AttendanceController {
     @ResponseBody
     public List<AttendanceDTO> getAttendance(HttpSession session,@RequestBody Map<String, String> request){
         
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = user.getEmpId();
 
         String searchDate = String.valueOf( request.get("currentStart"));

@@ -185,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
             .then(response => response.json())
             .then(data => {
+                console.log("근태 데이터 : ",data)
 
                 // 모든 이벤트를 삭제하는 방법
                 calendar.getEvents().forEach(event => event.remove());

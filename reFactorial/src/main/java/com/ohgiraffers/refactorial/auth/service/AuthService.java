@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.auth.service;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class AuthService implements UserDetailsService {
         // 입력한 id가 자동으로 들어오는지 확인하기 위한 sout
         System.out.println("username = " + username);
 
-        UserDTO user = memberService.findUserId(username);
+        LoginUserDTO user = memberService.findUserId(username);
 
         // 해당 사용자 없음
         if (user == null){

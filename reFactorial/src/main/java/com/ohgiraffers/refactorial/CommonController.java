@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
@@ -16,13 +17,13 @@ import java.util.Collection;
 public class CommonController {
 
     @ModelAttribute("LoginUserInfo")
-    public UserDTO LoginUserInfo(HttpSession session) {
+    public LoginUserDTO LoginUserInfo(HttpSession session) {
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
             System.out.println("No user information in session, returning default");
-            return new UserDTO();
+            return new LoginUserDTO();
         }
 
         return user;

@@ -28,13 +28,28 @@
         (#{empId},#{empName},#{empNo},#{empAddress},#{empEmail},#{empJoined},#{annualLeave},#{empPwd},#{profile},#{empPhone},#{deptCode},#{positionValue},#{viewAuth})
     </insert>
 
-    <select id="findByUsername" parameterType="String" resultMap="LoginUser">
+    <select id="findByUsername" parameterType="String" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
         SELECT
-            *
-        FROM
-            employee
-        WHERE
-            emp_id = #{username}
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            e.emp_no AS empNo,
+            e.emp_address AS empAddress,
+            e.emp_email AS empEmail,
+            e.emp_joined AS empJoined,
+            e.annual_leave AS annualLeave,
+            e.used_annual_leave as usedAnnualLeave,
+            e.emp_pwd AS empPwd,
+            e.profile AS profile,
+            e.emp_phone AS empPhone,
+            e.dept_code AS deptCode,
+            d.dept_name AS deptName,
+            e.position_value AS positionValue,
+            p.position_name AS positionName,
+            e.view_auth AS viewAuth
+        FROM employee e , tbl_dept d, tbl_position p
+        WHERE e.dept_code = d.dept_code
+            and e.position_value = p.position_value
+            and emp_id = #{username}
     </select>
 
     <select id="findDeptName" parameterType="int">

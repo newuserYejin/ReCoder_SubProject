@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.auth.model;
 
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.Collection;
 @Setter
 public class AuthDetails implements UserDetails {
 
-    private UserDTO user;
+    private LoginUserDTO user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
