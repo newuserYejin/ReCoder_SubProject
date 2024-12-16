@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.auth.service;
 
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -32,7 +33,7 @@ public class EmailConfirmService {
 
     public Map<String, Object> matchEmpIdEmail(String confirmEmpId, String confirmEmpEmail) {
 
-        UserDTO user = userMapper.findByUsername(confirmEmpId);
+        LoginUserDTO user = userMapper.findByUsername(confirmEmpId);
 
         Map<String, Object> result = new HashMap<>();
 

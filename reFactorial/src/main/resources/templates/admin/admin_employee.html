@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_employee.css}">
+    <!--등록하기 일 경우-->
+    <link rel="stylesheet" th:href="@{/css/admin/addEmployee.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_employee.css">
+
+
+</head>
+<body>
+
+    <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">사 원</div>
+
+                <ul class="sideMenuUl">
+                    <li id="modifyEmpInfo" class="selected">정보수정</li>
+                    <li id="registeEmp">등록하기</li>
+                    <li id="updateAtt">근태수정</li>
+                </ul>
+            </div>
+            <div class="menuMainBox">
+
+            </div>
+        </div>
+    </section>
+    <!-- 유저 페이지들과 footer 공동 사용 -->
+    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+    <script>
+
+        const menuMainBox = document.querySelector(".menuMainBox");
+        const selectedMenu = document.querySelectorAll(".sideMenuUl li");
+        const modifyEmpInfo = document.querySelector("#modifyEmpInfo");
+        const registeEmp = document.querySelector("#registeEmp");
+        const updateAtt = document.querySelector("#updateAtt");
+
+        window.onload = function (){
+            fetch("/admin/getAllEmployee",{
+                method:'GET',
+                headers : {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("전체 사원 data: ", data)
+
+                    let employeeList = '';
+
+                    data.userList.forEach( employee =>{
+                        employeeList += `<div class="empItem" data-emp-id = "${employee.empId}">
+                                            <div class="profileImg">
+<!--                                                <img src=${employee.profile} alt="사진">-->
+                                                <img src="#" alt="사진">
+                                            </div>
+
+                                            <div>${employee.empName}</div>
+                                            <div>${employee.empId}</div>
+                                            <div class="deptPosition">
+                                                <div>${employee.deptName}/</div>
+                                                <div>${employee.positionName}</div>
+                                            </div>
+                                        </div>`
+                    })
+
+                    menuMainBox.innerHTML = `
+                        <div class="employeeListBox">
+                            <div class="searchBox">
+                                <form action="#">
+                                    <div>
+                                        <label for="searchBox">사번 : </label>
+                                        <input type="text" name="searchBox" id="searchBox">
+                                    </div>
+                                    <button type="button">조 회</button>
+                                </form>
+                            </div>
+
+                            <div class="employeeList">
+                                ${employeeList}  <!-- 동적으로 생성된 empItem을 삽입 -->
+                            </div>
+                        </div>
+                    `;
+
+                    const empItems = document.querySelectorAll(".empItem")
+                    empItems.forEach(item =>{
+                        item.addEventListener("click",()=>{
+                            const empId = item.dataset.empId;
+
+                            console.log("보여줄 대상자 : ",empId)
+
+                            fetch(`/admin/modifyEmpInfo?empId=${empId}`)
+                                .then(response => response.json())
+                                .then(data =>{
+
+                                    console.log("data : ",data)
+
+                                    fetch('/admin/addEmployeeFragment',{
+                                        method : 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            ModifyUser: data.ModifyUser// ModifyUser 객체를 서버로 전달
+                                        }),
+                                    })
+                                        .then(response => response.text())
+                                        .then(html =>{
+                                            const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
+
+                                            menuMainBox.innerHTML = '';
+                                            menuMainBox.appendChild(form);
+                                        })
+
+                                })
+                                .catch((error) => console.error("Fetch error: ", error));
+                        })
+                    })
+
+
+                })
+                .catch(error => {
+                    console.error("Fetch error: ", error);
+                });
+        }
+
+        // 등록하기
+        registeEmp.addEventListener("click",()=>{
+            fetch("/admin/addEmployeeFragment")
+                .then(response => response.text())
+                .then(html => {
+                    // HTML에서 form 부분만 추출
+                    const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
+
+                    menuMainBox.innerHTML = '';
+                    menuMainBox.appendChild(form);
+                })
+
+            selectedMenu.forEach(menu =>{
+                menu.classList.remove("selected")
+            })
+
+            registeEmp.classList.add("selected")
+        })
+
+        // 정보수정 클릭
+        modifyEmpInfo.addEventListener("click",()=>{
+            window.location.reload();
+        })
+
+//         // 근태수정
+//         updateAtt.addEventListener("click",()=>{
+//             fetch("/admin/getByDateAtt",{
+//                 method:'GET',
+//                 headers : {
+//                     'Content-Type': 'application/json',
+//                 }
+//             })
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     console.log("전체 사원 data: ", data)
+//
+//                     let employeeList = '';
+//
+//                     data.userList.forEach( employee =>{
+//                         employeeList += `<div class="empItem" data-emp-id = "${employee.empId}">
+//                                             <div class="profileImg">
+// <!--                                                <img src=${employee.profile} alt="사진">-->
+//                                                 <img src="#" alt="사진">
+//                                             </div>
+//
+//                                             <div>${employee.empName}</div>
+//                                             <div>${employee.empId}</div>
+//                                             <div class="deptPosition">
+//                                                 <div>${employee.deptName}/</div>
+//                                                 <div>${employee.positionName}</div>
+//                                             </div>
+//                                         </div>`
+//                     })
+//
+//                     menuMainBox.innerHTML = `
+//                         <div class="employeeListBox">
+//                             <div class="searchBox">
+//                                 <form action="#">
+//                                     <div>
+//                                         <label for="searchBox">사번 : </label>
+//                                         <input type="text" name="searchBox" id="searchBox">
+//                                     </div>
+//                                     <button type="button">조 회</button>
+//                                 </form>
+//                             </div>
+//
+//                             <div class="employeeList">
+//                                 ${employeeList}  <!-- 동적으로 생성된 empItem을 삽입 -->
+//                             </div>
+//                         </div>
+//                     `;
+//
+//                     const empItems = document.querySelectorAll(".empItem")
+//                     empItems.forEach(item =>{
+//                         item.addEventListener("click",()=>{
+//                             const empId = item.dataset.empId;
+//
+//                             console.log("보여줄 대상자 : ",empId)
+//
+//                             fetch(`/admin/modifyEmpInfo?empId=${empId}`)
+//                                 .then(response => response.json())
+//                                 .then(data =>{
+//
+//                                     console.log("data : ",data)
+//
+//                                     fetch('/admin/addEmployeeFragment',{
+//                                         method : 'POST',
+//                                         headers: {
+//                                             'Content-Type': 'application/json',
+//                                         },
+//                                         body: JSON.stringify({
+//                                             ModifyUser: data.ModifyUser// ModifyUser 객체를 서버로 전달
+//                                         }),
+//                                     })
+//                                         .then(response => response.text())
+//                                         .then(html =>{
+//                                             const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
+//
+//                                             menuMainBox.innerHTML = '';
+//                                             menuMainBox.appendChild(form);
+//                                         })
+//
+//                                 })
+//                                 .catch((error) => console.error("Fetch error: ", error));
+//                         })
+//                     })
+//
+//
+//                 })
+//                 .catch(error => {
+//                     console.error("Fetch error: ", error);
+//                 });
+//         })
+
+    </script>
+</body>
+</html>
