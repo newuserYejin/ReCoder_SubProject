@@ -7,7 +7,6 @@ section{
     box-sizing: border-box;
 
     .leftBox{
-        border: solid 1px red;
         width: 40%;
         padding: 10px;
         box-sizing: border-box;
@@ -23,7 +22,6 @@ section{
 
     .rightBox{
         width: 60%;
-        border: solid 1px green;
 
         background-color: rgba(217,217,217,0.2);
         padding: 2% 0;
@@ -79,13 +77,11 @@ section{
 
         .menuMainBox{
             width: 80%;
-            border: solid 1px blue;
 
             /* 정보 수정일 경우 */
             .employeeListBox{
                 width: 100%;
                 height: 100%;
-                border: solid 1px red;
                 padding: 10px;
 
                 box-sizing: border-box;
@@ -185,12 +181,10 @@ section{
 
             /* 근태 수정일 경우 */
             .allEmpAttListBox{
-                border: solid 1px red;
                 width: 100%;
                 height: 100%;
 
                 .searchAttBox{
-                    border: solid 1px green;
                     display: flex;
                     justify-content: center;
                     height: 15%;
@@ -218,7 +212,6 @@ section{
                 }
 
                 .empAttList{
-                    border: solid 1px red;
                     width: 100%;
                     box-sizing: border-box;
 

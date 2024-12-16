@@ -59,5 +59,12 @@
         WHERE DATE(att_date) = #{selectedDay}
     </select>
 
+    <update id="modifyEmpAtt" parameterType="Map">
+        UPDATE tbl_attendance
+        SET
+            att_status = #{selectedStatus}
+        WHERE emp_id = #{empId}
+          AND att_date = #{attDate}
+    </update>
 
 </mapper>

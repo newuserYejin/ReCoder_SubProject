@@ -41,4 +41,15 @@ public class AdminService {
     public int getTotalCountByDateAtt(String selectedDay) {
         return am.getTotalCountByDateAtt(selectedDay);
     }
+
+    public Integer modifyEmpAtt(String empId, String attDate, String selectedStatus) {
+
+        Map<String, Object> sendData = new HashMap<>();
+
+        sendData.put("empId",empId);
+        sendData.put("attDate",attDate);
+        sendData.put("selectedStatus",selectedStatus);
+
+        return am.modifyEmpAtt(sendData);
+    }
 }

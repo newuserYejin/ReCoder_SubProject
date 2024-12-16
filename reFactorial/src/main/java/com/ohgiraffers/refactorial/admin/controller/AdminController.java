@@ -75,8 +75,6 @@ public class AdminController {
     @PostMapping("addEmployeeFragment")
     public String updateEmployeeFragment(@RequestBody Map<String, Object> res, Model model){
 
-        System.out.println("res = " + res);
-
          Map<String, LoginUserDTO> user = (Map<String, LoginUserDTO>) res.get("ModifyUser");
 
         System.out.println("user = " + user);
@@ -94,8 +92,6 @@ public class AdminController {
         // 전체 데이터의 개수
         int totalRecords = adminService.getTotalCountByDateAtt(selectedDay);
 
-        System.out.println("totalRecords = " + totalRecords);
-
         // 전체 페이지 수 계산
         int totalPages = (int) Math.ceil((double) totalRecords / size);
 
@@ -107,6 +103,25 @@ public class AdminController {
         Map<String, Object> result = new HashMap<>();
         result.put("items",getByDateAttList);
         result.put("totalPages",totalPages);
+
+        return result;
+    }
+
+    @PostMapping("modifyEmpAtt")
+    @ResponseBody
+    public Map<String, Object> modifyEmpAtt (@RequestBody Map<String , Object> res){
+
+        Map<String, Object> result = new HashMap<>();
+
+        String empId = String.valueOf( res.get("empId"));
+        String attDate = String.valueOf( res.get("attDate"));
+        String selectedStatus = String.valueOf( res.get("selectedStatus"));
+
+        Integer updateInt = adminService.modifyEmpAtt(empId,attDate,selectedStatus);
+
+        if (updateInt > 0){
+            System.out.println("근태가 수정되었습니다.");
+        }
 
         return result;
     }
