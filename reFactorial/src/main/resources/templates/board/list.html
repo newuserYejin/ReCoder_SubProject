@@ -61,6 +61,29 @@
     </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
+<!--<script>-->
+<!--    // 페이지 맨 위로 새로운 글을 추가하는 함수-->
+<!--    function addNewPostToTop(postHTML) {-->
+<!--        const postList = document.getElementById('post-list');-->
+<!--        const newPost = document.createElement('div');-->
+<!--        newPost.innerHTML = postHTML; // 서버에서 받아온 새 글 HTML을 삽입-->
+<!--        postList.insertBefore(newPost, postList.firstChild); // 첫 번째 자식으로 추가-->
+<!--    }-->
+
+<!--    // 예시로 서버에서 새로운 게시글 데이터를 받아온 후 처리-->
+<!--    // 여기에 서버에서 새 글 데이터를 받아오는 로직을 추가하세요.-->
+<!--    function onNewPostAdded(post) {-->
+<!--        const postHTML = `-->
+<!--            <div style="display: flex; border-bottom: 1px solid gray; padding: 10px;">-->
+<!--                <div style="width: 23%;">${post.index}</div>-->
+<!--                <div style="width: 35%;">${post.writer}</div>-->
+<!--                <a style="width: 40%;" href="/board/postDetail(postId=${post.id})">${post.title}</a>-->
+<!--                <div style="width: 30%;">${post.creationDate}</div>-->
+<!--            </div>-->
+<!--        `;-->
+<!--        addNewPostToTop(postHTML);-->
+<!--    }-->
+<!--</script>-->
 
 </body>
 </html>

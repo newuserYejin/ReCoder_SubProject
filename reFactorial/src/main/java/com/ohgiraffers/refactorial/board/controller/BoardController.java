@@ -4,6 +4,7 @@ import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
 import com.ohgiraffers.refactorial.board.service.BoardService;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class BoardController {
     public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int categoryCode,
                             Model model, HttpSession session) {
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
         board.setPostId(board.getPostId());     // 게시물 번호
@@ -136,7 +137,7 @@ public class BoardController {
     @PostMapping("comment")
     public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session, Model model) {
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
         CommentDTO commentDetail = new CommentDTO();
 
