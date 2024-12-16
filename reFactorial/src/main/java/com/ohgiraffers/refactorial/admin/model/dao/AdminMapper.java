@@ -19,4 +19,6 @@ public interface AdminMapper {
     int getTotalCountByDateAtt(String selectedDay);
 
     List<AttendanceDTO> getByDateAtt(Map<String, Object> sendData);
+
+    Integer modifyEmpAtt(Map<String, Object> sendData);
 }
