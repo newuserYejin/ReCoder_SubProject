@@ -39,7 +39,48 @@
                 </ul>
             </div>
             <div class="menuMainBox">
+                <div class="allEmpAttListBox">
+                    <div class="searchAttBox">
+                        <form>
+                            <label for="searchAttId">사번</label>
+                            <input type="text" id="searchAttId" name="searchAttId">
 
+                            <button type="button">조회</button>
+
+                            <input type="date" id="searchAttDate" name="searchAttDate">
+                        </form>
+                    </div>
+
+                    <div class="empAttList">
+
+                        <div class="empAttListTitle">
+                            <table border="1">
+                                <tr>
+                                    <th>사번</th>
+                                    <th>이름</th>
+                                    <th>날짜</th>
+                                    <th>근태 상태</th>
+                                </tr>
+                            </table>
+                            <table>
+                                <tr>
+                                    <td>32121</td>
+                                    <td>홍길동</td>
+                                    <td>2024.12.16</td>
+                                    <td>지각</td>
+                                </tr>
+                                <tr>
+                                    <td>32121</td>
+                                    <td>홍길동</td>
+                                    <td>2024.12.16</td>
+                                    <td>지각</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
         </div>
     </section>
@@ -167,96 +208,34 @@
             window.location.reload();
         })
 
-//         // 근태수정
-//         updateAtt.addEventListener("click",()=>{
-//             fetch("/admin/getByDateAtt",{
-//                 method:'GET',
-//                 headers : {
-//                     'Content-Type': 'application/json',
-//                 }
-//             })
-//                 .then(response => response.json())
-//                 .then(data => {
-//                     console.log("전체 사원 data: ", data)
-//
-//                     let employeeList = '';
-//
-//                     data.userList.forEach( employee =>{
-//                         employeeList += `<div class="empItem" data-emp-id = "${employee.empId}">
-//                                             <div class="profileImg">
-// <!--                                                <img src=${employee.profile} alt="사진">-->
-//                                                 <img src="#" alt="사진">
-//                                             </div>
-//
-//                                             <div>${employee.empName}</div>
-//                                             <div>${employee.empId}</div>
-//                                             <div class="deptPosition">
-//                                                 <div>${employee.deptName}/</div>
-//                                                 <div>${employee.positionName}</div>
-//                                             </div>
-//                                         </div>`
-//                     })
-//
-//                     menuMainBox.innerHTML = `
-//                         <div class="employeeListBox">
-//                             <div class="searchBox">
-//                                 <form action="#">
-//                                     <div>
-//                                         <label for="searchBox">사번 : </label>
-//                                         <input type="text" name="searchBox" id="searchBox">
-//                                     </div>
-//                                     <button type="button">조 회</button>
-//                                 </form>
-//                             </div>
-//
-//                             <div class="employeeList">
-//                                 ${employeeList}  <!-- 동적으로 생성된 empItem을 삽입 -->
-//                             </div>
-//                         </div>
-//                     `;
-//
-//                     const empItems = document.querySelectorAll(".empItem")
-//                     empItems.forEach(item =>{
-//                         item.addEventListener("click",()=>{
-//                             const empId = item.dataset.empId;
-//
-//                             console.log("보여줄 대상자 : ",empId)
-//
-//                             fetch(`/admin/modifyEmpInfo?empId=${empId}`)
-//                                 .then(response => response.json())
-//                                 .then(data =>{
-//
-//                                     console.log("data : ",data)
-//
-//                                     fetch('/admin/addEmployeeFragment',{
-//                                         method : 'POST',
-//                                         headers: {
-//                                             'Content-Type': 'application/json',
-//                                         },
-//                                         body: JSON.stringify({
-//                                             ModifyUser: data.ModifyUser// ModifyUser 객체를 서버로 전달
-//                                         }),
-//                                     })
-//                                         .then(response => response.text())
-//                                         .then(html =>{
-//                                             const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
-//
-//                                             menuMainBox.innerHTML = '';
-//                                             menuMainBox.appendChild(form);
-//                                         })
-//
-//                                 })
-//                                 .catch((error) => console.error("Fetch error: ", error));
-//                         })
-//                     })
-//
-//
-//                 })
-//                 .catch(error => {
-//                     console.error("Fetch error: ", error);
-//                 });
-//         })
+        // 근태수정
+        updateAtt.addEventListener("click",()=>{
+            fetch("/admin/getByDateAtt",{
+                method:'GET',
+                headers : {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("전체 사원 근태 data: ", data)
+                })
+                .catch(error => {
+                    console.error("Fetch error: ", error);
+                });
+        })
 
+    </script>
+
+    <script>
+        // 오늘 날짜를 가져옵니다.
+        const today = new Date();
+
+        // 년, 월, 일을 yyyy-mm-dd 형식으로 포맷합니다.
+        const formattedDate = today.toISOString().split('T')[0];
+
+        // input 요소의 value를 오늘 날짜로 설정합니다.
+        document.getElementById('searchAttDate').value = formattedDate;
     </script>
 </body>
 </html>

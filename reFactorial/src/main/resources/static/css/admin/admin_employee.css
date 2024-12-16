@@ -182,6 +182,21 @@ section{
                     }
                 }
             }
+
+            /* 근태 수정일 경우 */
+            .allEmpAttListBox{
+                border: solid 1px red;
+                width: 100%;
+                height: 100%;
+
+                .searchAttBox{
+                    border: solid 1px green;
+                    display: flex;
+                    justify-content: center;
+                }
+
+            }
+
         }
     }
 }
