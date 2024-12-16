@@ -134,22 +134,25 @@ public class ApprovalController {
             return "/approvals/approvalPage";
         }
 
-        // 1. 이것은 결재문서 저장
+        // 1. 결재문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
 
-        // 2. 이것은 승인자 저장 (emp_id 사용)
+        // 2. 승인자 저장 (emp_id 사용)
         approvalService.saveApprovers(pmId, approverIds);
 
-        // 3.이것은  참조자 저장 (emp_id 사용)
-        List<String> referrerIds = referrers.stream()
-                .map(name -> approvalService.findEmpIdByName(name)) // 이름을 기반으로 emp_id 조회
-                .filter(id -> id != null && !id.trim().isEmpty()) // null 또는 빈 값 필터링
-                .toList();
-
-        // 참조자 저장
+        // 3. 참조자 저장 (이름을 기반으로 ID로 변환 후 저장)
+        List<String> referrerIds = approvalService.findEmpIdsByNames(referrers); // 이름을 기반으로 emp_id로 변환
         approvalService.saveReferrers(pmId, referrerIds);
 
-        // 4. 첨부파일 저장
+        // 4. 승인자 ID를 이름으로 변환하여 모델에 추가
+        List<String> approverNamesFromIds = approvalService.findEmpNamesByIds(approverIds); // ID를 이름으로 변환
+        model.addAttribute("approverNames", approverNamesFromIds);  // 이름을 모델에 추가
+
+        // 5. 참조자 ID를 이름으로 변환하여 모델에 추가
+        List<String> referrerNamesFromIds = approvalService.findEmpNamesByIds(referrerIds); // ID를 이름으로 변환
+        model.addAttribute("referrerNames", referrerNamesFromIds);  // 이름을 모델에 추가
+
+        // 6. 첨부파일 저장
         if (!file.isEmpty()) {
             // 업로드할 파일 이름과 경로 설정
             String fileName = file.getOriginalFilename();
@@ -181,6 +184,7 @@ public class ApprovalController {
 
         return "/approvals/approvalMain";
     }
+
 
 
 
@@ -327,6 +331,9 @@ public class ApprovalController {
 
         // pmId에 해당하는 결제 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
+        System.out.println("Approvers: " + document.getApprovers());
+        System.out.println("Referrers: " + document.getReferrers());
+
         System.out.println("Fetched document: " + document); // 데이터 확인용 로그
 
         // 문서가 없으면 에러 메시지 반환
