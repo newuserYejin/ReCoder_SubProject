@@ -27,12 +27,12 @@ public class BoardController {
     }
 
     // 게시물 전체조회
-    @GetMapping("list")
+    @GetMapping("list") // url로 이동
     public String list(@RequestParam int categoryCode, Model model) {
 
             List<BoardDTO> postList = boardService.postList(categoryCode);
 
-            System.out.println("postList = " + postList);
+//            System.out.println("postList = " + postList);
 
             model.addAttribute("postList", postList);    // 템플릿에 값 전달
 
@@ -40,7 +40,7 @@ public class BoardController {
 
 //        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
 
-        return "/board/list";
+        return "/board/list";   // html 페이지로 이동
 
     }
 
@@ -74,18 +74,22 @@ public class BoardController {
 
         boardService.post(board);
 
-        return "redirect:/board/list?categoryCode=" + categoryCode;
+        return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
     }
 
-    // 게시물 상세페이지
+    // 게시물 상세페이지 / 댓글 등록
     @GetMapping("postDetail")
     public String postDetail(@RequestParam int postId, Model model) {
 
+        // 게시물 상세
         BoardDTO postDetail = boardService.postDetail(postId);
+        // 댓글 리스트 가져옴
+        List<CommentDTO> comment = boardService.commentView(postId);
 
 //        System.out.println("postDetail = " + postDetail);
 
         model.addAttribute("postDetail", postDetail);
+        model.addAttribute("commentView", comment);
 
         return "/board/postDetail";
     }
@@ -130,43 +134,41 @@ public class BoardController {
 
     // 댓글 등록
     @PostMapping("comment")
-    public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session) {
+    public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session, Model model) {
 
         UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
         CommentDTO commentDetail = new CommentDTO();
 
-        System.out.println("comment = " + comment);
-        System.out.println("postId = " + postId);
+//        System.out.println("comment = " + comment);
+//        System.out.println("postId = " + postId);
 
         LocalDate commentTime = LocalDate.now();
 
-        System.out.println("commentTime = " + commentTime);
+//        System.out.println("commentTime = " + commentTime);
 
         commentDetail.setCommentContent(comment);
         commentDetail.setPostId(postId);
         commentDetail.setEmpId(user.getEmpId());
         commentDetail.setCommentCreationDate(commentTime);
 
+        model.addAttribute("comment", comment);
+
         boardService.comment(commentDetail);
 
-
-        return "redirect:/board/postDetail?postId="+postId;
+        return "redirect:/board/postDetail?postId=" + postId;
     }
 
-    @GetMapping("document")
-    public String document() {
-        return "/board/document";
-    }
+    @GetMapping("commentDelete")
+    @ResponseBody   // 화면 이동이 아닌 데이터만 넘겨주기 위해 사용
+    public List<CommentDTO> commentDelete(@RequestParam int commentId, @RequestParam int postId) {
 
-    @GetMapping("vote")
-    public String vote() {
-        return "/board/vote";
-    }
+        // 댓글을 삭제하는 기능
+        boardService.commentDelete(commentId);
 
-    @GetMapping("event")
-    public String event() {
-        return "/board/event";
+        // 화면에 댓글 리스트 형태로 가져옴
+        return boardService.commentView(postId);
+
     }
 
 }

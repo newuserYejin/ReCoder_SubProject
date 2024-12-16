@@ -63,4 +63,16 @@ public class BoardService {
 
         boardMapper.comment(comment);
     }
+
+    // 댓글 조회
+    public List<CommentDTO> commentView(int comment) {
+
+        return boardMapper.commentView(comment);
+    }
+
+    // 댓글 삭제
+    public void commentDelete(int commentId) {
+        boardMapper.commentDelete(commentId);
+    }
+
 }
