@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.refactorial.user.model.dao.UserMapper">
 
-    <resultMap id="LoginUser" type="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+    <resultMap id="LoginUser" type="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
         <id property="empId" column="emp_id"/>
         <result property="empName" column="emp_name"/>
         <result property="empNo" column="emp_no"/>
@@ -17,7 +17,9 @@
         <result property="profile" column="profile"/>
         <result property="empPhone" column="emp_phone"/>
         <result property="deptCode" column="dept_code"/>
+        <result property="deptName" column="dept_name"/>
         <result property="positionValue" column="position_value"/>
+        <result property="positionName" column="position_name"/>
         <result property="viewAuth" column="view_auth"/>
     </resultMap>
 
@@ -28,28 +30,28 @@
         (#{empId},#{empName},#{empNo},#{empAddress},#{empEmail},#{empJoined},#{annualLeave},#{empPwd},#{profile},#{empPhone},#{deptCode},#{positionValue},#{viewAuth})
     </insert>
 
-    <select id="findByUsername" parameterType="String" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
+    <select id="findByUsername" parameterType="String" resultMap="LoginUser">
         SELECT
-            e.emp_id AS empId,
-            e.emp_name AS empName,
-            e.emp_no AS empNo,
-            e.emp_address AS empAddress,
-            e.emp_email AS empEmail,
-            e.emp_joined AS empJoined,
-            e.annual_leave AS annualLeave,
-            e.used_annual_leave as usedAnnualLeave,
-            e.emp_pwd AS empPwd,
-            e.profile AS profile,
-            e.emp_phone AS empPhone,
-            e.dept_code AS deptCode,
-            d.dept_name AS deptName,
-            e.position_value AS positionValue,
-            p.position_name AS positionName,
-            e.view_auth AS viewAuth
-        FROM employee e , tbl_dept d, tbl_position p
-        WHERE e.dept_code = d.dept_code
-            and e.position_value = p.position_value
-            and emp_id = #{username}
+            e.emp_id,
+            e.emp_name,
+            e.emp_no,
+            e.emp_address,
+            e.emp_email,
+            e.emp_joined,
+            e.annual_leave,
+            e.used_annual_leave,
+            e.emp_pwd,
+            e.profile,
+            e.emp_phone,
+            e.dept_code,
+            d.dept_name,
+            e.position_value,
+            p.position_name,
+            e.view_auth
+        FROM employee e
+        LEFT JOIN tbl_dept d ON e.dept_code = d.dept_code
+        LEFT JOIN tbl_position p ON e.position_value = p.position_value
+        WHERE emp_id = #{username}
     </select>
 
     <select id="findDeptName" parameterType="int">
