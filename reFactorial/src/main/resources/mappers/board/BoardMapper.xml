@@ -46,6 +46,10 @@
         )
     </insert>
 
+    <insert id=" ">
+
+    </insert>
+
     <!-- 게시물 상세페이지 -->
     <select id="postDetail" parameterType="int" resultMap="boardResultMap">
         select
