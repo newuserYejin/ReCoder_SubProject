@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,12 +86,29 @@ public class AdminController {
         return "/admin/addEmployee";
     }
 
-//    @GetMapping("getByDateAtt")
-//    public List<AttendanceDTO> getByDateAtt(){
-//
-//
-//
-//
-//    }
+    @GetMapping("getByDateAtt")
+    @ResponseBody
+    public Map<String, Object> getByDateAtt(@RequestParam String selectedDay,
+                                            @RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "10") int size){
+        // 전체 데이터의 개수
+        int totalRecords = adminService.getTotalCountByDateAtt(selectedDay);
+
+        System.out.println("totalRecords = " + totalRecords);
+
+        // 전체 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) totalRecords / size);
+
+        // 건너뛸 갯수
+        int offset = (page - 1) * size;
+
+        List<AttendanceDTO> getByDateAttList = adminService.getByDateAtt(selectedDay,offset,size);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("items",getByDateAttList);
+        result.put("totalPages",totalPages);
+
+        return result;
+    }
 
 }

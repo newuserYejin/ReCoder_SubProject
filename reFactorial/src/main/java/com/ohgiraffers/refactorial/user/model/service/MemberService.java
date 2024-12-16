@@ -91,4 +91,8 @@ public class MemberService {
 
         return result;
     }
+
+    public String getNameById(String empId) {
+        return userMapper.getNameById(empId);
+    }
 }

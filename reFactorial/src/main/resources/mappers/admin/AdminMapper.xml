@@ -45,5 +45,19 @@
         WHERE emp_id = #{empId}
     </update>
 
+    <select id="getByDateAtt" parameterType="Map" resultType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        SELECT *
+        FROM tbl_attendance
+        WHERE DATE(att_date) = #{selectedDay}
+        ORDER BY emp_id
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="getTotalCountByDateAtt" parameterType="String" resultType="int">
+        SELECT count(*)
+        FROM tbl_attendance
+        WHERE DATE(att_date) = #{selectedDay}
+    </select>
+
 
 </mapper>

@@ -101,4 +101,10 @@
         LIMIT 1
     </select>
 
+    <select id="getNameById" resultType="String" parameterType="String">
+        SELECT emp_name
+        FROM employee
+        WHERE emp_id = #{empId}
+    </select>
+
 </mapper>
