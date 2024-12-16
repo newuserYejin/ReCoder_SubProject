@@ -83,8 +83,15 @@ public class ApprovalService {
 
     // 참조자 저장
     public void saveReferrers(String pmId, List<String> referrers) {
-        approvalMapper.saveReferrers(pmId, referrers);
+        if (referrers != null && !referrers.isEmpty()) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("pmId", pmId);
+            params.put("referrers", referrers);
+            approvalMapper.saveReferrers(params); // 수정된 Mapper 호출
+        }
     }
+      
+
 
 
     public List<DocumentDTO> getWaitingDocuments(String empId, int limit, int offset) {
@@ -183,8 +190,42 @@ public class ApprovalService {
 
 
     public DocumentDTO getDocumentById(String pmId) {
+
         return  approvalMapper.getDocumentById(pmId);
     }
+
+    public List<String> findEmpIdsByNames(List<String> referrers) {
+        // 이름 리스트가 비어 있는지 확인
+        if (referrers == null || referrers.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 이름을 기반으로 emp_id 리스트를 생성
+        return referrers.stream()
+                .map(name -> employeeMapper.findEmpIdByName(name)) // Mapper를 호출하여 emp_id 조회
+                .filter(Objects::nonNull) // Null 값 제거
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findEmpNamesByIds(List<String> approverIds) {
+        // ID 리스트가 비어 있는지 확인
+        if (approverIds == null || approverIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // emp_id를 기반으로 이름 리스트를 생성
+        return approverIds.stream()
+                .map(id -> employeeMapper.findNameByEmpId(id)) // Mapper를 호출하여 이름 조회
+                .filter(Objects::nonNull) // Null 값 제거
+                .collect(Collectors.toList());
+
+    }
+//
+//    public List<String> findEmpNamesByIds(List<String> empIds) {
+//        return empIds.stream()
+//                .map(id -> employeeMapper.findNameByEmpId(id))  // emp_id에 해당하는 이름 조회
+//                .collect(Collectors.toList());
+//    }
 }
 
 

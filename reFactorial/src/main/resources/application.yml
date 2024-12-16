@@ -30,4 +30,14 @@ server:
   servlet:
     session:
       timeout=1800:
+  tomcat:
+    max-file-size: 100MB  # 파일 크기 제한 설정
+    max-request-size: 100MB  # 전체 요청 크기 제한 설정
+
+  spring:
+    servlet:
+      multipart:
+        enabled: true  # 파일 업로드 기능을 활성화
+        max-file-size: 100MB  # 업로드할 수 있는 단일 파일의 최대 크기
+        max-request-size: 100MB  # 전체 요청 크기의 최대 크기
 
