@@ -101,5 +101,10 @@ public class MainController {
         return "/mail/mailMain";
     }
 
+    @GetMapping("/user/product")
+    public String zasaPage(){
+        return "zasaPage/product";
+    }
+
 }
 

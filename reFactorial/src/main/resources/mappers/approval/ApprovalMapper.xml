@@ -6,8 +6,8 @@
 <mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
 
     <insert id="insertPm" parameterType="map">
-        INSERT INTO tbl_pm (pm_id, pm_title, pm_create, pm_category, pm_attachment, emp_id)
-        VALUES (#{pmId}, #{title}, #{date}, #{category}, #{attachment}, #{creatorId})
+        INSERT INTO tbl_pm (pm_id, pm_title, pm_create, pm_category, pm_attachment, emp_id, pm_content)
+        VALUES (#{pmId}, #{title}, #{date}, #{category}, #{attachment}, #{creatorId},#{content})
     </insert>
 
 
@@ -19,10 +19,10 @@
         </foreach>
     </insert>
 
-    <insert id="insertReferrer" parameterType="map">
-        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
-        VALUES (#{pmId}, #{empId})
-    </insert>
+<!--    <insert id="insertReferrer" parameterType="map">-->
+<!--        INSERT INTO tbl_pm_referrer (pm_id, emp_id)-->
+<!--        VALUES (#{pmId}, #{empId})-->
+<!--    </insert>-->
 
 
     <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
@@ -36,6 +36,7 @@
             pm.emp_id AS creator,
             JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers, -- JSON 파싱
             GROUP_CONCAT(ap.emp_id) AS approvers -- 승인자 리스트
+            pm.pm_content AS content
         FROM
             tbl_pm pm
                 LEFT JOIN
@@ -47,7 +48,7 @@
     <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
             temp.*,
-            (@total - @rownum := @rownum + 1) + 1 AS rowNum
+            (@rownum := @rownum + 1) AS rowNum
         FROM (
                  SELECT
                      pm.pm_id AS pmId,
@@ -60,28 +61,26 @@
                      GROUP_CONCAT(ap.emp_id) AS approvers
                  FROM
                      tbl_pm pm
-                         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                         LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                         INNER JOIN employee emp ON pm.emp_id = emp.emp_id
+                         INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
                  WHERE
                      pm.pm_status = '대기 중'
+                   AND  ap.emp_id = #{empId}
                  GROUP BY
                      pm.pm_id, pm.pm_create
                  ORDER BY
                      pm.pm_create DESC
              ) temp,
-             (SELECT @rownum := 0, @total := (
-        SELECT COUNT(*)
-        FROM tbl_pm
-        WHERE pm_status = '대기 중'
-    )) r
+             (SELECT @rownum := 0) r;
+
     </select>
 
-
-    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
-        SELECT pm.*
+    <select id="getWaitingCount" resultType="int">
+        SELECT COUNT(*)
         FROM tbl_pm pm
-                 JOIN tbl_pm_referrer ref ON pm.pm_id = ref.pm_id
-        WHERE ref.emp_id = #{empId};
+                 INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE pm.pm_status = '대기 중'
+          AND ap.emp_id = #{empId}
     </select>
 
     <select id="findEmployeeNameById" resultType="String">
@@ -96,5 +95,105 @@
         </foreach>
     </insert>
 
+    <!-- 참조자 저장 -->
+    <insert id="saveReferrers" parameterType="map">
+        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
+        VALUES
+        <foreach collection="referrers" item="referrer" separator=",">
+            (#{pmId}, #{referrer})
+        </foreach>
+    </insert>
+
+    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        pm.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers
+        FROM tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+        SELECT 1
+        FROM tbl_pm_referrer pr
+        WHERE pr.pm_id = pm.pm_id
+        AND pr.emp_id = #{empId}
+        )
+        ORDER BY pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset} <!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
+    </select>
+
+    <select id="getTotalReferenceDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+            SELECT 1
+            FROM tbl_pm_referrer pr
+            WHERE pr.pm_id = pm.pm_id
+              AND pr.emp_id = #{empId}
+        )
+    </select>
+
+
+
+    <select id="getMyDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        pm.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers
+        FROM
+        tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE
+        pm.emp_id = #{empId}  <!-- 작성자(emp_id)로 필터링 -->
+        ORDER BY
+        pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset}  <!-- LIMIT과 OFFSET을 사용하여 페이지네이션 처리 -->
+
+    </select>
+
+
+    <select id="getMyDocumentsCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+        WHERE pm.emp_id = #{empId}  <!-- empId는 Map에서 가져옵니다 -->
+    </select>
+
+
+
+    <insert id="insertApprovalFile" parameterType="map">
+        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type, uploaded_at)
+        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, NOW())
+    </insert>
+
+
+    <select id="getDocumentById" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        pm.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName, <!-- 문서 작성자의 이름 -->
+        GROUP_CONCAT(ap.emp_id) AS approvers, <!-- 승인자 목록 -->
+        GROUP_CONCAT(pr.emp_id) AS referrers, <!-- 참조자 목록 -->
+        pm.pm_content AS content
+        FROM tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        LEFT JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id
+        WHERE pm.pm_id = #{pmId}
+        GROUP BY pm.pm_id;
+    </select>
 
 </mapper>

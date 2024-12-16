@@ -79,4 +79,11 @@
         WHERE emp_id = #{userId}
     </update>
 
+    <select id="findEmpIdByName" resultType="String">
+        SELECT emp_id
+        FROM employee
+        WHERE emp_name = #{name}
+        LIMIT 1
+    </select>
+
 </mapper>

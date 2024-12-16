@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 문서 상세보기</title>
+
+  <!-- 폰트 적용 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+  <link rel="stylesheet" href="/css/approval/Detail.css">
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+
+<section class="wrapper">
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <div class="sidebar-title">전자결제</div>
+    <ul>
+      <li><a href="/approvals/waiting">대기 중</a></li>
+      <li><a href="/approvals/inProgress">진행 중</a></li>
+      <li><a href="/approvals/completed">완료</a></li>
+      <li><a href="/approvals/rejected">반려</a></li>
+      <li><a href="/approvals/canceled">취소</a></li>
+      <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+      <li><a href="/approvals/referenceDocuments">참조 문서</a></li>
+    </ul>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="main-content">
+    <!-- 문서 상세 카드 -->
+    <div class="detail-card">
+      <h2 th:text="${doc != null ? doc.title : '제목 없음'}">문서 제목</h2> <!-- 문서 제목 -->
+
+      <div class="content">
+        <p><strong>작성자:</strong>
+          <span th:text="${doc != null ? doc.creatorName : '작성자 정보 없음'}">작성자 이름</span>
+        </p>
+        <p><strong>작성일:</strong>
+          <span th:text="${doc != null ? #dates.format(doc.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
+        </p>
+        <p><strong>상태:</strong>
+          <span th:text="${doc != null ? doc.status : '상태 정보 없음'}">상태</span>
+        </p>
+        <p><strong>내용:</strong>
+          <span th:text="${doc != null ? doc.content : '내용 없음'}">내용</span>
+        </p>
+      </div>
+
+      <!-- 승인자 및 참조자 정보 -->
+      <div class="additional-info">
+        <p><strong>승인자:</strong>
+          <span th:text="${doc != null && doc.approvers != null ? doc.approvers : '승인자 정보 없음'}"></span>
+        </p>
+        <p><strong>참조자:</strong>
+          <span th:text="${doc != null && doc.referrers != null ? doc.referrers : '참조자 정보 없음'}"></span>
+        </p>
+      </div>
+
+      <!-- 첨부파일 링크 -->
+      <div class="file-link" th:if="${doc != null && doc.fileUrl != null}">
+        <a th:href="${doc.fileUrl}" download>첨부파일 다운로드</a>
+      </div>
+      <p th:if="${doc == null}">문서 정보가 없습니다.</p>
+    </div>
+
+    <!-- 뒤로가기 버튼 -->
+    <div class="button-group">
+      <button class="submit-btn" onclick="window.history.back()">뒤로가기</button>
+    </div>
+  </div>
+</section>
+
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+</body>
+</html>

@@ -19,5 +19,6 @@ public class ApprovalRequestDTO {
     private String finalApprover;  // 최종 승인자
     private List<String> referrers; // 참조자 리스트
     private int creatorId; // 작성자 ID 추가
+    private String content;
 
 }

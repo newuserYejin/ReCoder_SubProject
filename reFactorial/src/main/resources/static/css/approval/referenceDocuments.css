@@ -138,7 +138,6 @@ html, body {
 }
 
 
-
 /* 페이지네이션 컨테이너 스타일 */
 .pagination {
     display: flex;
@@ -203,21 +202,4 @@ html, body {
 /* 이전/다음 페이지 버튼 스타일 */
 .pagination .prev, .pagination .next {
     font-weight: bold;
-}
-
-/* 기본 링크 스타일 */
-a {
-    color: inherit; /* 부모 요소의 텍스트 색상을 상속받음 */
-    text-decoration: none; /* 밑줄 제거 */
-}
-
-/* 링크에 마우스를 올렸을 때 스타일 */
-a:hover {
-    color: inherit; /* 부모의 텍스트 색상 유지 */
-    text-decoration: none; /* 밑줄 제거 */
-}
-
-/* 링크가 클릭된 후 스타일 */
-a:visited {
-    color: inherit; /* 부모의 텍스트 색상 유지 */
 }

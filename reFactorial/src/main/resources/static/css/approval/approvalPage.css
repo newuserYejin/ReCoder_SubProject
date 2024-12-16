@@ -51,6 +51,7 @@ html, body {
     display: flex;
     align-items: center; /* 입력창과 버튼을 세로로 정렬 */
     margin-bottom: 15px;
+
 }
 
 /* 제목 */
@@ -157,4 +158,26 @@ html, body {
     padding: 10px;
     margin-bottom: 15px;
     border-radius: 4px;
+}
+
+#leaveTypeDropdown {
+    display: none; /* 기본적으로 숨김 */
+}
+
+#leaveTypeDropdown label {
+    width: 120px; /* 다른 라벨들과 동일한 너비 */
+    /*margin-right: 50px;*/
+    margin-left: 73px;
+    font-size: 14px;
+    text-align: right;
+}
+
+#leaveTypeDropdown select {
+    width: 250px; /* 다른 입력 필드들과 동일한 너비 */
+    height: 35px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
 }
