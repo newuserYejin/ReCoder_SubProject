@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.booking.controller;
 
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class ReservationController {
 
     @GetMapping("/booking/bookingList")
     public String showBookingList(HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
         model.addAttribute("userReservations", userReservations);
         return "/booking/bookingList"; // 수정된 부분
