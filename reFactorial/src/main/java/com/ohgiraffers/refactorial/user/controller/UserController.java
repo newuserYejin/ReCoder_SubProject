@@ -34,10 +34,10 @@ public class UserController {
             message = "중복된 회원이 존재합니다.";
         } else if (result == 0){        // insert 구문이 실행되다가 실패
             message = "서번 내부에서 오류가 발생했습니다.";
-            mv.setViewName("index");
+            mv.setViewName("/admin/employee");
         } else if (result >= 1) {
             message = "회원 가입이 완료되었습니다.";
-            mv.setViewName("index");
+            mv.setViewName("/admin/employee");
         }
 
         mv.addObject("message", message);
