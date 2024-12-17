@@ -1,9 +1,13 @@
 package com.ohgiraffers.refactorial.auth.service;
 
 import com.ohgiraffers.refactorial.auth.model.AuthDetails;
+import com.ohgiraffers.refactorial.common.UserRole;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +23,7 @@ public class AuthService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws AuthenticationException {
 
         // 입력한 id가 자동으로 들어오는지 확인하기 위한 sout
         System.out.println("username = " + username);
@@ -30,6 +34,11 @@ public class AuthService implements UserDetailsService {
         if (user == null){
             throw new UsernameNotFoundException("회원 정보가 없습니다.");
         }
+        
+//        if (UserRole.ACCESSLIMIT.equals(user.getViewAuth())){
+//            throw new AuthenticationCredentialsNotFoundException("ACCESSLIMIT");
+//        }
+
 
         return new AuthDetails(user);
     }
