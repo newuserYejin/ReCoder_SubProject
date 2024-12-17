@@ -93,13 +93,13 @@
 
     <select id="findEmpIdByName" parameterType="string" resultType="string">
         SELECT emp_id
-        FROM employees
+        FROM employee
         WHERE emp_name = #{name}
     </select>
 
     <select id="findNameByEmpId" parameterType="string" resultType="string">
         SELECT emp_name
-        FROM employees
+        FROM employee
         WHERE emp_id = #{empId}
     </select>
 

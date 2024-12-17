@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class ApprovalService {
         //5자리 랜덤 문자열 생성
         String pmId = "PM" + String.format("%03d", (int) (Math.random() * 1000));
 
+
         params.put("pmId", pmId);
         params.put("title", approvalRequestDTO.getTitle());
         params.put("date", LocalDateTime.now()); // 현재 날짜
@@ -67,15 +69,11 @@ public class ApprovalService {
     }
 
 
-    public void saveApprovers(String pmId, List<String> approvers) {
-        // 중복 제거
-        List<String> uniqueApprovers = new ArrayList<>(new HashSet<>(approvers));
-
-        if (!uniqueApprovers.isEmpty()) {
+    public void saveApprovers(String pmId, List<Map<String, Object>> approvers) {
+        if (approvers != null && !approvers.isEmpty()) {
             Map<String, Object> params = new HashMap<>();
             params.put("pmId", pmId);
-            params.put("approvers", uniqueApprovers);
-
+            params.put("approvers", approvers);
             approvalMapper.saveApprovers(params);
         }
     }
@@ -84,13 +82,14 @@ public class ApprovalService {
     // 참조자 저장
     public void saveReferrers(String pmId, List<String> referrers) {
         if (referrers != null && !referrers.isEmpty()) {
+            List<String> uniqueReferrers = new ArrayList<>(new HashSet<>(referrers));
             Map<String, Object> params = new HashMap<>();
             params.put("pmId", pmId);
-            params.put("referrers", referrers);
-            approvalMapper.saveReferrers(params); // 수정된 Mapper 호출
+            params.put("referrers", uniqueReferrers);
+            approvalMapper.saveReferrers(params);
         }
     }
-      
+
 
 
 
@@ -106,7 +105,7 @@ public class ApprovalService {
         params.put("limit", limit);
         params.put("offset", offset);
 
-        return approvalMapper.getWaitingDocuments(empId);
+        return approvalMapper.getWaitingDocuments(params);
     }
 
     public int getWaitingCount(String empId) {
@@ -220,6 +219,35 @@ public class ApprovalService {
                 .collect(Collectors.toList());
 
     }
+
+    public String findEmpNameById(String empId) {
+        return employeeMapper.findNameByEmpId(empId);
+    }
+
+    public FileDTO getFileByPmId(String pmId) {
+        return approvalMapper.findFilesByPmId(pmId);
+    }
+
+    // 파일 추가
+    public void saveFile(FileDTO file) {
+        approvalMapper.insertFile(file);
+    }
+
+    // 파일 삭제
+    public void deleteFileById(int fileId) {
+        approvalMapper.deleteFileByFileId(fileId);
+    }
+
+    // PM ID로 파일 다운로드 정보 제공
+    public FileDTO getFileById(int fileId) {
+        return approvalMapper.findFileByFileId(fileId);
+    }
+
+    public FileDTO getFileByFileName(String fileName) {
+        return approvalMapper.findFileByFileName(fileName);
+    }
+
+
 //
 //    public List<String> findEmpNamesByIds(List<String> empIds) {
 //        return empIds.stream()

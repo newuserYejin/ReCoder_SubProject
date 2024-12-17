@@ -3,11 +3,14 @@ package com.ohgiraffers.refactorial.approval.controller;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -15,9 +18,30 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriUtils;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/approvals") // 공통 경로 설정
@@ -94,9 +118,7 @@ public class ApprovalController {
                                  Model model,
                                  HttpSession session) {
 
-        System.out.println("상신된 참조자 리스트: " + approvalRequestDTO.getReferrers()); // 폼에서 넘어온 참조자 확인
-
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
@@ -105,81 +127,48 @@ public class ApprovalController {
 
         String creatorId = user.getEmpId();
 
-        // 승인자들의 이름 리스트 가져오기
-        List<String> approverNames = List.of(
-                        approvalRequestDTO.getFirstApprover(),
-                        approvalRequestDTO.getMidApprover(),
-                        approvalRequestDTO.getFinalApprover()
-                ).stream()
-                .filter(name -> name != null && !name.trim().isEmpty()) // 이름이 null이거나 공백인 경우 필터링
-                .toList();
+        // 승인자 이름 가져오기
+        String firstApproverName = approvalRequestDTO.getFirstApprover();
+        String midApproverName = approvalRequestDTO.getMidApprover();
+        String finalApproverName = approvalRequestDTO.getFinalApprover();
 
-        // 참조자 리스트 확인
+        // 참조자 가져오기
         List<String> referrers = approvalRequestDTO.getReferrers();
-        System.out.println("참조자 리스트: " + referrers);  // 참조자 리스트가 제대로 전달되는지 확인
 
-        if (approverNames.isEmpty()) {
-            model.addAttribute("errorMessage", "승인자를 최소 한 명 이상 선택해야 합니다.");
+        if (firstApproverName == null || midApproverName == null || finalApproverName == null) {
+            model.addAttribute("errorMessage", "승인자 3명을 모두 입력해야 합니다.");
             return "/approvals/approvalPage";
         }
 
-        // 이름으로 emp_id를 조회
-        List<String> approverIds = approverNames.stream()
-                .map(name -> approvalService.findEmpIdByName(name)) // 이름을 기반으로 emp_id 조회
-                .filter(id -> id != null && !id.trim().isEmpty()) // null 또는 빈 값 필터링
-                .toList();
+        // 이름으로 emp_id 조회
+        String firstApproverId = approvalService.findEmpIdByName(firstApproverName);
+        String midApproverId = approvalService.findEmpIdByName(midApproverName);
+        String finalApproverId = approvalService.findEmpIdByName(finalApproverName);
 
-        if (approverIds.isEmpty()) {
-            model.addAttribute("errorMessage", "유효한 승인자가 없습니다.");
-            return "/approvals/approvalPage";
-        }
-
-        // 1. 결재문서 저장
+        // 결재문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
 
-        // 2. 승인자 저장 (emp_id 사용)
-        approvalService.saveApprovers(pmId, approverIds);
+        // 승인자 저장 (순서 포함)
+        List<Map<String, Object>> approvers = new ArrayList<>();
+        approvers.add(Map.of("empId", firstApproverId, "order", 1));
+        approvers.add(Map.of("empId", midApproverId, "order", 2));
+        approvers.add(Map.of("empId", finalApproverId, "order", 3));
+        approvalService.saveApprovers(pmId, approvers);
 
-        // 3. 참조자 저장 (이름을 기반으로 ID로 변환 후 저장)
-        List<String> referrerIds = approvalService.findEmpIdsByNames(referrers); // 이름을 기반으로 emp_id로 변환
+        // 참조자 저장
+        List<String> referrerIds = approvalService.findEmpIdsByNames(referrers);
         approvalService.saveReferrers(pmId, referrerIds);
 
-        // 4. 승인자 ID를 이름으로 변환하여 모델에 추가
-        List<String> approverNamesFromIds = approvalService.findEmpNamesByIds(approverIds); // ID를 이름으로 변환
-        model.addAttribute("approverNames", approverNamesFromIds);  // 이름을 모델에 추가
-
-        // 5. 참조자 ID를 이름으로 변환하여 모델에 추가
-        List<String> referrerNamesFromIds = approvalService.findEmpNamesByIds(referrerIds); // ID를 이름으로 변환
-        model.addAttribute("referrerNames", referrerNamesFromIds);  // 이름을 모델에 추가
-
-        // 6. 첨부파일 저장
+        // 첨부파일 저장
         if (!file.isEmpty()) {
-            // 업로드할 파일 이름과 경로 설정
-            String fileName = file.getOriginalFilename();
-            String uploadDirPath = "C:/uploads";  // 파일 저장 경로 (절대 경로로 설정)
-
-            // 디렉토리가 존재하지 않으면 생성
-            File uploadDir = new File(uploadDirPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();  // 디렉토리 생성
-            }
-
-            String filePath = uploadDirPath + "/" + fileName; // 파일 경로
-            long fileSize = file.getSize();
-            String fileType = file.getContentType();
-
-            // 파일을 서버에 저장
-            File destinationFile = new File(filePath);  // 서버에 저장될 파일 경로
             try {
-                file.transferTo(destinationFile);  // 파일 업로드
+                approvalService.saveApprovalFile(pmId, file.getOriginalFilename(), "C:/uploads/" + file.getOriginalFilename(), file.getSize(), file.getContentType());
+                file.transferTo(new File("C:/uploads/" + file.getOriginalFilename()));
             } catch (IOException e) {
                 e.printStackTrace();
                 model.addAttribute("errorMessage", "파일 업로드 실패");
-                return "/approvals/approvalPage";  // 파일 업로드 실패 시 처리
+                return "/approvals/approvalPage";
             }
-
-            // 파일 정보를 DB에 저장
-            approvalService.saveApprovalFile(pmId, fileName, filePath, fileSize, fileType);
         }
 
         return "/approvals/approvalMain";
@@ -190,13 +179,16 @@ public class ApprovalController {
 
 
 
+
     // 대기 중
     @GetMapping("waiting")
     public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage,Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        // 세션에서 로그인 사용자 정보 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
             return "redirect:/login";
         }
 
@@ -239,9 +231,11 @@ public class ApprovalController {
     @GetMapping("referenceDocuments")
     public String getReferenceDocuments(@RequestParam(defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        // 세션에서 로그인 사용자 정보 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
             return "redirect:/login";
         }
 
@@ -289,9 +283,11 @@ public class ApprovalController {
     @GetMapping("myDocuments")
     public String getMyDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        // 세션에서 로그인 사용자 정보 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
             return "redirect:/login";
         }
 
@@ -327,25 +323,122 @@ public class ApprovalController {
 
     // 결제문서 상세페이지 조회
     @GetMapping("Detail/{pmId}")
-        public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model){
+    public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model) {
 
-        // pmId에 해당하는 결제 문서 정보 조회
+        // pmId에 해당하는 결재 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
-        System.out.println("Approvers: " + document.getApprovers());
-        System.out.println("Referrers: " + document.getReferrers());
 
-        System.out.println("Fetched document: " + document); // 데이터 확인용 로그
-
-        // 문서가 없으면 에러 메시지 반환
         if (document == null) {
-                model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
-            return "errorPage"; // 에러 페이지로 리디렉션 (errorPage.html)
+            model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
+            return "errorPage"; // 에러 페이지로 리디렉션
         }
 
-        model.addAttribute("document",document);
+        // 작성자 정보 처리
+        String creatorName = document.getCreatorName() != null ? document.getCreatorName() : "작성자 정보 없음";
+
+        // 승인자 정보 처리 (최초, 중간, 최종)
+        List<String> approverIds = document.getApprovers() != null
+                ? Arrays.asList(document.getApprovers().split(","))
+                : new ArrayList<>();
+        String firstApprover = approverIds.size() > 0 ? approvalService.findEmpNameById(approverIds.get(0)) : "승인자 정보 없음";
+        String midApprover = approverIds.size() > 1 ? approvalService.findEmpNameById(approverIds.get(1)) : "승인자 정보 없음";
+        String finalApprover = approverIds.size() > 2 ? approvalService.findEmpNameById(approverIds.get(2)) : "승인자 정보 없음";
+
+        // 참조자 정보 처리
+        List<String> referrerIds = document.getReferrers() != null
+                ? Arrays.asList(document.getReferrers().split(","))
+                : new ArrayList<>();
+        List<String> referrerNames = referrerIds.stream()
+                .map(approvalService::findEmpNameById)
+                .distinct()
+                .collect(Collectors.toList());
+
+
+        // 첨부파일 정보 처리 (null 및 빈 문자열 안전 처리)
+        List<String> fileUrls = (document.getFileUrl() != null && !document.getFileUrl().isEmpty())
+                ? Arrays.asList(document.getFileUrl().split(","))
+                .stream()
+                .map(fileName -> "/files/" + fileName) // URL 경로로 변환
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        // 모델에 데이터 추가
+        model.addAttribute("document", document);
+        model.addAttribute("creatorName", creatorName);
+        model.addAttribute("firstApprover", firstApprover);
+        model.addAttribute("midApprover", midApprover);
+        model.addAttribute("finalApprover", finalApprover);
+        model.addAttribute("referrerNames", referrerNames);
+        model.addAttribute("fileUrls", fileUrls);
 
         return "approvals/Detail";
+    }
 
+    @RestController
+    @RequestMapping("/files")
+    public class FileController {
+
+        @Autowired
+        private ApprovalService approvalService;
+
+        // 파일 다운로드 (파일 ID로 조회)
+        // 파일 다운로드 (파일 ID 기준)
+        @GetMapping("/downloadById")
+        public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
+            try {
+                FileDTO file = approvalService.getFileById(fileId);
+
+                if (file == null || file.getFilePath() == null) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                Path filePath = Paths.get(file.getFilePath()).normalize();
+                Resource resource = new UrlResource(filePath.toUri());
+
+                if (!resource.exists()) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(file.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                        .body(resource);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+    }
+        // 파일 다운로드 (파일 이름으로 조회)
+        @GetMapping("/downloadByName")
+        public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
+            try {
+                FileDTO file = approvalService.getFileByFileName(fileName);
+
+                if (file == null || file.getFilePath() == null) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                Path filePath = Paths.get(file.getFilePath()).normalize();
+                Resource resource = new UrlResource(filePath.toUri());
+
+                if (!resource.exists()) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(file.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                        .body(resource);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
     }
 
 
@@ -358,4 +451,7 @@ public class ApprovalController {
 
 
 
-}
+
+
+
+

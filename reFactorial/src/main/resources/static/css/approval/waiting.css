@@ -39,20 +39,19 @@ html, body {
     position: relative;
     padding: 10px 0;
     cursor: pointer;
-
 }
+
 .sidebar li::after {
-    content: ''; /* 가상 요소로 구분 바 추가 */
-    display: block; /* 구분 바를 블록 요소로 설정 */
-    width: 45%; /* 구분 바의 길이를 50%로 설정 */
-    height: 2px; /* 구분 바의 굵기를 2px로 설정 */
-    background-color: black; /* 구분 바의 색상 */
-    margin: 5px auto 0; /* 중앙 정렬과 위아래 여백 설정 */
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
 }
-
 
 .sidebar li:last-child::after {
-    display: none; /* 마지막 항목의 구분 바 제거 */
+    display: none;
 }
 
 .sidebar li:hover {
@@ -62,21 +61,22 @@ html, body {
 }
 
 .sidebar li a {
-    text-decoration: none; /* 밑줄 제거 */
-    color: inherit; /* 부모 요소의 색상 상속 */
-    font-weight: inherit; /* 부모 요소의 굵기 상속 */
-    font-family: inherit; /* 부모 요소의 글꼴 상속 */
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+    font-family: inherit;
 }
 
 .sidebar li a:hover {
-    color: #5C1915; /* 마우스 오버 시 텍스트 색상 */
-    font-weight: bold; /* 마우스 오버 시 굵게 표시 */
+    color: #5C1915;
+    font-weight: bold;
 }
 
 .main-content {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+    margin-bottom: 10px; /* 푸터와의 간격 */
 }
 
 .top-bar {
@@ -98,23 +98,22 @@ html, body {
     background-color: #7e2411;
 }
 
-/* 테이블 제목 스타일 */
-.table-header {
-    display: flex;
-    justify-content: space-between;
+/* 테이블 전체 레이아웃 */
+.table-header, .table-row {
+    display: grid;
+    grid-template-columns: 10% 20% 40% 20% 10%; /* 열의 고정 비율 */
     align-items: center;
-    padding: 10px 0;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.table-header {
     border-bottom: 2px solid black;
     font-weight: bold;
     font-size: 1.1em;
 }
 
-/* 테이블 행 스타일 */
 .table-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
     border-bottom: 1px solid #ccc;
 }
 
@@ -122,31 +121,42 @@ html, body {
     border-bottom: none;
 }
 
-/* 각 열 스타일 */
+/* 셀 텍스트 스타일 */
 .table-cell {
-    flex: 1;
-    text-align: center;
+    padding: 5px 10px;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 텍스트가 길 경우 ... 처리 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+.table-cell a {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    width: 100%; /* 셀 크기에 맞춤 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table-cell:first-child {
-    flex: 0.5;
+    font-weight: bold;
+    text-align: center;
 }
 
 .table-cell:last-child {
     color: #5C1915;
     font-weight: bold;
+    text-align: center;
 }
 
-
-
-/* 페이지네이션 컨테이너 스타일 */
+/* 페이지네이션 */
 .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
-/* 페이지네이션 리스트 스타일 */
 .pagination ul {
     display: flex;
     list-style: none;
@@ -154,12 +164,10 @@ html, body {
     margin: 0;
 }
 
-/* 페이지네이션 항목 스타일 */
 .pagination li {
     margin: 0 5px;
 }
 
-/* 페이지네이션 링크 스타일 */
 .pagination a {
     display: inline-block;
     padding: 10px 15px;
@@ -174,20 +182,17 @@ html, body {
     text-align: center;
 }
 
-/* 페이지네이션 링크 호버 스타일 */
 .pagination a:hover {
     background-color: #5C1915;
     color: white;
 }
 
-/* 활성화된 페이지 번호 스타일 */
 .pagination .active a {
     background-color: #5C1915;
     color: white;
     font-weight: bold;
 }
 
-/* 비활성화된 페이지 링크 스타일 (이전/다음 버튼) */
 .pagination li a.disabled {
     background-color: #e0e0e0;
     color: #ccc;
@@ -195,29 +200,25 @@ html, body {
     cursor: not-allowed;
 }
 
-/* 첫 번째, 마지막 페이지 버튼 스타일 */
 .pagination .first, .pagination .last {
     font-weight: bold;
 }
 
-/* 이전/다음 페이지 버튼 스타일 */
 .pagination .prev, .pagination .next {
     font-weight: bold;
 }
 
 /* 기본 링크 스타일 */
 a {
-    color: inherit; /* 부모 요소의 텍스트 색상을 상속받음 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: inherit;
+    text-decoration: none;
 }
 
-/* 링크에 마우스를 올렸을 때 스타일 */
 a:hover {
-    color: inherit; /* 부모의 텍스트 색상 유지 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: inherit;
+    text-decoration: none;
 }
 
-/* 링크가 클릭된 후 스타일 */
 a:visited {
-    color: inherit; /* 부모의 텍스트 색상 유지 */
+    color: inherit;
 }

@@ -28,7 +28,7 @@
       <li><a href="/approvals/rejected">반려</a></li>
       <li><a href="/approvals/canceled">취소</a></li>
       <li><a href="/approvals/myDocuments">내가 작성한</a></li>
-      <li><a href="/approvals/referenceDocuments">참조 문서</a></li>
+      <li><a href="/approvals/referenceDocuments">참조</a></li>
     </ul>
   </div>
 
@@ -40,7 +40,7 @@
 
       <div class="content">
         <p><strong>작성자:</strong>
-          <span th:text="${document != null ? document.creatorName : '작성자 정보 없음'}">작성자 이름</span>
+          <span th:text="${creatorName}">기안자</span>
         </p>
         <p><strong>작성일:</strong>
           <span th:text="${document != null ? #dates.format(document.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
@@ -53,21 +53,49 @@
         </p>
       </div>
 
-      <!-- 승인자 및 참조자 정보 -->
+      <!-- 승인자 정보 -->
       <div class="additional-info">
-        <p><strong>승인자:</strong>
-          <span th:text="${document != null && document.approvers != null ? document.approvers : '승인자 정보 없음'}"></span>
-        </p>
-        <p><strong>참조자:</strong>
-          <span th:text="${document != null && document.referrers != null ? document.referrers : '참조자 정보 없음'}"></span>
-        </p>
+        <h3>승인자 정보</h3>
+        <ul class="approver-list">
+          <li>
+            <strong>최초 승인자:</strong>
+            <span th:text="${firstApprover != null ? firstApprover : '승인자 정보 없음'}"></span>
+          </li>
+          <li>
+            <strong>중간 승인자:</strong>
+            <span th:text="${midApprover != null ? midApprover : '승인자 정보 없음'}"></span>
+          </li>
+          <li>
+            <strong>최종 승인자:</strong>
+            <span th:text="${finalApprover != null ? finalApprover : '승인자 정보 없음'}"></span>
+          </li>
+        </ul>
       </div>
 
-      <!-- 첨부파일 링크 -->
-      <div class="file-link" th:if="${document != null && document.fileUrl != null}">
-        <a th:href="${document.fileUrl}" download>첨부파일 다운로드</a>
+      <!-- 참조자 정보 -->
+      <div class="additional-info">
+        <h3>참조자 정보</h3>
+        <ul class="referrer-list">
+          <li th:each="referrer : ${referrerNames}">
+            <span th:text="${referrer}"></span>
+          </li>
+          <li th:if="${referrerNames == null || referrerNames.isEmpty()}">
+            참조자 정보 없음
+          </li>
+        </ul>
       </div>
-      <p th:if="${document == null}">문서 정보가 없습니다.</p>
+
+      <!-- 첨부파일 -->
+      <div class="file-link" th:if="${fileUrls != null}">
+        <h3>첨부파일</h3>
+        <ul>
+          <li th:each="fileUrl : ${fileUrls}">
+            <a th:href="@{/files/download(fileName=${fileUrl})}" download th:text="${fileUrl}"></a>
+
+          </li>
+        </ul>
+      </div>
+
     </div>
 
     <!-- 뒤로가기 버튼 -->
