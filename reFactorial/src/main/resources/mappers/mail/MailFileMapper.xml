@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.FileDAO">
+
+    <resultMap id="emailFileAttachmentResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.FileDTO">
+        <id property="id" column="id" />
+        <result property="originalFileName" column="original_file_name" />
+        <result property="savedFileName" column="saved_file_name" />
+        <result property="filePath" column="file_path" />
+        <result property="description" column="description" />
+        <result property="emailId" column="email_id" />
+    </resultMap>
+
+    <insert id="insertAttachments" parameterType="com.ohgiraffers.refactorial.mail.model.dto.FileDTO">
+        INSERT INTO file_attachment (original_file_name, saved_file_name, file_path, description, email_id)
+        VALUES (#{originalFileName}, #{savedFileName}, #{filePath}, #{description}, #{emailId})
+    </insert>
+
+</mapper>
