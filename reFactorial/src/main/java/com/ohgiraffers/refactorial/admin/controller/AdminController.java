@@ -31,10 +31,17 @@ public class AdminController {
 
     @GetMapping("getAllEmployee")
     @ResponseBody
-    public Map<String, Object> getAllEmployee(){
+    public Map<String, Object> getAllEmployee(@RequestParam int sendDept, @RequestParam String sendSearchEmpName){
         Map<String, Object> result = new HashMap<>();
 
-        List<LoginUserDTO> userList = adminService.getAllEmployee();
+        if (sendSearchEmpName.trim().isEmpty() || sendSearchEmpName == null){
+            sendSearchEmpName = null;
+        }
+
+        List<LoginUserDTO> userList = adminService.getAllEmployee(sendDept,sendSearchEmpName);
+
+        System.out.println("sendDept = " + sendDept);
+        System.out.println("sendSearchEmpName = " + sendSearchEmpName);
 
         result.put("userList",userList);
 
@@ -60,6 +67,10 @@ public class AdminController {
 
     @PostMapping("modifyEmpInfo")
     public ModelAndView modifyEmpInfoUpdate(ModelAndView mv, @ModelAttribute UserDTO userDTO){
+
+        if (userDTO.getEmpPwd() == null || userDTO.getEmpPwd().trim().isEmpty()) {
+            userDTO.setEmpPwd(null);
+        }
 
         Integer result = adminService.modifyEmpInfoUpdate(userDTO);
         

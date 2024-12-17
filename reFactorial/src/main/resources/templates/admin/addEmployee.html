@@ -58,9 +58,9 @@
                     <input type="text" id="annualLeave" name="annualLeave" th:value="${ModifyUser != null ? ModifyUser.annualLeave : ''}">
                 </div>
 
-                <div class="inputSet">
+                <div th:unless="${ModifyUser != null and ModifyUser.empId != LoginUserInfo.empId}" class="inputSet">
                     <label for="empPwd">비밀번호 : </label>
-                    <input type="text" id="empPwd" name="empPwd" th:value="${ModifyUser != null ? ModifyUser.empPwd : ''}">
+                    <input type="text" id="empPwd" name="empPwd">
                 </div>
 
                 <div class="inputSet">
@@ -71,35 +71,36 @@
                 <div class="inputSet">
                     <label for="deptCode">부서 : </label>
                     <select name="deptCode" id="deptCode" th:value="${ModifyUser != null ? ModifyUser.deptCode : ''}">
-                        <option value="1">인사팀</option>
-                        <option value="2">개발팀</option>
-                        <option value="3">마케팅팀</option>
-                        <option value="4">회계팀</option>
-                        <option value="5">영업팀</option>
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.deptCode == 1}">인사팀</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.deptCode == 2}">개발팀</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.deptCode == 3}">마케팅팀</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.deptCode == 4}">회계팀</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.deptCode == 5}">영업팀</option>
                     </select>
                 </div>
 
                 <div class="inputSet">
                     <label for="positionValue">직급 : </label>
                     <select name="positionValue" id="positionValue" th:value="${ModifyUser != null ? ModifyUser.positionValue : ''}">
-                        <option value="1">사장</option>
-                        <option value="2">부사장</option>
-                        <option value="3">이사</option>
-                        <option value="4">부장</option>
-                        <option value="5">과장</option>
-                        <option value="6">차장</option>
-                        <option value="7">대리</option>
-                        <option value="8">주임</option>
-                        <option value="9">사원</option>
-                        <option value="10">인턴</option>
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.positionValue == 1}">사장</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.positionValue == 2}">부사장</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.positionValue == 3}">이사</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.positionValue == 4}">부장</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.positionValue == 5}">과장</option>
+                        <option value=6 th:selected="${ModifyUser != null && ModifyUser.positionValue == 6}">차장</option>
+                        <option value=7 th:selected="${ModifyUser != null && ModifyUser.positionValue == 7}">대리</option>
+                        <option value=8 th:selected="${ModifyUser != null && ModifyUser.positionValue == 8}">주임</option>
+                        <option value=9 th:selected="${ModifyUser != null && ModifyUser.positionValue == 9}">사원</option>
+                        <option value=10 th:selected="${ModifyUser != null && ModifyUser.positionValue == 10}">인턴</option>
                     </select>
                 </div>
 
                 <div class="inputSet">
                     <label for="viewAuth">권한 : </label>
-                    <select name="viewAuth" id="viewAuth" th:value="${ModifyUser != null ? ModifyUser.viewAuth : ''}">
-                        <option value="USER">일반 사원</option>
-                        <option value="ADMIN">관리자</option>
+                    <select name="viewAuth" id="viewAuth">
+                        <option value="USER" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'USER'}">일반 사원</option>
+                        <option value="ADMIN" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ADMIN'}">관리자</option>
+                        <option value="ACCESSLIMIT" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ACCESSLIMIT'}">접근 제한</option>
                     </select>
                 </div>
 
