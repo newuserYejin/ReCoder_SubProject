@@ -47,32 +47,23 @@
 
     <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
-            temp.*,
-            (@rownum := @rownum + 1) AS rowNum
-        FROM (
-                 SELECT
-                     pm.pm_id AS pmId,
-                     pm.pm_title AS title,
-                     pm.pm_create AS createDate,
-                     pm.pm_category AS category,
-                     pm.pm_status AS status,
-                     pm.pm_attachment AS attachment,
-                     emp.emp_name AS creatorName,
-                     GROUP_CONCAT(ap.emp_id) AS approvers
-                 FROM
-                     tbl_pm pm
-                         INNER JOIN employee emp ON pm.emp_id = emp.emp_id
-                         INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
-                 WHERE
-                     pm.pm_status = '대기 중'
-                   AND  ap.emp_id = #{empId}
-                 GROUP BY
-                     pm.pm_id, pm.pm_create
-                 ORDER BY
-                     pm.pm_create DESC
-             ) temp,
-             (SELECT @rownum := 0) r;
-
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            pm.pm_status AS status,
+            pm.pm_attachment AS attachment,
+            emp.emp_name AS creatorName,
+            pm.pm_referrer AS referrers
+        FROM
+            tbl_pm pm
+                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE
+            pm.pm_status = '대기 중'
+          AND emp.emp_id = #{empId}
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <select id="getWaitingCount" resultType="int">
@@ -199,5 +190,56 @@
 
 
 
+
+    <!-- PM ID로 파일 조회 -->
+    <select id="findFilesByPmId" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">
+        SELECT file_id AS fileId,
+               pm_id AS pmId,
+               file_name AS fileName,
+               file_path AS filePath,
+               file_size AS fileSize,
+               file_type AS fileType,
+               uploaded_at AS uploadedAt
+        FROM tbl_approval_files
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <!-- 파일 추가 -->
+    <insert id="insertFile" parameterType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">
+        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type)
+        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType})
+    </insert>
+
+    <!-- 파일 삭제 -->
+    <delete id="deleteFileByFileId" parameterType="int">
+        DELETE FROM tbl_approval_files
+        WHERE file_id = #{fileId}
+    </delete>
+
+    <!-- 파일 ID로 파일 조회 -->
+    <select id="findFileByFileId" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">
+        SELECT file_id AS fileId,
+               pm_id AS pmId,
+               file_name AS fileName,
+               file_path AS filePath,
+               file_size AS fileSize,
+               file_type AS fileType,
+               uploaded_at AS uploadedAt
+        FROM tbl_approval_files
+        WHERE file_id = #{fileId}
+    </select>
+
+
+    <select id="findFileByFileName" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">
+        SELECT file_id AS fileId,
+               pm_id AS pmId,
+               file_name AS fileName,
+               file_path AS filePath,
+               file_size AS fileSize,
+               file_type AS fileType,
+               uploaded_at AS uploadedAt
+        FROM tbl_approval_files
+        WHERE file_name = #{fileName}
+    </select>
 
 </mapper>

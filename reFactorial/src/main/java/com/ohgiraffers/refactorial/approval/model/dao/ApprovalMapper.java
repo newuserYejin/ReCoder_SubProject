@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.approval.model.dao;
 
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 public interface ApprovalMapper {
     void insertPm(Map<String, Object> params);
 
-    List<DocumentDTO> getWaitingDocuments(String empId);
+    
 
     int getWaitingCount(String empId);
 
@@ -35,4 +36,17 @@ public interface ApprovalMapper {
     DocumentDTO getDocumentById(String pmId);
 
 
+
+    // 파일
+    FileDTO findFilesByPmId(String pmId);
+
+    void insertFile(FileDTO file);
+
+    void deleteFileByFileId(int fileId);
+
+    FileDTO findFileByFileId(int fileId);
+
+    FileDTO findFileByFileName(String fileName);
+
+    List<DocumentDTO> getWaitingDocuments(Map<String, Object> params);
 }

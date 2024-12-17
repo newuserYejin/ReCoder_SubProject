@@ -3,18 +3,37 @@ package com.ohgiraffers.refactorial.approval.controller;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriUtils;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -355,6 +374,72 @@ public class ApprovalController {
         return "approvals/Detail";
     }
 
+    @RestController
+    @RequestMapping("/files")
+    public class FileController {
+
+        @Autowired
+        private ApprovalService approvalService;
+
+        // 파일 다운로드 (파일 ID로 조회)
+        // 파일 다운로드 (파일 ID 기준)
+        @GetMapping("/downloadById")
+        public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
+            try {
+                FileDTO file = approvalService.getFileById(fileId);
+
+                if (file == null || file.getFilePath() == null) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                Path filePath = Paths.get(file.getFilePath()).normalize();
+                Resource resource = new UrlResource(filePath.toUri());
+
+                if (!resource.exists()) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(file.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                        .body(resource);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+    }
+        // 파일 다운로드 (파일 이름으로 조회)
+        @GetMapping("/downloadByName")
+        public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
+            try {
+                FileDTO file = approvalService.getFileByFileName(fileName);
+
+                if (file == null || file.getFilePath() == null) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                Path filePath = Paths.get(file.getFilePath()).normalize();
+                Resource resource = new UrlResource(filePath.toUri());
+
+                if (!resource.exists()) {
+                    return ResponseEntity.notFound().build();
+                }
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(file.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                        .body(resource);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+    }
 
 
 
@@ -368,4 +453,5 @@ public class ApprovalController {
 
 
 
-}
+
+

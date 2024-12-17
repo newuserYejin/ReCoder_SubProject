@@ -28,7 +28,7 @@
       <li><a href="/approvals/rejected">반려</a></li>
       <li><a href="/approvals/canceled">취소</a></li>
       <li><a href="/approvals/myDocuments">내가 작성한</a></li>
-      <li><a href="/approvals/referenceDocuments">참조 문서</a></li>
+      <li><a href="/approvals/referenceDocuments">참조</a></li>
     </ul>
   </div>
 
@@ -40,7 +40,7 @@
 
       <div class="content">
         <p><strong>작성자:</strong>
-          <span th:text="${creatorName}">작성자 이름</span>
+          <span th:text="${creatorName}">기안자</span>
         </p>
         <p><strong>작성일:</strong>
           <span th:text="${document != null ? #dates.format(document.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
@@ -90,7 +90,8 @@
         <h3>첨부파일</h3>
         <ul>
           <li th:each="fileUrl : ${fileUrls}">
-            <a th:href="${fileUrl}" download th:text="${fileUrl}"></a>
+            <a th:href="@{/files/download(fileName=${fileUrl})}" download th:text="${fileUrl}"></a>
+
           </li>
         </ul>
       </div>

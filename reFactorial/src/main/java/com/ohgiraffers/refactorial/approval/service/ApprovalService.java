@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,7 @@ public class ApprovalService {
 
         //5자리 랜덤 문자열 생성
         String pmId = "PM" + String.format("%03d", (int) (Math.random() * 1000));
+
 
         params.put("pmId", pmId);
         params.put("title", approvalRequestDTO.getTitle());
@@ -103,7 +105,7 @@ public class ApprovalService {
         params.put("limit", limit);
         params.put("offset", offset);
 
-        return approvalMapper.getWaitingDocuments(empId);
+        return approvalMapper.getWaitingDocuments(params);
     }
 
     public int getWaitingCount(String empId) {
@@ -220,6 +222,29 @@ public class ApprovalService {
 
     public String findEmpNameById(String empId) {
         return employeeMapper.findNameByEmpId(empId);
+    }
+
+    public FileDTO getFileByPmId(String pmId) {
+        return approvalMapper.findFilesByPmId(pmId);
+    }
+
+    // 파일 추가
+    public void saveFile(FileDTO file) {
+        approvalMapper.insertFile(file);
+    }
+
+    // 파일 삭제
+    public void deleteFileById(int fileId) {
+        approvalMapper.deleteFileByFileId(fileId);
+    }
+
+    // PM ID로 파일 다운로드 정보 제공
+    public FileDTO getFileById(int fileId) {
+        return approvalMapper.findFileByFileId(fileId);
+    }
+
+    public FileDTO getFileByFileName(String fileName) {
+        return approvalMapper.findFileByFileName(fileName);
     }
 
 
