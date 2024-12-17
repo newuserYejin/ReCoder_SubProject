@@ -33,13 +33,9 @@ public class MemberService {
     // 사용자가 입력한 ID를 입력받아 회원을 조회하는 메소드
     public LoginUserDTO findUserId(String username) {
 
-        LoginUserDTO user = userMapper.findByUsername(username);
+//        LoginUserDTO user = userMapper.findByUsername(username);
 
-        if (user == null){
-            return null;
-        } else{
-            return user;
-        }
+        return userMapper.findByUsername(username);
     }
 
     public String findDeptName(int deptCode) {
