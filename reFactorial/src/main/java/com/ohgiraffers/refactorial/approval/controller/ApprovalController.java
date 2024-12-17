@@ -51,7 +51,7 @@ public class ApprovalController {
     private final UserMapper userMapper; // UserMapper 주입
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService,UserMapper userMapper) {
+    public ApprovalController(ApprovalService approvalService, UserMapper userMapper) {
 
         this.approvalService = approvalService;
         this.userMapper = userMapper;
@@ -59,14 +59,14 @@ public class ApprovalController {
 
 
     @GetMapping("approvalPage")
-    public String paymentPage(){
+    public String paymentPage() {
 
         return "/approvals/approvalPage";
-}
+    }
 
 
     @GetMapping("searchEmployee")
-    public String searchEmployeeController(@RequestParam("name") String name, Model model){
+    public String searchEmployeeController(@RequestParam("name") String name, Model model) {
         List<EmployeeDTO> employees;
         if (name != null && !name.isEmpty()) {
             // 입력된 이름을 기반으로 검색
@@ -85,7 +85,7 @@ public class ApprovalController {
         }
 
 
-        model.addAttribute("employees",employees);
+        model.addAttribute("employees", employees);
 
         return "/approvals/searchEmployee";
     }
@@ -128,41 +128,49 @@ public class ApprovalController {
         String creatorId = user.getEmpId();
 
         // 승인자 이름 가져오기
-        String firstApproverName = approvalRequestDTO.getFirstApprover();
-        String midApproverName = approvalRequestDTO.getMidApprover();
-        String finalApproverName = approvalRequestDTO.getFinalApprover();
+        List<String> approverNames = new ArrayList<>();
+        if (approvalRequestDTO.getFirstApprover() != null && !approvalRequestDTO.getFirstApprover().isEmpty()) {
+            approverNames.add(approvalRequestDTO.getFirstApprover());
+        }
+        if (approvalRequestDTO.getMidApprover() != null && !approvalRequestDTO.getMidApprover().isEmpty()) {
+            approverNames.add(approvalRequestDTO.getMidApprover());
+        }
+        if (approvalRequestDTO.getFinalApprover() != null && !approvalRequestDTO.getFinalApprover().isEmpty()) {
+            approverNames.add(approvalRequestDTO.getFinalApprover());
+        }
 
-        // 참조자 가져오기
-        List<String> referrers = approvalRequestDTO.getReferrers();
-
-        if (firstApproverName == null || midApproverName == null || finalApproverName == null) {
-            model.addAttribute("errorMessage", "승인자 3명을 모두 입력해야 합니다.");
+        // 승인자가 없으면 오류 메시지 반환
+        if (approverNames.isEmpty()) {
+            model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
             return "/approvals/approvalPage";
         }
 
         // 이름으로 emp_id 조회
-        String firstApproverId = approvalService.findEmpIdByName(firstApproverName);
-        String midApproverId = approvalService.findEmpIdByName(midApproverName);
-        String finalApproverId = approvalService.findEmpIdByName(finalApproverName);
+        List<Map<String, Object>> approvers = new ArrayList<>();
+        int order = 1;
+        for (String approverName : approverNames) {
+            String approverId = approvalService.findEmpIdByName(approverName);
+            if (approverId != null) {
+                approvers.add(Map.of("empId", approverId, "order", order++));
+            }
+        }
 
         // 결재문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
 
-        // 승인자 저장 (순서 포함)
-        List<Map<String, Object>> approvers = new ArrayList<>();
-        approvers.add(Map.of("empId", firstApproverId, "order", 1));
-        approvers.add(Map.of("empId", midApproverId, "order", 2));
-        approvers.add(Map.of("empId", finalApproverId, "order", 3));
+        // 승인자 저장 (입력된 승인자만 저장)
         approvalService.saveApprovers(pmId, approvers);
 
         // 참조자 저장
+        List<String> referrers = approvalRequestDTO.getReferrers();
         List<String> referrerIds = approvalService.findEmpIdsByNames(referrers);
         approvalService.saveReferrers(pmId, referrerIds);
 
         // 첨부파일 저장
         if (!file.isEmpty()) {
             try {
-                approvalService.saveApprovalFile(pmId, file.getOriginalFilename(), "C:/uploads/" + file.getOriginalFilename(), file.getSize(), file.getContentType());
+                approvalService.saveApprovalFile(pmId, file.getOriginalFilename(),
+                        "C:/uploads/" + file.getOriginalFilename(), file.getSize(), file.getContentType());
                 file.transferTo(new File("C:/uploads/" + file.getOriginalFilename()));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -175,14 +183,9 @@ public class ApprovalController {
     }
 
 
-
-
-
-
-
     // 대기 중
     @GetMapping("waiting")
-    public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage,Model model, HttpSession session) {
+    public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
         // 세션에서 로그인 사용자 정보 가져오기
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
@@ -225,7 +228,6 @@ public class ApprovalController {
 
         return "/approvals/waiting";
     }
-
 
 
     @GetMapping("referenceDocuments")
@@ -279,7 +281,6 @@ public class ApprovalController {
     }
 
 
-
     @GetMapping("myDocuments")
     public String getMyDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 세션에서 로그인한 사용자 정보 가져오기
@@ -323,7 +324,7 @@ public class ApprovalController {
 
     // 결제문서 상세페이지 조회
     @GetMapping("Detail/{pmId}")
-    public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model) {
+    public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
 
         // pmId에 해당하는 결재 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
@@ -333,10 +334,19 @@ public class ApprovalController {
             return "errorPage"; // 에러 페이지로 리디렉션
         }
 
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
+        }
+
+        String currentEmpId = user.getEmpId();
+        int currentOrder = approvalService.getCurrentApprovalOrder(pmId, currentEmpId); // 현재 승인 순서 조회
+
         // 작성자 정보 처리
         String creatorName = document.getCreatorName() != null ? document.getCreatorName() : "작성자 정보 없음";
 
-        // 승인자 정보 처리 (최초, 중간, 최종)
+        // 승인자 정보 처리
         List<String> approverIds = document.getApprovers() != null
                 ? Arrays.asList(document.getApprovers().split(","))
                 : new ArrayList<>();
@@ -353,12 +363,10 @@ public class ApprovalController {
                 .distinct()
                 .collect(Collectors.toList());
 
-
-        // 첨부파일 정보 처리 (null 및 빈 문자열 안전 처리)
+        // 첨부파일 정보 처리
         List<String> fileUrls = (document.getFileUrl() != null && !document.getFileUrl().isEmpty())
-                ? Arrays.asList(document.getFileUrl().split(","))
-                .stream()
-                .map(fileName -> "/files/" + fileName) // URL 경로로 변환
+                ? Arrays.asList(document.getFileUrl().split(",")).stream()
+                .map(fileName -> "/files/" + fileName)
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
@@ -370,77 +378,112 @@ public class ApprovalController {
         model.addAttribute("finalApprover", finalApprover);
         model.addAttribute("referrerNames", referrerNames);
         model.addAttribute("fileUrls", fileUrls);
+        model.addAttribute("currentOrder", currentOrder);
+        model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
 
         return "approvals/Detail";
     }
 
-    @RestController
-    @RequestMapping("/files")
-    public class FileController {
+    @PostMapping("Detail")
+    public String handleApprovalAction(@RequestParam("pmId") String pmId,
+                                       @RequestParam("action") String action,
+                                       HttpSession session,
+                                       Model model) {
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-        @Autowired
-        private ApprovalService approvalService;
-
-        // 파일 다운로드 (파일 ID로 조회)
-        // 파일 다운로드 (파일 ID 기준)
-        @GetMapping("/downloadById")
-        public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
-            try {
-                FileDTO file = approvalService.getFileById(fileId);
-
-                if (file == null || file.getFilePath() == null) {
-                    return ResponseEntity.notFound().build();
-                }
-
-                Path filePath = Paths.get(file.getFilePath()).normalize();
-                Resource resource = new UrlResource(filePath.toUri());
-
-                if (!resource.exists()) {
-                    return ResponseEntity.notFound().build();
-                }
-
-                String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(file.getFileType()))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
-                        .body(resource);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.internalServerError().build();
-            }
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
         }
-    }
-        // 파일 다운로드 (파일 이름으로 조회)
-        @GetMapping("/downloadByName")
-        public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
-            try {
-                FileDTO file = approvalService.getFileByFileName(fileName);
 
-                if (file == null || file.getFilePath() == null) {
-                    return ResponseEntity.notFound().build();
-                }
+        String currentEmpId = user.getEmpId();
 
-                Path filePath = Paths.get(file.getFilePath()).normalize();
-                Resource resource = new UrlResource(filePath.toUri());
-
-                if (!resource.exists()) {
-                    return ResponseEntity.notFound().build();
-                }
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(file.getFileType()))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-                        .body(resource);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.internalServerError().build();
+        try {
+            switch (action) {
+                case "approve":
+                    approvalService.approve(pmId, currentEmpId);
+                    break;
+                case "reject":
+                    approvalService.reject(pmId, currentEmpId);
+                    break;
+                case "finalize":
+                    approvalService.finalize(pmId, currentEmpId);
+                    break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "문서 처리 중 오류가 발생했습니다.");
+            return "approvals/Detail";
         }
+
+        return "redirect:/approvals/Detail/" + pmId;
     }
 
+//    @RestController
+//    @RequestMapping("/files")
+//    public class FileController {
+
+
+    // 파일 다운로드 (파일 ID로 조회)
+    // 파일 다운로드 (파일 ID 기준)
+    @GetMapping("/downloadById")
+    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
+        try {
+            FileDTO file = approvalService.getFileById(fileId);
+
+            if (file == null || file.getFilePath() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Path filePath = Paths.get(file.getFilePath()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(file.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // 파일 다운로드 (파일 이름으로 조회)
+    @GetMapping("/downloadByName")
+    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
+        try {
+            FileDTO file = approvalService.getFileByFileName(fileName);
+
+            if (file == null || file.getFilePath() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Path filePath = Paths.get(file.getFilePath()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(file.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+                    .body(resource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+}
 
 
 

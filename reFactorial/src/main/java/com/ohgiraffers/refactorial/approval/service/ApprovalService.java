@@ -248,6 +248,44 @@ public class ApprovalService {
     }
 
 
+    public void approve(String pmId, String empId) {
+        approvalMapper.updateApprovalStatus(pmId, empId, "승인");
+        checkAndUpdateDocumentStatus(pmId);
+    }
+
+    public void reject(String pmId, String empId) {
+        approvalMapper.updateApprovalStatus(pmId, empId, "반려");
+        approvalMapper.updateDocumentStatus(pmId, "반려");
+    }
+
+    public void finalize(String pmId, String empId) {
+        approvalMapper.updateApprovalStatus(pmId, empId, "전결");
+        approvalMapper.updateDocumentStatus(pmId, "완료");
+    }
+
+    // 모든 승인 상태 확인 후 최종 상태 업데이트
+    private void checkAndUpdateDocumentStatus(String pmId) {
+        List<String> statuses = approvalMapper.getAllApprovalStatuses(pmId);
+
+        if (statuses.contains("반려")) {
+            approvalMapper.updateDocumentStatus(pmId, "반려");
+        } else if (statuses.stream().allMatch(status -> status.equals("승인") || status.equals("전결"))) {
+            approvalMapper.updateDocumentStatus(pmId, "완료");
+        }
+    }
+
+    public int getCurrentApprovalOrder(String pmId, String empId) {
+        // ApprovalMapper에서 현재 승인 순서를 조회
+        Integer order = approvalMapper.getApprovalOrder(pmId, empId);
+        return (order != null) ? order : -1; // 순서가 없으면 -1 반환
+    }
+
+    public boolean isCurrentApprover(String pmId, String empId) {
+        Integer order = approvalMapper.getApprovalOrder(pmId, empId); // 승인 순서 조회
+        return order != null && order > 0; // 현재 승인 순서인지 확인
+    }
+
+
 //
 //    public List<String> findEmpNamesByIds(List<String> empIds) {
 //        return empIds.stream()

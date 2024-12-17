@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,11 +18,23 @@ public class AdminService {
     @Autowired
     private AdminMapper am;
 
-    public List<LoginUserDTO> getAllEmployee() {
-        return am.getAllEmployee();
+    @Autowired
+    private PasswordEncoder encoder;
+
+    public List<LoginUserDTO> getAllEmployee(int sendDept, String sendSearchEmpName) {
+        Map<String, Object> searchData = new HashMap<>();
+
+        searchData.put("sendDept",sendDept);
+        searchData.put("sendSearchEmpName",sendSearchEmpName);
+
+        return am.getAllEmployee(searchData);
     }
 
     public Integer modifyEmpInfoUpdate(UserDTO userDTO) {
+
+        if (userDTO.getEmpPwd() != null){
+            userDTO.setEmpPwd(encoder.encode(userDTO.getEmpPwd()));
+        }
 
         System.out.println("userDTO = " + userDTO);
 
