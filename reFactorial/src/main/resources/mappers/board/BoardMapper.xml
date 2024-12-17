@@ -14,8 +14,16 @@
         <result property="categoryCode" column="category_code"/>
     </resultMap>
 
+    <resultMap id="voteResultMap" type="com.ohgiraffers.refactorial.board.model.dto.VoteDTO">
+        <id property="postId" column="post_id"/>
+        <result property="voteTitle" column="vote_title"/>
+        <result property="voteContent" column="vote_content"/>
+        <result property="voteCreationDate" column="vote_creation_date"/>
+        <result property="voteAndDate" column="vote_end_date"/>
+    </resultMap>
+
     <!-- 게시물 전체 조회 -->
-    <select id="postList" resultMap="boardResultMap">
+    <select id="postList" parameterType="int" resultMap="boardResultMap">
         select
            *
         from
@@ -46,13 +54,19 @@
         )
     </insert>
 
+    <!-- 투표게시판 등록 -->
+    <insert id="voteRegist">
+        insert into tbl_post
+
+    </insert>
+
     <!-- 게시물 상세페이지 -->
     <select id="postDetail" parameterType="int" resultMap="boardResultMap">
-        SELECT
+        select
             *
-        FROM
+        from
             tbl_post
-        WHERE
+        where
             post_id = #{postId}
     </select>
 
@@ -72,6 +86,40 @@
     <delete id="postDelete" parameterType="int">
         DELETE FROM tbl_post
         WHERE post_id = #{postId}
+    </delete>
+
+    <!-- 댓글 등록 -->
+    <insert id="comment" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO">
+        insert into tbl_comment
+        (
+        post_id,
+        emp_id,
+        comment_content,
+        comment_creationDate
+        )
+        values
+        (
+        #{postId},
+        #{empId},
+        #{commentContent},
+        #{commentCreationDate}
+        )
+    </insert>
+
+    <!-- 댓글 조회 -->
+    <select id="commentView" parameterType="int" resultType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO">
+        select
+            *
+        from
+            tbl_comment
+        where
+            post_id = #{postId}
+    </select>
+
+    <!-- 댓글 삭제 -->
+    <delete id="commentDelete" parameterType="int">
+        delete from tbl_comment
+        where comment_id = #{commentId}
     </delete>
 
 </mapper>

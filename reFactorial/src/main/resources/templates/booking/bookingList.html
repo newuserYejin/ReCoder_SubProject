@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>회의실 개인 예약 내역</title>
+</head>
+<body>
+<ul>
+  <h2>개인 예약 목록</h2>
+  <th:block th:each="reservation : ${userReservations}">
+    <li>
+      <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
+      <br>
+      <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
+      <br>
+      <span>예약 날짜 : <span th:text="${reservation.reservationDate}"></span></span>
+      <br>
+      <span>예약 시작 시간 : <span th:text="${reservation.reservationStartTime}"></span></span>
+      <br>
+      <span>예약 종료 시간 : <span th:text="${reservation.reservationEndTime}"></span></span>
+      <br>
+      <form action="/deleteReservation" method="post" style="display: inline;">
+        <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
+        <button type="submit">삭제</button>
+      </form>
+    </li>
+  </th:block>
+</ul>
+
+</body>
+</html>

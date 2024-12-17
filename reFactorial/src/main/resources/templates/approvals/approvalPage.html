@@ -30,8 +30,13 @@
 
     <!-- Main Content -->
     <div class="main-content">
+
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            [[${errorMessage}]]
+        </div>
+
         <div class="title"></div>
-        <form action="/approval/submit" method="post">
+        <form action="/approvals/submitApproval" method="post" enctype="multipart/form-data">
             <!-- 제목 -->
             <div class="form-group">
                 <label for="title">제목:</label>
@@ -68,11 +73,20 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category">
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()">
                     <option value="">선택</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
                     <option value="category3">휴가 신청서</option>
+                </select>
+            </div>
+
+            <!-- 연차, 반차 선택 드롭다운 -->
+            <div class="form-group" id="leaveTypeDropdown" style="display:none;">
+                <label for="leaveType">휴가 유형:</label>
+                <select id="leaveType" name="leaveType">
+                    <option value="annual">연차</option>
+                    <option value="half">반차</option>
                 </select>
             </div>
 
@@ -98,24 +112,19 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
-
     // 최초 승인자 검색 팝업 열기
-
     function openFirstApproverPopup(firstApprover) {
         const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -125,24 +134,19 @@
         window.targetInputId = 'firstApprover';
     }
 
-
-
     // 중간 승인자 검색 팝업 열기
     function openMidApproverPopup(midApprover) {
-        const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
+        const inputValue = document.getElementById(midApprover)?.value || '';
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -154,20 +158,17 @@
 
     // 최종 승인자 검색 팝업 열기
     function openFinalApproverPopup(finalApprover) {
-        const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
+        const inputValue = document.getElementById(finalApprover)?.value || '';
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -179,76 +180,71 @@
 
     // 참조자 팝업 열기
     function openReferrerPopup() {
-
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-            const url = '/approvals/searchReferrers?name=';
-            window.open(url, 'referrerPopup',
-                `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
+        const url = '/approvals/searchReferrers?name=';
+        window.open(url, 'referrerPopup',
+            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
 
-        window.targetInputId = 'referrer-container';// 참조자 리스트에 추가
+        window.targetInputId = 'referrer-container'; // 참조자 리스트에 추가
     }
 
-
-
-    // 부모 창에서 호출되는 함수로 참조자를 동적으로추가
+    // 부모 창에서 호출되는 함수로 참조자를 동적으로 추가
     function addReferrer(name) {
         const container = document.getElementById('referrer-container');
 
-        // 이미 추가된 참조자를 확인
         const existingInputs = container.getElementsByClassName('referrer-input');
         for (let i = 0; i < existingInputs.length; i++) {
             if (existingInputs[i].value === name) {
                 alert('이미 추가된 참조자입니다.');
-                return; // 중복된 경우 함수 종료
+                return;
             }
         }
 
-        // 중복이 없으면 참조자 추가
         const input = document.createElement('input');
         input.type = 'text';
         input.name = 'referrerNames';
         input.value = name;
         input.readOnly = true;
-        input.classList.add('referrer-input'); // 스타일 적용을 위한 클래스
+        input.classList.add('referrer-input');
         container.appendChild(input);
 
-        // 확인용 로그
+        updateReferrersField();
+
         console.log(`참조자 추가: ${name}`);
     }
 
+    // 숨겨진 input 필드에 참조자 목록을 추가
+    function updateReferrersField() {
+        const referrers = [];
+        const referrerInputs = document.getElementsByClassName('referrer-input');
 
-
-
-
-    // 엔터 키 입력 처리
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            const activeElement = document.activeElement;
-            if (activeElement.tagName === 'INPUT' && activeElement.type === 'text') {
-                event.preventDefault();
-
-                const inputId = activeElement.id; // 현재 포커스된 input의 ID를 가져와 변수로 저장
-                console.log('현재 포커스된 Input ID:', inputId); // 디버깅용 로그 추가
-
-                if (inputId === 'firstApprover') {
-                    openFirstApproverPopup('firstApprover');
-                } else if (inputId === 'midApprover') {
-                    openMidApproverPopup('midApprover');
-                } else if (inputId === 'finalApprover') {
-                    openFinalApproverPopup('finalApprover');
-                }
-            }
+        for (let i = 0; i < referrerInputs.length; i++) {
+            referrers.push(referrerInputs[i].value);
         }
-    });
+
+        document.getElementById('referrers').value = referrers.join(',');
+        console.log("referrers hidden field에 저장된 값: ", document.getElementById('referrers').value);
+    }
+
+    // 휴가신청서를 클릭하면 드롭다운 표시
+    function showLeaveTypeDropdown() {
+        const category = document.getElementById('category').value;
+        const leaveTypeDropdown = document.getElementById('leaveTypeDropdown');
+
+        if (category === "category3") {  // 휴가 신청서 선택 시
+            leaveTypeDropdown.style.display = 'block';  // 드롭다운 보이기
+        } else {
+            leaveTypeDropdown.style.display = 'none';  // 다른 카테고리 선택 시 드롭다운 숨기기
+        }
+    }
+
 
 </script>
 

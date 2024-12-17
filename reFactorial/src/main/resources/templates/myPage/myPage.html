@@ -17,6 +17,8 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <!--여기까지 공동 복사-->
 
+    <!-- fullCalender -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css">
 
     <link rel="stylesheet" th:href="@{/css/myPage/myPage.css}">
     <link rel="stylesheet" href="../../static/css/myPage/myPage.css">
@@ -72,7 +74,6 @@
                                 <p>이메일 :</p>
                                 <input id="email" class="modifyInfo" th:value="${LoginUserInfo != null? LoginUserInfo.empEmail : null}" disabled>
 <!--                                <input id="email" class="modifyInfo" value="010-1111-1111" disabled>-->
-
                             </div>
                             <div>
                                 <p>전화번호 :</p>
@@ -100,13 +101,23 @@
                 <div class="underBox">
     <!--개인 근태-->
                     <div class="personalCalender">
-                        <div>캘린더 자리</div>
+                        <!--캘린더-->
+                        <div id='calendar'></div>
                     </div>
     <!--연차 사용-->
                     <div class="personalVacation">
-                        <div>사용 연차</div>
-                        <div>남은 연차</div>
-                        <div>근무 일수</div>
+                        <div>
+                            <p>사용 연차</p>
+                            <div class="circle usedAnnualLeave" th:text="${LoginUserInfo != null? LoginUserInfo.usedAnnualLeave : 0} + '일'">03일</div>
+                        </div>
+                        <div>
+                            <p>남은 연차</p>
+                            <div class="circle annualLeave">03일</div>
+                        </div>
+                        <div>
+                            <p>근속 개월</p>
+                            <div class="circle work_month">23개월</div>
+                        </div>
                     </div>
 
                 </div>
@@ -154,18 +165,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!--boostrap-->
 
+    <!--fullCalender-->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.js"></script>
+
     <script>
         const currentEmail = '[[${LoginUserInfo.empEmail}]]';
         const currentPhone = '[[${LoginUserInfo.empPhone}]]';
         const currentAddress = '[[${LoginUserInfo.empAddress}]]';
-
-        console.log("currentEmail : ", currentEmail)
-        console.log("currentPhone : ", currentPhone)
-        console.log("currentAddress : ", currentAddress)
+        const annualLeave = '[[${LoginUserInfo.annualLeave}]]';
+        const usedAnnualLeave = '[[${LoginUserInfo.usedAnnualLeave}]]';
+        const empJoined = '[[${LoginUserInfo.empJoined}]]';
     </script>
 
     <script th:src="@{/js/myPage/myPage.js}"></script>
-
-
 </body>
 </html>

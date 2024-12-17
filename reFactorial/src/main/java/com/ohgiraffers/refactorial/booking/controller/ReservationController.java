@@ -2,6 +2,8 @@ package com.ohgiraffers.refactorial.booking.controller;
 
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -25,19 +28,29 @@ public class ReservationController {
 
     // 회의실을 선택하여 예약 폼을 띄우는 메서드
     @GetMapping("/bookingForm")
-    public String showBookingForm(@RequestParam("roomNo") BigDecimal roomNo, Model model) {
+    public String showBookingForm(@RequestParam("roomNo") String roomNo , Model model) {
         // Ensure roomNo is passed correctly to the booking form page
-        model.addAttribute("roomNo", roomNo);
-        return "booking/bookingForm";
+        model.addAttribute("roomNo",roomNo);
+        return "/booking/bookingForm";
+    }
+
+    @GetMapping("/booking/bookingList")
+    public String showBookingList(HttpSession session, Model model) {
+        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
+        model.addAttribute("userReservations", userReservations);
+        return "booking/bookingList"; // 수정된 부분
     }
 
     // 예약을 처리하는 메서드
     @PostMapping("/reserve")
     public String makeReservation(@ModelAttribute ReservationDTO reservationDTO, Model model) {
+
         reservationDTO.setReservationId(UUID.randomUUID().toString());
 
         // 예약 가능 여부 확인
-        boolean isAvailable = reservationService.isReservationAvailable(reservationDTO.getReservationDate(),
+        boolean isAvailable = reservationService.isReservationAvailable(reservationDTO.getConferenceRoomNo(),
+                reservationDTO.getReservationDate(),
                 reservationDTO.getReservationStartTime(),
                 reservationDTO.getReservationEndTime());
 

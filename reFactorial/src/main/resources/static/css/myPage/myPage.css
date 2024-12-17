@@ -11,6 +11,8 @@ body{
 
 .myPageSection{
     padding: 30px 55px 60px;
+    height: 100%;
+    box-sizing: border-box;
 
     .pageTitle{
         font-weight: bold;
@@ -40,7 +42,6 @@ body{
                 justify-content: center;
                 align-items: center;
 
-
                 img{
                     width: 45%;
                     aspect-ratio: 1 / 1 ;
@@ -48,6 +49,8 @@ body{
                     background-position: center;
                     border: solid 5px black;
                     padding: 10px;
+
+                    box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
                 }
             }
 
@@ -62,6 +65,8 @@ body{
                 border-radius: 10px;
 
                 font-size: 1.3em;
+
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
 
                 .InfoLine{
                     display: flex;
@@ -178,15 +183,77 @@ body{
             justify-content: space-between;
 
             .personalCalender{
-                border: solid 1px green;
                 width: 31.1%;
                 height: 100%;
+
+                /*border: solid 2px #5C1915;*/
+
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
             }
 
             .personalVacation{
-                border: solid 1px green;
                 width: 67%;
                 height: 100%;
+
+                display: flex;
+                justify-content: space-between;
+
+                div{
+                    width: 32%;
+                    padding: 20px 4%;
+
+                    box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: start;
+                    align-items: start;
+                    font-size: 1.5em;
+
+                    box-sizing: border-box;
+
+                    position: relative;
+
+                    p{
+                        align-self: start;
+                        justify-items: start;
+                        margin-top: 0;
+                    }
+
+                    .circle{
+                        width: 80%;
+                        aspect-ratio: 1 / 1;
+                        border-radius: 50%;
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        font-size: 2em;
+
+                        box-sizing: border-box;
+
+                        position: absolute;
+
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%); /* 자신의 크기만큼 이동해 정확히 가운데 */
+                    }
+
+                    .usedAnnualLeave{
+                        background-color: rgba(149,51,51,0.2);
+                        color: #953333 ;
+                    }
+                    .annualLeave{
+                        background-color: rgba(149,51,139,0.2);
+                        color: #95338B ;
+                    }
+                    .work_month{
+                        background-color: rgba(86,51,147,0.2);
+                        color: #463395 ;
+                    }
+                }
+
             }
         }
     }
@@ -303,4 +370,33 @@ body{
             }
         }
     }
+}
+
+/*캘린더*/
+
+#calendar{
+    height: 100%;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1em;
+}
+
+.fc .fc-scroller-liquid-absolute{
+    overflow: hidden;
+}
+
+.fc .fc-toolbar-title{
+    font-size: 1em;
+}
+
+.fc .fc-button{
+    padding: 0.1em 0.5em;
+}
+
+.fc-h-event{
+    border: none;
+}
+
+.fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events{
+    /*display: none;*/
 }

@@ -21,6 +21,7 @@ public class UserDTO {
     private String empEmail;
     private String empJoined;
     private String annualLeave;
+    private String usedAnnualLeave;
     private String empPwd;
     private String profile;
     private String empPhone;

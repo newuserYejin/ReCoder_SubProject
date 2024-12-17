@@ -1,0 +1,14 @@
+package com.ohgiraffers.refactorial.booking.model.dao;
+
+import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface CabinetDAO {
+
+    List<CabinetDTO> getAllCabinets();
+
+
+}

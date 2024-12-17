@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_main.css}">
 </head>
 <body>
 
-  <h1>admin</h1>
+    <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div style="--menu-size: 400px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+    </section>
+    <!-- 유저 페이지들과 footer 공동 사용 -->
+    <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 </body>
 </html>

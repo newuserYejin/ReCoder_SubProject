@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.board.service;
 
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
+import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,23 @@ public class BoardService {
     public void postDelete(int postId) {
 
         boardMapper.postDelete(postId);
+    }
+
+    // 댓글 등록
+    public void comment(CommentDTO comment) {
+
+        boardMapper.comment(comment);
+    }
+
+    // 댓글 조회
+    public List<CommentDTO> commentView(int comment) {
+
+        return boardMapper.commentView(comment);
+    }
+
+    // 댓글 삭제
+    public void commentDelete(int commentId) {
+        boardMapper.commentDelete(commentId);
     }
 
 }
