@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="368b6914-dbc7-44cc-867c-737c00332046" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/model/dto/CabinetDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/controller/ReservationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/model/dao/ReservationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/model/dao/ReservationDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/booking/service/ReservationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/mail/model/dto/MailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/java/com/ohgiraffers/refactorial/mail/model/dto/MailDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/resources/mappers/booking/ReservationMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/resources/mappers/booking/ReservationMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/reFactorial/src/main/resources/templates/booking/booking.html" beforeDir="false" afterPath="$PROJECT_DIR$/reFactorial/src/main/resources/templates/booking/booking.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,10 +25,13 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/241212__chan",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Lecture/12_first-project/reFactorial",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "프로젝트",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "vue.rearranger.settings.migration": "true"
   }
@@ -60,6 +55,8 @@
       <workItem from="1732865908480" duration="19000" />
       <workItem from="1733985994478" duration="122000" />
       <workItem from="1733986324009" duration="140000" />
+      <workItem from="1734396551900" duration="27000" />
+      <workItem from="1734396595390" duration="40000" />
     </task>
     <servers />
   </component>

@@ -78,4 +78,10 @@ public class ReservationController {
             return "redirect:/user/booking";  // 삭제 중 오류 발생 시 에러 페이지로 이동
         }
     }
+
+    @GetMapping("/api/reservations")
+    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+        List<ReservationDTO> reservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(reservations); // 정상적으로 예약 목록 반환
+    }
 }
