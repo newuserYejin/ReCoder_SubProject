@@ -111,25 +111,10 @@
 
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
-
 <script>
-  function submitApproval(action) {
-    const pmId = /* 서버에서 pmId를 받아오는 로직 */;
-    fetch('/approvals/processApproval', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `action=${action}&pmId=${pmId}`
-    }).then(response => {
-      if (response.ok) {
-        alert(action === 'approve' ? '승인 완료' :
-                action === 'reject' ? '반려 처리' : '전결 처리 완료');
-        window.location.reload();
-      } else {
-        alert("처리 중 오류가 발생했습니다.");
-      }
-    });
-  }
+  function
 </script>
+
 </body>
 </html>
 
