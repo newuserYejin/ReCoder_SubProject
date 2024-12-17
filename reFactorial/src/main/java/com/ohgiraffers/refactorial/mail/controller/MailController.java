@@ -31,8 +31,7 @@ public class MailController {
 
     // 메일 보내기
     @PostMapping("/sendMail")
-    public String sendMail(@ModelAttribute MailDTO mailDTO,
-                           HttpSession session) throws IOException {
+    public String sendMail(@ModelAttribute MailDTO mailDTO,HttpSession session,@RequestParam MailDTO emailAttachments) throws IOException {
 
         System.out.println(mailDTO);
 //        System.out.println(emailAttachments);
@@ -45,11 +44,10 @@ public class MailController {
         // 1. 값불러와지는것확인함
         // 2. 첨부파일을 어떤 식으로 서버에 저장할지 고민
         // 3. 첨부파일이 mailDTO 에 emailAttachment 라는 변수에 저장됨
-        // 그러면 이메일어테치먼트를 꺼내서 로컬저장위치로 변경
+        // 그러면 emailAttachment를 꺼내서 로컬저장위치로 변경
         // 4. 저장위치를 서비스에 보내서 db에 저장
 
         // 다중 파일 처리
-//        List<FileDTO> fileDTOList = handleFileUpload(emailAttachments);
 //        mailDTO.setEmailAttachment(fileDTOList);
 
 //        mailService.sendMail(mailDTO);
