@@ -1,8 +1,10 @@
 package com.ohgiraffers.refactorial.board.controller;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
+import com.ohgiraffers.refactorial.board.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
@@ -29,15 +31,18 @@ public class BoardController {
 
     // 게시물 전체조회
     @GetMapping("list") // url로 이동
-    public String list(@RequestParam int categoryCode, Model model) {
+    public String list(@RequestParam int categoryCode, @RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
 
         List<BoardDTO> postList = boardService.postList(categoryCode);
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
 //            System.out.println("postList = " + postList);
 
         model.addAttribute("postList", postList);    // 템플릿에 값 전달
 
         model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
+
+        model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
 
 //        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
 

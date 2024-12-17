@@ -31,7 +31,7 @@
             <h1 th:text="${postDetail.postTitle}">게시물 제목</h1>
 
             <!-- 작성자 정보 -->
-            <p><strong>작성자:</strong> <span th:text="${postDetail.empId}">작성자</span></p>
+            <p><strong>작성자:</strong> <span th:text="${postDetail.empName}">작성자</span></p>
 
             <!-- 작성 날짜 -->
             <p><strong>작성일:</strong> <span th:text="${postDetail.postCreationDate}">작성일</span></p>
@@ -78,12 +78,12 @@
 
             <!-- 댓글 조회 -->
             <div id="comment-list">
-                <div th:each="comment : ${commentView}"
+                <div th:each="comment, stat : ${commentView}"
                      style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-                    <div style="width: 23%;" th:text="${comment.commentId}">1</div>
-                    <div style="width: 35%;" th:text="${comment.empId}">사번</div>
-                    <div style="width: 30%;" th:text="${comment.commentContent}">댓글</div>
-                    <div style="width: 30%;" th:text="${comment.commentCreationDate}">2024-01-01</div>
+                    <div style="width: 23%;" th:text="${stat.count}">댓글 번호</div>
+                    <div style="width: 35%;" th:text="${comment.empName}">등록자</div>
+                    <div style="width: 30%;" th:text="${comment.commentContent}">댓글 내용</div>
+                    <div style="width: 30%;" th:text="${comment.commentCreationDate}">날짜</div>
                     <!-- 댓글 삭제 버튼 -->
                     <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
                             th:data-comment-id="${comment.commentId}"
