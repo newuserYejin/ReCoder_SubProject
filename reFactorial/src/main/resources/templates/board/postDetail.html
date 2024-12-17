@@ -1,187 +1,200 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>게시물 상세</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 상세</title>
 
-  <!--폰트 적용-->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" th:href="@{/css/common/header.css}">
-  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
-  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
-  <link rel="stylesheet" th:href="@{/css/board/postDetail.css}">
-  <link rel="stylesheet" href="../../static/css/board/postDetail.css">
+    <link rel="stylesheet" th:href="@{/css/board/postDetail.css}">
+    <link rel="stylesheet" href="../../static/css/board/postDetail.css">
 
 </head>
 <body>
-  <header th:replace="~{/common/header::headerFragment}"></header>
-  <section>
-      <div class="boardContainer">
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+    <div class="boardContainer">
         <!-- Sidebar -->
         <div th:replace="~{/board/sidebar::sidebarFragment}"></div>
 
         <!-- 상세페이지 -->
         <div>
-          <!-- 게시물 상세 제목 -->
-          <h1 th:text="${postDetail.postTitle}">게시물 제목</h1>
+            <!-- 게시물 상세 제목 -->
+            <h1 th:text="${postDetail.postTitle}">게시물 제목</h1>
 
-          <!-- 작성자 정보 -->
-          <p><strong>작성자:</strong> <span th:text="${postDetail.empId}">작성자</span></p>
+            <!-- 작성자 정보 -->
+            <p><strong>작성자:</strong> <span th:text="${postDetail.empId}">작성자</span></p>
 
-          <!-- 작성 날짜 -->
-          <p><strong>작성일:</strong> <span th:text="${postDetail.postCreationDate}">작성일</span></p>
+            <!-- 작성 날짜 -->
+            <p><strong>작성일:</strong> <span th:text="${postDetail.postCreationDate}">작성일</span></p>
 
-          <!-- 게시물 내용 -->
-          <p><strong>내용:</strong></p>
-          <div th:text="${postDetail.postContent}">
-            게시물 내용이 여기에 표시됩니다.
-          </div>
-
-          <!-- 투표 -->
-
-          <!-- 상세페이지 게시물 수정 -->
-          <form action="/board/postUpdate" method="get">
-            <!-- 게시물 ID 전달 -->
-            <input type="hidden" name="postId" th:value="${postDetail.postId}">
-            <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
-          </form>
-
-          <!-- 상세페이지 게시물 삭제 -->
-          <form action="/board/postDelete" method="post">
-             <input type="hidden" name="postId" th:value="${postDetail.postId}">
-             <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
-             <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
-          </form>
-
-          <!-- 목록으로 돌아가기 -->
-          <a th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}" style="display: block; margin-top: 20px;">목록으로 돌아가기</a>
-
-
-          <!-- 댓글 등록-->
-          <form action="/board/comment" method="post">
-            <p>댓글</p>
-            <textarea id="comment" name="comment"></textarea>
-            <!-- 게시글 ID를 숨겨서 전달 -->
-            <input type="hidden" name="postId" th:value="${postDetail.postId}">
-            <button type="submit">등 록</button>
-            <hr>
-            <div th:if="${comment != null}">
-              <span th:text="${comment}">댓글 내용이 여기에 표시됩니다.</span>
+            <!-- 게시물 내용 -->
+            <p><strong>내용:</strong></p>
+            <div th:text="${postDetail.postContent}">
+                게시물 내용이 여기에 표시됩니다.
             </div>
-          </form>
 
-          <!-- 댓글 조회 -->
-          <div id="comment-list">
-            <div th:each="comment : ${commentView}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-              <div style="width: 23%;" th:text="${comment.commentId}">1</div>
-              <div style="width: 35%;" th:text="${comment.empId}">사번</div>
-              <div style="width: 30%;" th:text="${comment.commentContent}">댓글</div>
-              <div style="width: 30%;" th:text="${comment.commentCreationDate}">2024-01-01</div>
-              <!-- 댓글 삭제 버튼 -->
-              <button type="button" data-toggle="modal" data-target="#commentDeleteModal" th:data-comment-id="${comment.commentId}"
-                      th:data-post-id="${comment.postId}" class="deleteBtn">삭제</button>
+            <!-- 투표 -->
 
+            <!-- 상세페이지 게시물 수정 -->
+            <form action="/board/postUpdate" method="get">
+                <!-- 게시물 ID 전달 -->
+                <input type="hidden" name="postId" th:value="${postDetail.postId}">
+                <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
+            </form>
+
+            <!-- 상세페이지 게시물 삭제 -->
+            <form action="/board/postDelete" method="post">
+                <input type="hidden" name="postId" th:value="${postDetail.postId}">
+                <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
+                <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
+            </form>
+
+            <!-- 목록으로 돌아가기 -->
+            <a th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}"
+               style="display: block; margin-top: 20px;">목록으로 돌아가기</a>
+
+
+            <!-- 댓글 등록-->
+            <form action="/board/comment" method="post">
+                <p>댓글</p>
+                <textarea id="comment" name="comment"></textarea>
+                <!-- 게시글 ID를 숨겨서 전달 -->
+                <input type="hidden" name="postId" th:value="${postDetail.postId}">
+                <button type="submit">등 록</button>
+                <hr>
+                <div th:if="${comment != null}">
+                    <span th:text="${comment}">댓글 내용이 여기에 표시됩니다.</span>
+                </div>
+            </form>
+
+            <!-- 댓글 조회 -->
+            <div id="comment-list">
+                <div th:each="comment : ${commentView}"
+                     style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+                    <div style="width: 23%;" th:text="${comment.commentId}">1</div>
+                    <div style="width: 35%;" th:text="${comment.empId}">사번</div>
+                    <div style="width: 30%;" th:text="${comment.commentContent}">댓글</div>
+                    <div style="width: 30%;" th:text="${comment.commentCreationDate}">2024-01-01</div>
+                    <!-- 댓글 삭제 버튼 -->
+                    <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
+                            th:data-comment-id="${comment.commentId}"
+                            th:data-post-id="${comment.postId}" class="deleteBtn">삭제
+                    </button>
+
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-  </section>
+    </div>
+</section>
 
-  <!-- 댓글 삭제 모달 -->
-  <footer th:replace="~{/common/footer::footerFragment}"></footer>
+<!-- 댓글 삭제 모달 -->
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
 
-  <div class="modal fade" id="commentDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="commentDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">
 <!--                            <img src="../../static/images/close.svg" alt="닫기 버튼">-->
                             <img src="/images/close.svg" alt="닫기 버튼">
                         </span>
-          </button>
-          <div>삭제 하시겠습니까?</div>
+                </button>
+                <div>삭제 하시겠습니까?</div>
+            </div>
+            <form action="#" method="post" id="changePWForm">
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirmDeleteBtn" data-dismiss="modal">확 인</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">취 소</button>
+                </div>
+            </form>
         </div>
-        <form action="#" method="post" id="changePWForm">
-          <div class="modal-body">
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="confirmDeleteBtn" data-dismiss="modal">확 인</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">취 소</button>
-          </div>
-        </form>
-      </div>
     </div>
-  </div>
+</div>
 
 <script>
-  // 댓글 삭제
-  const deleteBtns = document.querySelectorAll('.deleteBtn');
-  deleteBtns.forEach((btn) => {
-    btn.addEventListener('click', function () {
-      // 모달에서 확인 버튼을 클릭했을 때, 삭제할 댓글 ID와 게시글 ID를 동적으로 설정합니다.
-      const commentId = btn.getAttribute('data-comment-id');
-      const postId = btn.getAttribute('data-post-id');
 
-      const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
+    // 댓글 삭제 버튼 클릭 시 동작 (addEventListener 클릭시 동작을 하는 것)
+    // 삭제버튼 눌렀을 때 data-comment-id와 data-post-id 세팅하는 이벤트
+    document.querySelector('#comment-list').addEventListener('click', function (event) {
+        // 클릭한 요소가 .deleteBtn인지 확인
+        if (event.target && event.target.classList.contains('deleteBtn')) {
+            const commentId = event.target.getAttribute('data-comment-id');
+            const postId = event.target.getAttribute('data-post-id');
 
-      // 확인 버튼에 댓글 ID와 게시글 ID를 설정합니다.
-      confirmDeleteBtn.setAttribute('data-comment-id', commentId);
-      confirmDeleteBtn.setAttribute('data-post-id', postId);
+            const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
+
+            // 모달의 확인 버튼에 삭제할 댓글 ID와 게시글 ID 설정
+            confirmDeleteBtn.setAttribute('data-comment-id', commentId);
+            confirmDeleteBtn.setAttribute('data-post-id', postId);
+
+            console.log('모달에 설정된 commentId:', commentId);
+            console.log('모달에 설정된 postId:', postId);
+        }
     });
-  });
 
+    // 확인 버튼
+    const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn");
+    // 확인 버튼 누를 시 댓글 삭제 API 호출 후 댓글 리랜더링
+    confirmDeleteBtn.addEventListener("click", function () {
+        const commentId = confirmDeleteBtn.getAttribute('data-comment-id');
+        const postId = confirmDeleteBtn.getAttribute('data-post-id');
 
-  const confirmDeleteBtn = document.querySelector("#confirmDeleteBtn")
+        console.log("삭제 요청: commentId:", commentId, "postId:", postId);
 
-  confirmDeleteBtn.addEventListener("click",  function () {
-    const commentId = confirmDeleteBtn.getAttribute('data-comment-id');
-    const postId = confirmDeleteBtn.getAttribute('data-post-id');
-
-    console.log("commentId: ",commentId);
-    console.log("postId: ",postId);
-
-    fetch(`http://localhost:8080/board/commentDelete?commentId=${commentId}&postId=${postId}`)
+        // 서버로 삭제 요청
+        fetch(`http://localhost:8080/board/commentDelete?commentId=${commentId}&postId=${postId}`)
             .then((response) => response.json())
             .then((data) => {
-              console.log(data);
-              const commentListArea = document.querySelector('#comment-list');
+                console.log("삭제 후 데이터:", data);
 
-              let commentList = '';
+                const commentListArea = document.querySelector('#comment-list');
+                let commentList = '';
 
-              for (let i = 0; i < data.length; i++) {
-                commentList += `<div id="comment-list" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">`
-                commentList += `<div style='width: 23%;'>${data[i].commentId}</div>`;
-                commentList += `<div style='width: 35%;'>${data[i].empId}</div>`;
-                commentList += `<div style='width: 30%;'>${data[i].commentContent}</div>`;
-                commentList += `<div style='width: 30%;'>${data[i].commentCreationDate}</div>`;
-                commentList += `<button type='button' onclick='deleteComment(${data[i].commentId}, ${data[i].postId})'>삭제</button>`;
-                commentList += `</div>`;
-              }
+                // 새로운 댓글 리스트를 생성
+                data.forEach((item) => {
+                    commentList += `
+            <div id="comment-list" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+              <div style='width: 23%;'>${item.commentId}</div>
+              <div style='width: 35%;'>${item.empId}</div>
+              <div style='width: 30%;'>${item.commentContent}</div>
+              <div style='width: 30%;'>${item.commentCreationDate}</div>
+              <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
+                      data-comment-id="${item.commentId}"
+                      data-post-id="${item.postId}"
+                      class="deleteBtn">삭제</button>
+            </div>`;
+                });
 
-              // alert('삭제 되었습니다.')
-
-              commentListArea.innerHTML = commentList;
-
+                // 댓글 리스트 업데이트
+                commentListArea.innerHTML = commentList;
             });
-  })
+    });
 
 </script>
-<!--  <script>-->
-<!--    matchPWBtn.addEventListener("click", (e) => {-->
-<!--      e.preventDefault();-->
 
-<!--      const presentPW = document.querySelector("#presentPW").value;})-->
-<!--  </script>-->
-  <!--boostrap-->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <!--boostrap-->
+<!--boostrap-->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<!--boostrap-->
 
 </body>
