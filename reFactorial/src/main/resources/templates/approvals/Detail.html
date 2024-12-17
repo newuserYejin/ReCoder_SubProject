@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>결제 문서 상세보기</title>
-
   <!-- 폰트 적용 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,10 +33,22 @@
 
   <!-- 메인 콘텐츠 -->
   <div class="main-content">
-    <!-- 문서 상세 카드 -->
-    <div class="detail-card">
-      <h2 th:text="${document != null ? document.title : '제목 없음'}">문서 제목</h2> <!-- 문서 제목 -->
+    <!-- 제목과 버튼 그룹 -->
+    <div class="header-group">
+      <h2 th:text="${document != null ? document.title : '제목 없음'}">문서 제목</h2>
+      <div class="button-group" th:if="${isCurrentApprover}">
+        <form action="/approvals/detail" method="post">
+          <input type="hidden" name="pmId" th:value="${document.pmId}">
+          <button type="submit" name="action" value="approve" class="submit-btn">승인</button>
+          <button type="submit" name="action" value="reject" class="reject-btn">반려</button>
+          <button type="submit" name="action" value="finalize" class="finalize-btn"
+                  th:if="${currentOrder == 1 || currentOrder == 2}">전결</button>
+        </form>
+      </div>
+    </div>
 
+    <!-- 문서 내용 -->
+    <div class="detail-card">
       <div class="content">
         <p><strong>작성자:</strong>
           <span th:text="${creatorName}">기안자</span>
@@ -76,12 +87,7 @@
       <div class="additional-info">
         <h3>참조자 정보</h3>
         <ul class="referrer-list">
-          <li th:each="referrer : ${referrerNames}">
-            <span th:text="${referrer}"></span>
-          </li>
-          <li th:if="${referrerNames == null || referrerNames.isEmpty()}">
-            참조자 정보 없음
-          </li>
+          <li th:each="referrer : ${referrerNames}" th:text="${referrer}">참조자</li>
         </ul>
       </div>
 
@@ -91,15 +97,13 @@
         <ul>
           <li th:each="fileUrl : ${fileUrls}">
             <a th:href="@{/files/download(fileName=${fileUrl})}" download th:text="${fileUrl}"></a>
-
           </li>
         </ul>
       </div>
-
     </div>
 
     <!-- 뒤로가기 버튼 -->
-    <div class="button-group">
+    <div class="back-button">
       <button class="submit-btn" onclick="window.history.back()">뒤로가기</button>
     </div>
   </div>
@@ -107,5 +111,26 @@
 
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
+
+<script>
+  function submitApproval(action) {
+    const pmId = /* 서버에서 pmId를 받아오는 로직 */;
+    fetch('/approvals/processApproval', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `action=${action}&pmId=${pmId}`
+    }).then(response => {
+      if (response.ok) {
+        alert(action === 'approve' ? '승인 완료' :
+                action === 'reject' ? '반려 처리' : '전결 처리 완료');
+        window.location.reload();
+      } else {
+        alert("처리 중 오류가 발생했습니다.");
+      }
+    });
+  }
+</script>
 </body>
 </html>
+
+

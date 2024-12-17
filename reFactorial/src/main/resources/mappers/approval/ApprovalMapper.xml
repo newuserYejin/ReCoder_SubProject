@@ -242,4 +242,27 @@
         WHERE file_name = #{fileName}
     </select>
 
+
+
+    <!-- 승인 상태 업데이트 -->
+    <update id="updateApprovalStatus">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </update>
+
+    <!-- 문서 상태 최종 변경 -->
+    <update id="updateDocumentStatus">
+        UPDATE tbl_pm
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId}
+    </update>
+
+    <!-- 현재 승인 순서 조회 -->
+    <select id="getApprovalOrder" resultType="int">
+        SELECT approval_order
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </select>
+
 </mapper>

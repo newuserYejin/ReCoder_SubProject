@@ -12,7 +12,7 @@ html, body {
     display: flex;
     flex-direction: row;
     height: 100vh; /* 전체 화면 높이로 설정 */
-    overflow: hidden; /* wrapper에 오버플로우 설정 */
+    overflow: hidden;
 }
 
 /* 사이드바 */
@@ -23,7 +23,6 @@ html, body {
     overflow-y: auto;
 }
 
-/* 사이드바 제목 */
 .sidebar-title {
     font-size: 32px;
     font-weight: bold;
@@ -33,7 +32,6 @@ html, body {
     text-align: center;
 }
 
-/* 사이드바 메뉴 리스트 */
 .sidebar ul {
     margin-top: 10px;
     list-style: none;
@@ -42,14 +40,12 @@ html, body {
     font-size: 18px;
 }
 
-/* 사이드바 메뉴 항목 */
 .sidebar li {
     position: relative;
     padding: 10px 0;
     cursor: pointer;
 }
 
-/* 사이드바 항목 구분 바 */
 .sidebar li::after {
     content: '';
     display: block;
@@ -59,19 +55,16 @@ html, body {
     margin: 5px auto 0;
 }
 
-/* 마지막 항목 구분 바 제거 */
 .sidebar li:last-child::after {
     display: none;
 }
 
-/* 사이드바 메뉴 항목 호버 */
 .sidebar li:hover {
     font-family: 'Noto Sans KR', Arial, sans-serif;
     color: #5C1915;
     font-weight: 1000;
 }
 
-/* 사이드바 링크 스타일 */
 .sidebar li a {
     text-decoration: none;
     color: inherit;
@@ -79,13 +72,12 @@ html, body {
     font-family: inherit;
 }
 
-/* 사이드바 링크 호버 */
 .sidebar li a:hover {
     color: #5C1915;
     font-weight: bold;
 }
 
-/* 메인 콘텐츠 컨테이너 스타일링 */
+/* 메인 콘텐츠 */
 .main-content {
     flex-grow: 1;
     padding: 40px;
@@ -94,10 +86,70 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    height: calc(100vh - 160px); /* 헤더(60px) + 푸터(100px) 높이 제외 */
+    height: calc(100vh - 160px);
 }
 
-/* 문서 상세 카드 스타일링 */
+/* 제목과 버튼을 한 줄에 배치 */
+.header-group {
+    display: flex;
+    justify-content: space-between; /* 제목과 버튼 그룹을 양 끝에 배치 */
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #5C1915;
+    padding-bottom: 16px;
+}
+
+/* 제목 스타일 */
+.detail-card h2 {
+    font-size: 28px;
+    color: #1a1a1a;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.submit-btn, .reject-btn, .finalize-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn {
+    background-color: #5C1915;
+    color: white;
+}
+
+.reject-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.finalize-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #7e2411;
+}
+
+.reject-btn:hover {
+    background-color: #c0392b;
+}
+
+.finalize-btn:hover {
+    background-color: #2980b9;
+}
+
+/* 문서 상세 카드 */
 .detail-card {
     width: 100%;
     max-width: 900px;
@@ -109,17 +161,7 @@ html, body {
     border: 1px solid #e9ecef;
 }
 
-/* 문서 제목 스타일링 */
-.detail-card h2 {
-    font-size: 28px;
-    color: #1a1a1a;
-    margin-bottom: 32px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #5C1915;
-    font-weight: 700;
-}
-
-/* 문서 내용 섹션 스타일링 */
+/* 문서 내용 섹션 */
 .content {
     display: grid;
     gap: 20px;
@@ -144,7 +186,7 @@ html, body {
     flex: 1;
 }
 
-/* 추가 정보 섹션 스타일링 */
+/* 승인자 정보 */
 .additional-info {
     background-color: #f8f9fa;
     padding: 24px;
@@ -152,31 +194,45 @@ html, body {
     margin: 24px 0;
 }
 
-.additional-info p {
+.additional-info h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #5C1915;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #5C1915;
+    padding-bottom: 8px;
+}
+
+.approver-list li, .referrer-list li {
     display: flex;
     align-items: baseline;
     gap: 12px;
-    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.additional-info p:last-child {
-    margin-bottom: 0;
+.approver-list li:last-child, .referrer-list li:last-child {
+    border-bottom: none;
 }
 
-.additional-info strong {
-    min-width: 80px;
-    color: #5C1915;
-    font-weight: 600;
+/* 참조자 정보 */
+.referrer-list {
+    margin-top: 10px;
+    padding: 0;
+    list-style: none;
 }
 
-/* 첨부파일 링크 스타일링 */
+.referrer-list li {
+    color: #4a4a4a;
+}
+
+/* 첨부파일 섹션 */
 .file-link {
     margin-top: 24px;
     padding: 16px;
     background-color: #fff;
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    transition: all 0.2s ease;
 }
 
 .file-link a {
@@ -193,46 +249,40 @@ html, body {
     font-size: 18px;
 }
 
-.file-link:hover {
+/* 뒤로가기 버튼 */
+.back-button {
+    margin-top: 20px;
+}
+
+/* 승인자 상태 표시 */
+.approval-status {
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 16px;
+    color: #5C1915;
+    font-weight: bold;
+}
+
+.current-approver {
+    display: inline-block;
+    padding: 5px 10px;
     background-color: #f8f9fa;
-    border-color: #5C1915;
-}
-
-/* 버튼 그룹 스타일링 */
-.button-group {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #e9ecef;
-}
-
-/* 버튼 스타일링 */
-.submit-btn {
-    padding: 10px 24px;
-    background-color: #5C1915;
-    color: white;
-    border: none;
+    border: 1px solid #e9ecef;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.submit-btn:hover {
-    background-color: #7e2411;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(92, 25, 21, 0.2);
-}
-
-.submit-btn:active {
-    transform: translateY(0);
-    box-shadow: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
+    .header-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .button-group {
+        margin-top: 10px;
+    }
+
     .main-content {
         padding: 20px;
     }
@@ -249,68 +299,4 @@ html, body {
         flex-direction: column;
         gap: 4px;
     }
-
-    .content strong {
-        min-width: auto;
-    }
-}
-
-
-/* 추가 정보 섹션 */
-.additional-info {
-    background-color: #f8f9fa;
-    padding: 24px;
-    border-radius: 12px;
-    margin: 24px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.additional-info h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #5C1915;
-    margin-bottom: 16px;
-    border-bottom: 2px solid #5C1915;
-    padding-bottom: 8px;
-}
-
-.additional-info ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    line-height: 1.8;
-}
-
-.additional-info li {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.additional-info li:last-child {
-    border-bottom: none;
-}
-
-.additional-info strong {
-    min-width: 120px;
-    color: #5C1915;
-    font-weight: 600;
-}
-
-.additional-info span {
-    color: #4a4a4a;
-    flex: 1;
-}
-
-/* 참조자 리스트 스타일 */
-.referrer-list li {
-    font-size: 14px;
-    color: #4a4a4a;
-    padding: 4px 0;
-}
-
-.referrer-list li:not(:last-child) {
-    border-bottom: 1px dotted #e0e0e0;
 }
