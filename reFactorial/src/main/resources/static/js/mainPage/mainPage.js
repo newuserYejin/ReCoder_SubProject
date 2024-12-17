@@ -10,8 +10,14 @@ window.onload = function () {
         .then(response => response.json())
         .then(data => {
             console.log("근태 data: ", data)
+            
+            let att = data.attStatus;
+            
+            if (att == '출근' || att == "정상 출근"){
+                att = "정상 출근"
+            }
 
-            todayAttPtag.textContent = "오늘의 근태 : " + data.attStatus;
+            todayAttPtag.textContent = att;
         })
         .catch(error => {
             console.error("Fetch error: ", error);
