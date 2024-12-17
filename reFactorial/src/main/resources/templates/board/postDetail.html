@@ -42,21 +42,23 @@
                 게시물 내용이 여기에 표시됩니다.
             </div>
 
-            <!-- 투표 -->
+            <!-- 로그인한 사용자와 작성자 ID비교(본인만 수정,삭제 권한부여) -->
+            <th:block th:if="${user.empId} == ${postDetail.empId}">
 
-            <!-- 상세페이지 게시물 수정 -->
-            <form action="/board/postUpdate" method="get">
-                <!-- 게시물 ID 전달 -->
-                <input type="hidden" name="postId" th:value="${postDetail.postId}">
-                <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
-            </form>
+                <!-- 상세페이지 게시물 수정 -->
+                <form action="/board/postUpdate" method="get">
+                    <!-- 게시물 ID 전달 -->
+                    <input type="hidden" name="postId" th:value="${postDetail.postId}">
+                    <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
+                </form>
 
-            <!-- 상세페이지 게시물 삭제 -->
-            <form action="/board/postDelete" method="post">
-                <input type="hidden" name="postId" th:value="${postDetail.postId}">
-                <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
-                <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
-            </form>
+                <!-- 상세페이지 게시물 삭제 -->
+                <form action="/board/postDelete" method="post">
+                    <input type="hidden" name="postId" th:value="${postDetail.postId}">
+                    <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
+                    <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
+                </form>
+            </th:block>
 
             <!-- 목록으로 돌아가기 -->
             <a th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}"
@@ -78,24 +80,26 @@
 
             <!-- 댓글 조회 -->
             <div id="comment-list">
-                <div th:each="comment, stat : ${commentView}"
+                <div th:each="comment : ${commentView}"
                      style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-                    <div style="width: 23%;" th:text="${stat.count}">댓글 번호</div>
                     <div style="width: 35%;" th:text="${comment.empName}">등록자</div>
                     <div style="width: 30%;" th:text="${comment.commentContent}">댓글 내용</div>
                     <div style="width: 30%;" th:text="${comment.commentCreationDate}">날짜</div>
+
                     <!-- 댓글 삭제 버튼 -->
-                    <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
-                            th:data-comment-id="${comment.commentId}"
-                            th:data-post-id="${comment.postId}" class="deleteBtn">삭제
-                    </button>
+                    <th:block th:if="${user.empId} == ${comment.empId}">
+                        <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
+                                th:data-comment-id="${comment.commentId}"
+                                th:data-post-id="${comment.postId}" class="deleteBtn">삭제
+                        </button>
+                    </th:block>
 
                 </div>
             </div>
         </div>
     </div>
 </section>
-
+<input type="hidden" id="empId" th:value="${user.empId}">
 <!-- 댓글 삭제 모달 -->
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
@@ -162,23 +166,29 @@
 
                 const commentListArea = document.querySelector('#comment-list');
                 let commentList = '';
+                let empId = document.querySelector('#empId').value;
 
                 // 새로운 댓글 리스트를 생성
                 data.forEach((item) => {
                     commentList += `
-            <div id="comment-list" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-              <div style='width: 23%;'>${item.commentId}</div>
-              <div style='width: 35%;'>${item.empId}</div>
-              <div style='width: 30%;'>${item.commentContent}</div>
-              <div style='width: 30%;'>${item.commentCreationDate}</div>
-              <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
-                      data-comment-id="${item.commentId}"
-                      data-post-id="${item.postId}"
-                      class="deleteBtn">삭제</button>
-            </div>`;
+                    <div style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+                        <div style='width: 35%;'>${item.empName}</div>
+                        <div style='width: 30%;'>${item.commentContent}</div>
+                        <div style='width: 30%;'>${item.commentCreationDate}</div>
+                    `
+                    if(empId === item.empId) {
+                        commentList += `
+                        <button type="button" data-toggle="modal" data-target="#commentDeleteModal"
+                        data-comment-id="${item.commentId}"
+                        data-post-id="${item.postId}"
+                        class="deleteBtn">삭제</button>
+                        `
+                    }
+    commentList += `</div>`;
                 });
 
                 // 댓글 리스트 업데이트
+                // innerHTML : 이 요소 안에 HTML을 넣겠습니다.
                 commentListArea.innerHTML = commentList;
             });
     });

@@ -22,12 +22,6 @@ public class BoardService {
         this.boardMapper = boardMapper;
     }
 
-//    // 게시글 전체조회(공지)
-//    public List<BoardDTO> notiPostList() {
-//
-//        return boardMapper.notiPostList();
-//    }
-
     // 게시글 전체조회(자유)
     public List<BoardDTO> postList(int categoryCode) {
 
@@ -76,6 +70,5 @@ public class BoardService {
     public void commentDelete(int commentId) {
         boardMapper.commentDelete(commentId);
     }
-
 
 }
