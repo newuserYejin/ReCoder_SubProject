@@ -83,4 +83,5 @@ public interface ApprovalMapper {
                               @Param("empId") String empId,
                               @Param("status") String status);
 
+    String findLeaveTypeByPmId(String pmId);
 }
