@@ -355,6 +355,10 @@ public class ApprovalService {
     public String getLeaveTypeForDocument(String pmId) {
         return approvalMapper.findLeaveTypeByPmId(pmId);
     }
+
+    public void updateLeaveType(String pmId, String leaveType) {
+        approvalMapper.updateLeaveType(pmId, leaveType);
+    }
 }
 
 //
