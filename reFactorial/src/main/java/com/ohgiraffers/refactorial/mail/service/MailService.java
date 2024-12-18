@@ -10,31 +10,26 @@ import java.util.List;
 @Service
 public class MailService {
 
-    @Autowired
     private MailDAO mailDAO;
 
-//    // 메일 보내기
-//    public void sendMail(MailDTO mailDTO) {
-//        mailDAO.sendMail(mailDTO);
-//    }
-//
-//    // 내가 보낸 메일 조회
-//    public List<MailDTO> getSentMails(String senderEmpId) {
-//        return mailDAO.getSentMails(senderEmpId);
-//    }
-//
-//    // 내가 받은 메일 조회
-//    public List<MailDTO> getReceivedMails(String receiverEmpId) {
-//        return mailDAO.getReceivedMails(receiverEmpId);
-//    }
-//
-//    // 메일 ID로 메일 조회 (답장하기)
-//    public MailDTO getMailById(String emailId) {
-//        return mailDAO.getMailById(emailId);
-//    }
-//
-//    // 메일 삭제 (휴지통)
-//    public void deleteMail(String emailId) {
-//        mailDAO.deleteMail(emailId);
-//    }
+    @Autowired
+    public MailService(MailDAO mailDAO) {
+        this.mailDAO = mailDAO;
+    }
+
+    // 메일 보내기
+    public void sendMail(MailDTO mailDTO) {
+        mailDAO.sendMail(mailDTO);
+    }
+
+    // 내가 보낸 메일
+    public List<MailDTO> getSentMails(String senderEmpId) {
+        List<MailDTO> sentMails = mailDAO.getSentMails(senderEmpId);
+        return sentMails;
+    }
+
+    public List<MailDTO> getReceivedMails(String receiverEmpId) {
+        List<MailDTO> receivedMails = mailDAO.getReceivedMails(receiverEmpId);
+        return receivedMails;
+    }
 }
