@@ -24,6 +24,23 @@ public class DocumentDTO {
         private String creatorName;  // 작성자 이름 추가
         private String content;
         private String fileUrl;
+        private String categoryName; // 변환된 카테고리 이름
+        private String leaveType; // 휴가 유형 (연차, 반차)
+
+
+        // categoryName 필드의 getter 정의
+        public String getCategoryName() {
+                switch (this.category) {
+                        case "category1":
+                                return "품의서";
+                        case "category2":
+                                return "지출결의서";
+                        case "category3":
+                                return "휴가신청서";
+                        default:
+                                return "알 수 없는 카테고리";
+                }
+        }
 
     }
 

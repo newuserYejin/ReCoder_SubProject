@@ -54,16 +54,20 @@
             pm.pm_status AS status,
             pm.pm_attachment AS attachment,
             emp.emp_name AS creatorName,
+            GROUP_CONCAT(DISTINCT appr.emp_id ORDER BY appr.approval_order) AS approvers,
             pm.pm_referrer AS referrers
         FROM
             tbl_pm pm
                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                LEFT JOIN tbl_approval appr ON pm.pm_id = appr.pm_id
         WHERE
-            pm.pm_status = '대기 중'
-          AND emp.emp_id = #{empId}
+            appr.pm_status = '대기 중'
+          AND appr.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id
         ORDER BY
             pm.pm_create DESC
-            LIMIT #{limit} OFFSET #{offset};
+            LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getWaitingCount" resultType="int">
@@ -287,11 +291,25 @@
 
     <!-- 완료된 문서 조회 -->
     <select id="getCompletedDocuments" parameterType="map" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
-        SELECT *
-        FROM tbl_pm
-        WHERE pm_status = '완료' AND emp_id = #{empId}
-        ORDER BY pm_create DESC
-            LIMIT #{limit} OFFSET #{offset}
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            pm.pm_status AS status,
+            emp.emp_name AS creatorName,  -- 작성자 이름
+            GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers -- 승인자 정보
+        FROM
+            tbl_pm pm
+                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id -- 작성자 정보
+                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id -- 승인자 정보
+        WHERE
+            pm.pm_status = '완료'
+        GROUP BY
+            pm.pm_id
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <!-- 완료된 문서 개수 조회 -->
@@ -333,6 +351,13 @@
         SELECT COUNT(*)
         FROM tbl_pm
         WHERE pm_status = '반려' AND emp_id = #{empId}
+    </select>
+
+    <!-- 휴가 유형 가져오기 -->
+    <select id="findLeaveTypeByPmId" resultType="string">
+        SELECT leave_type
+        FROM tbl_pm
+        WHERE pm_id = #{pmId}
     </select>
 
 </mapper>
