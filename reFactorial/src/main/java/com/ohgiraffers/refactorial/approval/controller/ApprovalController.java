@@ -98,6 +98,7 @@ public class ApprovalController {
         // 이전/다음 페이지 번호 설정
         int prevPage = currentPage > 1 ? currentPage - 1 : 1;
         int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+        System.out.println("Completed documents: " + completedDocuments);
 
         // 모델에 데이터 추가
         model.addAttribute("documents", completedDocuments);
