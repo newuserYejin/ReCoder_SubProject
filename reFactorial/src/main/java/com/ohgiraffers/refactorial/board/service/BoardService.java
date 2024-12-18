@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardService {
@@ -19,12 +21,6 @@ public class BoardService {
 
         this.boardMapper = boardMapper;
     }
-
-//    // 게시글 전체조회(공지)
-//    public List<BoardDTO> notiPostList() {
-//
-//        return boardMapper.notiPostList();
-//    }
 
     // 게시글 전체조회(자유)
     public List<BoardDTO> postList(int categoryCode) {

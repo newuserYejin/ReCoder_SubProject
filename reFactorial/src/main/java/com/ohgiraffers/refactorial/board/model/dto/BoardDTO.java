@@ -17,5 +17,7 @@ public class BoardDTO {
     private LocalDateTime postCreationDate;      // 게시물 작성일 (post_creationDate)
     private LocalDateTime postModificationDate;  // 게시물 수정일 (post_modificationDate)
     private String empId;                        // 작성자 ID (emp_id)
-    private int categoryCode;
+    private int categoryCode;                    // 게시물 카테고리 코드 (category_code)
+    private String empName;                      // 작성자 이름 (emp_name)
+
 }

@@ -55,6 +55,8 @@ public class ApprovalService {
         //5자리 랜덤 문자열 생성
         String pmId = "PM" + String.format("%05d", (int) (Math.random() * 100000));
 
+
+
         params.put("pmId", pmId);
         params.put("title", approvalRequestDTO.getTitle());
         params.put("date", LocalDateTime.now()); // 현재 날짜
