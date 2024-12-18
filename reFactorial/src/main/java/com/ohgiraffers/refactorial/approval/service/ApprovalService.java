@@ -357,20 +357,11 @@ public class ApprovalService {
     }
 }
 
-
-
-
-
-
-
-
-
 //
 //    public List<String> findEmpNamesByIds(List<String> empIds) {
 //        return empIds.stream()
 //                .map(id -> employeeMapper.findNameByEmpId(id))  // emp_id에 해당하는 이름 조회
 //                .collect(Collectors.toList());
 //    }
-
 
 
