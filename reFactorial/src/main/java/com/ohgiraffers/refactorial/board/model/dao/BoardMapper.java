@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.board.model.dao;
 
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
+import com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public interface BoardMapper {
 
     // 게시글 등록
     void boardPost(BoardDTO board);
+
+    // 투표 게시글 등록
+    void insertVoteItem(VoteItemDTO item);
 
     // 상세페이지
     BoardDTO postDetail(String postId);
@@ -33,6 +37,9 @@ public interface BoardMapper {
 
     // 댓글 삭제
     void commentDelete(int commentId);
+
+//    // 투표게시글 등록
+//    void votePost(VoteDTO voteBoard);
 
     // 투표 게시물 조회
 //    List<BoardDTO> voteList(int categoryCode);

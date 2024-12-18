@@ -2,10 +2,7 @@ package com.ohgiraffers.refactorial.board.controller;
 
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
-import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
-import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
-import com.ohgiraffers.refactorial.board.model.dto.EmployeeDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteDTO;
+import com.ohgiraffers.refactorial.board.model.dto.*;
 import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -61,11 +59,7 @@ public class BoardController {
     public String boardPost(@RequestParam String title,
                             @RequestParam String content,
                             @RequestParam int categoryCode,
-                            @RequestParam String option1,
-                            @RequestParam String option2,
-                            @RequestParam String option3,
-                            @RequestParam String option4,
-                            @RequestParam String option5,
+//                            @RequestParam List<String> item,
                             Model model, HttpSession session) {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
@@ -81,24 +75,24 @@ public class BoardController {
         board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
         board.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
 
-        //투표 게시물의 정보
-        VoteDTO voteBoard = new VoteDTO();          // BoardDTO 객체에 밑에있는 값을 담음
-        voteBoard.setPostId(boardId);               // 게시물 번호
-        voteBoard.setPostTitle(title);              // 게시물 제목
-        voteBoard.setPostContent(content);          // 게시물 내용
-        voteBoard.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
-        voteBoard.setEmpId(user.getEmpId());        // 작성자 사원번호
-        voteBoard.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
-        voteBoard.setVoteEndDate(LocalDateTime.now());
-        voteBoard.setVoteItem1(option1);            // 항목1
-        voteBoard.setVoteItem1(option2);            // 항목2
-        voteBoard.setVoteItem1(option3);            // 항목3
-        voteBoard.setVoteItem1(option4);            // 항목4
-        voteBoard.setVoteItem1(option5);            // 항목5
+//        // VoteItemDTO 리스트 생성 및 설정
+//        List<VoteItemDTO> voteItems = new ArrayList<>();
+//        for (String voteItem : item) {
+//            VoteItemDTO voteItemDTO = new VoteItemDTO();
+//            voteItemDTO.setPostId(boardId);
+//            voteItemDTO.setItemTitle(voteItem);
+//            voteItems.add(voteItemDTO);
+//        }
+
+//        System.out.println("voteItems" + voteItems);
+//
+//
+//        board.setVoteItems(voteItems); // BoardDTO에 투표 항목 설정
 
 
         boardService.post(board);   // 게시물 등록 기능
-        boardService.votePost(voteBoard);
+//        boardService.saveVoteItems(voteItems); // 투표 항목 등록
+
 
         return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
     }

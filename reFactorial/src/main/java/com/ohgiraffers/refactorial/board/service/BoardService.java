@@ -3,6 +3,7 @@ package com.ohgiraffers.refactorial.board.service;
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
+import com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,13 @@ public class BoardService {
     public void post(BoardDTO board) {
 
         boardMapper.boardPost(board);
+    }
+
+    // 투표 게시글 등록
+    public void saveVoteItems(List<VoteItemDTO> voteItems) {
+        for (VoteItemDTO item : voteItems) {
+            boardMapper.insertVoteItem(item); // 투표 항목 저장
+        }
     }
 
     // 상세페이지
