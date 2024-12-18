@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
 import com.ohgiraffers.refactorial.board.model.dto.EmployeeDTO;
+import com.ohgiraffers.refactorial.board.model.dto.VoteDTO;
 import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
@@ -31,16 +32,14 @@ public class BoardController {
 
     // 게시물 전체조회
     @GetMapping("list") // url로 이동
-    public String list(@RequestParam int categoryCode, @RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
+    public String list(@RequestParam int categoryCode, Model model, HttpSession session) {
 
         List<BoardDTO> postList = boardService.postList(categoryCode);      // 전체조회 기능
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
 
         model.addAttribute("postList", postList);    // 템플릿에 값 전달
-
         model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
-
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
 
         return "/board/list";   // html 페이지로 이동
@@ -70,26 +69,43 @@ public class BoardController {
                             Model model, HttpSession session) {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+        String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
 
+        // 게시물의 정보
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
-        board.setPostId(board.getPostId());     // 게시물 번호
+        board.setPostId(boardId);               // 게시물 번호
         board.setPostTitle(title);              // 게시물 제목
         board.setPostContent(content);          // 게시물 내용
         board.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
         board.setEmpId(user.getEmpId());        // 작성자 사원번호
         board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
-        board.setCategoryCode(categoryCode);        // 게시물 카테고리 코드
+        board.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
 
-//        System.out.println("글쓴이 = " + user);
+        //투표 게시물의 정보
+        VoteDTO voteBoard = new VoteDTO();          // BoardDTO 객체에 밑에있는 값을 담음
+        voteBoard.setPostId(boardId);               // 게시물 번호
+        voteBoard.setPostTitle(title);              // 게시물 제목
+        voteBoard.setPostContent(content);          // 게시물 내용
+        voteBoard.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
+        voteBoard.setEmpId(user.getEmpId());        // 작성자 사원번호
+        voteBoard.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
+        voteBoard.setVoteEndDate(LocalDateTime.now());
+        voteBoard.setVoteItem1(option1);            // 항목1
+        voteBoard.setVoteItem1(option2);            // 항목2
+        voteBoard.setVoteItem1(option3);            // 항목3
+        voteBoard.setVoteItem1(option4);            // 항목4
+        voteBoard.setVoteItem1(option5);            // 항목5
+
 
         boardService.post(board);   // 게시물 등록 기능
+        boardService.votePost(voteBoard);
 
         return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
     }
 
     // 게시물 상세페이지 / 댓글 등록
     @GetMapping("postDetail")
-    public String postDetail(@RequestParam int postId, Model model, HttpSession session) {
+    public String postDetail(@RequestParam String postId, Model model, HttpSession session) {
 
         // 로그인한 유저 정보를 가져옴
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
@@ -97,8 +113,6 @@ public class BoardController {
         BoardDTO postDetail = boardService.postDetail(postId);
         // 댓글 리스트 가져옴
         List<CommentDTO> comment = boardService.commentView(postId);
-
-//        System.out.println("postDetail = " + postDetail);
 
         model.addAttribute("postDetail", postDetail);
         model.addAttribute("commentView", comment);
@@ -114,7 +128,7 @@ public class BoardController {
     }
 
     @PostMapping("postDelete")
-    public String postDelete(@RequestParam int postId, @RequestParam int categoryCode) {
+    public String postDelete(@RequestParam String postId, @RequestParam int categoryCode) {
 
         // 삭제 기능
         boardService.postDelete(postId);
@@ -124,11 +138,9 @@ public class BoardController {
 
     // 게시물 수정
     @GetMapping("postUpdate")
-    public String postUpdate(@RequestParam int postId, Model model) {
+    public String postUpdate(@RequestParam String postId, Model model) {
 
         BoardDTO postDetail = boardService.postDetail(postId);
-
-//        System.out.println("postDetail = " + postDetail);
 
         model.addAttribute("modify", postDetail);
 
@@ -150,18 +162,13 @@ public class BoardController {
 
     // 댓글 등록
     @PostMapping("comment")
-    public String comment(@RequestParam String comment, @RequestParam int postId, HttpSession session, Model model) {
+    public String comment(@RequestParam String comment, @RequestParam String postId, HttpSession session, Model model) {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
 
         CommentDTO commentDetail = new CommentDTO();
 
-//        System.out.println("comment = " + comment);
-//        System.out.println("postId = " + postId);
-
         LocalDateTime commentTime = LocalDateTime.now();
-
-//        System.out.println("commentTime = " + commentTime);
 
         commentDetail.setCommentContent(comment);
         commentDetail.setPostId(postId);
@@ -177,10 +184,7 @@ public class BoardController {
 
     @GetMapping("commentDelete")
     @ResponseBody   // 화면 이동이 아닌 데이터만 넘겨주기 위해 사용
-    public List<CommentDTO> commentDelete(@RequestParam int commentId, @RequestParam int postId) {
-
-        System.out.println("commentId = " + commentId);
-        System.out.println("commentId = " + postId);
+    public List<CommentDTO> commentDelete(@RequestParam int commentId, @RequestParam String postId) {
 
         // 댓글을 삭제하는 기능
         boardService.commentDelete(commentId);

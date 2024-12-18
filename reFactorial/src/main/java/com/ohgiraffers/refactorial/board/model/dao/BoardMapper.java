@@ -17,19 +17,19 @@ public interface BoardMapper {
     void boardPost(BoardDTO board);
 
     // 상세페이지
-    BoardDTO postDetail(int postId);
+    BoardDTO postDetail(String postId);
 
     // 게시글 수정
     void updatePost(BoardDTO board);
 
     // 게시글 삭제
-    void postDelete(int postId);
+    void postDelete(String postId);
 
     // 댓글 등록
     void comment(CommentDTO comment);
 
     // 댓글 조회
-    List<CommentDTO> commentView (int postId);
+    List<CommentDTO> commentView (String postId);
 
     // 댓글 삭제
     void commentDelete(int commentId);
