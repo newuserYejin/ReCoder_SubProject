@@ -244,17 +244,16 @@
 
 
 
+    <select id="getApproversStatus" resultType="string">
+        SELECT pm_status
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
     <!-- 승인 상태 업데이트 -->
     <update id="updateApprovalStatus">
         UPDATE tbl_approval
         SET pm_status = #{status}
-        WHERE pm_id = #{pmId} AND emp_id = #{empId}
-    </update>
-
-    <!-- 반려 상태와 사유 업데이트 -->
-    <update id="updateApprovalStatusWithReason">
-        UPDATE tbl_approval
-        SET pm_status = #{status}, reason = #{reason}
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
     </update>
 
@@ -265,20 +264,26 @@
         WHERE pm_id = #{pmId}
     </update>
 
-    <!-- 모든 승인 상태 조회 -->
+    <!-- 모든 승인 상태 가져오기 -->
     <select id="getAllApprovalStatuses" resultType="string">
         SELECT pm_status
         FROM tbl_approval
         WHERE pm_id = #{pmId}
     </select>
 
-    <!-- 승인 순서 조회 -->
+    <!-- 승인 순서 가져오기 -->
     <select id="getApprovalOrder" resultType="int">
         SELECT approval_order
         FROM tbl_approval
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
     </select>
 
+    <!-- 반려 상태 업데이트 및 사유 저장 -->
+    <update id="updateApprovalStatusWithReason">
+        UPDATE tbl_approval
+        SET pm_status = #{status}, reason = #{reason}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </update>
 
     <!-- 완료된 문서 조회 -->
     <select id="getCompletedDocuments" parameterType="map" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">

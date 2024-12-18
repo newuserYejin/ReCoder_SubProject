@@ -50,9 +50,7 @@ public interface ApprovalMapper {
 
     List<DocumentDTO> getWaitingDocuments(Map<String, Object> params);
 
-    void updateApprovalStatus(@Param("pmId") String pmId,
-                              @Param("empId") String empId,
-                              @Param("status") String status);
+   
 
     void updateApprovalStatusWithReason(@Param("pmId") String pmId,
                                         @Param("empId") String empId,
@@ -78,4 +76,11 @@ public interface ApprovalMapper {
     List<DocumentDTO> findRejectedDocuments(String empId, int limit, int offset);
 
     int countRejectedDocuments(String empId);
+
+    List<String> getApproversStatus(@Param("pmId") String pmId);
+
+    void updateApprovalStatus(@Param("pmId") String pmId,
+                              @Param("empId") String empId,
+                              @Param("status") String status);
+
 }

@@ -188,9 +188,9 @@
       }).then(response => {
         if (response.ok) {
           if (action === 'approve' || action === 'finalize') {
-            window.location.href = '/approvals/completed.html';
+            window.location.href = '/approvals/completed';
           } else if (action === 'reject') {
-            window.location.href = '/approvals/rejected.html';
+            window.location.href = '/approvals/rejected';
           }
         } else {
           alert("처리 중 오류가 발생했습니다.");

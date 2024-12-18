@@ -358,7 +358,7 @@ public class ApprovalController {
 
         // 대기 중 문서 조회
         List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId, limit, offset);
-
+        System.out.println("Retrieved waitingDocs: " + waitingDocs);
 
         int totalDocuments = approvalService.getWaitingCount(loggedInEmpId);
         int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
@@ -535,7 +535,7 @@ public class ApprovalController {
         model.addAttribute("currentOrder", currentOrder);
         model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
 
-        return "detail";
+        return "/approvals/detail";
     }
 
     @PostMapping("detail")
@@ -544,6 +544,9 @@ public class ApprovalController {
                                        @RequestParam(value = "reason", required = false) String reason,
                                        HttpSession session,
                                        Model model) {
+
+        System.out.println("Action: " + action + ", pmId: " + pmId + ", reason: " + reason); // 요청 로그
+
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
@@ -557,29 +560,32 @@ public class ApprovalController {
             switch (action) {
                 case "approve":
                     approvalService.approve(pmId, currentEmpId);
+                    // 모든 승인자가 승인되었는지 확인 후 완료 처리
+                    if (approvalService.isAllApproversApproved(pmId)) {
+                        approvalService.updateStatusToCompleted(pmId); // 상태를 '완료'로 변경
+                        return "/approvals/completed";
+                    }
                     break;
+
                 case "reject":
                     approvalService.reject(pmId, currentEmpId, reason);
-                    break;
+                    return "/approvals/rejected";
+
                 case "finalize":
                     approvalService.finalize(pmId, currentEmpId);
-                    break;
+                    approvalService.updateStatusToCompleted(pmId); // 전결 시 바로 완료 처리
+                    return "/approvals/completed";
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "문서 처리 중 오류가 발생했습니다.");
-            return "detail";
+            return "approvals/detail";
         }
 
-        // 승인 또는 반려 후 카테고리 페이지로 리다이렉트
-        if ("reject".equals(action)) {
-            return "redirect:/approvals/rejected";
-        } else if ("approve".equals(action) || "finalize".equals(action)) {
-            return "redirect:/approvals/completed";
-        }
-
-        return "redirect:/approvals/detail/" + pmId;    
+        return "/approvals/detail/" + pmId;
     }
+
 
 
 //    @RestController
