@@ -50,19 +50,40 @@ public interface ApprovalMapper {
 
     List<DocumentDTO> getWaitingDocuments(Map<String, Object> params);
 
-    // 승인 상태 업데이트 (승인, 반려, 전결)
+   
+
+    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
+                                        @Param("empId") String empId,
+                                        @Param("status") String status,
+                                        @Param("reason") String reason);
+
+    void updateDocumentStatus(@Param("pmId") String pmId,
+                              @Param("status") String status);
+
+    List<String> getAllApprovalStatuses(@Param("pmId") String pmId);
+
+    Integer getApprovalOrder(@Param("pmId") String pmId,
+                             @Param("empId") String empId);
+
+    List<DocumentDTO> getCompletedDocuments(Map<String, Object> params);
+
+    int getCompletedDocumentsCount(String empId);
+
+    List<DocumentDTO> findInProgressDocuments(String empId, int limit, int offset);
+
+    int countInProgressDocuments(String empId);
+
+    List<DocumentDTO> findRejectedDocuments(String empId, int limit, int offset);
+
+    int countRejectedDocuments(String empId);
+
+    List<String> getApproversStatus(@Param("pmId") String pmId);
+
     void updateApprovalStatus(@Param("pmId") String pmId,
                               @Param("empId") String empId,
                               @Param("status") String status);
 
-    // 문서 상태 최종 변경
-    void updateDocumentStatus(@Param("pmId") String pmId,
-                              @Param("status") String status);
+    String findLeaveTypeByPmId(String pmId);
 
-    // 현재 승인 순서 조회 (getCurrentApprovalOrder에서 사용)
-    Integer getApprovalOrder(@Param("pmId") String pmId,
-                             @Param("empId") String empId);
-
-    // 전체 승인 상태 조회
-    List<String> getAllApprovalStatuses(@Param("pmId") String pmId);
+    void updateLeaveType(String pmId, String leaveType);
 }

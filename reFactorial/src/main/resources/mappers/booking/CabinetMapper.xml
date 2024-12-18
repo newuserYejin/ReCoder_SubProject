@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.CabinetDAO">
+<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.CabinetMapper">
 
     <resultMap id="CabinetResultMap" type="com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO">
         <result property="roomName" column="room_name"/>
