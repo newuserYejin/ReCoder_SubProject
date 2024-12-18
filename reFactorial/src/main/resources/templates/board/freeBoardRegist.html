@@ -76,12 +76,12 @@
                             <!-- 기본 항목 1과 2는 삭제 버튼을 없애고 항상 표시 -->
                             <div class="input-group-item">
                                 <label for="option1">항목 1 : </label>
-                                <input type="text" id="option1" placeholder="내용을 입력하세요">
+                                <input type="text" id="option1" name="option1" placeholder="내용을 입력하세요">
                             </div>
 
                             <div class="input-group-item">
                                 <label for="option2">항목 2 : </label>
-                                <input type="text" id="option2" placeholder="내용을 입력하세요">
+                                <input type="text" id="option2" name="option2" placeholder="내용을 입력하세요">
                             </div>
                         </div>
                         <p id="error-message" style="color: #2b2b2b; display: none;">최대 항목 수는 5개입니다.</p>
@@ -115,7 +115,7 @@
                         newOption.classList.add('input-group-item');
                         newOption.innerHTML = `
                             <label for="option${optionCount}">항목 ${optionCount} : </label>
-                            <input type="text" id="option${optionCount}" placeholder="내용을 입력하세요">
+                            <input type="text" id="option${optionCount}" name="option${optionCount}" placeholder="내용을 입력하세요">
                             <button type="button" class="delete-option">삭제</button>`;
                         pollContainer.appendChild(newOption);
 

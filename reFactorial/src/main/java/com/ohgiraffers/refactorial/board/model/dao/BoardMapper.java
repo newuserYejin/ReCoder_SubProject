@@ -35,5 +35,6 @@ public interface BoardMapper {
     void commentDelete(int commentId);
 
     // 투표 게시물 조회
-    List<BoardDTO> voteList(int categoryCode);
+//    List<BoardDTO> voteList(int categoryCode);
+
 }
