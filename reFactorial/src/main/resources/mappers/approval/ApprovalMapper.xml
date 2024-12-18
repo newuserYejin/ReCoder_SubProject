@@ -244,6 +244,12 @@
 
 
 
+    <select id="getApproversStatus" resultType="string">
+        SELECT pm_status
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
     <!-- 승인 상태 업데이트 -->
     <update id="updateApprovalStatus">
         UPDATE tbl_approval
@@ -251,18 +257,82 @@
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
     </update>
 
-    <!-- 문서 상태 최종 변경 -->
+    <!-- 문서 상태 업데이트 -->
     <update id="updateDocumentStatus">
         UPDATE tbl_pm
         SET pm_status = #{status}
         WHERE pm_id = #{pmId}
     </update>
 
-    <!-- 현재 승인 순서 조회 -->
+    <!-- 모든 승인 상태 가져오기 -->
+    <select id="getAllApprovalStatuses" resultType="string">
+        SELECT pm_status
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <!-- 승인 순서 가져오기 -->
     <select id="getApprovalOrder" resultType="int">
         SELECT approval_order
         FROM tbl_approval
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </select>
+
+    <!-- 반려 상태 업데이트 및 사유 저장 -->
+    <update id="updateApprovalStatusWithReason">
+        UPDATE tbl_approval
+        SET pm_status = #{status}, reason = #{reason}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </update>
+
+    <!-- 완료된 문서 조회 -->
+    <select id="getCompletedDocuments" parameterType="map" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT *
+        FROM tbl_pm
+        WHERE pm_status = '완료' AND emp_id = #{empId}
+        ORDER BY pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 완료된 문서 개수 조회 -->
+    <select id="getCompletedDocumentsCount" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm
+        WHERE pm_status = '완료' AND emp_id = #{empId}
+    </select>
+
+
+    <!-- 진행 중 문서 가져오기 -->
+    <select id="findInProgressDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT *
+        FROM tbl_pm
+        WHERE pm_status = '진행중' AND emp_id = #{empId}
+        ORDER BY pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 진행 중 문서 개수 가져오기 -->
+    <select id="countInProgressDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm
+        WHERE pm_status = '진행중' AND emp_id = #{empId}
+    </select>
+
+
+    <!-- 반려된 문서 가져오기 -->
+    <select id="findRejectedDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT *
+        FROM tbl_pm
+        WHERE pm_status = '반려' AND emp_id = #{empId}
+        ORDER BY pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 반려된 문서 개수 가져오기 -->
+    <select id="countRejectedDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm
+        WHERE pm_status = '반려' AND emp_id = #{empId}
     </select>
 
 </mapper>

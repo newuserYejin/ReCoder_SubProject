@@ -14,7 +14,6 @@
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
-
     <link rel="stylesheet" th:href="@{/css/approval/completed.css}">
 </head>
 <body>
@@ -34,26 +33,54 @@
             </ul>
         </div>
         <div class="main-content">
-            <h1>완료 된 문서/h1>
+            <h1>완료 된 문서</h1>
             <div class="table-header">
                 <div class="table-cell">번호</div>
-                <div class="table-cell">작성자</div>
+                <div class="table-cell">기안자</div>
                 <div class="table-cell">제목</div>
                 <div class="table-cell">작성일</div>
                 <div class="table-cell">상태</div>
             </div>
             <div class="table-row" th:each="doc : ${documents}">
-                <div class="table-cell" th:text="${doc.pmId}"></div>
-                <div class="table-cell" th:text="${doc.creatorName}"></div> <!-- 작성자 이름 -->
+                <div class="table-cell" th:text="${doc.rowNum}"></div>
                 <div class="table-cell" th:text="${doc.title}"></div>
-                <div class="table-cell" th:text="${doc.createDate}"></div>
+                <div class="table-cell" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></div>
                 <div class="table-cell" th:text="${doc.status}"></div>
+            </div>
+
+            <!-- 페이지네이션 표시 -->
+            <div class="pagination">
+                <ul>
+                    <!-- 첫 페이지 -->
+                    <li class="first">
+                        <a href="?page=1"><<</a>
+                    </li>
+                    <!-- 이전 페이지 -->
+                    <li class="prev">
+                        <a th:href="@{'/approvals/completed?page=' + ${prevPage}}" class="prev"><</a>
+                    </li>
+
+                    <!-- 페이지 번호들 -->
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a th:href="@{'/approvals/completed?page=' + ${i}}" th:text="${i}"></a>
+                        </li>
+                    </th:block>
+
+                    <!-- 다음 페이지 -->
+                    <li class="next">
+                        <a th:href="@{'/approvals/completed?page=' + ${nextPage}}" class="next">></a>
+                    </li>
+                    <!-- 마지막 페이지 -->
+                    <li class="last">
+                        <a th:href="@{'/approvals/completed?page=' + ${totalPages}}" class="last">>></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </section>
+
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
-
-
 </body>
 </html>
