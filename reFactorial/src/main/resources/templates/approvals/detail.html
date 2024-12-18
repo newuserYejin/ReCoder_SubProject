@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 문서 상세보기</title>
+  <!-- 폰트 적용 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+  <link rel="stylesheet" href="/css/approval/detail.css">
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+
+<section class="wrapper">
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <div class="sidebar-title">전자결제</div>
+    <ul>
+      <li><a href="/approvals/waiting">대기 중</a></li>
+      <li><a href="/approvals/inProgress">진행 중</a></li>
+      <li><a href="/approvals/completed">완료</a></li>
+      <li><a href="/approvals/rejected">반려</a></li>
+      <li><a href="/approvals/canceled">취소</a></li>
+      <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+      <li><a href="/approvals/referenceDocuments">참조</a></li>
+    </ul>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="main-content">
+    <!-- 제목과 버튼 그룹 -->
+    <div class="header-group">
+      <h2 th:text="${document != null ? document.title : '제목 없음'}">문서 제목</h2>
+      <div class="button-group" th:if="${isCurrentApprover}">
+        <form action="/approvals/detail" method="post">
+          <input type="hidden" name="pmId" th:value="${document.pmId}">
+          <!-- 승인 버튼 -->
+          <button type="submit" name="action" value="approve"
+                  class="submit-btn"
+                  th:classappend="${!isCurrentApprover} ? 'disabled-btn' : ''"
+                  th:disabled="${!isCurrentApprover}">
+            승인
+          </button>
+          <!-- 반려 버튼 -->
+          <button type="submit" name="action" value="reject"
+                  class="reject-btn"
+                  th:classappend="${!isCurrentApprover} ? 'disabled-btn' : ''"
+                  th:disabled="${!isCurrentApprover}">
+            반려
+          </button>
+          <!-- 전결 버튼 -->
+          <button type="submit" name="action" value="finalize"
+                  class="finalize-btn"
+                  th:if="${currentOrder == 1 || currentOrder == 2}">
+            전결
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 문서 내용 -->
+    <div class="detail-card">
+      <div class="content">
+        <p><strong>작성자:</strong>
+          <span th:text="${creatorName}">기안자</span>
+        </p>
+        <p><strong>작성일:</strong>
+          <span th:text="${document != null ? #dates.format(document.createDate, 'yyyy-MM-dd') : '날짜 정보 없음'}">작성일</span>
+        </p>
+        <p><strong>상태:</strong>
+          <span th:text="${document != null ? document.status : '상태 정보 없음'}">상태</span>
+        </p>
+        <p><strong>내용:</strong>
+          <span th:text="${document != null ? document.content : '내용 없음'}">내용</span>
+        </p>
+      </div>
+
+      <!-- 승인자 정보 -->
+      <div class="additional-info">
+        <h3>승인자 정보</h3>
+        <ul class="approver-list">
+          <li>
+            <strong>최초 승인자:</strong>
+            <span th:text="${firstApprover != null ? firstApprover : '승인자 정보 없음'}"></span>
+          </li>
+          <li>
+            <strong>중간 승인자:</strong>
+            <span th:text="${midApprover != null ? midApprover : '승인자 정보 없음'}"></span>
+          </li>
+          <li>
+            <strong>최종 승인자:</strong>
+            <span th:text="${finalApprover != null ? finalApprover : '승인자 정보 없음'}"></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 참조자 정보 -->
+      <div class="additional-info">
+        <h3>참조자 정보</h3>
+        <ul class="referrer-list">
+          <li th:each="referrer : ${referrerNames}" th:text="${referrer}">참조자</li>
+        </ul>
+      </div>
+
+      <!-- 첨부파일 -->
+      <div class="file-link" th:if="${fileUrls != null}">
+        <h3>첨부파일</h3>
+        <ul>
+          <li th:each="fileUrl : ${fileUrls}">
+            <a th:href="@{/files/download(fileName=${fileUrl})}" download th:text="${fileUrl}"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 뒤로가기 버튼 -->
+    <div class="back-button">
+      <button class="submit-btn" onclick="window.history.back()">뒤로가기</button>
+    </div>
+  </div>
+</section>
+
+<!-- 모달창 -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <p id="modalMessage"></p>
+    <textarea id="rejectReason" style="display: none;" placeholder="반려 사유를 입력하세요"></textarea>
+    <div class="modal-buttons">
+      <button id="confirmBtn">확인</button>
+      <button id="cancelBtn">취소</button>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll('.submit-btn, .reject-btn, .finalize-btn');
+    const modal = document.getElementById('confirmModal');
+    const modalMessage = document.getElementById('modalMessage');
+    const rejectReason = document.getElementById('rejectReason');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    let actionType, pmId;
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        actionType = button.value;
+        pmId = document.querySelector('input[name="pmId"]').value;
+
+        if (actionType === 'approve') {
+          modalMessage.textContent = "승인하시겠습니까?";
+          rejectReason.style.display = 'none';
+        } else if (actionType === 'reject') {
+          modalMessage.textContent = "반려하시겠습니까?";
+          rejectReason.style.display = 'block';
+        } else if (actionType === 'finalize') {
+          modalMessage.textContent = "전결하시겠습니까?";
+          rejectReason.style.display = 'none';
+        }
+        modal.style.display = 'block';
+      });
+    });
+
+    confirmBtn.addEventListener('click', function () {
+      const reason = rejectReason.style.display === 'block' ? rejectReason.value : '';
+      sendAction(actionType, pmId, reason);
+      modal.style.display = 'none';
+    });
+
+    cancelBtn.addEventListener('click', function () {
+      modal.style.display = 'none';
+    });
+
+    function sendAction(action, pmId, reason) {
+      fetch('/approvals/detail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=${action}&pmId=${pmId}&reason=${reason}`
+      }).then(response => {
+        if (response.ok) {
+          if (action === 'approve' || action === 'finalize') {
+            window.location.href = '/approvals/completed';
+          } else if (action === 'reject') {
+            window.location.href = '/approvals/rejected';
+          }
+        } else {
+          alert("처리 중 오류가 발생했습니다.");
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
+
+

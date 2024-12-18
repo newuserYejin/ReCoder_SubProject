@@ -24,13 +24,14 @@ public class MailService {
     public void sendMail(MailDTO mailDTO) {
         // ID 생성 및 중복 방지 로직
         String emId;
-        do {
-            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
-        } while (mailDAO.isEmailIdExists(emId)); // 중복 여부 확인
+//        do {
+//            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+//        }
+//        while (mailDAO.isEmailIdExists(emId)); // 중복 여부 확인
 
-        // 공통 메일 ID 설정
-        mailDTO.setEmailId(emId);
-        mailDAO.sendMail(mailDTO);
+//        // 공통 메일 ID 설정
+//        mailDTO.setEmailId(emId);
+//        mailDAO.sendMail(mailDTO);
     }
 
     // 내가 보낸 메일

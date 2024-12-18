@@ -49,4 +49,38 @@ public interface ApprovalMapper {
     FileDTO findFileByFileName(String fileName);
 
     List<DocumentDTO> getWaitingDocuments(Map<String, Object> params);
+
+   
+
+    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
+                                        @Param("empId") String empId,
+                                        @Param("status") String status,
+                                        @Param("reason") String reason);
+
+    void updateDocumentStatus(@Param("pmId") String pmId,
+                              @Param("status") String status);
+
+    List<String> getAllApprovalStatuses(@Param("pmId") String pmId);
+
+    Integer getApprovalOrder(@Param("pmId") String pmId,
+                             @Param("empId") String empId);
+
+    List<DocumentDTO> getCompletedDocuments(Map<String, Object> params);
+
+    int getCompletedDocumentsCount(String empId);
+
+    List<DocumentDTO> findInProgressDocuments(String empId, int limit, int offset);
+
+    int countInProgressDocuments(String empId);
+
+    List<DocumentDTO> findRejectedDocuments(String empId, int limit, int offset);
+
+    int countRejectedDocuments(String empId);
+
+    List<String> getApproversStatus(@Param("pmId") String pmId);
+
+    void updateApprovalStatus(@Param("pmId") String pmId,
+                              @Param("empId") String empId,
+                              @Param("status") String status);
+
 }
