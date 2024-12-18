@@ -128,3 +128,15 @@ html, body {
 .pagination button:hover {
     background-color: #ddd; /* 마우스 오버 시 배경색 변경 */
 }
+
+.no-posts {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.active {
+    color: #5c1915; /* 현재 위치일 때 빨간색으로 표시 */
+    font-weight: bold;
+    font-size: 1.3em
+}

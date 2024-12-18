@@ -1,8 +1,10 @@
 package com.ohgiraffers.refactorial.board.controller;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
+import com.ohgiraffers.refactorial.board.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
@@ -29,17 +31,17 @@ public class BoardController {
 
     // 게시물 전체조회
     @GetMapping("list") // url로 이동
-    public String list(@RequestParam int categoryCode, Model model) {
+    public String list(@RequestParam int categoryCode, @RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
 
-        List<BoardDTO> postList = boardService.postList(categoryCode);
+        List<BoardDTO> postList = boardService.postList(categoryCode);      // 전체조회 기능
 
-//            System.out.println("postList = " + postList);
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
 
         model.addAttribute("postList", postList);    // 템플릿에 값 전달
 
         model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
 
-//        System.out.println("postList = " + postList);   // 값이 잘 들어오는지 확인
+        model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
 
         return "/board/list";   // html 페이지로 이동
 
@@ -57,7 +59,14 @@ public class BoardController {
 
     // 게시물 등록
     @PostMapping("freeBoardRegist")
-    public String boardPost(@RequestParam String title, @RequestParam String content, @RequestParam int categoryCode,
+    public String boardPost(@RequestParam String title,
+                            @RequestParam String content,
+                            @RequestParam int categoryCode,
+                            @RequestParam String option1,
+                            @RequestParam String option2,
+                            @RequestParam String option3,
+                            @RequestParam String option4,
+                            @RequestParam String option5,
                             Model model, HttpSession session) {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
@@ -73,15 +82,17 @@ public class BoardController {
 
 //        System.out.println("글쓴이 = " + user);
 
-        boardService.post(board);
+        boardService.post(board);   // 게시물 등록 기능
 
         return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
     }
 
     // 게시물 상세페이지 / 댓글 등록
     @GetMapping("postDetail")
-    public String postDetail(@RequestParam int postId, Model model) {
+    public String postDetail(@RequestParam int postId, Model model, HttpSession session) {
 
+        // 로그인한 유저 정보를 가져옴
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         // 게시물 상세
         BoardDTO postDetail = boardService.postDetail(postId);
         // 댓글 리스트 가져옴
@@ -91,6 +102,7 @@ public class BoardController {
 
         model.addAttribute("postDetail", postDetail);
         model.addAttribute("commentView", comment);
+        model.addAttribute("user", user);   // user정보 postDetail에 전달(게시물 수정,삭제 권한)
 
         return "/board/postDetail";
     }
@@ -104,6 +116,7 @@ public class BoardController {
     @PostMapping("postDelete")
     public String postDelete(@RequestParam int postId, @RequestParam int categoryCode) {
 
+        // 삭제 기능
         boardService.postDelete(postId);
 
         return "redirect:/board/list?categoryCode=" + categoryCode;
@@ -127,6 +140,8 @@ public class BoardController {
 
         board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
         boardService.updatePost(board);
+
+
 
 //        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
         return "redirect:/board/list?categoryCode=" + board.getCategoryCode();  // 게시판 이동

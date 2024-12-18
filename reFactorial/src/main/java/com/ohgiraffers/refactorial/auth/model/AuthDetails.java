@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.auth.model;
 
+import com.ohgiraffers.refactorial.common.UserRole;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,10 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
+
+        if (UserRole.ACCESSLIMIT.equals(user.getViewAuth())){
+            return false;
+        }
         return true;
     }
 

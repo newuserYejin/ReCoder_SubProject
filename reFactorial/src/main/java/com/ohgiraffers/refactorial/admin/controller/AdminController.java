@@ -31,10 +31,17 @@ public class AdminController {
 
     @GetMapping("getAllEmployee")
     @ResponseBody
-    public Map<String, Object> getAllEmployee(){
+    public Map<String, Object> getAllEmployee(@RequestParam int sendDept, @RequestParam String sendSearchEmpName){
         Map<String, Object> result = new HashMap<>();
 
-        List<LoginUserDTO> userList = adminService.getAllEmployee();
+        if (sendSearchEmpName.trim().isEmpty() || sendSearchEmpName == null){
+            sendSearchEmpName = null;
+        }
+
+        List<LoginUserDTO> userList = adminService.getAllEmployee(sendDept,sendSearchEmpName);
+
+        System.out.println("sendDept = " + sendDept);
+        System.out.println("sendSearchEmpName = " + sendSearchEmpName);
 
         result.put("userList",userList);
 
@@ -61,6 +68,10 @@ public class AdminController {
     @PostMapping("modifyEmpInfo")
     public ModelAndView modifyEmpInfoUpdate(ModelAndView mv, @ModelAttribute UserDTO userDTO){
 
+        if (userDTO.getEmpPwd() == null || userDTO.getEmpPwd().trim().isEmpty()) {
+            userDTO.setEmpPwd(null);
+        }
+
         Integer result = adminService.modifyEmpInfoUpdate(userDTO);
         
         if (result > 0){
@@ -72,6 +83,7 @@ public class AdminController {
         return mv;
     }
 
+    // 특정 회원 정보 수정할때 나타나는 페이지 addEmployee 활용
     @PostMapping("addEmployeeFragment")
     public String updateEmployeeFragment(@RequestBody Map<String, Object> res, Model model){
 
@@ -88,17 +100,25 @@ public class AdminController {
     @ResponseBody
     public Map<String, Object> getByDateAtt(@RequestParam String selectedDay,
                                             @RequestParam(defaultValue = "1") int page,
-                                            @RequestParam(defaultValue = "10") int size){
-        // 전체 데이터의 개수
-        int totalRecords = adminService.getTotalCountByDateAtt(selectedDay);
+                                            @RequestParam(defaultValue = "10") int size,
+                                            @RequestParam String searchDept,
+                                            @RequestParam String searchEmpName){
 
+        System.out.println("searchDept = " + searchDept);
+        System.out.println("searchEmpName = " + searchEmpName);
+        
+        // 전체 데이터의 개수
+        int totalRecords = adminService.getTotalCountByDateAtt(selectedDay, searchDept, searchEmpName);
+
+        System.out.println("totalRecords = " + totalRecords);
+        
         // 전체 페이지 수 계산
         int totalPages = (int) Math.ceil((double) totalRecords / size);
 
         // 건너뛸 갯수
         int offset = (page - 1) * size;
 
-        List<AttendanceDTO> getByDateAttList = adminService.getByDateAtt(selectedDay,offset,size);
+        List<AttendanceDTO> getByDateAttList = adminService.getByDateAtt(selectedDay,offset,size, searchDept, searchEmpName);
 
         Map<String, Object> result = new HashMap<>();
         result.put("items",getByDateAttList);
