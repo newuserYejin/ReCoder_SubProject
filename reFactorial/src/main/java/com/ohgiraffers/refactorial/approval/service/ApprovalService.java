@@ -351,6 +351,10 @@ public class ApprovalService {
     public void updateStatusToCompleted(String pmId) {
         approvalMapper.updateDocumentStatus(pmId, "완료");
     }
+
+    public String getLeaveTypeForDocument(String pmId) {
+        return approvalMapper.findLeaveTypeByPmId(pmId);
+    }
 }
 
 

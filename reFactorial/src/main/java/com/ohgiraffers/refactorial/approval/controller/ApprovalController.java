@@ -525,6 +525,13 @@ public class ApprovalController {
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
+        document.setCategoryName(document.getCategoryName());
+
+        if("category3".equals(document.getCategory())){
+            String leaveType = approvalService.getLeaveTypeForDocument(pmId);
+            document.setLeaveType(leaveType);
+        }
+
         // 모델에 데이터 추가
         model.addAttribute("document", document);
         model.addAttribute("creatorName", creatorName);

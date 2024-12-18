@@ -353,4 +353,11 @@
         WHERE pm_status = '반려' AND emp_id = #{empId}
     </select>
 
+    <!-- 휴가 유형 가져오기 -->
+    <select id="findLeaveTypeByPmId" resultType="string">
+        SELECT leave_type
+        FROM tbl_pm
+        WHERE pm_id = #{pmId}
+    </select>
+
 </mapper>
