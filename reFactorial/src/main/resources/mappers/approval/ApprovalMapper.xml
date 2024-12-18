@@ -54,16 +54,20 @@
             pm.pm_status AS status,
             pm.pm_attachment AS attachment,
             emp.emp_name AS creatorName,
+            GROUP_CONCAT(DISTINCT appr.emp_id ORDER BY appr.approval_order) AS approvers,
             pm.pm_referrer AS referrers
         FROM
             tbl_pm pm
                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                LEFT JOIN tbl_approval appr ON pm.pm_id = appr.pm_id
         WHERE
-            pm.pm_status = '대기 중'
-          AND emp.emp_id = #{empId}
+            appr.pm_status = '대기 중'
+          AND appr.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id
         ORDER BY
             pm.pm_create DESC
-            LIMIT #{limit} OFFSET #{offset};
+            LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getWaitingCount" resultType="int">
