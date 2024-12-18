@@ -22,7 +22,7 @@
 
     <div>
         <label for="receiverEmpId">수신자 사원번호</label>
-        <input type="text" id="receiverEmpId" name="receiverEmpId" data-toggle="modal" data-target="#SeachItems"  required/>
+        <input type="text" id="receiverEmpId" name="receiverEmpId" data-toggle="modal" data-target="#seachItems"  required/>
     </div>
 
     <div>
@@ -42,14 +42,14 @@
                 </button>
                 <div>회원 검색</div>
             </div>
-            <form action="changePW" method="post" id="changePWForm">
+            <form action="searchReceiver" method="post" id="changePWForm">
                 <div class="modal-body">
-                    <label for="presentPW">현재 비밀번호</label>
-                    <input type="text" id="presentPW" name="presentPW">
+                    <label for="searchReceiverInput">회원</label>
+                    <input type="text" id="searchReceiverInput" name="presentPW">
                 </div>
                 <div class="modal-footer">
                     <!--                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                    <button type="submit" id="matchPW">변 경</button>
+                    <button type="submit" id="matchPW">회원 검색</button>
                 </div>
             </form>
         </div>

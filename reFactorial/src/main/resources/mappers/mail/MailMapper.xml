@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailDAO">
+<mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailMapper">
 
     <resultMap id="MailResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
         <id property="emailId" column="email_id"/>
@@ -17,22 +17,28 @@
     </resultMap>
 
     <!-- 메일 보내기 -->
-    <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dao.MailDAO">
+    <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
         INSERT INTO tbl_mail (
-        email_title, email_content, read_status, sent_date, trash_status, sender_emp_id, receiver_emp_id
-        )
-        VALUES (
-        #{emailTitle}, #{emailContent}, #{readStatus}, CURDATE(), #{trashStatus}, #{senderEmpId}, #{receiverEmpId}
+        email_id, email_title, email_content, read_status, sent_date, trash_status, sender_emp_id, receiver_emp_id
+        ) VALUES (
+        #{emailId}, #{emailTitle}, #{emailContent}, #{readStatus}, CURDATE(), #{trashStatus}, #{senderEmpId}, #{receiverEmpId}
         )
     </insert>
+
     <!-- 내가 보낸 메일 조회 -->
-    <select id="getSentMails" resultMap="MailResultMap" parameterType="String" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
-        SELECT * FROM tbl_mail WHERE sender_emp_id = #{senderEmpId} ORDER BY sent_date DESC
+    <select id="getSentMails" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE sender_emp_id = #{senderEmpId} AND trash_status = 0
+        ORDER BY sent_date DESC
     </select>
 
     <!-- 내가 받은 메일 조회 -->
-    <select id="getReceivedMails" resultMap="MailResultMap" parameterType="String" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
-        SELECT * FROM tbl_mail WHERE receiver_emp_id = #{receiverEmpId} ORDER BY sent_date DESC
+    <select id="getReceivedMails" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE receiver_emp_id = #{receiverEmpId} AND trash_status = 0
+        ORDER BY sent_date DESC
     </select>
 
 

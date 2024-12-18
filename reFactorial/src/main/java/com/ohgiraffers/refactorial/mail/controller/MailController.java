@@ -38,7 +38,7 @@ public class MailController {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         // 발신자 정보 설정
-        String senderEmpId = loginUser.getEmpId(); // LoginUserDTO의 필드 값을 사용
+        String senderEmpId = loginUser.getEmpId(); // LoginUserDTO 의 필드 값을 사용
         model.addAttribute("senderEmpId", senderEmpId);
 
         // 메일 서비스 호출
