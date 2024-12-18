@@ -42,6 +42,7 @@
                 </button>
                 <div>회원 검색</div>
             </div>
+
             <form action="searchReceiver" method="post" id="changePWForm">
                 <div class="modal-body">
                     <label for="searchReceiverInput">회원</label>
@@ -52,6 +53,21 @@
                     <button type="submit" id="matchPW">회원 검색</button>
                 </div>
             </form>
+
+            <!-- 검색 결과 -->
+            <div th:if="${employees != null}">
+                <h4>검색된 직원 목록</h4>
+                <ul>
+                    <li th:each="employee : ${employees}">
+                        <input type="checkbox" name="selectedEmployees" th:value="${employee.empId}" />
+                        <span th:text="${employee.empName}"></span> -
+                        <span th:text="${employee.deptCode}"></span> -
+                        <span th:text="${employee.positionValue}"></span> -
+                        <span th:text="${employee.empEmail}"></span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </div>
