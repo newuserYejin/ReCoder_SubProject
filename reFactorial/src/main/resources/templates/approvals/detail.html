@@ -25,7 +25,6 @@
       <li><a href="/approvals/inProgress">진행 중</a></li>
       <li><a href="/approvals/completed">완료</a></li>
       <li><a href="/approvals/rejected">반려</a></li>
-      <li><a href="/approvals/canceled">취소</a></li>
       <li><a href="/approvals/myDocuments">내가 작성한</a></li>
       <li><a href="/approvals/referenceDocuments">참조</a></li>
     </ul>
@@ -75,9 +74,19 @@
         <p><strong>상태:</strong>
           <span th:text="${document != null ? document.status : '상태 정보 없음'}">상태</span>
         </p>
+        <p><strong>카테고리:</strong>
+          <span th:text="${document != null ? document.categoryName : '카테고리 정보 없음'}">카테고리</span>
+        </p>
         <p><strong>내용:</strong>
           <span th:text="${document != null ? document.content : '내용 없음'}">내용</span>
         </p>
+      </div>
+
+      <div th:if="${document.category == 'category3'}">
+        <p><strong>휴가유형</strong>
+          <span th:text="${document.leaveType != null ? document.leaveType : '정보 없음'}"></span>
+        </p>
+
       </div>
 
       <!-- 승인자 정보 -->
