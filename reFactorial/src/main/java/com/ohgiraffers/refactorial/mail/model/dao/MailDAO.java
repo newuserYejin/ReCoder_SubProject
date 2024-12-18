@@ -15,4 +15,5 @@ public interface MailDAO {
     List<MailDTO> getSentMails(String senderEmpId);
 
     List<MailDTO> getReceivedMails(String receiverEmpId);
+
 }

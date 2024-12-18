@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class MailDTO {
-    private int emailId; // 메일 고유 ID
+    private String emailId; // 메일 고유 ID
     private String emailTitle; // 메일 제목
     private String emailContent; // 메일 내용
     private boolean readStatus; // 메일 확인 상태

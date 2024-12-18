@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1>내가 받은 메일</h1>
-<table>
+<table border="1">
     <thead>
     <tr>
         <th>메일 제목</th>
@@ -17,7 +17,6 @@
     <tr th:each="mail : ${receivedMails}">
         <td th:text="${mail.emailTitle}"></td>
         <td th:text="${mail.sentDate}"></td>
-        <td th:text="${mail.senderEmpId}"></td>
         <td th:text="${mail.senderEmpId}"></td>
     </tr>
     </tbody>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MailService {
@@ -17,8 +18,18 @@ public class MailService {
         this.mailDAO = mailDAO;
     }
 
+
+
     // 메일 보내기
     public void sendMail(MailDTO mailDTO) {
+        // ID 생성 및 중복 방지 로직
+        String emId;
+        do {
+            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+        } while (mailDAO.isEmailIdExists(emId)); // 중복 여부 확인
+
+        // 공통 메일 ID 설정
+        mailDTO.setEmailId(emId);
         mailDAO.sendMail(mailDTO);
     }
 
