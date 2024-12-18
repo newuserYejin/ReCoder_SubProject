@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>이메일 메인 페이지</title>
+    <title>mailMain</title>
 </head>
 <body>
-    <button th:onclick="|location.href='@{/mail/writeMail}'|">메일 쓰기</button>
-
+<button th:onclick="|location.href='@{/mail/sendMail}'|">메일 쓰기</button>
+<button th:onclick="|location.href='@{/mail/sentMails}'|">내가 보낸 메일</button>
+<button th:onclick="|location.href='@{/mail/receivedMails}'|">내가 받은 메일</button>
+<button th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</button>
 </body>
 </html>

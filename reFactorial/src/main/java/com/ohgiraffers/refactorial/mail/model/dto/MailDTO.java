@@ -2,7 +2,8 @@ package com.ohgiraffers.refactorial.mail.model.dto;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,14 +11,13 @@ import java.util.Date;
 @Setter
 @ToString
 public class MailDTO {
-    private String emailId;
-    private String emailTitle;
-    private String emailContent;
-    private String emailAttachment;
-    private byte readStatus; // tinyint is mapped to byte in Java
-    private Date sentDate; // Assuming java.sql.Date
-    private byte trashDate; // Since the column type is tinyint
-    private String senderEmpId;
-    private String receiverEmpId;
+    private String emailId; // 메일 고유 ID
+    private String emailTitle; // 메일 제목
+    private String emailContent; // 메일 내용
+    private boolean readStatus; // 메일 확인 상태
+    private LocalDate sentDate; // 발송 날짜
+    private boolean trashStatus; // 휴지통 이동 여부
+    private String senderEmpId; // 발신자 사원번호
+    private String receiverEmpId; // 수신자 사원번호
 }
 

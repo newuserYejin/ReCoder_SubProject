@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.ReservationDAO">
+<mapper namespace="com.ohgiraffers.refactorial.booking.model.dao.ReservationMapper">
 
     <resultMap id="ReservationResultMap" type="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
         <result property="reservationId" column="reservation_id"/>

@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Mapper
-public interface ReservationDAO {
+public interface ReservationMapper {
 
     // 모든 예약을 가져오는 메서드
     List<ReservationDTO> getAllReservations(); // 예약 정보 DTO를 반환하는 메서드 추가
