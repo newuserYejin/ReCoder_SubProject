@@ -367,4 +367,23 @@
         SET leave_type = #{leaveType}
         WHERE pm_id = #{pmId}
     </update>
+
+    <select id="findApprovalDetailById" parameterType="string" resultType="com.ohgiraffers.refactorial.approval.model.dto.ApprovalDetailDTO">
+        SELECT
+            pm_id AS pmId,
+            title,
+            create_date AS createDate,
+            category,
+            status,
+            attachment,
+            creator AS creatorId,
+            approvers,
+            referrers,
+            content,
+            leave_type AS leaveType
+        FROM
+            tbl_approval
+        WHERE
+            pm_id = #{pmId}
+    </select>
 </mapper>

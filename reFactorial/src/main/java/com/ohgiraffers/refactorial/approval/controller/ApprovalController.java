@@ -1,9 +1,6 @@
 package com.ohgiraffers.refactorial.approval.controller;
 
-import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.*;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -69,6 +66,7 @@ public class ApprovalController {
         String loggedInEmpId = user.getEmpId();
         int limit = 14; // 한 페이지당 문서 수
         int totalDocuments = approvalService.getCompletedDocumentsCount(loggedInEmpId); // 전체 문서 개수 가져오기
+
         int totalPages = totalDocuments > 0 ? (int) Math.ceil((double) totalDocuments / limit) : 1; // 최소 1페이지
 
         // 현재 페이지 범위 검증
@@ -83,6 +81,10 @@ public class ApprovalController {
 
         // 완료된 문서 가져오기
         List<DocumentDTO> completedDocuments = approvalService.getCompletedDocuments(loggedInEmpId, limit, offset);
+        if (completedDocuments == null) { // null 방지
+            completedDocuments = new ArrayList<>();
+        }
+
 
         // 문서 번호 설정 (현재 페이지에 맞는 번호)
         for (int i = 0; i < completedDocuments.size(); i++) {
@@ -104,8 +106,8 @@ public class ApprovalController {
         model.addAttribute("documents", completedDocuments);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("prevPage", prevPage);
-        model.addAttribute("nextPage", nextPage);
+        model.addAttribute("prevPage", currentPage > 1 ? currentPage - 1 : 1);
+        model.addAttribute("nextPage", currentPage < totalPages ? currentPage + 1 : totalPages);
 
         return "/approvals/completed";
     }
@@ -604,6 +606,36 @@ public class ApprovalController {
         }
 
         return "/approvals/detail/" + pmId;
+    }
+
+    @GetMapping("detail")
+    public String showApprovalDetail(@RequestParam("pmId") String pmId, Model model, HttpSession session) {
+
+
+        if (pmId == null || pmId.isEmpty()) {
+            model.addAttribute("errorMessage", "문서 ID가 제공되지 않았습니다.");
+            return "error/400";
+        }
+        // 세션에서 사용자 정보 확인
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
+        }
+
+        // 승인 문서 상세 정보 조회
+        try {
+            ApprovalDetailDTO approvalDetail = approvalService.getApprovalDetail(pmId);
+            model.addAttribute("approvalDetail", approvalDetail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "문서 정보를 불러오는 중 오류가 발생했습니다.");
+            return "error/500"; // 오류 페이지로 이동
+        }
+
+        System.out.println("Received pmId: " + pmId); // 디버깅 로그 추가
+        return "approvals/detail"; // 상세 페이지로 이동
     }
 
 

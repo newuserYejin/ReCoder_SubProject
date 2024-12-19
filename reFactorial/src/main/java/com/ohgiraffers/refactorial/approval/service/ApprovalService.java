@@ -2,10 +2,7 @@ package com.ohgiraffers.refactorial.approval.service;
 
 import com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper;
 import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
-import com.ohgiraffers.refactorial.approval.model.dto.ApprovalRequestDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
-import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
+import com.ohgiraffers.refactorial.approval.model.dto.*;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -358,6 +355,18 @@ public class ApprovalService {
 
     public void updateLeaveType(String pmId, String leaveType) {
         approvalMapper.updateLeaveType(pmId, leaveType);
+    }
+
+    public ApprovalDetailDTO getApprovalDetail(String pmId) throws Exception {
+        // DAO 호출하여 데이터베이스에서 상세 정보 조회
+        ApprovalDetailDTO approvalDetail = approvalMapper.findApprovalDetailById(pmId);
+
+        if (approvalDetail == null) {
+            // 데이터가 없을 경우 예외 처리
+            throw new Exception("해당 문서를 찾을 수 없습니다.");
+        }
+
+        return approvalDetail;
     }
 }
 

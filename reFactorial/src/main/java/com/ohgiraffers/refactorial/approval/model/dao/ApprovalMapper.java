@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.approval.model.dao;
 
+import com.ohgiraffers.refactorial.approval.model.dto.ApprovalDetailDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -86,4 +87,6 @@ public interface ApprovalMapper {
     String findLeaveTypeByPmId(String pmId);
 
     void updateLeaveType(String pmId, String leaveType);
+
+    ApprovalDetailDTO findApprovalDetailById(String pmId);
 }
