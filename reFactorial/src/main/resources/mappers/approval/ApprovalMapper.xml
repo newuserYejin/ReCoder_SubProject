@@ -399,4 +399,12 @@
         WHERE
             pm_id = #{pmId}
     </select>
+
+
+    <!-- 현재 필요한 승인 순서 가져오기 -->
+    <select id="getCurrentApprovalStep" resultType="int">
+        SELECT MIN(approval_order)
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND pm_status = '대기 중'
+    </select>
 </mapper>

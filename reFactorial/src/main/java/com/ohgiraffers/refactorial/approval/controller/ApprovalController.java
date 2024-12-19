@@ -602,7 +602,15 @@ public class ApprovalController {
         try {
             switch (action) {
                 case "approve":
+                    // 현재 사용자가 승인 순서인지 확인
+                    if (!approvalService.isCurrentApprover(pmId, currentEmpId)) {
+                        model.addAttribute("errorMessage", "현재 승인 순서가 아닙니다.");
+                        return "redirect:/approvals/detail/" + pmId;
+                    }
+
+                    // 승인 처리
                     approvalService.approve(pmId, currentEmpId);
+
                     // 모든 승인자가 승인되었는지 확인 후 완료 처리
                     if (approvalService.isAllApproversApproved(pmId)) {
                         approvalService.updateStatusToCompleted(pmId); // 상태를 '완료'로 변경

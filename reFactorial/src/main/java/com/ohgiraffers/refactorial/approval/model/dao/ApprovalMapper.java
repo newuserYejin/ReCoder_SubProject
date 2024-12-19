@@ -96,4 +96,5 @@ public interface ApprovalMapper {
     void updateLeaveDate(String pmId, LocalDate leaveDate);
 
 
+    Integer getCurrentApprovalStep(String pmId);
 }
