@@ -349,9 +349,7 @@ public class ApprovalService {
         approvalMapper.updateDocumentStatus(pmId, "완료");
     }
 
-    public String getLeaveTypeForDocument(String pmId) {
-        return approvalMapper.findLeaveTypeByPmId(pmId);
-    }
+
 
     public void updateLeaveType(String pmId, String leaveType) {
         approvalMapper.updateLeaveType(pmId, leaveType);
@@ -368,13 +366,20 @@ public class ApprovalService {
 
         return approvalDetail;
     }
+
+    public void updateLeaveDate(String pmId, LocalDate leaveDate) {
+        approvalMapper.updateLeaveDate(pmId, leaveDate);
+    }
+
+    public String getLeaveTypeForDocument(String pmId) {
+        return approvalMapper.findLeaveTypeByPmId(pmId);
+    }
+
+    public LocalDate getLeaveDateForDocument(String pmId) {
+        return approvalMapper.findLeaveDateByPmId(pmId);
+    }
 }
 
-//
-//    public List<String> findEmpNamesByIds(List<String> empIds) {
-//        return empIds.stream()
-//                .map(id -> employeeMapper.findNameByEmpId(id))  // emp_id에 해당하는 이름 조회
-//                .collect(Collectors.toList());
-//    }
+
 
 

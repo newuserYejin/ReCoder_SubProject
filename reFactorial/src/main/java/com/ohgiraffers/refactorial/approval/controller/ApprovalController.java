@@ -26,6 +26,9 @@ import java.nio.file.Paths;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -323,6 +326,15 @@ public class ApprovalController {
                 model.addAttribute("errorMessage", "휴가유형을 선택해야 합니다.");
                 return "/approvals/approvalPage";
             }
+
+            // LocalDate를 문자열로 변환
+            LocalDate leaveDate = approvalService.getLeaveDateForDocument(pmId);
+            if (leaveDate != null) {
+                String formattedLeaveDate = leaveDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                model.addAttribute("leaveDate", formattedLeaveDate);
+            } else {
+                model.addAttribute("leaveDate", "휴가 날짜 정보 없음");
+            }
         }
 
         // 승인자 저장 (입력된 승인자만 저장)
@@ -542,9 +554,18 @@ public class ApprovalController {
         document.setCategoryName(document.getCategoryName());
 
         if ("category3".equals(document.getCategory())) {
+            // 휴가 유형 처리
             String leaveType = approvalService.getLeaveTypeForDocument(pmId);
             document.setLeaveType(leaveType);
+
+            // 휴가 날짜 처리
+            LocalDate leaveDate = approvalService.getLeaveDateForDocument(pmId);
+            document.setLeaveDate(leaveDate);
+            model.addAttribute("leaveDate", leaveDate); // 모델에 날짜 추가
         }
+
+
+
 
         // 모델에 데이터 추가
         model.addAttribute("document", document);
@@ -585,27 +606,27 @@ public class ApprovalController {
                     // 모든 승인자가 승인되었는지 확인 후 완료 처리
                     if (approvalService.isAllApproversApproved(pmId)) {
                         approvalService.updateStatusToCompleted(pmId); // 상태를 '완료'로 변경
-                        return "/approvals/completed";
+                        return "redirect:/approvals/completed";
                     }
                     break;
 
                 case "reject":
                     approvalService.reject(pmId, currentEmpId, reason);
-                    return "/approvals/rejected";
+                    return "redirect:/approvals/rejected"; // 반려된 경우
 
                 case "finalize":
                     approvalService.finalize(pmId, currentEmpId);
                     approvalService.updateStatusToCompleted(pmId); // 전결 시 바로 완료 처리
-                    return "/approvals/completed";
+                    return "redirect:/approvals/completed"; // 상태가 완료된 경우
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "문서 처리 중 오류가 발생했습니다.");
-            return "approvals/detail";
+            return "redirect:/approvals/detail/" + pmId;
         }
 
-        return "/approvals/detail/" + pmId;
+        return "redirect:/approvals/detail/" + pmId;
     }
 
     @GetMapping("detail")

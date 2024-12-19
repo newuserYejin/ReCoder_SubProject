@@ -6,6 +6,7 @@ import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +86,14 @@ public interface ApprovalMapper {
                               @Param("status") String status);
 
     String findLeaveTypeByPmId(String pmId);
+    LocalDate findLeaveDateByPmId(String pmId);
+
 
     void updateLeaveType(String pmId, String leaveType);
 
     ApprovalDetailDTO findApprovalDetailById(String pmId);
+
+    void updateLeaveDate(String pmId, LocalDate leaveDate);
+
+
 }

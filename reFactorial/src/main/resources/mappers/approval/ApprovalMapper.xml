@@ -361,10 +361,23 @@
         WHERE pm_id = #{pmId}
     </select>
 
+    <!-- 휴가 날짜 조회 -->
+    <select id="findLeaveDateByPmId" resultType="java.time.LocalDate">
+        SELECT leave_date
+        FROM tbl_pm
+        WHERE pm_id = #{pmId}
+    </select>
+
 
     <update id="updateLeaveType" parameterType="map">
         UPDATE tbl_pm
         SET leave_type = #{leaveType}
+        WHERE pm_id = #{pmId}
+    </update>
+
+    <update id="updateLeaveDate" parameterType="map">
+        UPDATE tbl_pm
+        SET leave_date = #{leaveDate}
         WHERE pm_id = #{pmId}
     </update>
 
