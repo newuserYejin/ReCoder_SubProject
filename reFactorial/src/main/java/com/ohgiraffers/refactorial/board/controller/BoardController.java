@@ -80,6 +80,8 @@ public class BoardController {
         board.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
 
 
+
+        
 //        List<String> options = new ArrayList<>();  // 옵션들을 리스트로 받음
 //
 //        if (option1 != null && !option1.isEmpty()) {
