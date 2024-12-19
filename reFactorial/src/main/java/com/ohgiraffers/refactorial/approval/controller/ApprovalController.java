@@ -139,9 +139,15 @@ public class ApprovalController {
 
         int offset = (currentPage - 1) * limit; // offset 계산
 
+
+        System.out.println("empId: " + loggedInEmpId);
+        System.out.println("limit: " + limit);
+        System.out.println("offset: " + offset);
+
         // 진행 중인 문서 가져오기
         List<DocumentDTO> inProgressDocuments = approvalService.getInProgressDocuments(loggedInEmpId, limit, offset);
 
+        System.out.println("In Progress Documents: " + inProgressDocuments);
         // 문서 번호 설정
         for (int i = 0; i < inProgressDocuments.size(); i++) {
             inProgressDocuments.get(i).setRowNum(totalDocuments - offset - i);

@@ -386,6 +386,8 @@
 
         public void updateRemainingApproversToInProgress(String pmId, String currentEmpId) {
             approvalMapper.updateRemainingApproversToInProgress(pmId, currentEmpId);
+            System.out.println("pmId: " + pmId);
+            System.out.println("currentEmpId: " + currentEmpId);
         }
     }
 
