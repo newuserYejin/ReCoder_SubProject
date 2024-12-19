@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -588,7 +587,7 @@ public class ApprovalController {
                                        HttpSession session,
                                        Model model) {
 
-        System.out.println("Action: " + action + ", pmId: " + pmId + ", reason: " + reason); // 요청 로그
+
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -611,12 +610,15 @@ public class ApprovalController {
                     // 승인 처리
                     approvalService.approve(pmId, currentEmpId);
 
-                    // 모든 승인자가 승인되었는지 확인 후 완료 처리
-                    if (approvalService.isAllApproversApproved(pmId)) {
+                    // 최초 승인자인 경우, 나머지 승인자 상태를 '진행 중'으로 변경
+                    if (!approvalService.isAllApproversApproved(pmId)) {
+                        approvalService.updateRemainingApproversToInProgress(pmId, currentEmpId);
+                        return "redirect:/approvals/inProgress"; // 진행 중 페이지로 이동
+                    } else {
                         approvalService.updateStatusToCompleted(pmId); // 상태를 '완료'로 변경
-                        return "redirect:/approvals/completed";
+                        return "redirect:/approvals/completed"; // 완료 페이지로 이동
                     }
-                    break;
+
 
                 case "reject":
                     approvalService.reject(pmId, currentEmpId, reason);

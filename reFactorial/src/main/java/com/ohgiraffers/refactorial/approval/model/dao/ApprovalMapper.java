@@ -59,8 +59,8 @@ public interface ApprovalMapper {
                                         @Param("status") String status,
                                         @Param("reason") String reason);
 
-    void updateDocumentStatus(@Param("pmId") String pmId,
-                              @Param("status") String status);
+//    void updateDocumentStatus(@Param("pmId") String pmId,
+//                              @Param("status") String status);
 
     List<String> getAllApprovalStatuses(@Param("pmId") String pmId);
 
@@ -97,4 +97,10 @@ public interface ApprovalMapper {
 
 
     Integer getCurrentApprovalStep(String pmId);
+
+    List<String> getApprovers(String pmId);
+
+    void updateDocumentStatus(String pmId, String 진행_중);
+
+    void updateRemainingApproversToInProgress(String pmId, String currentEmpId);
 }

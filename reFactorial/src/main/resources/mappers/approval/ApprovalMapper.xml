@@ -262,12 +262,7 @@
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
     </update>
 
-    <!-- 문서 상태 업데이트 -->
-    <update id="updateDocumentStatus">
-        UPDATE tbl_pm
-        SET pm_status = #{status}
-        WHERE pm_id = #{pmId}
-    </update>
+
 
     <!-- 모든 승인 상태 가져오기 -->
     <select id="getAllApprovalStatuses" resultType="string">
@@ -407,4 +402,26 @@
         FROM tbl_approval
         WHERE pm_id = #{pmId} AND pm_status = '대기 중'
     </select>
+
+    <select id="getApprovers" resultType="string">
+        SELECT emp_id
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <update id="updateDocumentStatus">
+        UPDATE tbl_pm
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId}
+    </update>
+
+<!-- 진행 중 으로 상태를 업데이트해줌   -->
+    <update id="updateRemainingApproversToInProgress">
+        UPDATE tbl_approval
+        SET pm_status = '진행 중'
+        WHERE pm_id = #{pmId}
+          AND emp_id != #{empId}
+          AND pm_status = '대기 중';
+    </update>
+
 </mapper>

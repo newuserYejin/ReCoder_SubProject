@@ -375,6 +375,18 @@
         public LocalDate getLeaveDateForDocument(String pmId) {
             return approvalMapper.findLeaveDateByPmId(pmId);
         }
+
+        // 승인자가 한 명인지 확인
+        public boolean isSingleApprover(String pmId) {
+            List<String> approvers = approvalMapper.getApprovers(pmId);
+            return approvers.size() == 1;
+        }
+
+
+
+        public void updateRemainingApproversToInProgress(String pmId, String currentEmpId) {
+            approvalMapper.updateRemainingApproversToInProgress(pmId, currentEmpId);
+        }
     }
 
 
