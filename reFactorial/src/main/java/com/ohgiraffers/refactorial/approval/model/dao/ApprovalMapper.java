@@ -59,8 +59,7 @@ public interface ApprovalMapper {
                                         @Param("status") String status,
                                         @Param("reason") String reason);
 
-//    void updateDocumentStatus(@Param("pmId") String pmId,
-//                              @Param("status") String status);
+
 
     List<String> getAllApprovalStatuses(@Param("pmId") String pmId);
 
@@ -71,7 +70,9 @@ public interface ApprovalMapper {
 
     int getCompletedDocumentsCount(String empId);
 
-    List<DocumentDTO> findInProgressDocuments(String empId, int limit, int offset);
+    List<DocumentDTO> findInProgressDocuments(@Param("empId") String empId,
+                                              @Param("limit") int limit,
+                                              @Param("offset") int offset);
 
     int countInProgressDocuments(String empId);
 
@@ -84,6 +85,14 @@ public interface ApprovalMapper {
     void updateApprovalStatus(@Param("pmId") String pmId,
                               @Param("empId") String empId,
                               @Param("status") String status);
+
+    int countPendingApprovers(@Param("pmId") String pmId);
+
+    boolean allApprovalsCompleted(@Param("pmId") String pmId);
+
+    void updateAllApprovalsToCompleted(@Param("pmId") String pmId, @Param("status") String status);
+
+    void updateAllApprovalsToInProgress(@Param("pmId") String pmId, @Param("status") String status);
 
     String findLeaveTypeByPmId(String pmId);
     LocalDate findLeaveDateByPmId(String pmId);
@@ -100,7 +109,10 @@ public interface ApprovalMapper {
 
     List<String> getApprovers(String pmId);
 
-    void updateDocumentStatus(String pmId, String 진행_중);
+    void updateDocumentStatus(@Param("pmId") String pmId, @Param("status") String status);
+
 
     void updateRemainingApproversToInProgress(String pmId, String currentEmpId);
+
+    String findFirstApprover(String pmId);
 }

@@ -247,9 +247,24 @@
 
 
         // 승인 처리
+        // 승인 처리
         public void approve(String pmId, String empId) {
+            // 현재 승인자의 상태를 '승인'으로 업데이트
             approvalMapper.updateApprovalStatus(pmId, empId, "승인");
-            checkAndUpdateDocumentStatus(pmId); // 모든 승인 완료 시 상태 업데이트
+
+            // 남은 '대기 중' 승인자가 있는지 확인
+            int pendingApprovers = approvalMapper.countPendingApprovers(pmId);
+
+            if (pendingApprovers == 0) {
+                // 모든 승인자가 '승인' 상태라면 문서를 '완료'로 업데이트
+                boolean allApproved = approvalMapper.allApprovalsCompleted(pmId);
+                if (allApproved) {
+                    approvalMapper.updateDocumentStatus(pmId, "완료");
+                }
+            } else {
+                // 아직 남은 승인자가 있는 경우, 상태를 '진행 중'으로 유지
+                approvalMapper.updateDocumentStatus(pmId, "진행 중");
+            }
 
         }
 
@@ -388,6 +403,11 @@
             approvalMapper.updateRemainingApproversToInProgress(pmId, currentEmpId);
             System.out.println("pmId: " + pmId);
             System.out.println("currentEmpId: " + currentEmpId);
+        }
+
+        public boolean isFirstApprover(String pmId, String currentEmpId) {
+            String firstApprover = approvalMapper.findFirstApprover(pmId);
+            return firstApprover != null && firstApprover.equals(currentEmpId);
         }
     }
 
