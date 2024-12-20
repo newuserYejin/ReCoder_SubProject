@@ -280,8 +280,11 @@
 
         // 반려 처리
         public void reject(String pmId, String empId, String reason) {
+            // 1. 해당 승인자의 상태를 반려로 변경
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
-//            approvalMapper.updateDocumentStatus(pmId, "반려"); // 반려 상태 업데이트
+
+            // 2. 문서 상태를 '반려'로 업데이트
+            approvalMapper.updateAllApprovalStatusesToRejected(pmId, "반려");
         }
 
         // 전결 처리

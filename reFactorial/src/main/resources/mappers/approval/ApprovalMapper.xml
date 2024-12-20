@@ -292,11 +292,19 @@
         WHERE pm_id = #{pmId} AND emp_id = #{empId}
     </select>
 
-    <!-- 반려 상태 업데이트 및 사유 저장 -->
+    <!-- 승인자 상태를 반려로 업데이트 -->
     <update id="updateApprovalStatusWithReason">
         UPDATE tbl_approval
         SET pm_status = #{status}, reason = #{reason}
-        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId};
+    </update>
+
+
+    <!-- 문서의 모든 승인자 상태를 반려로 업데이트 -->
+    <update id="updateAllApprovalStatusesToRejected">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId};
     </update>
 
     <!-- 완료된 문서 조회 -->
@@ -333,18 +341,25 @@
     <!-- 진행 중 문서 가져오기 -->
     <select id="findInProgressDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
-        pm.pm_id AS pmId,
-        pm.pm_title AS title,
-        pm.pm_create AS createDate,
-        pm.pm_category AS category,
-        ap.pm_status AS status,
-        emp.emp_name AS creatorName
-        FROM tbl_pm pm
-        LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
-        LEFT JOIN employee emp ON ap.emp_id = emp.emp_id
-        WHERE ap.pm_status IN ('승인', '진행 중') -- '승인'과 '진행 중' 상태 모두 가져오기
-        AND ap.emp_id = #{empId} <!-- 로그인한 사용자 기준 -->
-        ORDER BY pm.pm_create DESC
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            ap.pm_status AS status,
+            emp.emp_name AS creatorName
+        FROM
+            tbl_pm pm
+                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                LEFT JOIN employee emp ON ap.emp_id = emp.emp_id
+        WHERE
+            ap.pm_status IN ('승인', '진행 중')
+          AND ap.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset};
+
     </select>
 
     <!-- 진행 중 문서 개수 가져오기 -->

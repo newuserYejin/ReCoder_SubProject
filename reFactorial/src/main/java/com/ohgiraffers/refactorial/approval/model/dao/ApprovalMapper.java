@@ -55,10 +55,6 @@ public interface ApprovalMapper {
 
    
 
-    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
-                                        @Param("empId") String empId,
-                                        @Param("status") String status,
-                                        @Param("reason") String reason);
 
 
 
@@ -121,4 +117,12 @@ public interface ApprovalMapper {
     void updateAllPendingToInProgress(String pmId);
 
     void updateApprovalAllPass(String pmId, String empId, String 전결);
+
+
+    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
+                                        @Param("empId") String empId,
+                                        @Param("status") String status,
+                                        @Param("reason") String reason);
+
+    void updateAllApprovalStatusesToRejected(String pmId, String 반려);
 }
