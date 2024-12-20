@@ -572,6 +572,7 @@ public class ApprovalController {
 
 
 
+
         // 모델에 데이터 추가
         model.addAttribute("document", document);
         model.addAttribute("creatorName", creatorName);

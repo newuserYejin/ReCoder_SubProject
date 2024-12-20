@@ -315,6 +315,9 @@
         public boolean isCurrentApprover(String pmId, String currentEmpId) {
             Integer currentOrder = approvalMapper.getApprovalOrder(pmId, currentEmpId);
             Integer requiredOrder = approvalMapper.getCurrentApprovalStep(pmId);
+
+            System.out.println("Current Order: " + currentOrder); // 디버깅 로그
+            System.out.println("Required Order: " + requiredOrder); // 디버깅 로그
             return currentOrder != null && currentOrder.equals(requiredOrder);
         }
 
