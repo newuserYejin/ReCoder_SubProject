@@ -411,9 +411,9 @@
 
     <!-- 현재 필요한 승인 순서 가져오기 -->
     <select id="getCurrentApprovalStep" resultType="int">
-        SELECT MIN(approval_order)
+        SELECT COALESCE(MIN(approval_order), 0)
         FROM tbl_approval
-        WHERE pm_id = #{pmId} AND pm_status = '대기 중'
+        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
     </select>
 
     <select id="getApprovers" resultType="string">
