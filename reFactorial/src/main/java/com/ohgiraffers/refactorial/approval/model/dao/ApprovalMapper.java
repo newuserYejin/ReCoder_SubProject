@@ -6,6 +6,7 @@ import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -70,9 +71,7 @@ public interface ApprovalMapper {
 
     int getCompletedDocumentsCount(String empId);
 
-    List<DocumentDTO> findInProgressDocuments(@Param("empId") String empId,
-                                              @Param("limit") int limit,
-                                              @Param("offset") int offset);
+   
 
     int countInProgressDocuments(String empId);
 
@@ -86,13 +85,8 @@ public interface ApprovalMapper {
                               @Param("empId") String empId,
                               @Param("status") String status);
 
-    int countPendingApprovers(@Param("pmId") String pmId);
 
     boolean allApprovalsCompleted(@Param("pmId") String pmId);
-
-    void updateAllApprovalsToCompleted(@Param("pmId") String pmId, @Param("status") String status);
-
-    void updateAllApprovalsToInProgress(@Param("pmId") String pmId, @Param("status") String status);
 
     String findLeaveTypeByPmId(String pmId);
     LocalDate findLeaveDateByPmId(String pmId);
@@ -112,7 +106,22 @@ public interface ApprovalMapper {
     void updateDocumentStatus(@Param("pmId") String pmId, @Param("status") String status);
 
 
-    void updateRemainingApproversToInProgress(String pmId, String currentEmpId);
+
 
     String findFirstApprover(String pmId);
+
+
+
+    Integer findNextApproverOrder(String pmId);
+
+
+  
+
+    List<DocumentDTO> findInProgressDocuments(Map<String, Object> params);
+
+    void insertApprover(Map<String, Object> params);
+
+    void updateNextApproverStatus(Map<String,? extends Serializable> pmId);
+
+    void updateAllPendingToInProgress(String pmId);
 }

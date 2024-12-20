@@ -12,10 +12,10 @@
 
 
     <insert id="insertApprover" parameterType="map">
-        INSERT INTO tbl_approval (emp_id, pm_id, pm_status)
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status, approval_order)
         VALUES
         <foreach collection="approvers" item="approver" separator=",">
-            (#{approver}, #{pmId}, '대기 중')
+            (#{approver.empId}, #{pmId}, '대기 중', #{approver.approvalOrder})
         </foreach>
     </insert>
 
@@ -31,7 +31,14 @@
             pm.pm_title AS title,
             pm.pm_create AS createDate,
             pm.pm_category AS category,
-            MAX(ap.pm_status) AS status, -- 집계 함수 사용
+            CASE
+                WHEN ap.approval_order = (
+                    SELECT MAX(approval_order)
+                    FROM tbl_approval
+                    WHERE pm_id = pm.pm_id
+                ) THEN '진행 중'
+                ELSE ap.pm_status
+                END AS status,
             pm.pm_attachment AS attachment,
             pm.emp_id AS creator,
             JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers,
@@ -39,8 +46,7 @@
             pm.pm_content AS content
         FROM
             tbl_pm pm
-                LEFT JOIN
-            tbl_approval ap ON pm.pm_id = ap.pm_id
+                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
         GROUP BY
             pm.pm_id;
     </select>
@@ -51,7 +57,7 @@
             pm.pm_title AS title,
             pm.pm_create AS createDate,
             pm.pm_category AS category,
-            MAX(appr.pm_status) AS status, -- 상태를 집계
+            MAX(appr.pm_status) AS status,
             pm.pm_attachment AS attachment,
             emp.emp_name AS creatorName,
             GROUP_CONCAT(DISTINCT appr.emp_id ORDER BY appr.approval_order) AS approvers,
@@ -62,7 +68,7 @@
                 LEFT JOIN tbl_approval appr ON pm.pm_id = appr.pm_id
         WHERE
             appr.pm_status = '대기 중'
-          AND appr.emp_id = #{empId}
+          AND appr.emp_id = #{empId} -- 현재 로그인한 사용자의 ID
         GROUP BY
             pm.pm_id
         ORDER BY
@@ -86,7 +92,12 @@
         INSERT INTO tbl_approval (emp_id, pm_id, pm_status, approval_order)
         VALUES
         <foreach collection="approvers" item="approver" index="index" separator=",">
-            (#{approver.empId}, #{pmId}, '대기 중', #{approver.order})
+            (#{approver.empId}, #{pmId},
+            CASE
+            WHEN #{approver.order} = 1 THEN '진행 중'
+            ELSE '대기 중'
+            END,
+            #{approver.order})
         </foreach>
     </insert>
 
@@ -262,7 +273,7 @@
     <update id="updateApprovalStatus">
         UPDATE tbl_approval
         SET pm_status = #{status}
-        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId};
     </update>
 
 
@@ -322,19 +333,18 @@
     <!-- 진행 중 문서 가져오기 -->
     <select id="findInProgressDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
-            pm.pm_id AS pmId,
-            pm.pm_title AS title,
-            pm.pm_create AS createDate,
-            pm.pm_category AS category,
-            ap.pm_status AS status,
-            emp.emp_name AS creatorName
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        ap.pm_status AS status,
+        emp.emp_name AS creatorName
         FROM tbl_pm pm
-                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
-                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-        WHERE ap.pm_status = '진행 중'
-          AND ap.emp_id != #{empId}
+        LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        LEFT JOIN employee emp ON ap.emp_id = emp.emp_id
+        WHERE ap.pm_status IN ('승인', '진행 중') -- '승인'과 '진행 중' 상태 모두 가져오기
+        AND ap.emp_id = #{empId} <!-- 로그인한 사용자 기준 -->
         ORDER BY pm.pm_create DESC
-            LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <!-- 진행 중 문서 개수 가져오기 -->
@@ -411,7 +421,7 @@
 
     <!-- 현재 필요한 승인 순서 가져오기 -->
     <select id="getCurrentApprovalStep" resultType="int">
-        SELECT COALESCE(MIN(approval_order), 0)
+        SELECT MIN(approval_order)
         FROM tbl_approval
         WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
     </select>
@@ -422,15 +432,13 @@
         WHERE pm_id = #{pmId}
     </select>
 
-
-<!-- 진행 중 으로 상태를 업데이트해줌   -->
-    <update id="updateRemainingApproversToInProgress">
+    <update id="updateAllPendingToInProgress">
         UPDATE tbl_approval
         SET pm_status = '진행 중'
-        WHERE pm_id = #{pmId}
-          AND emp_id != #{currentEmpId}
-          AND pm_status = '대기 중';
+        WHERE pm_id = #{pmId} AND pm_status = '대기 중';
     </update>
+
+
 
     <select id="findFirstApprover" parameterType="String">
         SELECT emp_id
@@ -448,13 +456,6 @@
         WHERE pm_id = #{pmId};
     </update>
 
-<!--  진행 중 상태로 변경  -->
-    <update id="updateAllApprovalsToInProgress">
-        UPDATE tbl_approval
-        SET pm_status = #{status}
-        WHERE pm_id = #{pmId} AND pm_status = '대기 중';
-    </update>
-
 
     <select id="countPendingApprovers" parameterType="String" resultType="int">
         SELECT COUNT(*)
@@ -465,7 +466,7 @@
     <select id="allApprovalsCompleted" parameterType="String" resultType="boolean">
         SELECT COUNT(*) = 0
         FROM tbl_approval
-        WHERE pm_id = #{pmId} AND pm_status != '승인';
+        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
     </select>
 
     <update id="updateDocumentStatus" parameterType="map">
