@@ -265,17 +265,9 @@
 
             // 2. 모든 대기 중인 승인자의 상태를 '진행 중'으로 업데이트
             approvalMapper.updateAllPendingToInProgress(pmId);
-//            // 2. 다음 승인자 순서를 조회
-//            Integer nextOrder = approvalMapper.findNextApproverOrder(pmId);
-//
-//            // 3. 다음 승인자가 있으면 상태를 '진행 중'으로 업데이트
-//            if (nextOrder != null) {
-//                approvalMapper.updateNextApproverStatus(Map.of("pmId", pmId, "approvalOrder", nextOrder));
-//            } else {
-//                System.out.println("다음 승인자가 없습니다.");
-//            }
 
-            // 4. 모든 승인자가 완료되었는지 확인
+
+            // 3. 모든 승인자가 완료되었는지 확인
             boolean allApproved = approvalMapper.allApprovalsCompleted(pmId);
             if (allApproved) {
                 approvalMapper.updateDocumentStatus(pmId, "완료");
@@ -289,13 +281,13 @@
         // 반려 처리
         public void reject(String pmId, String empId, String reason) {
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
-            approvalMapper.updateDocumentStatus(pmId, "반려"); // 반려 상태 업데이트
+//            approvalMapper.updateDocumentStatus(pmId, "반려"); // 반려 상태 업데이트
         }
 
         // 전결 처리
         public void finalize(String pmId, String empId) {
-            approvalMapper.updateApprovalStatus(pmId, empId, "전결");
-            approvalMapper.updateDocumentStatus(pmId, "완료"); // 전결 시 바로 완료 처리
+            approvalMapper.updateApprovalAllPass(pmId, empId, "전결");
+//            approvalMapper.updateDocumentStatus(pmId, "완료"); // 전결 시 바로 완료 처리
         }
 
 

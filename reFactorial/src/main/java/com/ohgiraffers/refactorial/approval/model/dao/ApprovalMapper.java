@@ -112,16 +112,13 @@ public interface ApprovalMapper {
 
 
 
-    Integer findNextApproverOrder(String pmId);
-
-
-  
-
     List<DocumentDTO> findInProgressDocuments(Map<String, Object> params);
 
     void insertApprover(Map<String, Object> params);
 
-    void updateNextApproverStatus(Map<String,? extends Serializable> pmId);
+
 
     void updateAllPendingToInProgress(String pmId);
+
+    void updateApprovalAllPass(String pmId, String empId, String 전결);
 }

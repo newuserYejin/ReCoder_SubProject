@@ -475,4 +475,10 @@
         WHERE pm_id = #{pmId};
     </update>
 
+    <update id="updateApprovalAllPass" parameterType="map">
+        UPDATE tbl_approval
+        SET pm_status = '완료'
+        WHERE pm_id = #{pmId};
+    </update>
+
 </mapper>
