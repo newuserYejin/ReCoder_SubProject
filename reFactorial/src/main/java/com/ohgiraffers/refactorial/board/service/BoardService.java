@@ -87,10 +87,22 @@ public class BoardService {
         boardMapper.voteResult(voteItemList);
     }
 
-    // 투표 선택 결과 조회
-    public List<VoteResultDTO> getVoteResults(String postId) {
+    // 투표 선택 결과 조회(전체)
+    public List<VoteTotalDTO> getVoteResults(String postId) {
 
         return boardMapper.getVoteResults(postId);
     }
+
+    // 투표 선택 결과 조회(사용자 한정)
+    public List<VoteResultDTO> voteComplete(String postId, String empId) {
+        return boardMapper.voteComplete(postId, empId);
+    }
+
+
+//    // 투표 결과(12/22)
+//    public List<VoteItemDTO> getUserVote(String postId, String empId) {
+//        return boardMapper.getUserVote(postId, empId);
+//    }
+
 
 }

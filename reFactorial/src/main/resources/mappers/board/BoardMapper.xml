@@ -81,12 +81,13 @@
 
     <!-- 투표항목 선택결과 조회 -->
     <select id="getVoteResults" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
-        SELECT
-            *
-        FROM
-            tbl_vote_result
-        WHERE
-            post_id = #{postId}
+        select
+        item_id, count(item_id) as vote_count
+        from
+        tbl_vote_result
+        where
+        post_id = #{postId}
+        group by item_id
     </select>
 
     <!-- 투표 결과 생성 -->
@@ -177,5 +178,31 @@
         delete from tbl_comment
         where comment_id = #{commentId}
     </delete>
+
+    <!-- 투표한 사람에게 보여주는 항목 -->
+    <select id="voteComplete" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
+        select
+            *
+        from
+            tbl_vote_result
+        where
+            post_id = #{postId}
+            and emp_id = #{empId}
+    </select>
+
+    <!-- 사용자가 특정 게시물에서 투표한 항목을 조회 (12/22) -->
+<!--    <select id="getUserVote" resultType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">-->
+<!--        SELECT-->
+<!--        vi.item_id AS itemId,        &lt;!&ndash; VoteItemDTO의 itemId &ndash;&gt;-->
+<!--        vi.item_title AS itemTitle  &lt;!&ndash; VoteItemDTO의 itemTitle &ndash;&gt;-->
+<!--        FROM-->
+<!--        tbl_vote_result vr-->
+<!--        JOIN-->
+<!--        tbl_vote_item vi ON vr.item_id = vi.item_id-->
+<!--        WHERE-->
+<!--        vr.post_id = #{postId}      &lt;!&ndash; 매개변수 postId &ndash;&gt;-->
+<!--        AND vr.emp_id = #{empId}    &lt;!&ndash; 매개변수 empId &ndash;&gt;-->
+<!--    </select>-->
+
 
 </mapper>
