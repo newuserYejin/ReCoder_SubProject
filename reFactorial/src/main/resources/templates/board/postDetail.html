@@ -127,11 +127,24 @@
 
                 <!-- 댓글 조회 -->
                 <div id="comment-list">
+                    <!-- 댓글 제목 추가 -->
+                    <div style="display: flex; font-weight: bold; border-bottom: 2px solid gray; padding: 10px;">
+                        <div style="width: 15%;">등록자</div>
+                        <div style="width: 60%;">댓글 내용</div>
+                        <div style="width: 25%;">날짜</div>
+                    </div>
+
+                    <!-- 댓글이 없을 때 메시지 출력 -->
+                    <div th:if="${#lists.isEmpty(commentView)}" style="padding: 10px; text-align: center; color: gray;">
+                        작성된 댓글이 없습니다.
+                    </div>
+
+                    <!-- 댓글 내용 출력 -->
                     <div th:each="comment : ${commentView}"
                          style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-                        <div style="width: 35%;" th:text="${comment.empName}">등록자</div>
-                        <div style="width: 30%;" th:text="${comment.commentContent}">댓글 내용</div>
-                        <div style="width: 30%;" th:text="${comment.commentCreationDate}">날짜</div>
+                        <div style="width: 15%;" th:text="${comment.empName}">등록자</div>
+                        <div style="width: 60%;" th:text="${comment.commentContent}">댓글 내용</div>
+                        <div style="width: 25%;" th:text="${comment.commentCreationDate}">날짜</div>
 
                         <!-- 댓글 삭제 버튼 -->
                         <th:block th:if="${user.empId} == ${comment.empId}">
@@ -144,6 +157,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div>
@@ -178,11 +192,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
 
 <script>
     // 댓글 삭제 버튼 클릭 시 동작 (addEventListener 클릭시 동작을 하는 것)

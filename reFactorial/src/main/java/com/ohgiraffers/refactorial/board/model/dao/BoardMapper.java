@@ -1,10 +1,8 @@
 package com.ohgiraffers.refactorial.board.model.dao;
 
-import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
-import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO;
+import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -46,4 +44,5 @@ public interface BoardMapper {
 
     // 투표 선택 결과 조회
     List<VoteResultDTO> getVoteResults(String postId);
+
 }

@@ -1,10 +1,7 @@
 package com.ohgiraffers.refactorial.board.service;
 
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
-import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
-import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO;
+import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,4 +92,5 @@ public class BoardService {
 
         return boardMapper.getVoteResults(postId);
     }
+
 }

@@ -144,7 +144,6 @@ public class BoardController {
         model.addAttribute("voteView", voteItem);
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
 
-
         return "/board/postDetail";
     }
 
