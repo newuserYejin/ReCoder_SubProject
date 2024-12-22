@@ -9,6 +9,7 @@
     import org.springframework.ui.Model;
 
 
+    import java.math.BigDecimal;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.util.*;
@@ -363,9 +364,28 @@
             return approvalMapper.countInProgressDocuments(empId);
         }
 
-        // 반려된 문서 조회
         public List<DocumentDTO> getRejectedDocuments(String empId, int limit, int offset) {
-            return approvalMapper.findRejectedDocuments(empId, limit, offset);
+            if (empId == null || empId.isEmpty()) {
+                throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+            }
+
+            // 매퍼에 전달할 파라미터 준비
+            Map<String, Object> params = new HashMap<>();
+            params.put("empId", empId);
+            params.put("limit", limit);
+            params.put("offset", offset);
+
+            // 디버깅용 로그 추가
+            System.out.println("로그인 사용자 ID: " + empId);
+            System.out.println("매퍼 호출 전 전달된 파라미터: " + params);
+
+            // 반려 문서 조회
+            List<DocumentDTO> rejectedDocs = approvalMapper.findRejectedDocuments(params);
+
+            // 매퍼 호출 후 결과 로그
+            System.out.println("조회된 반려 문서: " + rejectedDocs);
+
+            return rejectedDocs;
         }
 
         public int getRejectedDocumentsCount(String empId) {
@@ -420,14 +440,34 @@
             return approvers.size() == 1;
         }
 
-
-
-
-
-        public boolean isFirstApprover(String pmId, String currentEmpId) {
+        public boolean isFirstApprover(String pmId, String empId) {
             String firstApprover = approvalMapper.findFirstApprover(pmId);
-            return firstApprover != null && firstApprover.equals(currentEmpId);
+            return firstApprover != null && firstApprover.equals(empId);
         }
+
+        public boolean isFinalApprover(String pmId, String currentEmpId) {
+            Integer approverOrderdozang = approvalMapper.getApprovalOrderdozang(pmId, currentEmpId); // 현재 승인자의 순서
+            Integer maxOrder = approvalMapper.getMaxApprovalOrder(pmId); // 최대 승인 순서
+
+            System.out.println("approverOrder: " + approverOrderdozang); // 디버깅 로그
+            System.out.println("maxOrder: " + maxOrder);           // 디버깅 로그
+            return approverOrderdozang != null && approverOrderdozang.equals(maxOrder);
+        }
+
+        public void updateEmployeeLeave(String empId, BigDecimal deduction) {
+            employeeMapper.updateLeaveBalances(empId, deduction);
+        }
+
+        public String getRejectReasonByApprover(String pmId, String currentEmpId) {
+            return approvalMapper.getRejectReasonByApprover(pmId, currentEmpId);
+        }
+
+
+//
+//        public boolean isFirstApprover(String pmId, String currentEmpId) {
+//            String firstApprover = approvalMapper.findFirstApprover(pmId);
+//            return firstApprover != null && firstApprover.equals(currentEmpId);
+//        }
     }
 
 

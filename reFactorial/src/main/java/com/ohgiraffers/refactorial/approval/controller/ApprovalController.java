@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -515,6 +516,8 @@ public class ApprovalController {
         // pmId에 해당하는 결재 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
 
+
+
         if (document == null) {
             model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
             return "errorPage"; // 에러 페이지로 리디렉션
@@ -532,6 +535,7 @@ public class ApprovalController {
         // 작성자 정보 처리
         String creatorName = document.getCreatorName() != null ? document.getCreatorName() : "작성자 정보 없음";
 
+
         // 승인자 정보 처리
         List<String> approverIds = document.getApprovers() != null
                 ? Arrays.asList(document.getApprovers().split(","))
@@ -539,6 +543,9 @@ public class ApprovalController {
         String firstApprover = approverIds.size() > 0 ? approvalService.findEmpNameById(approverIds.get(0)) : "승인자 정보 없음";
         String midApprover = approverIds.size() > 1 ? approvalService.findEmpNameById(approverIds.get(1)) : "승인자 정보 없음";
         String finalApprover = approverIds.size() > 2 ? approvalService.findEmpNameById(approverIds.get(2)) : "승인자 정보 없음";
+
+        boolean isFinalApprover = approvalService.isFinalApprover(pmId, currentEmpId);
+        model.addAttribute("isFinalApprover", isFinalApprover);
 
         // 참조자 정보 처리
         List<String> referrerIds = document.getReferrers() != null
@@ -571,7 +578,11 @@ public class ApprovalController {
 
 
 
+        // 반려자인지 확인하고 반려 이유 가져오기
+        String rejectReason = approvalService.getRejectReasonByApprover(pmId, currentEmpId);
 
+        System.out.println("Reject Reason: " + rejectReason);
+        System.out.println("Is Rejecter: " + (rejectReason != null));
 
         // 모델에 데이터 추가
         model.addAttribute("document", document);
@@ -583,7 +594,8 @@ public class ApprovalController {
         model.addAttribute("fileUrls", fileUrls);
         model.addAttribute("currentOrder", currentOrder);
         model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
-
+        model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
+        model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
         return "/approvals/detail";
     }
 
@@ -593,8 +605,6 @@ public class ApprovalController {
                                        @RequestParam(value = "reason", required = false) String reason,
                                        HttpSession session,
                                        Model model) {
-
-
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -617,6 +627,8 @@ public class ApprovalController {
                     // 승인 처리
                     approvalService.approve(pmId, currentEmpId);
 
+                    // 연차/반차 처리 로직 추가
+                    processLeaveIfApplicable(pmId, currentEmpId);
 
                     // 모든 승인자가 완료되었는지 확인
                     boolean allApproved = approvalService.isAllApproversApproved(pmId);
@@ -627,8 +639,6 @@ public class ApprovalController {
                         return "redirect:/approvals/inProgress"; // 진행 중 페이지로 이동
                     }
 
-
-
                 case "reject":
                     approvalService.reject(pmId, currentEmpId, reason);
                     return "redirect:/approvals/rejected"; // 반려된 경우
@@ -636,6 +646,10 @@ public class ApprovalController {
                 case "finalize":
                     approvalService.finalize(pmId, currentEmpId);
                     approvalService.updateStatusToCompleted(pmId); // 전결 시 바로 완료 처리
+
+                    // 전결 시 연차/반차 처리 로직 추가
+                    processLeaveIfApplicable(pmId, currentEmpId);
+
                     return "redirect:/approvals/completed"; // 상태가 완료된 경우
             }
 
@@ -647,6 +661,29 @@ public class ApprovalController {
 
         return "redirect:/approvals/detail/" + pmId;
     }
+
+    /**
+     * 연차/반차 처리 메서드
+     */
+    private void processLeaveIfApplicable(String pmId, String empId) {
+        DocumentDTO document = approvalService.getDocumentById(pmId);
+
+        if (document != null) {
+            String leaveType = document.getLeaveType(); // 연차/반차 여부 확인
+            BigDecimal deduction = BigDecimal.ZERO;
+
+            if ("연차".equals(leaveType)) {
+                deduction = BigDecimal.ONE; // 연차는 -1
+            } else if ("반차".equals(leaveType)) {
+                deduction = new BigDecimal("0.5"); // 반차는 -0.5
+            }
+
+            if (deduction.compareTo(BigDecimal.ZERO) > 0) {
+                approvalService.updateEmployeeLeave(empId, deduction); // 연차/반차 업데이트 처리
+            }
+        }
+    }
+
 
     @GetMapping("detail")
     public String showApprovalDetail(@RequestParam("pmId") String pmId, Model model, HttpSession session) {

@@ -372,11 +372,20 @@
 
     <!-- 반려된 문서 가져오기 -->
     <select id="findRejectedDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
-        SELECT p.*, a.pm_status
-        FROM tbl_pm p
-                 JOIN tbl_approval a ON p.pm_id = a.pm_id
-        WHERE a.pm_status = '반려' AND p.emp_id = #{empId}
-        ORDER BY p.pm_create DESC
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            ap.pm_status AS status,
+            ap.reason AS reason,
+            emp.emp_name AS creatorName
+        FROM tbl_pm pm
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE ap.pm_status = '반려'
+          AND ap.emp_id = #{empId}
+        ORDER BY pm.pm_create DESC
             LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -495,5 +504,29 @@
         SET pm_status = '완료'
         WHERE pm_id = #{pmId};
     </update>
+
+
+    <!-- 승인자의 최대 승인 순서 가져오기 -->
+    <select id="getMaxApprovalOrder" resultType="int">
+        SELECT MAX(approval_order)
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+
+    <select id="getApprovalOrderdozang" resultType="int">
+        SELECT approval_order
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+          AND emp_id = #{currentEmpId}
+    </select>
+
+    <select id="getRejectReasonByApprover" parameterType="map" resultType="String">
+        SELECT reason
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+          AND emp_id = #{currentEmpId}
+          AND reason IS NOT NULL;
+    </select>
 
 </mapper>
