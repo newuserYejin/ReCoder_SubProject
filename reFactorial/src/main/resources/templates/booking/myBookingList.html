@@ -31,6 +31,10 @@
       <div class="main-content-wrap">
         <div class="main-content">
 
+          <div class="noReservation" th:if="${userReservationList.isEmpty()}">
+            예약내용이 없습니다.
+          </div>
+
           <div th:each="reservation : ${userReservationList}" class="room-img-content-flex">
             <div class="room-img-content">
               <img th:src="|/images/${reservation.cabinetDTO.cabinetImg}|" th:alt="${reservation.cabinetDTO.cabinetImg}">
@@ -40,50 +44,57 @@
               <p th:text="|위치 : ${reservation.cabinetDTO.roomLocation} |">위치 : 4F 홍보부 옆</p>
               <p th:text="|구성 : ${reservation.cabinetDTO.fixtures} |">구성 : 화이트 보드, 빔 프로젝트</p>
               <p th:text="|예약일 : ${reservation.reservationDTO.reservationDate} |">2024-12-25</p>
-              <p th:text="|예약시간 : ${reservation.reservationDTO.reservationStartTime} ~ ${reservation.reservationDTO.reservationEndTime} |">14:00 ~ 16:00</p>
+              <div class="reservationTime">
+                <p th:text="|예약시간 : ${reservation.reservationDTO.reservationStartTime}|"></p>
+                <p>~</p>
+                <p class="endTime" th:data-endtime="${reservation.reservationDTO.reservationEndTime}">16:00</p>
+              </div>
             </div>
             <div class="room-reservation-button">
-              <button>취소하기</button>
+              <button class="reservationCancelBtn" th:data-reserveid="${reservation.reservationDTO.reservationId}">취소하기</button>
             </div>
           </div>
 
         </div>
       </div>
-
-      <!--    <ul>-->
-  <!--      <h2>개인 예약 목록</h2>-->
-  <!--      <th:block th:each="reservation : ${userReservations}">-->
-  <!--        <li>-->
-  <!--          <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>-->
-  <!--          <br>-->
-  <!--          <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>-->
-  <!--          <br>-->
-  <!--          <span>예약 날짜 : <span th:text="${reservation.reservationDate}"></span></span>-->
-  <!--          <br>-->
-  <!--          <span>예약 시작 시간 : <span th:text="${reservation.reservationStartTime}"></span></span>-->
-  <!--          <br>-->
-  <!--          <span>예약 종료 시간 : <span th:text="${reservation.reservationEndTime}"></span></span>-->
-  <!--          <br>-->
-  <!--          <form action="/deleteReservation" method="post" style="display: inline;">-->
-  <!--            <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">-->
-  <!--            <button type="submit">삭제</button>-->
-  <!--          </form>-->
-  <!--        </li>-->
-  <!--      </th:block>-->
-  <!--    </ul>-->
     </div>
   </section>
 
   <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
-  <script>
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
 
-    const userReservationList = '[[${userReservationList}]]'
+          <button type="button" class="close closeBtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            <img src="/images/close.svg" alt="닫기 버튼">
+                        </span>
+          </button>
 
-    if (userReservationList){
-      console.log("userReservationList: ",userReservationList)
-    }
-  </script>
+          <div class="modalTitle">예약 취소 확인</div>
+        </div>
+        <form action="#">
+          <div class="modal-body deleteConfirmMsg">
+            <div>정말 예약을 취소하시겠습니까?</div>
+          </div>
+          <div class="modal-footer">
+            <button class="acceptBtn" aria-label="Close" type="button">확인</button>
+            <button data-dismiss="modal" class="cancelBtn" aria-label="Close" type="button">취소</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--boostrap-->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <!--boostrap-->
+
+  <script th:src="@{/js/booking/myBookingList.js}"></script>
 
 </body>
 </html>

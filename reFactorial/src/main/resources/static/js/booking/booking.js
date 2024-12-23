@@ -12,7 +12,6 @@ const modalTitle = document.querySelector(".modalTitle");
 let start = null;
 let end = null;
 
-
 // 시작시간 부터 종료시간 내에 disabled 시간이 들어있는지 확인
 // 여기가 핵심
 function isRangeValid(rangeStart, rangeEnd) {
@@ -32,9 +31,6 @@ function resetSelection() {
 }
 
 function handleCheckboxClick(check, checkIndex) {
-    console.log("\n체크박스 클릭:", checkIndex);
-    console.log("현재의 start:", start, "end:", end);
-    console.log("disabledIndexes:", disabledIndexes);
 
     // disabled 는 클릭자체를 막기
     if (disabledIndexes.includes(checkIndex)) {
@@ -48,7 +44,6 @@ function handleCheckboxClick(check, checkIndex) {
 
     // 시작시간 해지 또는 종료시간 해지
     if (checkIndex === start || checkIndex === end) {
-        console.log("현재 선택된 값을 해제:", checkIndex);
         check.checked = false;
 
         // 1개만 선택되어 있을 때
@@ -68,13 +63,11 @@ function handleCheckboxClick(check, checkIndex) {
     if (start === null) {
         start = checkIndex;
         end = checkIndex;
-        console.log("첫 번째 클릭 - start와 end 설정:", start);
     } else {
         // 시작시간 보다 앞시간 선택
         if (checkIndex < start) {
             if (isRangeValid(checkIndex, start)) {
                 start = checkIndex;
-                console.log("start 갱신:", start, "end:", end);
             } else {
                 reservationMsgModalInstance.show(); // 모달 열기
                 modalTitle.textContent = "안내 메세지"
@@ -164,7 +157,6 @@ let selectDayValue = dateFormate(currentDate);
 selectDay.textContent = `예약 날짜 : ${selectDayValue}`;
 
 function setDate(dayInfo){
-    console.log("에약 일 : ", dayInfo.startStr)
     selectDayValue = dayInfo.startStr;
     selectDay.textContent = `예약 날짜 : ${selectDayValue}`
 
@@ -181,7 +173,14 @@ const reserveBtn = document.querySelector("#reserveBtn");
 reserveBtn.addEventListener("click",(e)=>{
     e.preventDefault();
 
-    console.log(selectDayValue)
+    if (start == null || end == null){
+        modalTitle.textContent = "안내 메세지"
+        reservationMsgModalInstance.show(); // 모달 열기
+        reservationMsg.innerHTML=`
+                    <div>시간을 선택해주세요.</div>
+                `
+        return;
+    }
 
     fetch("reserve",{
         method : 'POST',
@@ -198,7 +197,6 @@ reserveBtn.addEventListener("click",(e)=>{
         })
     }).then(response => response.json())
         .then(data =>{
-            console.log(data)
 
             if (data.msg){
                 reservationMsgModalInstance = new bootstrap.Modal(reservationMsgModal, {
@@ -232,7 +230,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 })
 
 function fetchData(date,roomNo){
-    console.log("데이터 가져오기 : ",date," ",roomNo)
 
     fetch(`/booking/getReserveByRoomNo?selectedDate=${date}&roomNo=${roomNo}`,{
         method : 'GET',
@@ -241,7 +238,6 @@ function fetchData(date,roomNo){
         }
     }).then(response => response.json())
         .then(data =>{
-            console.log("fetch 결과 : ",data)
 
             // disabled 초기화
             itemArray.forEach(item =>{
@@ -262,7 +258,6 @@ function fetchData(date,roomNo){
                 }
             });
 
-            console.log("disabledIndexes: ",disabledIndexes)
         })
 
 }

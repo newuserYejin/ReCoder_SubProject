@@ -68,9 +68,6 @@
 
             padding: 46px 10px 0;
             box-sizing: border-box;
-            /*max-height: 73vh;*/
-            /*overflow: scroll;*/
-            /*scrollbar-width: none;*/
 
             .room-img-content-flex {
                 padding: 15px 30px;
@@ -138,17 +135,14 @@
         .reserve-form {
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: start;
             border-radius: 8px;
             padding: 0 10px;
             box-sizing: border-box;
 
-            border: solid 1px red;
-
             flex: 1;
 
             .selectDateBox{
-                border: solid 1px blue;
                 height: 100%;
                 width: 40%;
                 padding: 10px;
@@ -203,71 +197,80 @@
                 }
             }
 
-            .selectInfoBox{
+            .selectInfoBoxBox{
                 width: 60%;
-                padding : 10px 80px 10px 20px;
+                height: 100%;
                 display: flex;
-                flex-direction: column;
-                justify-content: start;
+                justify-content: center;
+                align-items: center;
 
-                align-items: start;
-                box-sizing: border-box;
-
-                >div{
-                    margin-bottom: 30px;
-                    font-size: 1.1em;
-                }
-
-                .timeListBox{
+                .selectInfoBox{
+                    width: 80%;
+                    padding : 10px 20px;
                     display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
                     align-items: start;
+                    box-sizing: border-box;
 
-                    div{
-                        min-width: 10%;
+                    >div{
+                        margin-bottom: 30px;
+                        font-size: 1.1em;
                     }
 
-                    .timeList{
+                    .timeListBox{
                         display: flex;
-                        flex-wrap: wrap;
-                        gap: 10px;
+                        align-items: start;
 
-                        input{
-                            display: none;
+                        div{
+                            min-width: 10%;
                         }
 
-                        label{
-                            border: solid 1px #5C1915;
-                            padding: 10px 20px;
-                            color: #5C1915;
-                            border-radius: 10px;
-                            cursor: pointer;
-                        }
+                        .timeList{
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
 
-                        input[type="checkbox"]:checked +label{
-                            background-color: #5C1915;
-                            color: white;
-                        }
+                            input{
+                                display: none;
+                            }
 
-                        input:disabled + label{
-                            background-color: #4F4F4F;
-                            color: white;
-                            border-color: #4F4F4F;
+                            label{
+                                border: solid 1px #5C1915;
+                                padding: 10px 20px;
+                                color: #5C1915;
+                                border-radius: 10px;
+                                cursor: pointer;
+                            }
+
+                            input[type="checkbox"]:checked +label{
+                                background-color: #5C1915;
+                                color: white;
+                            }
+
+                            input:disabled + label{
+                                background-color: #4F4F4F;
+                                color: white;
+                                border-color: #4F4F4F;
+                            }
+
                         }
 
                     }
 
-                }
-
-                button{
-                    align-self: end;
-                    padding: 10px 20px;
-                    background-color: #5C1915;
-                    color: white;
-                    font-size: 1em;
-                    border-radius: 10px;
-                    border: none;
+                    button{
+                        align-self: end;
+                        padding: 10px 20px;
+                        background-color: #5C1915;
+                        color: white;
+                        font-size: 1em;
+                        border-radius: 10px;
+                        border: none;
+                    }
                 }
             }
+
 
         }
     }
@@ -366,13 +369,6 @@
                         cursor: pointer;
                     }
 
-                }
-
-                #confirmCodeBtn,
-                #verificationCode,
-                label[for="verificationCode"],
-                #verificationCode + p {
-                    display: none;
                 }
             }
         }
