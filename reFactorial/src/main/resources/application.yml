@@ -16,10 +16,10 @@ spring:
           starttls:
             enable: true
             required: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+          connectiontimeout: 3000
+          timeout: 3000
+          writetimeout: 3000
+    auth-code-expiration-seconds: 1800  # 30 * 60 * 1000 == 30분
 
 mybatis:
   mapper-locations: mappers/**/*.xml
@@ -29,7 +29,7 @@ mybatis:
 server:
   servlet:
     session:
-      timeout=1800:
+      timeout: 3600
   tomcat:
     max-file-size: 100MB  # 파일 크기 제한 설정
     max-request-size: 100MB  # 전체 요청 크기 제한 설정

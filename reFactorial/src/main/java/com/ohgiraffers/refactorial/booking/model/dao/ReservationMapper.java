@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ReservationMapper {
@@ -15,7 +16,7 @@ public interface ReservationMapper {
     List<ReservationDTO> getAllReservations(); // 예약 정보 DTO를 반환하는 메서드 추가
 
     // 예약 정보를 데이터베이스에 저장하는 메서드
-    void insertReservation(ReservationDTO reservationDTO);
+    int addReservation(ReservationDTO reservation);
 
     // 예약을 삭제하는 메서드 (reservationId 기준)
     void deleteReservationById(String reservationId);
@@ -25,4 +26,6 @@ public interface ReservationMapper {
 
     // 개인회의실 저장내역 메서드
     List<ReservationDTO> getUserReservations(String empId);
+
+    List<ReservationDTO> getReserveByRoomNo(Map<String, Object> sendData);
 }
