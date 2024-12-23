@@ -1,10 +1,7 @@
 package com.ohgiraffers.refactorial.board.service;
 
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
-import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
-import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO;
-import com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO;
+import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,9 +87,22 @@ public class BoardService {
         boardMapper.voteResult(voteItemList);
     }
 
-    // 투표 선택 결과 조회
-    public List<VoteResultDTO> getVoteResults(String postId) {
+    // 투표 선택 결과 조회(전체)
+    public List<VoteTotalDTO> getVoteResults(String postId) {
 
         return boardMapper.getVoteResults(postId);
     }
+
+    // 투표 선택 결과 조회(사용자 한정)
+    public List<VoteResultDTO> voteComplete(String postId, String empId) {
+        return boardMapper.voteComplete(postId, empId);
+    }
+
+
+//    // 투표 결과(12/22)
+//    public List<VoteItemDTO> getUserVote(String postId, String empId) {
+//        return boardMapper.getUserVote(postId, empId);
+//    }
+
+
 }
