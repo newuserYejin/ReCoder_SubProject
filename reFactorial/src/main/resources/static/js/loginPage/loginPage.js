@@ -21,7 +21,7 @@ var swiper = new Swiper(".mySwiper", {
 });
 
 // url 감지
-urlSearch = new URLSearchParams(location.search);
+const urlSearch = new URLSearchParams(location.search);
 
 // 로그인 오류 메세지 출력
 const errorMsg = urlSearch.get('errorMessage');

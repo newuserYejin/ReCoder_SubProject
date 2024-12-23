@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>회의실 개인 예약 내역</title>
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+  <link rel="stylesheet" th:href="@{/css/booking/myBookingList.css}">
+  <link rel="stylesheet" href="../../static/css/booking/myBookingList.css">
+</head>
+<body>
+  <header th:replace="~{/common/header::headerFragment}"></header>
+  <section>
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-title">예약 관리</div>
+        <ul>
+          <li th:onclick="|location.href='@{/booking}'|">예약 하기</li>
+          <li th:onclick="|location.href='@{/booking/myBookingList}'|" class="sidebar-selected">예약 내역</li>
+        </ul>
+      </div>
+
+      <div class="main-content-wrap">
+        <div class="main-content">
+
+          <div th:each="reservation : ${userReservationList}" class="room-img-content-flex">
+            <div class="room-img-content">
+              <img th:src="|/images/${reservation.cabinetDTO.cabinetImg}|" th:alt="${reservation.cabinetDTO.cabinetImg}">
+            </div>
+            <div class="room-text-content">
+              <p class="roomName" th:text="${reservation.cabinetDTO.roomName}"></p>
+              <p th:text="|위치 : ${reservation.cabinetDTO.roomLocation} |">위치 : 4F 홍보부 옆</p>
+              <p th:text="|구성 : ${reservation.cabinetDTO.fixtures} |">구성 : 화이트 보드, 빔 프로젝트</p>
+              <p th:text="|예약일 : ${reservation.reservationDTO.reservationDate} |">2024-12-25</p>
+              <p th:text="|예약시간 : ${reservation.reservationDTO.reservationStartTime} ~ ${reservation.reservationDTO.reservationEndTime} |">14:00 ~ 16:00</p>
+            </div>
+            <div class="room-reservation-button">
+              <button>취소하기</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!--    <ul>-->
+  <!--      <h2>개인 예약 목록</h2>-->
+  <!--      <th:block th:each="reservation : ${userReservations}">-->
+  <!--        <li>-->
+  <!--          <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>-->
+  <!--          <br>-->
+  <!--          <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>-->
+  <!--          <br>-->
+  <!--          <span>예약 날짜 : <span th:text="${reservation.reservationDate}"></span></span>-->
+  <!--          <br>-->
+  <!--          <span>예약 시작 시간 : <span th:text="${reservation.reservationStartTime}"></span></span>-->
+  <!--          <br>-->
+  <!--          <span>예약 종료 시간 : <span th:text="${reservation.reservationEndTime}"></span></span>-->
+  <!--          <br>-->
+  <!--          <form action="/deleteReservation" method="post" style="display: inline;">-->
+  <!--            <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">-->
+  <!--            <button type="submit">삭제</button>-->
+  <!--          </form>-->
+  <!--        </li>-->
+  <!--      </th:block>-->
+  <!--    </ul>-->
+    </div>
+  </section>
+
+  <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+  <script>
+
+    const userReservationList = '[[${userReservationList}]]'
+
+    if (userReservationList){
+      console.log("userReservationList: ",userReservationList)
+    }
+  </script>
+
+</body>
+</html>

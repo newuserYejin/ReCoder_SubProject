@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.booking.service;
 
 import com.ohgiraffers.refactorial.booking.model.dao.ReservationMapper;
+import com.ohgiraffers.refactorial.booking.model.dto.CombineDTO;
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,40 @@ public class ReservationService {
         this.reservationMapper = reservationMapper;
     }
 
-    // 모든 예약 목록을 가져오는 메서드 추가
-    public List<ReservationDTO> getAllReservations() {
-        return reservationMapper.getAllReservations();
+    // 회의실 별 날짜별 예약 내역 가져오기
+    public List<ReservationDTO> getReserveByRoomNo(String selectedDate, String roomNo) {
+        Map<String, Object> sendData = new HashMap<>();
+
+        sendData.put("selectedDate",selectedDate);
+        sendData.put("roomNo",roomNo);
+
+        return reservationMapper.getReserveByRoomNo(sendData);
     }
 
     // 회의실 예약을 처리하는 메서드
     public int addReserveRoom(ReservationDTO reservation) {
         return reservationMapper.addReservation(reservation);
+    }
+
+    // 개인페이지 예약 내역 메서드
+    public List<CombineDTO> getUserReservations(String empId) {
+        return reservationMapper.getUserReservations(empId);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // 모든 예약 목록을 가져오는 메서드 추가
+    public List<ReservationDTO> getAllReservations() {
+        return reservationMapper.getAllReservations();
     }
 
     // 예약 삭제 메서드
@@ -43,17 +70,5 @@ public class ReservationService {
         return conflicts.isEmpty();
     }
 
-    // 개인페이지 예약 내역 메서드
-    public List<ReservationDTO> getUserReservations(String empId) {
-        return reservationMapper.getUserReservations(empId);
-    }
 
-    public List<ReservationDTO> getReserveByRoomNo(String selectedDate, String roomNo) {
-        Map<String, Object> sendData = new HashMap<>();
-
-        sendData.put("selectedDate",selectedDate);
-        sendData.put("roomNo",roomNo);
-
-        return reservationMapper.getReserveByRoomNo(sendData);
-    }
 }
