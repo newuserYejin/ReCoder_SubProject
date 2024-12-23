@@ -15,4 +15,8 @@ public interface AddressBookMapper {
     List<EmployeeDTO> findEmployeesByKeyword(String keyword);
     String findDeptName(int deptCode);
     String findPositionName(int positionValue);
+
+    int getTotalEmployeeCount();
+
+    List<EmployeeDTO> findEmployeesWithPagination(int limit, int offset);
 }

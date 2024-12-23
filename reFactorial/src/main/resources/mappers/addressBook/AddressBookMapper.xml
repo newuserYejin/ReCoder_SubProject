@@ -43,4 +43,19 @@
         FROM tbl_position
         WHERE position_value = #{positionValue};
     </select>
+
+
+    <!-- 직원 총 수 -->
+    <select id="getTotalEmployeeCount" resultType="int">
+        SELECT COUNT(*) FROM employee;
+    </select>
+
+    <!-- 페이지네이션 적용된 직원 조회 -->
+    <select id="findEmployeesWithPagination" parameterType="map" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+        FROM employee
+        ORDER BY emp_id ASC
+            LIMIT #{limit} OFFSET #{offset};
+    </select>
+
 </mapper>

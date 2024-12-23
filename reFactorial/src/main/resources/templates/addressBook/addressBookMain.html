@@ -16,9 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
     <link rel="stylesheet" th:href="@{/css/addressBook/addressBookMain.css}">
-    <style>
 
-    </style>
 </head>
 <body>
 
@@ -30,7 +28,7 @@
         <div class="sidebar">
             <div class="sidebar-title">주소록</div>
             <ul>
-                <li><a href="/addressBook/addressBookMain">사내 직원</a></li>
+                <li><a href="/addressBook/main">사내 직원</a></li>
                 <li><a href="/addressBook/partners">협력 업체</a></li>
             </ul>
         </div>
@@ -56,8 +54,40 @@
                 <!-- 여기에서 검색 결과가 실시간으로 표시됩니다 -->
             </div>
 
+            <!-- 페이지네이션 표시 -->
+            <div class="pagination">
+                <ul>
+
+                    <!-- 첫 페이지 -->
+                    <li class="first">
+                        <a href="?page=1"><<</a>
+                    </li>
+                    <!-- 이전 페이지 -->
+                    <li class="prev">
+                        <a th:href="@{'/addressBook/main?page=' + ${prevPage}}" class="prev"><</a>
+                    </li>
+
+                    <!-- 페이지 번호들 -->
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a th:href="@{'/addressBook/main?page=' + ${i}}" th:text="${i}"></a>
+                        </li>
+                    </th:block>
+
+                    <!-- 다음 페이지 -->
+                    <li class="next">
+                        <a th:href="@{'/addressBook/main?page=' + ${nextPage}}" class="next">></a>
+                    </li>
+                    <!-- 마지막 페이지 -->
+                    <li class="last">
+                        <a th:href="@{'/addressBook/main?page=' + ${totalPages}}" class="last">>></a>
+                    </li>
+                </ul>
+            </div>
 
         </div>
+
+
     </section>
 
 <script>

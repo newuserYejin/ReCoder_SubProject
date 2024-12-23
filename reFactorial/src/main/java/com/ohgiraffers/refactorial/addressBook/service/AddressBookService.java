@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.addressBook.service;
 
 
 import com.ohgiraffers.refactorial.addressBook.model.dao.AddressBookMapper;
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,18 @@ public class AddressBookService {
         }
         return employees;
     }
+    public int getEmployeeCount() {
+        return addressBookMapper.getTotalEmployeeCount();
+    }
+
+    public List<EmployeeDTO> getEmployeesByPage(int limit, int offset) {
+        return addressBookMapper.findEmployeesWithPagination(limit, offset);
+    }
+
+//    public List<FactoryDTO> getAllFactories() {
+//        List<FactoryDTO> factories = addressBookMapper.findAllFactory
+//    }
+//
+//    public List<FactoryDTO> searchFactories() {
+//    }
 }
