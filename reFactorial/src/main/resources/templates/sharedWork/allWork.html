@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+    <link rel="stylesheet" th:href="@{/css/sharedWork/sharedWork.css}">
+
+</head>
+<body>
+
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">업무공유</div>
+            <ul>
+                <li onclick="location.href='sharedWork/allWork'">전체업무</li>
+                <li>업무공유</li>
+            </ul>
+        </div>
+
+        <!-- 공유업무 등록 버튼 -->
+        <div class="main-content">
+            <div class="top-bar">
+                <button>공유업무 등록</button>
+            </div>
+
+        <!-- 캘린더 출력 -->
+            <div id='calendar'></div>
+
+            <!-- 모달 팝업 -->
+            <div class="modal-overlay" id="modal-overlay"></div>
+            <div class="modal" id="modal">
+                <h2>이벤트 상세</h2>
+                <label for="eventTitle">제목:</label>
+                <input type="text" id="eventTitle" placeholder="이벤트 제목을 입력하세요">
+                <label for="eventDescription">설명:</label>
+                <textarea id="eventDescription" placeholder="이벤트 설명을 입력하세요"></textarea>
+                <button id="saveEventBtn">저장</button>
+                <button id="deleteEventBtn">삭제</button>
+                <button id="closeModalBtn">닫기</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+</body>
+
+    <!-- 캘린더 스크립트 -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var modal = document.getElementById('modal');
+        var modalOverlay = document.getElementById('modal-overlay');
+        var closeModalBtn = document.getElementById('closeModalBtn');
+        var saveEventBtn = document.getElementById('saveEventBtn');
+        var deleteEventBtn = document.getElementById('deleteEventBtn');
+        var eventTitleInput = document.getElementById('eventTitle');
+        var eventDescriptionInput = document.getElementById('eventDescription');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',  // 한국어 설정
+            events: [],  // 초기 이벤트 목록
+            fixedWeekCount: false,
+
+            // 날짜 클릭 시 이벤트 추가 모달 창 띄우기
+            dateClick: function(info) {
+                // 모달 창 초기화
+                eventTitleInput.value = '';
+                eventDescriptionInput.value = '';
+                saveEventBtn.onclick = function() {
+                    var eventTitle = eventTitleInput.value;
+                    var eventDescription = eventDescriptionInput.value;
+                    if (eventTitle && eventDescription) {
+                        // 새 이벤트를 추가
+                        calendar.addEvent({
+                            title: eventTitle,
+                            start: info.dateStr,
+                            description: eventDescription
+                        });
+                        closeModal(); // 모달 닫기
+                    } else {
+                        alert('제목과 설명을 모두 입력해주세요.');
+                    }
+                };
+                modal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            },
+
+            // 이벤트 클릭 시 상세 보기 모달 띄우기
+            eventClick: function(info) {
+                var event = info.event;
+                eventTitleInput.value = event.title;
+                eventDescriptionInput.value = event.extendedProps.description;
+
+                // 저장 버튼 클릭 시 수정된 정보 저장
+                saveEventBtn.onclick = function() {
+                    event.setProp('title', eventTitleInput.value);
+                    event.setExtendedProp('description', eventDescriptionInput.value);
+                    closeModal(); // 모달 닫기
+                };
+
+                // 삭제 버튼 클릭 시 이벤트 삭제
+                deleteEventBtn.onclick = function() {
+                    event.remove();
+                    closeModal(); // 모달 닫기
+                };
+
+                // 모달 창 열기
+                modal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            }
+        });
+
+        calendar.render();
+
+        // 모달 닫기 함수
+        function closeModal() {
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
+
+        closeModalBtn.onclick = closeModal;
+        modalOverlay.onclick = closeModal;
+    });
+</script>
+
+
+
+</html>

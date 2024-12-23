@@ -17,5 +17,11 @@ public class SharedWorkController {
         this.sharedService = sharedService;
     }
 
+//    @GetMapping
+//    public String allWork() {
+//
+//        sharedService.allWork();
+//    }
+
 
 }

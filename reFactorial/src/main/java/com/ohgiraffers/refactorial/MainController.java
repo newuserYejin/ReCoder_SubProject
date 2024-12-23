@@ -1,11 +1,9 @@
 package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
-import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
-import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +62,9 @@ public class MainController {
         return "/board/notification";
     }
 
-    @GetMapping("/user/sharedWork")
+    @GetMapping("/user/allWork")
     public String sharedWork(){
-        return "/board/sharedWork";
+        return "/sharedWork/allWork";
     }
   
     @GetMapping("/auth/login")
