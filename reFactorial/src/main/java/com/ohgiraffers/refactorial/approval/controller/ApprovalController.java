@@ -717,12 +717,9 @@ public class ApprovalController {
 
 
 
-//    @RestController
-//    @RequestMapping("/files")
-//    public class FileController {
 
 
-    // 파일 다운로드 (파일 ID로 조회)
+
     // 파일 다운로드 (파일 ID 기준)
     @GetMapping("/downloadById")
     public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
