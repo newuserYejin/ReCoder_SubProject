@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sidebar</title>
+</head>
+<body>
+<!-- 업무공유 목록 -->
+<div class="sidebar" th:fragment="sidebarFragment">
+    <div class="sidebar-title">게시판</div>
+    <ul>
+        <li th:class="${currentCategory == 1} ? 'active' : ''" onclick="location.href='/user/list?categoryCode=1'">전체업무</li>
+        <li th:class="${currentCategory == 2} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=2'">업무공유</li>
+    </ul>
+</div>
+</body>
+</html>

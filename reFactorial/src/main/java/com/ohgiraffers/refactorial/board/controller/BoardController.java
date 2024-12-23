@@ -140,6 +140,8 @@ public class BoardController {
         List<VoteResultDTO> resultInquiryList = boardService.voteComplete(postId, user.getEmpId());
         // 투표 TotalList
         List<VoteTotalDTO> voteTotalList = boardService.getVoteResults(postId);
+        System.out.println("voteTotalList = " + voteTotalList);
+
 
         // 초기 투표 수 0으로 세팅
         voteItemList.stream().forEach(item->{

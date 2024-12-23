@@ -72,7 +72,7 @@
                     <div>
                         <div th:each="vote :${voteView}">
                             <div th:text="${vote.itemId}"></div>
-                            <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}"/>
+                            <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}" th:checked="${vote.isOwnVoted}" th:disabled="${vote.isOwnVoted}"/>
                             <label th:for="${vote.itemTitle}" th:text="${vote.itemTitle}"></label>
                             <div th:text="${vote.totalCount}"></div>
                             <div th:text="${vote.isOwnVoted}"></div>
@@ -177,6 +177,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    const result = `[[${voteView}]]`
+
+    console.log(result);
+</script>
 
 <script>
     // 댓글 삭제 버튼 클릭 시 동작 (addEventListener 클릭시 동작을 하는 것)

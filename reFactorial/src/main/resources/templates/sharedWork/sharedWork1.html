@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+    <link rel="stylesheet" th:href="@{/css/board/list.css}">
+
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<!-- Sidebar -->
+<div th:replace="~{/board/sidebar::sidebarFragment}"></div>
+<h1>업무공유 ㅇㅇㅇㅇ</h1>
+
+
+</body>
+</html>
