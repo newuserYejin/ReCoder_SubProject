@@ -25,7 +25,7 @@
         <div class="sidebar-title">예약 관리</div>
         <ul>
           <li th:onclick="|location.href='@{/booking}'|" class="sidebar-selected">예약 하기</li>
-          <li th:onclick="|location.href='@{/booking/bookingList}'|">예약 내역</li>
+          <li th:onclick="|location.href='@{/booking/myBookingList}'|">예약 내역</li>
         </ul>
       </div>
 
@@ -34,7 +34,7 @@
 
           <div th:each="cabinet : ${cabinets}" class="room-img-content-flex">
             <div class="room-img-content">
-              <img th:src="|/images/${cabinet.conferenceRoomNo}.jpg|" th:alt="${cabinet.roomName}">
+              <img th:src="|/images/${cabinet.cabinetImg}|" th:alt="${cabinet.roomName}">
             </div>
             <div class="room-text-content">
               <p class="roomName" th:text="${cabinet.roomName}"></p>
@@ -54,12 +54,6 @@
 
   <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
-  <script>
-    const roomList = '[[${cabinets}]]'
-
-    console.log("roomList: ",roomList)
-
-  </script>
 </body>
 </html>
 

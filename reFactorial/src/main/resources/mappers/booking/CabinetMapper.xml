@@ -10,6 +10,7 @@
         <result property="conferenceRoomNo" column="ConferenceRoom_no"/>
         <result property="fixtures" column="fixtures"/>
         <result property="roomLocation" column="room_location"/>
+        <result property="cabinetImg" column="cabinet_img"/>
     </resultMap>
 
     <select id="getAllCabinets" resultMap="CabinetResultMap">

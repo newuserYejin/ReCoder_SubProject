@@ -179,6 +179,12 @@
 </div>
 
 <script>
+    const voteView = '[[${voteView}]]'
+
+    console.log("voteView: ",voteView)
+</script>
+
+<script>
     // 댓글 삭제 버튼 클릭 시 동작 (addEventListener 클릭시 동작을 하는 것)
     // 삭제버튼 눌렀을 때 data-comment-id와 data-post-id 세팅하는 이벤트
     document.querySelector('#comment-list').addEventListener('click', function (event) {
