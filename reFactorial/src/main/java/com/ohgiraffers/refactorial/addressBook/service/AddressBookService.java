@@ -27,8 +27,7 @@ public class AddressBookService {
             employee.setDeptName(deptName);
             employee.setPositionName(positionName);
         }
-        // 디버깅: employees 리스트 출력
-        employees.forEach(System.out::println);
+
         return employees;
     }
 
@@ -50,10 +49,14 @@ public class AddressBookService {
         return addressBookMapper.findEmployeesWithPagination(limit, offset);
     }
 
-//    public List<FactoryDTO> getAllFactories() {
-//        List<FactoryDTO> factories = addressBookMapper.findAllFactory
-//    }
-//
-//    public List<FactoryDTO> searchFactories() {
-//    }
+
+    // 전체 협력업체 조회
+    public List<FactoryDTO> getAllFactories() {
+        return addressBookMapper.findAllFactories();
+    }
+
+    // 키워드로 협력업체 검색
+    public List<FactoryDTO> searchFactories(String keyword) {
+        return addressBookMapper.searchFactoriesByKeyword(keyword);
+    }
 }

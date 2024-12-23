@@ -17,4 +17,5 @@ public class FactoryDTO {
     private String fabProduct; // 생산 제품
     private String empId; // 관리자 번호
     private String fabPhone; // 대표 연락처
+    private String fabImage;
 }

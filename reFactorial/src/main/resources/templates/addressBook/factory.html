@@ -17,21 +17,27 @@
 <body>
 <header th:replace="~{/common/header::headerFragment}"></header>
 
-<section>
+<section class="container">
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-title">주소록</div>
     <ul>
-      <li><a href="/addressBook/main">사내 직원</a></li>
-      <li><a href="/addressBook/partners">협력 업체</a></li>
+      <li><a href="/addressBook/employeeAddressBook">사내 직원</a></li>
+      <li><a href="/addressBook/factoryAddressBook">협력 업체</a></li>
     </ul>
   </div>
 
   <div class="main-content">
     <!-- 검색 바 -->
     <div class="top-bar">
-      <input type="text" id="search-input" placeholder="이름 또는 부서명 검색">
-      <button onclick="searchEmployees()">검색</button>
+      <input type="text" id="factory-search-input" placeholder="이름 또는 부서명 검색">
+      <button onclick="searchFactories()">검색</button>
+    </div>
+
+
+    <!-- 협력업체 리스트 -->
+    <div id="factory-list">
+      <!-- 협력업체 카드들이 여기에 추가됩니다 -->
     </div>
 
   </div>
@@ -40,5 +46,86 @@
 
 
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
+<script>
+  // 페이지 로드 시 협력업체 전체 조회
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('/addressBook/factory') // 서버에 요청
+            .then(response => response.json()) // JSON 형식의 응답
+            .then(data => renderFactories(data)) // 받은 데이터를 렌더링
+            .catch(error => console.error('Error:', error));
+
+    // 검색 입력 필드에 이벤트 리스너 추가
+    const searchInput = document.getElementById('factory-search-input');
+
+    // 엔터 키로 검색 실행
+    searchInput.addEventListener('keyup', function (event) {
+      if (event.key === 'Enter') {
+        searchFactories(); // 엔터 키로 검색 실행
+      }
+    });
+
+    // 실시간 검색 실행
+    searchInput.addEventListener('input', function () {
+      const searchValue = searchInput.value.trim();
+      if (searchValue === "") {
+        // 입력값이 비어 있으면 전체 조회
+        fetch('/addressBook/factory')
+                .then(response => response.json())
+                .then(data => renderFactories(data))
+                .catch(error => console.error('Error:', error));
+      } else {
+        searchFactories(); // 실시간 검색
+      }
+    });
+  });
+
+  // 협력업체 검색 함수
+  function searchFactories() {
+    const searchValue = document.getElementById('factory-search-input').value.trim();
+    console.log('Search value:', searchValue); // 검색어 출력
+
+    fetch(`/addressBook/searchFactory?keyword=${searchValue}`) // 검색 요청
+            .then(response => response.json()) // JSON 형식의 응답
+            .then(data => {
+              console.log('Search result:', data); // 응답 데이터 출력
+              renderFactories(data);
+            })
+            .catch(error => console.error('Error:', error));
+  }
+
+  // 협력업체 데이터를 렌더링하는 함수
+  function renderFactories(data) {
+    const factoryList = document.getElementById('factory-list');
+    factoryList.innerHTML = ''; // 기존 내용을 초기화
+
+    if (data.length === 0) {
+      factoryList.innerHTML = '<p>검색 결과가 없습니다.</p>';
+      return;
+    }
+
+    data.forEach(factory => {
+      const factoryCard = document.createElement('div');
+      factoryCard.className = 'factory-card';
+
+      // HTML 구조
+      factoryCard.innerHTML = `
+            <div class="factory-image">
+                <img src="${factory.fabImage}" alt="${factory.fabName}">
+            </div>
+            <div class="factory-details">
+                <h3>${factory.fabName}</h3>
+                <p>위치: ${factory.fabAddress}</p>
+                <p>대표 연락처: ${factory.fabPhone}</p>
+                <p>담당자: ${factory.managerName}, 연락처: ${factory.managerPhone}</p>
+                <p>생산 제품: ${factory.fabProduct}</p>
+            </div>
+        `;
+      factoryList.appendChild(factoryCard);
+    });
+  }
+
+
+</script>
+
 </body>
 </html>

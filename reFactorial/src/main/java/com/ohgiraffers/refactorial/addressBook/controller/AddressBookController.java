@@ -42,7 +42,7 @@ public class AddressBookController {
         return addressBookService.searchEmployees(keyword);
     }
 
-    @GetMapping("/main")
+    @GetMapping("/employeeAddressBook")
     public String getAddressBookPage(
             @RequestParam(value = "page", defaultValue = "1") int currentPage,
             Model model) {
@@ -77,16 +77,22 @@ public class AddressBookController {
         return "/addressBook/addressBookMain";
     }
 
-//    @ResponseBody
-//    @GetMapping("/partners")
-//    public List<FactoryDTO> getAllFactories(){
-//        return addressBookService.getAllFactories();
-//    }
-//
-//    @ResponseBody
-//    @GetMapping("searchPartners")
-//    public List<FactoryDTO> searchFactories(@RequestParam("keyword") String keyword){
-//        return addressBookService.searchFactories();
-//    }
+    @ResponseBody
+    @GetMapping("/factory")
+    public List<FactoryDTO> getAllFactories(){
+        return addressBookService.getAllFactories();
+    }
+
+    @ResponseBody
+    @GetMapping("/searchFactory")
+    public List<FactoryDTO> searchFactories(@RequestParam("keyword") String keyword){
+        System.out.println("검색 키워드: " + keyword); // 디버깅 로그 추가
+        return addressBookService.searchFactories(keyword);
+    }
+
+    @GetMapping("/factoryAddressBook")
+    public String factoryAddressBook(){
+        return "/addressBook/factory";
+    }
 
 }

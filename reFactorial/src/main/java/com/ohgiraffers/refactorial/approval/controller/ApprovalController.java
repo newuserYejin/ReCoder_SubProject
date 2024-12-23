@@ -175,6 +175,8 @@ public class ApprovalController {
     }
 
 
+
+
     @GetMapping("rejected")
     public String getRejectedDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
                                        Model model, HttpSession session) {
