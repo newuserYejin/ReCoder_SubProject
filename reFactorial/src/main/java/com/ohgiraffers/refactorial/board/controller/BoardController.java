@@ -135,13 +135,49 @@ public class BoardController {
         // 댓글 리스트 가져옴
         List<CommentDTO> comment = boardService.commentView(postId);
         // 항목 리스트 가져옴
-        List<VoteItemDTO> voteItem = boardService.itemView(postId);
+        List<VoteItemDTO> voteItemList = boardService.itemView(postId);
+        // 투표한사람이면 보여주는 항목리스트
+        List<VoteResultDTO> resultInquiryList = boardService.voteComplete(postId, user.getEmpId());
+        // 투표 TotalList
+        List<VoteTotalDTO> voteTotalList = boardService.getVoteResults(postId);
 
-        model.addAttribute("postDetail", postDetail);
-        model.addAttribute("commentView", comment);
+        // 초기 투표 수 0으로 세팅
+        voteItemList.stream().forEach(item->{
+            item.setTotalCount(0);
+        });
+
+
+        // ItemId가 일치할 경우 총 투표 수 세팅
+        for(int i=0; i<voteItemList.size(); i++){
+            for(int j=0; j<voteTotalList.size(); j++){
+                if(voteItemList.get(i).getItemId() == voteTotalList.get(j).getItemId()){
+                    voteItemList.get(i).setTotalCount(voteTotalList.get(j).getVoteCount());
+                }
+            }
+        }
+
+        // 본인이 투표한 사람일 경우 체크
+        for(int i=0; i<resultInquiryList.size(); i++){
+            for(int j=0; j<voteItemList.size(); j++){
+                if(resultInquiryList.get(i).getEmpId().equals(user.getEmpId()) && resultInquiryList.get(i).getItemId() == voteItemList.get(j).getItemId()){
+                    voteItemList.get(j).setOwnVoted(true);
+                    // 로그인한 사용자의 투표 여부
+                    model.addAttribute("votedByPost", true);
+                    //
+                }
+            }
+        }
+
+        model.addAttribute("postDetail", postDetail);   // 상세페이지
+        model.addAttribute("commentView", comment);     // 댓글 조회
         model.addAttribute("user", user);   // user정보 postDetail에 전달(게시물 수정,삭제 권한)
-        model.addAttribute("voteView", voteItem);
+        model.addAttribute("voteView", voteItemList);   // 항목 리스트
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
+//        model.addAttribute("voteTotal", voteTotalList);     // 투표 총계
+
+//        if (resultInquiry != null && resultInquiry.size() > 0) {
+//            model.addAttribute("voteComplete", resultInquiry);   // 투표한사람이면 보여주는 항목리스트
+//        }
 
 
         return "/board/postDetail";
@@ -157,7 +193,7 @@ public class BoardController {
 
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
-        List<VoteResultDTO> voteItemList = new ArrayList<>();
+        List<VoteResultDTO> voteItemList = new ArrayList<>();   // 항목 1개씩 담음
 
         // 반복문을 돌려 항목을 리스트에 저장
         for(int i = 0; i < voteIdList.size(); i++){
@@ -166,16 +202,33 @@ public class BoardController {
 
         boardService.voteResult(voteItemList);    // 투표결과 DB 저장
 
-        List<VoteResultDTO> voteSelectResult = boardService.getVoteResults(postId);    // 투표결과 List 형태로 가져옴
+//        List<VoteResultDTO> voteSelectResult = boardService.getVoteResults(postId);    // 투표결과 List 형태로 가져옴
 
-        System.out.println("voteSelectResult = " + voteSelectResult);
+//        System.out.println("voteSelectResult = " + voteSelectResult);
 
 
         // 결과 데이터를 모델에 추가하여 HTML(화면) 전달  @@@ 리다이렉트 플래시 사용 @@@
-        rttr.addFlashAttribute("voteResults", voteSelectResult);
+//        rttr.addFlashAttribute("voteResults", voteSelectResult);
 
         return "redirect:/board/postDetail?postId=" + postId + "&categoryCode=" + categoryCode;    // redirect 를 사용하는 이유 - postDetail에 있는 데이터 사용을 위해!
     }
+
+    // 투표 결과 조회(12/22)
+//    @GetMapping("/voteResult")
+//    public String getVoteResults(@RequestParam("postId") String postId, Model model, HttpSession session) {
+//
+//        // 로그인한 유저 정보를 가져옴
+//        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+//        // 투표 결과 가져오기
+//        List<VoteResultDTO> voteResults = boardService.getVoteResults(postId);
+//        List<VoteItemDTO> userVote = boardService.getUserVote(postId, user.getEmpId());
+//
+//        model.addAttribute("voteResults", voteResults);
+//        model.addAttribute("userVote", userVote);
+//
+//        return "voteResultPage";
+//    }
+
 
     // 게시물 삭제
     @GetMapping("postDelete")
