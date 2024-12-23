@@ -22,11 +22,7 @@ public class CabinetController {
     @GetMapping("/bookingForm")
     public CabinetDTO showBookingForm(@RequestParam("roomNo") String roomNo, Model model) {
 
-        System.out.println("roomNo = " + roomNo);
-
         CabinetDTO cabinet = cabinetService.getCabinetInfo(roomNo);
-
-        System.out.println("cabinet = " + cabinet);
 
         model.addAttribute("cabinet",cabinet);
 

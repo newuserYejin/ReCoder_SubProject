@@ -22,7 +22,8 @@ public interface ReservationMapper {
     // 개인 회의실 예약 내역
     List<CombineDTO> getUserReservations(String empId);
 
-
+    // 예약을 삭제하는 메서드 (reservationId 기준)
+    Integer deleteReservationById(String reservationId);
 
 
 
@@ -36,8 +37,6 @@ public interface ReservationMapper {
     List<ReservationDTO> getAllReservations(); // 예약 정보 DTO를 반환하는 메서드 추가
 
 
-    // 예약을 삭제하는 메서드 (reservationId 기준)
-    void deleteReservationById(String reservationId);
 
     // 중복을 방지하는 메서드
     List<ReservationDTO> checkReservationConflict(BigDecimal conferenceRoomNo, LocalDate date, LocalTime startTime, LocalTime endTime);

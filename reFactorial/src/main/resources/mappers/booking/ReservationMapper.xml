@@ -65,7 +65,11 @@
             conferenceRoom_no = #{roomNo}
     </select>
 
-
+    <!-- 예약을 삭제하는 쿼리 -->
+    <delete id="deleteReservationById" parameterType="String">
+        DELETE FROM tbl_reservation
+        WHERE reservation_id = #{reservationId}
+    </delete>
 
 
 
@@ -81,11 +85,6 @@
         FROM tbl_reservation
     </select>
 
-    <!-- 예약을 삭제하는 쿼리 -->
-    <delete id="deleteReservationById" parameterType="java.lang.String">
-        DELETE FROM tbl_reservation
-        WHERE reservation_id = #{reservationId}
-    </delete>
 
     <!-- 특정 날짜와 시간 범위에 대해 예약 가능 여부를 확인하는 쿼리 -->
     <select id="checkReservationConflict" resultMap="ReservationResultMap" resultType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">

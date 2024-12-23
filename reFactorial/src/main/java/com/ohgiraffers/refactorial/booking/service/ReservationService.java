@@ -43,6 +43,10 @@ public class ReservationService {
         return reservationMapper.getUserReservations(empId);
     }
 
+    // 예약 삭제 메서드
+    public int deleteReservationById(String reservationId) {
+        return reservationMapper.deleteReservationById(reservationId);
+    }
 
 
 
@@ -59,10 +63,6 @@ public class ReservationService {
         return reservationMapper.getAllReservations();
     }
 
-    // 예약 삭제 메서드
-    public void deleteReservationById(String reservationId) {
-        reservationMapper.deleteReservationById(reservationId);
-    }
     // 중복 방지 메서드
     public boolean isReservationAvailable(BigDecimal conferenceRoomNo, LocalDate date, LocalTime startTime, LocalTime endTime) {
         // 예약이 겹치는지 체크하는 로직
