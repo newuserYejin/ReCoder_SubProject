@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReservationService {
@@ -26,8 +28,8 @@ public class ReservationService {
     }
 
     // 회의실 예약을 처리하는 메서드
-    public void reserveConferenceRoom(ReservationDTO reservationDTO) {
-        reservationMapper.insertReservation(reservationDTO);
+    public int addReserveRoom(ReservationDTO reservation) {
+        return reservationMapper.addReservation(reservation);
     }
 
     // 예약 삭제 메서드
@@ -44,5 +46,14 @@ public class ReservationService {
     // 개인페이지 예약 내역 메서드
     public List<ReservationDTO> getUserReservations(String empId) {
         return reservationMapper.getUserReservations(empId);
+    }
+
+    public List<ReservationDTO> getReserveByRoomNo(String selectedDate, String roomNo) {
+        Map<String, Object> sendData = new HashMap<>();
+
+        sendData.put("selectedDate",selectedDate);
+        sendData.put("roomNo",roomNo);
+
+        return reservationMapper.getReserveByRoomNo(sendData);
     }
 }
