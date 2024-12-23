@@ -3,12 +3,11 @@
 const itemArray = document.querySelectorAll("input[type=checkbox]");
 let disabledIndexes = [];
 
-    // disabled 상태인 체크박스 확인
-itemArray.forEach((item, index) => {
-    if (item.disabled) {
-        disabledIndexes.push(index);
-    }
-});
+// Bootstrap 모달 객체 초기화
+const reservationMsgModal = document.querySelector("#reservationMsgModal")
+let reservationMsgModalInstance = new bootstrap.Modal(reservationMsgModal);
+const reservationMsg = document.querySelector(".reservationMsg");
+const modalTitle = document.querySelector(".modalTitle");
 
 let start = null;
 let end = null;
@@ -39,7 +38,10 @@ function handleCheckboxClick(check, checkIndex) {
 
     // disabled 는 클릭자체를 막기
     if (disabledIndexes.includes(checkIndex)) {
-        alert("선택한 시간대는 사용할 수 없습니다.");
+        reservationMsgModalInstance.show(); // 모달 열기
+        reservationMsg.innerHTML=`
+            <div>해당시간은 예약 불가 합니다.</div>
+        `
         check.checked = false;
         return;
     }
@@ -74,14 +76,23 @@ function handleCheckboxClick(check, checkIndex) {
                 start = checkIndex;
                 console.log("start 갱신:", start, "end:", end);
             } else {
-                alert("선택한 구간에 사용할 수 없는 시간이 포함되어 있습니다.");
+                reservationMsgModalInstance.show(); // 모달 열기
+                modalTitle.textContent = "안내 메세지"
+                reservationMsg.innerHTML=`
+                    <div>선택한 구간에 사용할 수 없는 시간이 포함되어 있습니다.</div>
+                `
                 check.checked = false;
             }
         } else if (checkIndex > end) {          // 시작시간 보다 뒷시간 선택
             if (isRangeValid(end, checkIndex)) {
                 end = checkIndex;
             } else {
-                alert("선택한 구간에 사용할 수 없는 시간이 포함되어 있습니다.");
+                modalTitle.textContent = "안내 메세지"
+                reservationMsgModalInstance.show(); // 모달 열기
+                reservationMsg.innerHTML=`
+                    <div>선택한 구간에 사용할 수 없는 시간이 포함되어 있습니다.</div>
+                `
+
                 check.checked = false;
             }
         }
@@ -109,6 +120,10 @@ itemArray.forEach((checkbox, index) => {
 
 // 오늘 날짜
 const currentDate = new Date();
+
+// 회의실 번호
+const urlSearch = new URLSearchParams(location.search);
+const roomNo = urlSearch.get('roomNo')
 
 // yyyy-MM-dd
 function dateFormate(data){
@@ -152,10 +167,16 @@ function setDate(dayInfo){
     console.log("에약 일 : ", dayInfo.startStr)
     selectDayValue = dayInfo.startStr;
     selectDay.textContent = `예약 날짜 : ${selectDayValue}`
+
+    // disabled 초기화
+    itemArray.forEach(item =>{
+        item.checked = false;
+    })
+
+    fetchData(selectDayValue,roomNo);
 }
 
 const reserveBtn = document.querySelector("#reserveBtn");
-const urlSearch = new URLSearchParams(location.search);
 
 reserveBtn.addEventListener("click",(e)=>{
     e.preventDefault();
@@ -178,7 +199,27 @@ reserveBtn.addEventListener("click",(e)=>{
     }).then(response => response.json())
         .then(data =>{
             console.log(data)
-            location.reload();
+
+            if (data.msg){
+                reservationMsgModalInstance = new bootstrap.Modal(reservationMsgModal, {
+                    backdrop: 'static',  // 외부 클릭 방지
+                    keyboard: false      // ESC 키로 모달을 닫지 않도록
+                });
+
+                modalTitle.textContent = "안내 메세지"
+                reservationMsgModalInstance.show(); // 모달 열기
+                reservationMsg.innerHTML=`
+                    <div>${data.msg}</div>
+                `
+
+                const closeBtnList = document.querySelectorAll(".closeBtn")
+
+                closeBtnList.forEach(closeBtn =>{
+                    closeBtn.addEventListener("click",()=>{
+                        location.reload();
+                    })
+                })
+            }
         })
 })
 
@@ -202,9 +243,26 @@ function fetchData(date,roomNo){
         .then(data =>{
             console.log("fetch 결과 : ",data)
 
+            // disabled 초기화
+            itemArray.forEach(item =>{
+                item.disabled = false;
+            })
+
+            disabledIndexes = []
+
+            // disabled 재설정
             if (data.reservationList){
                 disableReservedTimes(data.reservationList)
             }
+
+            // disabled 상태인 체크박스 확인
+            itemArray.forEach((item, index) => {
+                if (item.disabled) {
+                    disabledIndexes.push(index);
+                }
+            });
+
+            console.log("disabledIndexes: ",disabledIndexes)
         })
 
 }

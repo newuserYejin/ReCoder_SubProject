@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.booking.controller;
 
+import com.ohgiraffers.refactorial.booking.model.dto.CombineDTO;
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -79,12 +80,15 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/booking/bookingList")
-    public String showBookingList(HttpSession session, Model model) {
+    @GetMapping("/booking/myBookingList")
+    public String myBookingList(HttpSession session, Model model) {
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
-        model.addAttribute("userReservations", userReservations);
-        return "/booking/bookingList"; // 수정된 부분
+        List<CombineDTO> userReservationList = reservationService.getUserReservations(user.getEmpId());
+        model.addAttribute("userReservationList", userReservationList);
+
+        System.out.println("userReservationList = " + userReservationList);
+
+        return "booking/myBookingList"; // 수정된 부분
     }
 
 
