@@ -55,10 +55,6 @@ public interface ApprovalMapper {
 
    
 
-    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
-                                        @Param("empId") String empId,
-                                        @Param("status") String status,
-                                        @Param("reason") String reason);
 
 
 
@@ -75,8 +71,7 @@ public interface ApprovalMapper {
 
     int countInProgressDocuments(String empId);
 
-    List<DocumentDTO> findRejectedDocuments(String empId, int limit, int offset);
-
+   
     int countRejectedDocuments(String empId);
 
     List<String> getApproversStatus(@Param("pmId") String pmId);
@@ -112,16 +107,29 @@ public interface ApprovalMapper {
 
 
 
-    Integer findNextApproverOrder(String pmId);
-
-
-  
-
     List<DocumentDTO> findInProgressDocuments(Map<String, Object> params);
 
     void insertApprover(Map<String, Object> params);
 
-    void updateNextApproverStatus(Map<String,? extends Serializable> pmId);
+
 
     void updateAllPendingToInProgress(String pmId);
+
+    void updateApprovalAllPass(String pmId, String empId, String 전결);
+
+
+    void updateApprovalStatusWithReason(@Param("pmId") String pmId,
+                                        @Param("empId") String empId,
+                                        @Param("status") String status,
+                                        @Param("reason") String reason);
+
+    void updateAllApprovalStatusesToRejected(String pmId, String 반려);
+
+    List<DocumentDTO> findRejectedDocuments(Map<String, Object> params);
+
+    Integer getMaxApprovalOrder(String pmId);
+
+    Integer getApprovalOrderdozang(String pmId, String currentEmpId);
+
+    String getRejectReasonByApprover(String pmId, String currentEmpId);
 }
