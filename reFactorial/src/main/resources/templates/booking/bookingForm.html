@@ -17,100 +17,6 @@
     <link rel="stylesheet" th:href="@{/css/booking/bookingFrom.css}">
     <link rel="stylesheet" href="../../static/css/booking/bookingFrom.css">
 
-<!--    <script>-->
-<!--        document.addEventListener('DOMContentLoaded', function () {-->
-<!--            const reservationForm = document.querySelector('.reserve-form');-->
-<!--            const startTimeSelect = document.getElementById('reservationStartTime');-->
-<!--            const endTimeSelect = document.getElementById('reservationEndTime');-->
-<!--            const reservationDateInput = document.getElementById('reservationDate');-->
-<!--            const roomNoInput = document.getElementById('conferenceRoomNo');-->
-
-<!--            // 'roomNo'를 숨은 필드로 추가하여 폼 전송 시 함께 보내도록 함-->
-<!--            const roomNoField = document.createElement('input');-->
-<!--            roomNoField.type = 'hidden';-->
-<!--            roomNoField.name = 'roomNo';-->
-<!--            roomNoField.value = roomNoInput ? roomNoInput.value : '';-->
-<!--            reservationForm.appendChild(roomNoField);-->
-
-<!--            reservationForm.addEventListener('submit', async function (event) {-->
-<!--                event.preventDefault();-->
-
-<!--                // Get input values-->
-<!--                const startTime = startTimeSelect.value;-->
-<!--                const endTime = endTimeSelect.value;-->
-<!--                const reservationDate = reservationDateInput.value;-->
-<!--                const roomNo = roomNoInput ? roomNoInput.value : null;-->
-
-<!--                // Validation-->
-<!--                if (!roomNo) {-->
-<!--                    alert('회의실 번호를 확인할 수 없습니다. 다시 시도해주세요.');-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                if (!reservationDate || !startTime || !endTime) {-->
-<!--                    alert('모든 예약 정보를 입력해주세요.');-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                // Prevent start time equal to end time-->
-<!--                if (startTime === endTime) {-->
-<!--                    alert('시작 시간과 종료 시간이 같을 수 없습니다. 다른 종료 시간을 선택해 주세요.');-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                // Convert time to comparable numbers (HH:MM format -> number)-->
-<!--                const startTimeInMinutes = convertTimeToMinutes(startTime);-->
-<!--                const endTimeInMinutes = convertTimeToMinutes(endTime);-->
-
-<!--                if (startTimeInMinutes >= endTimeInMinutes) {-->
-<!--                    alert('종료 시간은 시작 시간 이후여야 합니다.');-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                try {-->
-<!--                    const response = await fetch('/api/reservations');-->
-
-
-<!--                    if (!response.ok) {-->
-<!--                        throw new Error(`API 호출 실패: ${response.statusText}`);-->
-<!--                    }-->
-
-<!--                    const existingReservations = await response.json();-->
-
-<!--                    // Check for conflicts with existing reservations for the same room and date-->
-<!--                    const isConflict = existingReservations.some(reservation => {-->
-<!--                        return reservation.reservationDate === reservationDate &&-->
-<!--                            reservation.roomNo === roomNo &&-->
-<!--                            (-->
-<!--                                (startTimeInMinutes >= convertTimeToMinutes(reservation.reservationStartTime) && startTimeInMinutes < convertTimeToMinutes(reservation.reservationEndTime)) ||-->
-<!--                                (endTimeInMinutes > convertTimeToMinutes(reservation.reservationStartTime) && endTimeInMinutes <= convertTimeToMinutes(reservation.reservationEndTime)) ||-->
-<!--                                (startTimeInMinutes <= convertTimeToMinutes(reservation.reservationStartTime) && endTimeInMinutes >= convertTimeToMinutes(reservation.reservationEndTime))-->
-<!--                            );-->
-<!--                    });-->
-
-<!--                    if (isConflict) {-->
-<!--                        // 리디렉션을 제대로 수행하려면 예약 폼이 아닌 예약 수정 폼으로 이동해야 하므로-->
-<!--                        alert('선택한 날짜와 시간에 이미 예약이 존재합니다. 다른 시간을 선택해주세요.');-->
-<!--                        window.location.href = `booking/bookingForm.html`;-->
-<!--                        return;-->
-<!--                    } else {-->
-<!--                        reservationForm.submit(); // 예약이 충돌하지 않으면 폼 제출-->
-<!--                    }-->
-<!--                } catch (error) {-->
-<!--                    console.error('오류 발생:', error);-->
-<!--                    alert('예약 확인 중 문제가 발생했습니다');-->
-<!--                }-->
-<!--            });-->
-
-<!--            // Helper function to convert time (HH:MM) to minutes-->
-<!--            function convertTimeToMinutes(time) {-->
-<!--                const [hours, minutes] = time.split(':').map(Number);-->
-<!--                return hours * 60 + minutes;-->
-<!--            }-->
-<!--        });-->
-<!--    </script>-->
-
-
 </head>
 <body>
     <header th:replace="~{/common/header::headerFragment}"></header>
@@ -120,7 +26,7 @@
                 <div class="sidebar-title">예약 관리</div>
                 <ul>
                     <li th:onclick="|location.href='@{/booking}'|" class="sidebar-selected">예약 하기</li>
-                    <li th:onclick="|location.href='@{/booking/bookingList}'|">예약 내역</li>
+                    <li th:onclick="|location.href='@{/booking/myBookingList}'|">예약 내역</li>
                 </ul>
             </div>
 
@@ -129,7 +35,7 @@
                     <!-- JavaScript 로 회의실 정보가 추가됩니다. -->
                     <div class="room-img-content-flex">
                         <div class="room-img-content">
-                            <img th:src="|/images/${cabinet.conferenceRoomNo}.jpg|" alt="${room.name}">
+                            <img th:src="|/images/${cabinet.cabinetImg}|" alt="${room.name}">
                         </div>
                         <div class="room-text-content">
                             <p class="roomName" th:text="${cabinet.roomName}"></p>
@@ -140,48 +46,49 @@
                 </div>
 
                 <form action="reserve" method="post" class="reserve-form">
-<!--                    <input type="hidden" id="conferenceRoomNo" name="conferenceRoomNo" th:value="${roomNo}">-->
-<!--                    <input type="hidden" name="empId" th:value="${session.LoginUserInfo.empId}">-->
-<!--                    <br>-->
                     <div class="selectDateBox">
                         <div id='calendar'></div>
-<!--                        <input type="date" id="reservationDate" name="reservationDate" required>-->
                     </div>
 
-                    <div class="selectInfoBox">
-                        <div class="selectDay">예약 날짜 : 없음</div>
+                    <div class="selectInfoBoxBox">
+                        <div class="selectInfoBox">
+                            <div class="selectDay">예약 날짜 : 없음</div>
 
-                        <div class="timeListBox">
-                            <div>시간 : </div>
+                            <div class="timeListBox">
+                                <div>시간 : </div>
 
-                            <div class="timeList">
-                                <input type="checkbox" id="time10" name="time[]" value="10:00:00">
-                                <label for="time10">10:00</label>
+                                <div class="timeList">
+                                    <input type="checkbox" id="time09" name="time[]" value="09:00:00">
+                                    <label for="time09">9:00</label>
 
-                                <input type="checkbox" id="time11" name="time[]" value="11:00:00">
-                                <label for="time11">11:00</label>
+                                    <input type="checkbox" id="time10" name="time[]" value="10:00:00">
+                                    <label for="time10">10:00</label>
 
-                                <input type="checkbox" id="time12" name="time[]" value="12:00:00">
-                                <label for="time12">12:00</label>
+                                    <input type="checkbox" id="time11" name="time[]" value="11:00:00">
+                                    <label for="time11">11:00</label>
 
-                                <input type="checkbox" id="time13" name="time[]" value="13:00:00">
-                                <label for="time13">1:00</label>
+                                    <input type="checkbox" id="time12" name="time[]" value="12:00:00">
+                                    <label for="time12">12:00</label>
 
-                                <input type="checkbox" id="time14" name="time[]" value="14:00:00">
-                                <label for="time14">2:00</label>
+                                    <input type="checkbox" id="time13" name="time[]" value="13:00:00">
+                                    <label for="time13">13:00</label>
 
-                                <input type="checkbox" id="time15" name="time[]" value="15:00:00">
-                                <label for="time15">3:00</label>
+                                    <input type="checkbox" id="time14" name="time[]" value="14:00:00">
+                                    <label for="time14">14:00</label>
 
-                                <input type="checkbox" id="time16" name="time[]" value="16:00:00" >
-                                <label for="time16">4:00</label>
+                                    <input type="checkbox" id="time15" name="time[]" value="15:00:00">
+                                    <label for="time15">15:00</label>
 
-                                <input type="checkbox" id="time17" name="time[]" value="17:00:00">
-                                <label for="time17">5:00</label>
+                                    <input type="checkbox" id="time16" name="time[]" value="16:00:00" >
+                                    <label for="time16">16:00</label>
+
+                                    <input type="checkbox" id="time17" name="time[]" value="17:00:00">
+                                    <label for="time17">17:00</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <button type="submit" id="reserveBtn">예약하기</button>
+                            <button type="submit" id="reserveBtn">예약하기</button>
+                        </div>
                     </div>
 
                 </form>
@@ -189,146 +96,38 @@
         </div>
     </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+    <div class="modal fade" id="reservationMsgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close closeBtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                            <img src="/images/close.svg" alt="닫기 버튼">
+                        </span>
+                    </button>
+
+                    <div class="modalTitle"></div>
+                </div>
+                <form action="#">
+                    <div class="modal-body reservationMsg">
+                    </div>
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="closeBtn" aria-label="Close" type="button">확인</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
-<!--    <script>-->
-<!--        let start = null;-->
-<!--        let end = null;-->
-
-<!--        // check 영역 변경 관련-->
-<!--        const checkList = document.querySelectorAll("input[type=checkbox]");-->
-
-<!--        checkList.forEach((check,checkIndex) =>{-->
-
-<!--            // `disabled` 상태인 체크박스 인덱스 찾기-->
-<!--            const disabledIndexes = [];-->
-<!--            if (item.disabled) {-->
-<!--                disabledIndexes.push(checkIndex);-->
-<!--            }-->
-
-<!--            console.log(disabledIndexes)-->
-
-<!--            check.addEventListener("change",()=>{-->
-
-<!--                if (!check.disabled){-->
-<!--                    console.log("현재의 start: ",start," end: ",end)-->
-<!--                    // 시작 시 처음 골랐을때-->
-<!--                    // 선택일때-->
-<!--                    if (check.checked){-->
-<!--                        if (start == null && end == null){-->
-<!--                            start = checkIndex-->
-<!--                            end = checkIndex-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        } else if (start != null && checkIndex < start){-->
-<!--                            start = checkIndex-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        }else if (checkIndex > end){-->
-<!--                            end = checkIndex-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        } else {-->
-<!--                            end = checkIndex-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        }-->
-<!--                    } else if (check.checked == false){             // 선택 해지를 위한 이벤트 발생-->
-<!--                        console.log("현재 선택 index : ",checkIndex," 선택 해제")-->
-<!--                        console.log("현재의 start: ",start," end: ",end)-->
-<!--                        if (start == end && start == checkIndex){            // 선택을 1개만 했는데 해지할 경우-->
-<!--                            start = null;-->
-<!--                            end = null;-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        } else if (start == checkIndex){-->
-<!--                            start = end         // 시작 값 해지-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        } else if (end == checkIndex){-->
-<!--                            end = start-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        } else {-->
-<!--                            end = checkIndex-->
-<!--                            console.log("현재의 start: ",start," end: ",end)-->
-<!--                        }-->
-<!--                    }-->
-<!--                }-->
-
-<!--                // `start`가 `disabled` 시간과 겹치는 경우, 직전 값으로 이동-->
-<!--                if (start !== null) {-->
-<!--                    // start가 disabled된 값들보다 작으면, end도 disabled된 값들보다 작게 설정-->
-<!--                    if (disabledIndexes.some(index => (index >= start))) {-->
-
-<!--                    }-->
-<!--                }-->
-
-<!--                // `end`가 `disabled` 시간과 겹치는 경우, 직후 값으로 이동-->
-<!--                if (end !== null) {-->
-<!--                    // end가 disabled된 값들보다 크면, end를 disabled된 값들보다 크도록 설정-->
-<!--                    if (disabledIndexes.some(index => index <= end)) {-->
-<!--                        while (disabledIndexes.includes(end)) {-->
-<!--                            end++;-->
-<!--                        }-->
-<!--                    }-->
-<!--                }-->
-
-<!--                // `start`와 `end`가 `disabled`된 값들 사이에 있는지 확인-->
-<!--                if (start !== null && end !== null) {-->
-<!--                    // `start`가 `disabled`된 값보다 작으면 end도 작아야 함-->
-<!--                    if (start < Math.min(...disabledIndexes)) {-->
-<!--                        end = start; // end를 start보다 작게 설정-->
-<!--                    }-->
-<!--                    // `start`가 `disabled`된 값보다 크면 end도 커야 함-->
-<!--                    if (start > Math.max(...disabledIndexes)) {-->
-<!--                        end = start; // end를 start보다 커야함-->
-<!--                    }-->
-<!--                }-->
-
-<!--                // `start`와 `end`의 순서 보장 (start <= end)-->
-<!--                if (start > end) {-->
-<!--                    [start, end] = [end, start];-->
-<!--                }-->
-
-
-<!--                // 선택 범위에 따른 중간 값들 check 여부 변경-->
-<!--                const inputList = document.querySelectorAll("input[type=checkbox]");-->
-
-<!--                inputList.forEach((item,index)=>{-->
-<!--                    if (start == null && end == null){-->
-<!--                        item.checked = false-->
-<!--                    } else {-->
-<!--                        if ( index <= end && index >= start){-->
-<!--                            item.checked = true-->
-<!--                        } else {-->
-<!--                            item.checked = false-->
-<!--                        }-->
-<!--                    }-->
-<!--                })-->
-
-<!--            })-->
-
-<!--        })-->
-<!--    </script>-->
-
-
-
-    <script>
-        // 오늘날짜 이후로 예약하는 자바스크립트 코드
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const reservationDateInput = document.getElementById('reservationDate');
-        //
-        //     // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오기
-        //     const today = new Date();
-        //     const dd = String(today.getDate()).padStart(2, '0');
-        //     const mm = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-        //     const yyyy = today.getFullYear();
-        //     const formattedToday = `${yyyy}-${mm}-${dd}`;
-        //
-        //     // 예약 날짜 입력 필드의 최소값을 오늘 날짜로 설정
-        //     reservationDateInput.setAttribute('min', formattedToday);
-        // });
-    </script>
-
-    <script>
-        const cabinet = '[[${cabinet}]]'
-
-        console.log("cabinet",cabinet)
-    </script>
+    <!--boostrap-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!--boostrap-->
 
     <script th:src="@{/js/booking/booking.js}"></script>
 </body>

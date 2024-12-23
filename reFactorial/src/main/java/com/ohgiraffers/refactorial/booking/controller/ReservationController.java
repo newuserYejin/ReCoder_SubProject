@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.booking.controller;
 
+import com.ohgiraffers.refactorial.booking.model.dto.CombineDTO;
 import com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -41,16 +42,11 @@ public class ReservationController {
         String reservationId = "RE" + String.format("%05d", (int) (Math.random() * 100000));
         reservation.setReservationId(reservationId);
 
-        System.out.println("reservation = " + reservation);
-
         int result = reservationService.addReserveRoom(reservation);
 
         if (result > 0){
-            System.out.println("예약 성공");
-
             resultMap.put("msg",reservation.getReservationDate() + "에 예약되었습니다.");
         } else {
-            System.out.println("예약 실패");
             resultMap.put("msg","예약에 실패했습니다.");
         }
 
@@ -63,13 +59,9 @@ public class ReservationController {
     public Map<String, Object> getReserveByRoomNo(@RequestParam String selectedDate, @RequestParam String roomNo){
         Map<String, Object> result = new HashMap<>();
 
-        System.out.println("selectedDate = " + selectedDate);
-        System.out.println("roomNo = " + roomNo);
-
         List<ReservationDTO> reservationList = reservationService.getReserveByRoomNo(selectedDate,roomNo);
 
         if (reservationList == null){
-            System.out.println("아직 예약 없음");
             result.put("msg","아직 예약 없음");
         } else {
             result.put("reservationList",reservationList);
@@ -78,30 +70,26 @@ public class ReservationController {
         return result;
     }
 
-
-    @GetMapping("/booking/bookingList")
-    public String showBookingList(HttpSession session, Model model) {
+    @GetMapping("/booking/myBookingList")
+    public String myBookingList(HttpSession session, Model model) {
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        List<ReservationDTO> userReservations = reservationService.getUserReservations(user.getEmpId());
-        model.addAttribute("userReservations", userReservations);
-        return "/booking/bookingList"; // 수정된 부분
+        List<CombineDTO> userReservationList = reservationService.getUserReservations(user.getEmpId());
+        model.addAttribute("userReservationList", userReservationList);
+
+        return "booking/myBookingList"; // 수정된 부분
     }
 
 
     // 예약 삭제 메서드
     @PostMapping("/deleteReservation")
-    public String deleteReservationById(@RequestParam("reservationId") String reservationId) {
-        try {
-            reservationService.deleteReservationById(reservationId);
-            return "redirect:/booking/bookingList"; // 삭제 후, 예약 목록 페이지로 리다이렉트
-        } catch (RuntimeException e) {
-            return "redirect:/booking/bookingList";  // 삭제 중 오류 발생 시 에러 페이지로 이동
-        }
-    }
+    @ResponseBody
+    public Map<String,Object> deleteReservationById(@RequestBody Map<String,Object> reservation) {
+        Map<String,Object> resultMap = new HashMap<>();
 
-    @GetMapping("/api/reservations")
-    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
-        List<ReservationDTO> reservations = reservationService.getAllReservations();
-        return ResponseEntity.ok(reservations); // 정상적으로 예약 목록 반환
+        int result = reservationService.deleteReservationById(String.valueOf(reservation.get("reserveid")));
+
+        resultMap.put("result",result);
+
+        return resultMap;
     }
 }

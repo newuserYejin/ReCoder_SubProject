@@ -72,7 +72,7 @@ public class MainController {
 
     @GetMapping("/user/addressBookMain")
     public String addressBookPage(){
-        return "/addressbook/addressBookMain";
+        return "/addressBook/addressBookMain";
     }
 
     @GetMapping("/admin/main")

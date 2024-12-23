@@ -14,6 +14,38 @@
         <result property="reservationEndTime" column="reservationEndTime"/>
     </resultMap>
 
+    <resultMap id="combineResult" type="com.ohgiraffers.refactorial.booking.model.dto.CombineDTO">
+        <association property="reservationDTO" javaType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
+            <result property="reservationId" column="reservation_id"/>
+            <result property="reservationDate" column="reservation_date"/>
+            <result property="conferenceRoomNo" column="ConferenceRoom_no"/>
+            <result property="empId" column="emp_id"/>
+            <result property="reservationStartTime" column="reservationStartTime"/>
+            <result property="reservationEndTime" column="reservationEndTime"/>
+        </association>
+
+        <!-- CabinetDTO (via association) -->
+        <association property="cabinetDTO" javaType="com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO">
+            <result property="roomName" column="room_name"/>
+            <result property="conferenceRoomNo" column="ConferenceRoom_no"/>
+            <result property="fixtures" column="fixtures"/>
+            <result property="roomLocation" column="room_location"/>
+            <result property="cabinetImg" column="cabinet_img"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserReservations" parameterType="String" resultMap="combineResult">
+        SELECT
+            *
+        FROM
+            tbl_reservation re
+            LEFT JOIN tbl_cabinet ca ON re.ConferenceRoom_no = ca.ConferenceRoom_no
+        WHERE
+            re.emp_id = #{empId}
+            AND
+            STR_TO_DATE(re.reservation_date, '%Y-%m-%d') >= CURDATE()
+    </select>
+
     <!-- 예약 -->
     <insert id="addReservation" parameterType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
         INSERT INTO tbl_reservation
@@ -33,38 +65,9 @@
             conferenceRoom_no = #{roomNo}
     </select>
 
-    <!-- 모든 예약을 가져오는 쿼리 -->
-    <select id="getAllReservations" resultType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO" resultMap="ReservationResultMap">
-        SELECT *
-        FROM tbl_reservation
-    </select>
-
     <!-- 예약을 삭제하는 쿼리 -->
-    <delete id="deleteReservationById" parameterType="java.lang.String">
+    <delete id="deleteReservationById" parameterType="String">
         DELETE FROM tbl_reservation
         WHERE reservation_id = #{reservationId}
     </delete>
-
-    <!-- 특정 날짜와 시간 범위에 대해 예약 가능 여부를 확인하는 쿼리 -->
-    <select id="checkReservationConflict" resultMap="ReservationResultMap" resultType="com.ohgiraffers.refactorial.booking.model.dto.ReservationDTO">
-        SELECT reservation_id AS reservationId,
-        reservation_date AS reservationDate,
-        emp_id AS empId,
-        ConferenceRoom_no AS conferenceRoomNo,
-        reservationStartTime,
-        reservationEndTime
-        FROM tbl_reservation
-        WHERE ConferenceRoom_no = #{conferenceRoomNo}
-        AND reservation_date = #{date}
-        AND (
-        (reservationStartTime &lt; #{endTime} AND reservationEndTime &gt; #{startTime})
-        )
-    </select>
-
-    <select id="getUserReservations" parameterType="java.lang.String" resultMap="ReservationResultMap">
-        SELECT *
-        FROM tbl_reservation
-        WHERE emp_id = #{empId}
-        ORDER BY ConferenceRoom_no ASC, reservation_date ASC, reservationStartTime ASC
-    </select>
 </mapper>

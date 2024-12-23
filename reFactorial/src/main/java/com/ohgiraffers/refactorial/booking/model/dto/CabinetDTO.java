@@ -12,4 +12,5 @@ public class CabinetDTO {
     private int conferenceRoomNo;
     private String fixtures;
     private String roomLocation;
+    private String cabinetImg;
 }

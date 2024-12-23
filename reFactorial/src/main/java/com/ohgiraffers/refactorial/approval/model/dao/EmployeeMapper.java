@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -30,6 +31,9 @@ public interface EmployeeMapper {
 
     // emp_id로 이름을 조회
     String findNameByEmpId(@Param("empId") String empId);
+
+    // 연차,반차
+    void updateLeaveBalances(String empId, BigDecimal deduction);
 }
 
 //    Object findNameByEmpId(String id);

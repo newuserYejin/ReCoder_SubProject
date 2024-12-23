@@ -9,6 +9,7 @@
     import org.springframework.ui.Model;
 
 
+    import java.math.BigDecimal;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.util.*;
@@ -265,17 +266,9 @@
 
             // 2. 모든 대기 중인 승인자의 상태를 '진행 중'으로 업데이트
             approvalMapper.updateAllPendingToInProgress(pmId);
-//            // 2. 다음 승인자 순서를 조회
-//            Integer nextOrder = approvalMapper.findNextApproverOrder(pmId);
-//
-//            // 3. 다음 승인자가 있으면 상태를 '진행 중'으로 업데이트
-//            if (nextOrder != null) {
-//                approvalMapper.updateNextApproverStatus(Map.of("pmId", pmId, "approvalOrder", nextOrder));
-//            } else {
-//                System.out.println("다음 승인자가 없습니다.");
-//            }
 
-            // 4. 모든 승인자가 완료되었는지 확인
+
+            // 3. 모든 승인자가 완료되었는지 확인
             boolean allApproved = approvalMapper.allApprovalsCompleted(pmId);
             if (allApproved) {
                 approvalMapper.updateDocumentStatus(pmId, "완료");
@@ -288,14 +281,17 @@
 
         // 반려 처리
         public void reject(String pmId, String empId, String reason) {
+            // 1. 해당 승인자의 상태를 반려로 변경
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
-            approvalMapper.updateDocumentStatus(pmId, "반려"); // 반려 상태 업데이트
+
+            // 2. 문서 상태를 '반려'로 업데이트
+            approvalMapper.updateAllApprovalStatusesToRejected(pmId, "반려");
         }
 
         // 전결 처리
         public void finalize(String pmId, String empId) {
-            approvalMapper.updateApprovalStatus(pmId, empId, "전결");
-            approvalMapper.updateDocumentStatus(pmId, "완료"); // 전결 시 바로 완료 처리
+            approvalMapper.updateApprovalAllPass(pmId, empId, "전결");
+//            approvalMapper.updateDocumentStatus(pmId, "완료"); // 전결 시 바로 완료 처리
         }
 
 
@@ -368,9 +364,28 @@
             return approvalMapper.countInProgressDocuments(empId);
         }
 
-        // 반려된 문서 조회
         public List<DocumentDTO> getRejectedDocuments(String empId, int limit, int offset) {
-            return approvalMapper.findRejectedDocuments(empId, limit, offset);
+            if (empId == null || empId.isEmpty()) {
+                throw new IllegalArgumentException("empId는 null 또는 비어있을 수 없습니다.");
+            }
+
+            // 매퍼에 전달할 파라미터 준비
+            Map<String, Object> params = new HashMap<>();
+            params.put("empId", empId);
+            params.put("limit", limit);
+            params.put("offset", offset);
+
+            // 디버깅용 로그 추가
+            System.out.println("로그인 사용자 ID: " + empId);
+            System.out.println("매퍼 호출 전 전달된 파라미터: " + params);
+
+            // 반려 문서 조회
+            List<DocumentDTO> rejectedDocs = approvalMapper.findRejectedDocuments(params);
+
+            // 매퍼 호출 후 결과 로그
+            System.out.println("조회된 반려 문서: " + rejectedDocs);
+
+            return rejectedDocs;
         }
 
         public int getRejectedDocumentsCount(String empId) {
@@ -425,14 +440,34 @@
             return approvers.size() == 1;
         }
 
-
-
-
-
-        public boolean isFirstApprover(String pmId, String currentEmpId) {
+        public boolean isFirstApprover(String pmId, String empId) {
             String firstApprover = approvalMapper.findFirstApprover(pmId);
-            return firstApprover != null && firstApprover.equals(currentEmpId);
+            return firstApprover != null && firstApprover.equals(empId);
         }
+
+        public boolean isFinalApprover(String pmId, String currentEmpId) {
+            Integer approverOrderdozang = approvalMapper.getApprovalOrderdozang(pmId, currentEmpId); // 현재 승인자의 순서
+            Integer maxOrder = approvalMapper.getMaxApprovalOrder(pmId); // 최대 승인 순서
+
+            System.out.println("approverOrder: " + approverOrderdozang); // 디버깅 로그
+            System.out.println("maxOrder: " + maxOrder);           // 디버깅 로그
+            return approverOrderdozang != null && approverOrderdozang.equals(maxOrder);
+        }
+
+        public void updateEmployeeLeave(String empId, BigDecimal deduction) {
+            employeeMapper.updateLeaveBalances(empId, deduction);
+        }
+
+        public String getRejectReasonByApprover(String pmId, String currentEmpId) {
+            return approvalMapper.getRejectReasonByApprover(pmId, currentEmpId);
+        }
+
+
+//
+//        public boolean isFirstApprover(String pmId, String currentEmpId) {
+//            String firstApprover = approvalMapper.findFirstApprover(pmId);
+//            return firstApprover != null && firstApprover.equals(currentEmpId);
+//        }
     }
 
 
