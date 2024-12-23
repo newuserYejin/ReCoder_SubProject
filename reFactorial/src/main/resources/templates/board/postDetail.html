@@ -72,7 +72,7 @@
                     <div>
                         <div th:each="vote :${voteView}">
                             <div th:text="${vote.itemId}"></div>
-                            <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}"/>
+                            <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}" th:checked="${vote.isOwnVoted}" th:disabled="${vote.isOwnVoted}"/>
                             <label th:for="${vote.itemTitle}" th:text="${vote.itemTitle}"></label>
                             <div th:text="${vote.totalCount}"></div>
                             <div th:text="${vote.isOwnVoted}"></div>
@@ -179,9 +179,12 @@
 </div>
 
 <script>
+
+
     const voteView = '[[${voteView}]]'
 
     console.log("voteView: ",voteView)
+
 </script>
 
 <script>
