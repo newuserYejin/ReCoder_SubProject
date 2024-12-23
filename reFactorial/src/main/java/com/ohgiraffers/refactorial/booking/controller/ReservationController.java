@@ -70,7 +70,6 @@ public class ReservationController {
         return result;
     }
 
-
     @GetMapping("/booking/myBookingList")
     public String myBookingList(HttpSession session, Model model) {
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
@@ -92,11 +91,5 @@ public class ReservationController {
         resultMap.put("result",result);
 
         return resultMap;
-    }
-
-    @GetMapping("/api/reservations")
-    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
-        List<ReservationDTO> reservations = reservationService.getAllReservations();
-        return ResponseEntity.ok(reservations); // 정상적으로 예약 목록 반환
     }
 }
