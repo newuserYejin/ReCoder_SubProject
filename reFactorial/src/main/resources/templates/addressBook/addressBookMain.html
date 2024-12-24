@@ -55,6 +55,8 @@
             </div>
 
 
+            <!-- 위로 이동 버튼 -->
+            <button id="scrollToTop" title="위로 가기">▲</button>
 
         </div>
 
@@ -67,6 +69,7 @@
     let preValue = ""; // 이전 검색어
 
     document.addEventListener('DOMContentLoaded', function () {
+
         const searchInput = document.getElementById('search-input');
 
         // 페이지 로드 시 전체 직원 조회 실행
@@ -146,12 +149,34 @@
         });
     }
 
+    // 스크롤 감지 및 버튼 표시
+    const scrollableElement = document.querySelector('.main-content'); // 스크롤이 발생하는 요소 선택
+
+    scrollableElement.addEventListener('scroll', function () {
+        console.log('Scroll event triggered on .main-content'); // 스크롤 이벤트 실행 여부 확인
+        const scrollToTopButton = document.getElementById('scrollToTop');
+        if (scrollableElement.scrollTop > 200) { // 스크롤 위치가 200px 이상일 때 버튼 표시
+            scrollToTopButton.style.display = 'block';
+        } else {
+            scrollToTopButton.style.display = 'none';
+        }
+    });
+
+    // 위로 이동 버튼 클릭 이벤트
+    document.getElementById('scrollToTop').addEventListener('click', function () {
+        scrollableElement.scrollTo({
+            top: 0, // 최상단으로 이동
+            behavior: 'smooth' // 부드럽게 이동
+        });
+    });
 
 
 
 
 
 
+
+    // 눈이 내립니다~
     function createSnowflake() {
         const snowflake = document.createElement('div');
         snowflake.className = 'snowflake';

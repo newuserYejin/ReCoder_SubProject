@@ -187,6 +187,31 @@ html, body {
 
 
 
+/* 위로 이동 버튼 스타일 */
+#scrollToTop {
+    position: fixed; /* 화면에 고정 */
+    bottom: 80px;    /* 화면 아래에서 20px 띄움 */
+    right: 110px;     /* 화면 오른쪽에서 20px 띄움 */
+    z-index: 1000;   /* 다른 요소 위에 보이도록 설정 */
+    display: none;   /* 처음에는 숨김 */
+    background-color: #5C1915; /* 버튼 배경색 */
+    color: white;    /* 버튼 글자색 */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%; /* 버튼을 동그랗게 */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    cursor: pointer;
+    font-size: 18px; /* 글자 크기 */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+#scrollToTop:hover {
+    background-color: #7e2411; /* 마우스 오버 시 배경색 변경 */
+    transform: scale(1.1);     /* 버튼 크기 약간 확대 */
+}
+
+
+
 
 
 
