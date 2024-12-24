@@ -36,7 +36,7 @@
     <select id="getSentMails" resultMap="MailResultMap">
         SELECT *
         FROM tbl_mail m
-        JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
+        INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
         WHERE m.sender_emp_id = #{senderEmpId} and mr.trash_status = 0
     </select>
 
@@ -44,8 +44,8 @@
     <select id="getReceivedMails" resultMap="MailResultMap">
         SELECT *
         FROM tbl_mail m
-        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
-        WHERE mr.receiver_emp_id = #{receiverEmpId} and trash_status = 0
+        INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
+        WHERE receiver_emp_id = #{receiverEmpId} and trash_status = 0
     </select>
 
     <!-- 내가 보낸 메일의 수신자 사원 ID 가져오기 -->

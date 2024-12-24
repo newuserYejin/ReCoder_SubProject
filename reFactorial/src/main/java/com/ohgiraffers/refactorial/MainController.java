@@ -99,9 +99,13 @@ public class MainController {
     public String mailPage(Model model , HttpSession session){
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String senderEmpId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
+        String receiverEmpId = loginUser.getEmpId();
 
         List<MailDTO> sentMails = mailService.getSentMails(senderEmpId); // 보낸 메일만 가져오기
         model.addAttribute("sentMails", sentMails); // 보낸 메일만 모델에 추가
+
+        List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpId);
+        model.addAttribute("receivedMails", receivedMails);
 
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }

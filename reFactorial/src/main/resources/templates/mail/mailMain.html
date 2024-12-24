@@ -50,19 +50,33 @@
                 <div class="table-row">
                     <!-- 보낸 사람 -->
                     <div class="table-cell" th:text="${mail.senderEmpId}"></div>
-
                     <!-- 받는 사람 -->
                     <div class="table-cell" th:text="${mail.receiverEmpId}"></div>
-
                     <!-- 제목, 클릭 시 mailDetail로 이동 -->
                     <div class="table-cell">
                         <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
                     </div>
-
                     <!-- 작성일 -->
-                    <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
                 </div>
             </div>
+
+            <!-- Table body -->
+            <div th:each="mail : ${receivedMails}">
+                <div class="table-row">
+                    <!-- 보낸 사람 -->
+                    <div class="table-cell" th:text="${mail.senderEmpId}"></div>
+                    <!-- 받는 사람 -->
+                    <div class="table-cell" th:text="${mail.receiverEmpId}"></div>
+                    <!-- 제목, 클릭 시 mailDetail로 이동 -->
+                    <div class="table-cell">
+                        <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
+                    </div>
+                    <!-- 작성일 -->
+                    <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
