@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.user.controller;
 
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +26,7 @@ public class UserController {
     @PostMapping("addEmployee")
     public ModelAndView addEmployee(ModelAndView mv, @ModelAttribute UserDTO userDTO){
 
-        System.out.println("userDTO = " + userDTO);
+        System.out.println("userDTO.getEmpId() = " + userDTO.getEmpId());
 
         Integer result = memberService.addEmployee(userDTO);
 
@@ -35,10 +36,10 @@ public class UserController {
             message = "중복된 회원이 존재합니다.";
         } else if (result == 0){        // insert 구문이 실행되다가 실패
             message = "서번 내부에서 오류가 발생했습니다.";
-            mv.setViewName("index");
+            mv.setViewName("/admin/admin_employee");
         } else if (result >= 1) {
             message = "회원 가입이 완료되었습니다.";
-            mv.setViewName("index");
+            mv.setViewName("/admin/admin_employee");
         }
 
         mv.addObject("message", message);
@@ -56,14 +57,10 @@ public class UserController {
 
         String insertPW = request.get("presentPW");
 
-        System.out.println("insertPW = " + insertPW);
-
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String currentPW = user.getEmpPwd();
 
         matchStatus = memberService.pwMatch(insertPW,currentPW);
-
-        System.out.println("matchStatus = " + matchStatus);
 
         // 서버 응답으로 반환할 결과
         Map<String, Object> response = new HashMap<>();
@@ -77,13 +74,11 @@ public class UserController {
 
         String msg = null;
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = user.getEmpId();
 
         Integer result = memberService.changePw(changePW, empId);
 
-        System.out.println("result = " + result);
-        System.out.println("변경 할 changePW = " + changePW);
 
         if (result > 0){
             msg = "비밀번호 변경 성공";
@@ -94,7 +89,6 @@ public class UserController {
             mv.setViewName("/myPage/myPage");
         }
 
-        System.out.println("msg = " + msg);
         mv.addObject("msg",msg);
 
         return mv;
@@ -108,7 +102,7 @@ public class UserController {
         String phone = request.get("phone");
         String address = request.get("address");
 
-        UserDTO user = (UserDTO) session.getAttribute("LoginUserInfo");
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String userId = user.getEmpId();
 
         Integer result = memberService.updatePersonalInfo(email,phone,address,userId);
@@ -124,5 +118,19 @@ public class UserController {
         Map<String, Object> response = new HashMap<>();
         response.put("result", result);
         return response;
+    }
+
+    @PostMapping("getNameById")
+    @ResponseBody
+    public Map<String, Object> getNameById (@RequestBody Map<String,Object> res){
+        Map<String, Object> result = new HashMap<>();
+
+        String empId = String.valueOf(res.get("empId"));
+
+        String empName = memberService.getNameById(empId);
+
+        result.put("empName",empName);
+
+        return result;
     }
 }

@@ -1,0 +1,157 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.sidebar {
+    width: 20%;
+    border-right: 1px solid black;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+    margin-top: 46px;
+    text-align: center;
+}
+
+.sidebar ul {
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidebar li {
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.sidebar li::after {
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
+}
+
+.sidebar li:last-child::after {
+    display: none;
+}
+
+.sidebar li:hover {
+    color: #5C1915;
+    font-weight: 1000;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+}
+
+.sidebar li a:hover {
+    color: #5C1915;
+    font-weight: bold;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Product List */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개의 카드 */
+    gap: 20px;
+    width: 100%;
+    max-width: 800px; /* 레이아웃 유지 */
+}
+
+/* Product Card */
+.product-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.product-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.product-info h3 {
+    font-size: 18px;
+    margin: 5px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.product-info p {
+    font-size: 14px;
+    color: #666;
+    margin: 3px 0;
+}
+
+/* 설명 추가 영역 */
+.product-description {
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #5C1915;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.pagination a.active {
+    background-color: #5C1915;
+    color: #fff;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
+    color: #5C1915;
+}

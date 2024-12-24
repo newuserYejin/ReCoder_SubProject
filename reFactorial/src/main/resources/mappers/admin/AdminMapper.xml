@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.admin.model.dao.AdminMapper">
+
+    <select id="getAllEmployee" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO" parameterType="Map">
+        SELECT
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            e.emp_no AS empNo,
+            e.emp_address AS empAddress,
+            e.emp_email AS empEmail,
+            e.emp_joined AS empJoined,
+            e.annual_leave AS annualLeave,
+            e.used_annual_leave as usedAnnualLeave,
+            e.emp_pwd AS empPwd,
+            e.profile AS profile,
+            e.emp_phone AS empPhone,
+            e.dept_code AS deptCode,
+            d.dept_name AS deptName,
+            e.position_value AS positionValue,
+            p.position_name AS positionName,
+            e.view_auth AS viewAuth
+        FROM employee e
+            JOIN tbl_dept d ON e.dept_code = d.dept_code
+            JOIN tbl_position p ON e.position_value = p.position_value
+        <where>
+            <if test="sendDept != null and sendDept != 0">
+                AND e.dept_code = #{sendDept}
+            </if>
+            <if test="sendSearchEmpName != null and sendSearchEmpName != ''">
+                AND e.emp_name LIKE CONCAT('%', #{sendSearchEmpName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <update id="modifyEmpInfoUpdate" parameterType="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+        UPDATE employee
+        SET
+            emp_name = #{empName},
+            emp_no = #{empNo},
+            emp_address = #{empAddress},
+            emp_email = #{empEmail},
+            emp_joined = #{empJoined},
+            annual_leave = #{annualLeave},
+            profile = #{profile},
+            emp_phone = #{empPhone},
+            dept_code = #{deptCode},
+            position_value = #{positionValue},
+            view_auth = #{viewAuth}
+            <if test="empPwd != null">
+                , emp_pwd = #{empPwd}
+            </if>
+        WHERE emp_id = #{empId}
+    </update>
+
+    <select id="getByDateAtt" parameterType="Map" resultType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        SELECT a.att_date AS attDate, a.att_time AS attTime, a.att_status AS attStatus, e.emp_id AS empId
+        FROM tbl_attendance a
+        LEFT OUTER JOIN employee e ON e.emp_id = a.emp_id
+        WHERE DATE(a.att_date) = #{selectedDay}
+        <if test="searchDept != null and searchDept != '' and searchDept != 0 " >
+            AND e.dept_code = #{searchDept}
+        </if>
+        <if test="searchEmpName != null and searchEmpName != ''">
+            AND e.emp_name LIKE CONCAT('%', #{searchEmpName}, '%')
+        </if>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="getTotalCountByDateAtt" parameterType="Map" resultType="int">
+        SELECT count(*)
+        FROM tbl_attendance a
+        LEFT OUTER JOIN employee e ON e.emp_id = a.emp_id
+        WHERE DATE(a.att_date) = #{selectedDay}
+        <if test="searchDept != null and searchDept != '' and searchDept != 0 " >
+            AND e.dept_code = #{searchDept}
+        </if>
+        <if test="searchEmpName != null and searchEmpName != ''">
+            AND e.emp_name LIKE CONCAT('%', #{searchEmpName}, '%')
+        </if>
+    </select>
+
+    <update id="modifyEmpAtt" parameterType="Map">
+        UPDATE tbl_attendance
+        SET
+            att_status = #{selectedStatus}
+        WHERE emp_id = #{empId}
+          AND att_date = #{attDate}
+    </update>
+
+    <select id="getTktReserve" parameterType="String" resultType="com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO">
+        SELECT
+            tkt_reserv_id AS tktReserveId,
+            tkt_reserv_name AS tktReserveName,
+            tkt_reserv_phone AS tktReservePhone,
+            tkt_reserv_address AS tktReserveAddress,
+            tkt_reserv_accomp_name AS tktReserveAccomp,
+            tkt_reserv_date AS tktReserveDate
+        FROM
+            tbl_tktreserv
+        <where>
+            <if test="selectedDay != null and selectedDay != ''">
+                tkt_reserv_date = #{selectedDay}
+            </if>
+        </where>
+    </select>
+
+    <select id="getReserveById" parameterType="String" resultType="com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO">
+        SELECT
+            tkt_reserv_id AS tktReserveId,
+            tkt_reserv_name AS tktReserveName,
+            tkt_reserv_phone AS tktReservePhone,
+            tkt_reserv_address AS tktReserveAddress,
+            tkt_reserv_accomp_name AS tktReserveAccomp,
+            tkt_reserv_date AS tktReserveDate
+        FROM
+            tbl_tktreserv
+        WHERE
+            tkt_reserv_id = ${reserveId}
+    </select>
+
+</mapper>

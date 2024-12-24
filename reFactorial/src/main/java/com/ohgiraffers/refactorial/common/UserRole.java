@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum UserRole {
 
     // 상수 필드
-    USER("USER"), ADMIN("ADMIN");
+    USER("USER"), ADMIN("ADMIN"), ACCESSLIMIT("ACCESSLIMIT");
 
     private String role;
 

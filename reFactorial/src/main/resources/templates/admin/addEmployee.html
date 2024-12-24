@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{css/admin/addEmployee.css}">
+    <link rel="stylesheet" href="../../static/css/admin/addEmployee.css">
+</head>
+<body>
+    <section>
+
+        <form class="addEmployeeFragment" th:fragment="addEmployeeFragment" th:action="${ModifyUser != null ? '/admin/modifyEmpInfo' : '/user/addEmployee'}" method="post">
+            <div class="uploadFile">
+                <label for="profile">
+<!--                    <img src="../../static/images/loopy.jpg" alt="프로필 사진">-->
+                    <img src="/images/loopy.jpg" alt="프로필 사진">
+<!--                    <img th:src="${ModifyUser != null ? ModifyUser.profile : ''}" alt="프로필 사진">-->
+                </label>
+                <input type="file" id="profile" name="profile"><br>
+            </div>
+
+            <div class="inputInfo">
+                <div class="inputSet">
+                    <label for="empName">이름 : </label>
+                    <input type="text" id="empName" name="empName" th:value="${ModifyUser != null ? ModifyUser.empName : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="empNo">주민번호 : </label>
+                    <input type="text" id="empNo" name="empNo" th:value="${ModifyUser != null ? ModifyUser.empNo : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="empAddress">주소 : </label>
+                    <input type="text" id="empAddress" name="empAddress" th:value="${ModifyUser != null ? ModifyUser.empAddress : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="empEmail">이메일 : </label>
+                    <input type="text" id="empEmail" name="empEmail" th:value="${ModifyUser != null ? ModifyUser.empEmail : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="deptCode">부서 : </label>
+                    <select name="deptCode" id="deptCode" th:value="${ModifyUser != null ? ModifyUser.deptCode : ''}" onchange="setRandomStr(this)">
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.deptCode == 1}">인사팀</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.deptCode == 2}">개발팀</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.deptCode == 3}">마케팅팀</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.deptCode == 4}">회계팀</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.deptCode == 5}">영업팀</option>
+                    </select>
+                </div>
+
+                <div class="inputSet">
+                    <label for="positionValue">직급 : </label>
+                    <select name="positionValue" id="positionValue" th:value="${ModifyUser != null ? ModifyUser.positionValue : ''}">
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.positionValue == 1}">사장</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.positionValue == 2}">부사장</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.positionValue == 3}">이사</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.positionValue == 4}">부장</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.positionValue == 5}">과장</option>
+                        <option value=6 th:selected="${ModifyUser != null && ModifyUser.positionValue == 6}">차장</option>
+                        <option value=7 th:selected="${ModifyUser != null && ModifyUser.positionValue == 7}">대리</option>
+                        <option value=8 th:selected="${ModifyUser != null && ModifyUser.positionValue == 8}">주임</option>
+                        <option value=9 th:selected="${ModifyUser != null && ModifyUser.positionValue == 9}">사원</option>
+                        <option value=10 th:selected="${ModifyUser != null && ModifyUser.positionValue == 10}">인턴</option>
+                    </select>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empId">사원번호 : </label>
+                    <input type="text" id="empId" name="empId" th:value="${ModifyUser != null ? ModifyUser.empId : ''}" readonly>
+                    <button type="button" th:unless="${ModifyUser}" onclick="randomEmpId()">생성하기</button>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empJoined">입사일 : </label>
+                    <input type="date" id="empJoined" name="empJoined" th:value="${ModifyUser != null ? ModifyUser.empJoined : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="annualLeave">연차 : </label>
+                    <input type="text" id="annualLeave" name="annualLeave" th:value="${ModifyUser != null ? ModifyUser.annualLeave : ''}">
+                </div>
+
+                <div th:unless="${ModifyUser != null and ModifyUser.empId != LoginUserInfo.empId}" class="inputSet">
+                    <label for="empPwd">비밀번호 : </label>
+                    <input type="text" id="empPwd" name="empPwd">
+                </div>
+
+                <div class="inputSet">
+                    <label for="empPhone">연락처 : </label>
+                    <input type="text" id="empPhone" name="empPhone" th:value="${ModifyUser != null ? ModifyUser.empPhone : ''}">
+                </div>
+
+                <div class="inputSet">
+                    <label for="viewAuth">권한 : </label>
+                    <select name="viewAuth" id="viewAuth">
+                        <option value="USER" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'USER'}">일반 사원</option>
+                        <option value="ADMIN" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ADMIN'}">관리자</option>
+                        <option value="ACCESSLIMIT" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ACCESSLIMIT'}">접근 제한</option>
+                    </select>
+                </div>
+
+                <input type="submit" th:value="${ModifyUser != null ? '저장' : '등록'}">
+            </div>
+        </form>
+
+    </section>
+
+    <script>
+        const ModifyUser = '[[${ModifyUser}]]'
+
+        if (ModifyUser){
+        console.log("ModifyUser : " ,ModifyUser)
+
+        fetch("/admin/addEmployeeFragment")
+            .then(response => response.text())
+            .then(html => {
+                // HTML에서 form 부분만 추출
+                const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
+
+                // form의 action 속성 변경
+                form.action = "/user/updateEmployee";  // 원하는 action 주소로 변경
+
+                // input 요소의 value 설정
+                const empNameInput = form.querySelector('#empName'); // 'empName' ID로 input 찾기
+                if (empNameInput) {
+                empNameInput.value = ModifyUser.empName; // 동적으로 value 설정
+            }
+
+            const empNoInput = form.querySelector('#empNo'); // 'empName' ID로 input 찾기
+            if (empNoInput) {
+                empNoInput.value = ModifyUser.empNo; // 동적으로 value 설정
+            }
+
+            const empAddressInput = form.querySelector('#empAddress'); // 'empName' ID로 input 찾기
+            if (empAddressInput) {
+                empAddressInput.value = ModifyUser.empAddress; // 동적으로 value 설정
+            }
+
+            const empEmailInput = form.querySelector('#empEmail'); // 'empName' ID로 input 찾기
+            if (empEmailInput) {
+                empEmailInput.value = ModifyUser.empEmail; // 동적으로 value 설정
+            }
+            const empIdInput = form.querySelector('#empId'); // 'empName' ID로 input 찾기
+            if (empIdInput) {
+                empIdInput.value = ModifyUser.empId; // 동적으로 value 설정
+            }
+            const empJoinedInput = form.querySelector('#empJoined'); // 'empName' ID로 input 찾기
+            if (empJoinedInput) {
+                empJoinedInput.value = ModifyUser.empJoined; // 동적으로 value 설정
+            }
+            const annualLeaveInput = form.querySelector('#annualLeave'); // 'empName' ID로 input 찾기
+            if (annualLeaveInput) {
+                annualLeaveInput.value = ModifyUser.annualLeave; // 동적으로 value 설정
+            }
+            const empPwdInput = form.querySelector('#empPwd'); // 'empName' ID로 input 찾기
+            if (empPwdInput) {
+                empPwdInput.value = ModifyUser.empPwd; // 동적으로 value 설정
+            }
+            const deptCodeInput = form.querySelector('#deptCode'); // 'empName' ID로 input 찾기
+            if (deptCodeInput) {
+                deptCodeInput.value = ModifyUser.deptCode; // 동적으로 value 설정
+            }
+            const positionValueInput = form.querySelector('#positionValue'); // 'empName' ID로 input 찾기
+            if (positionValueInput) {
+                positionValueInput.value = ModifyUser.positionValue; // 동적으로 value 설정
+            }
+            const viewAuthInput = form.querySelector('#viewAuth'); // 'empName' ID로 input 찾기
+            if (viewAuthInput) {
+                viewAuthInput.value = ModifyUser.viewAuth; // 동적으로 value 설정
+            }
+
+            menuMainBox.innerHTML = '';
+            menuMainBox.appendChild(form);
+        })
+    }
+
+    </script>
+</body>
+</html>

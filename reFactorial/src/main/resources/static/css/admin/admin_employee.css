@@ -1,0 +1,257 @@
+
+
+section{
+
+    .rightBox{
+
+        .menuMainBox{
+            width: 80%;
+
+            /* 정보 수정일 경우 */
+            .employeeListBox{
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+
+                box-sizing: border-box;
+
+                display: flex;
+                flex-direction: column;
+                align-items: end;
+                max-height: 77vh;
+
+                .searchBox{
+                    margin-bottom: 10px;
+                    margin-right: 8%;
+                    display: flex;
+                    justify-content: end;
+                    align-items: center;
+                    border: solid 2px black;
+                    width: fit-content;
+
+                    div{
+                        padding: 5px;
+                        width: fit-content;
+
+                        display: flex;
+                        align-items: center;
+
+                        #searchDept{
+                            background: none;
+                        }
+
+                        label{
+                            margin-right: 10px;
+                            margin: 0 10px;
+                        }
+                        input{
+                            padding: 3px 10px;
+                            background: none;
+                            flex: 1;
+                            border: none;
+                            /*border-left: solid 1px black;*/
+                        }
+                    }
+
+                    button{
+                        background: #5C1915;
+                        color: white;
+                        border: none;
+                        padding: 3px 20px;
+                        margin-left: 5px;
+                        border-radius: 5px;
+                    }
+                }
+
+                .employeeList{
+                    padding: 0 5%;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    column-gap: 20px;
+                    row-gap: 10px;
+
+                    overflow-y: auto;
+                    max-height: 650px;
+                    min-width: 90%;
+
+                    .empItem{
+                        background-color: white;
+                        border-radius: 10px;
+                        width: 30%;
+
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding: 10px;
+
+                        box-sizing: border-box;
+
+                        box-shadow: 5px 5px 4px rgba(0,0,0,0.25);
+                        border: solid 1px rgba(0,0,0,0.25);
+
+                        cursor: pointer;
+
+                        div{
+                            margin-bottom: 10px;
+                        }
+
+                        .profileImg{
+                            width: 50%;
+                            aspect-ratio: 1 / 1;
+
+                            border-radius: 50%;
+
+                            /*이미지 연결한 뒤 지우기*/
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            background-color: #D9D9D9;
+                        }
+
+                        .deptPosition{
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                    }
+
+                    .notMatch{
+                        font-size: 1.3em;
+                        padding-top: 10%;
+
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+            }
+
+            /* 근태 수정일 경우 */
+            .allEmpAttListBox{
+                width: 100%;
+                height: 100%;
+
+                .searchAttBox{
+                    display: flex;
+                    height: 10%;
+                    width: 100%;
+                    justify-content: end;
+                    align-items: center;
+                    padding: 10px;
+                    box-sizing: border-box;
+
+                    .searchAttIdBox{
+
+                        display: flex;
+                        justify-content: end;
+                        align-items: center;
+
+                        .searchBox{
+                            display: flex;
+                            align-items: center;
+
+                            div{
+                                display: flex;
+                                align-items: center;
+                                margin-right: 20px;
+
+                                label{
+                                    margin-right: 5px;
+                                }
+
+                                input[type="text"]{
+
+                                    border: solid 1px green;
+
+                                    background: none;
+                                    padding: 3px 10px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .empAttList{
+                    width: 100%;
+                    box-sizing: border-box;
+
+                    padding: 10px;
+
+                    .notMatch{
+                        font-size: 1.3em;
+                        padding-top: 10%;
+
+                        width: 100%;
+                        text-align: center;
+                    }
+
+                    .empAttListTitle{
+                        border: solid 1px black;
+                        width: 100%;
+                        margin-bottom: 20px;
+
+                        display: flex;
+                        justify-content: space-between;
+
+                        table{
+                            width: 100%;
+
+                            tr{
+                                font-size: 1.2em;
+                                .empId, .empName, .attStatus{
+                                    width: 20%;
+
+                                    border-right: solid 1px black;
+                                }
+
+                                .attStatus{
+                                    border: none;
+                                }
+
+                                .attDate{
+                                    width: 40%;
+                                    border-right: solid 1px black;
+                                }
+                            }
+                        }
+                    }
+
+                    .empAttListContent{
+                        width: 100%;
+                        /*margin-bottom: 20px;*/
+
+                        display: flex;
+                        justify-content: space-between;
+
+                        table{
+                            width: 100%;
+                            border-spacing: 0 20px;
+
+                            tr{
+                                border-bottom: solid 1px black;
+
+                                /* 셀에 적용될 테두리 */
+                                td{
+                                    border-bottom: solid 1px black;
+                                }
+
+                                .empId, .empName, .attStatus{
+                                    width: 20%;
+                                    text-align: center;
+                                }
+
+                                .attDate{
+                                    width: 40%;
+                                    text-align: center;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}

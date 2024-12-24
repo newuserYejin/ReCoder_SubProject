@@ -89,4 +89,27 @@
         FROM
             employee
     </select>
+
+
+    <select id="findEmpIdByName" parameterType="string" resultType="string">
+        SELECT emp_id
+        FROM employee
+        WHERE emp_name = #{name}
+    </select>
+
+    <select id="findNameByEmpId" parameterType="string" resultType="string">
+        SELECT emp_name
+        FROM employee
+        WHERE emp_id = #{empId}
+    </select>
+
+    <update id="updateLeaveBalances">
+        UPDATE employee
+        SET
+            annual_leave = annual_leave - #{deduction},
+            used_annual_leave = used_annual_leave + #{deduction}
+        WHERE emp_id = #{empId}
+    </update>
+    
+    
 </mapper>

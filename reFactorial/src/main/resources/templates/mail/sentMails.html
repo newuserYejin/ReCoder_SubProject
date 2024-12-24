@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>sentMails</title>
+</head>
+<body>
+<h1>내가 보낸 메일</h1>
+<table border="1">
+  <thead>
+  <tr>
+    <th>메일 제목</th>
+    <th>발송일</th>
+    <th>수신자</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="mail : ${sentMails}">
+    <td th:text="${mail.emailTitle}"></td>
+    <td th:text="${mail.sentDate}"></td>
+    <td th:text="${mail.receiverEmpId}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

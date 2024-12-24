@@ -12,6 +12,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
+    <!-- Wonka 테마용 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+
     <!-- CSS 파일 연결 -->
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
     <link rel="stylesheet" th:href="@{/css/common/footer.css}">
@@ -20,7 +24,7 @@
     <link rel="stylesheet" href="/css/approval/approvalPage.css">
 </head>
 <body>
-
+<div class="snowfall-container" id="snowContainer"></div>
 <header th:replace="~{/common/header::headerFragment}"></header>
 <section class="wrapper">
     <!-- Sidebar -->
@@ -30,8 +34,17 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="title"></div>
-        <form action="/approval/submit" method="post">
+
+        <div class="title">
+            🎩 ReCoder 🎫
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            [[${errorMessage}]]
+        </div>
+
+
+        <form action="/approvals/submitApproval" method="post" enctype="multipart/form-data">
             <!-- 제목 -->
             <div class="form-group">
                 <label for="title">제목:</label>
@@ -41,17 +54,21 @@
             <!-- 승인자 입력 -->
             <div class="form-group">
                 <label for="firstApprover">최초 승인자:</label>
-                <input type="text" id="firstApprover" name="firstApprover">
+                <input type="text" id="firstApprover" name="firstApprover"
+                       onkeydown="searchOnEnter(event, 'firstApprover')">
                 <button type="button" onclick="openFirstApproverPopup('firstApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="midApprover">중간 승인자:</label>
-                <input type="text" id="midApprover" name="midApprover">
+                <input type="text" id="midApprover" name="midApprover"
+                       onkeydown="searchOnEnter(event, 'midApprover')">
+
                 <button type="button" onclick="openMidApproverPopup('midApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="finalApprover">최종 승인자:</label>
-                <input type="text" id="finalApprover" name="finalApprover">
+                <input type="text" id="finalApprover" name="finalApprover"
+                       onkeydown="searchOnEnter(event, 'finalApprover')">
                 <button type="button" onclick="openFinalApproverPopup('finalApprover')">검색</button>
             </div>
 
@@ -68,12 +85,28 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category">
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()">
                     <option value="">선택</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
                     <option value="category3">휴가 신청서</option>
                 </select>
+            </div>
+
+            <!-- 연차, 반차 선택 드롭다운 -->
+            <div class="form-group" id="leaveTypeDropdown" style="display:none;">
+                <label for="leaveType">휴가 유형:</label>
+                <select id="leaveType" name="leaveType">
+                    <option value="연차">연차</option>
+                    <option value="반차">반차</option>
+                </select>
+            </div>
+
+
+            <!-- 휴가 날짜 입력 -->
+            <div class="form-group" id="leaveDate" style="display:none;">
+                <label for="leaveDateInput">휴가 날짜:</label>
+                <input type="date" id="leaveDateInput" name="leaveDate">
             </div>
 
             <!-- 첨부파일 -->
@@ -98,24 +131,33 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 <script>
+    function searchOnEnter(event, approverId) {
+        if (event.key === 'Enter') {  // 엔터 키인지 확인
+            event.preventDefault();  // form 자동 제출 방지
+
+            if (approverId === 'firstApprover') {
+                openFirstApproverPopup(approverId);
+            } else if (approverId === 'midApprover') {
+                openMidApproverPopup(approverId);
+            } else if (approverId === 'finalApprover') {
+                openFinalApproverPopup(approverId);
+            }
+        }
+    }
 
     // 최초 승인자 검색 팝업 열기
-
     function openFirstApproverPopup(firstApprover) {
         const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -125,24 +167,19 @@
         window.targetInputId = 'firstApprover';
     }
 
-
-
     // 중간 승인자 검색 팝업 열기
     function openMidApproverPopup(midApprover) {
-        const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
+        const inputValue = document.getElementById(midApprover)?.value || '';
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -154,20 +191,17 @@
 
     // 최종 승인자 검색 팝업 열기
     function openFinalApproverPopup(finalApprover) {
-        const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
+        const inputValue = document.getElementById(finalApprover)?.value || '';
         console.log('입력된 값:', inputValue);
 
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-        // 팝업 열기
         const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
         window.open(
             url,
@@ -179,76 +213,129 @@
 
     // 참조자 팝업 열기
     function openReferrerPopup() {
-
-        // 화면의 너비와 높이를 동적으로 계산
         const screenWidth = window.screen.width;
         const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
+        const popupWidth = 600;
+        const popupHeight = 500;
 
-        // 중앙 정렬 계산
         const popupLeft = (screenWidth - popupWidth) / 2;
         const popupTop = (screenHeight - popupHeight) / 2 - 50;
 
-            const url = '/approvals/searchReferrers?name=';
-            window.open(url, 'referrerPopup',
-                `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
+        const url = '/approvals/searchReferrers?name=';
+        window.open(url, 'referrerPopup',
+            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
 
-        window.targetInputId = 'referrer-container';// 참조자 리스트에 추가
+        window.targetInputId = 'referrer-container'; // 참조자 리스트에 추가
     }
 
-
-
-    // 부모 창에서 호출되는 함수로 참조자를 동적으로추가
+    // 부모 창에서 호출되는 함수로 참조자를 동적으로 추가
     function addReferrer(name) {
         const container = document.getElementById('referrer-container');
 
-        // 이미 추가된 참조자를 확인
+        container.classList.add('has-referrers');
+
         const existingInputs = container.getElementsByClassName('referrer-input');
         for (let i = 0; i < existingInputs.length; i++) {
             if (existingInputs[i].value === name) {
                 alert('이미 추가된 참조자입니다.');
-                return; // 중복된 경우 함수 종료
+                window.close(); // 중복일 경우에도 창이 닫히도록
+                return;
             }
         }
 
-        // 중복이 없으면 참조자 추가
         const input = document.createElement('input');
         input.type = 'text';
         input.name = 'referrerNames';
         input.value = name;
         input.readOnly = true;
-        input.classList.add('referrer-input'); // 스타일 적용을 위한 클래스
+        input.classList.add('referrer-input');
         container.appendChild(input);
 
-        // 확인용 로그
-        console.log(`참조자 추가: ${name}`);
+        updateReferrersField();
+    }
+
+
+    //숨겨진 input 필드에 참조자 목록을 추가
+    function updateReferrersField() {
+        const referrers = [];
+        const referrerInputs = document.getElementsByClassName('referrer-input');
+
+        for (let i = 0; i < referrerInputs.length; i++) {
+            referrers.push(referrerInputs[i].value);
+        }
+
+        document.getElementById('referrers').value = referrers.join(',');
+        console.log("referrers hidden field에 저장된 값: ", document.getElementById('referrers').value);
+    }
+
+    // 휴가신청서를 클릭하면 드롭다운과 날짜입력 필드 표시
+    function showLeaveTypeDropdown() {
+        const category = document.getElementById('category').value;
+        const leaveTypeDropdown = document.getElementById('leaveTypeDropdown');
+        const leaveDate = document.getElementById('leaveDate');
+
+        if (category === "category3") {  // 휴가 신청서 선택 시
+            leaveTypeDropdown.style.display = 'block';  // 드롭다운 보이기
+            leaveDate.style.display = 'block';
+        } else {
+            leaveTypeDropdown.style.display = 'none';  // 다른 카테고리 선택 시 드롭다운 숨기기
+            leaveDate.style.display = 'none';
+        }
     }
 
 
 
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
 
+        // 랜덤 특성 부여
+        const left = Math.random() * 100; // 랜덤 가로 위치
+        const size = Math.random() * 10 + 15; // 15-25px 크기
+        const duration = Math.random() * 5 + 8; // 8-13초 낙하 시간
+        const color = [
+            'rgba(176, 224, 230, 0.4)', // 연한 하늘색
+            'rgba(173, 216, 230, 0.4)', // 밝은 하늘색
+            'rgba(135, 206, 235, 0.4)', // 스카이블루
+            'rgba(176, 196, 222, 0.4)', // 연한 스틸블루
+            'rgba(188, 212, 230, 0.4)'  // 파스텔 하늘색
+        ][Math.floor(Math.random() * 5)];
 
-    // 엔터 키 입력 처리
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            const activeElement = document.activeElement;
-            if (activeElement.tagName === 'INPUT' && activeElement.type === 'text') {
-                event.preventDefault();
+        // 랜덤 눈송이 모양
+        snowflake.innerHTML = ['❄', '✦', '❅', '✧'][Math.floor(Math.random() * 4)];
 
-                const inputId = activeElement.id; // 현재 포커스된 input의 ID를 가져와 변수로 저장
-                console.log('현재 포커스된 Input ID:', inputId); // 디버깅용 로그 추가
+        // 스타일 적용
+        snowflake.style.left = `${left}%`;
+        snowflake.style.fontSize = `${size}px`;
+        snowflake.style.color = color;
+        snowflake.style.animationDuration = `${duration}s`;
 
-                if (inputId === 'firstApprover') {
-                    openFirstApproverPopup('firstApprover');
-                } else if (inputId === 'midApprover') {
-                    openMidApproverPopup('midApprover');
-                } else if (inputId === 'finalApprover') {
-                    openFinalApproverPopup('finalApprover');
-                }
-            }
-        }
-    });
+        // 약간의 흔들림 효과 추가
+        const wobble = Math.random() * 20 - 10;
+        snowflake.style.animationName = `snowfall-${wobble}`;
+
+        // 컨테이너에 추가
+        document.getElementById('snowContainer').appendChild(snowflake);
+
+        // 애니메이션 끝나면 제거
+        setTimeout(() => {
+            snowflake.remove();
+        }, duration * 1000);
+    }
+
+    // 초기 눈송이들 생성
+    for(let i = 0; i < 50; i++) {  // 초기눈송이 갯수
+        setTimeout(createSnowflake, Math.random() * 8000);  //숫자를 줄이면 더 빠르게 초기 눈송이가 생성됨
+                                                            //숫자를 키우면 더 천천히 생성됨
+    }
+
+    // 계속해서 새로운 눈송이 생성  클수록 조금
+    setInterval(createSnowflake, 800);
+
+    // 눈의 양: setInterval의 시간(150)을 조절
+    // 눈의 크기: size 변수의 범위(15-25px) 조절
+    // 낙하 속도: duration 변수의 범위(8-13초) 조절
+    // 색상: color 배열의 색상들 수정
 
 </script>
 

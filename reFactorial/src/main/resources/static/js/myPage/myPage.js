@@ -98,10 +98,6 @@ modifyInfoSave.addEventListener("click", () => {
     let phone = document.querySelector("#phone").value;
     let address = document.querySelector("#address").value;
 
-    console.log("js 파일 내부 currentEmail : ", currentEmail)
-    console.log("js 파일 내부 currentPhone : ", currentPhone)
-    console.log("js 파일 내부 currentAddress : ", currentAddress)
-
     // 이메일 값이 서버 값과 같으면 null로 처리
     if (currentEmail.trim() === email.trim()) {
         email = null;
@@ -112,10 +108,6 @@ modifyInfoSave.addEventListener("click", () => {
     if (currentAddress.trim() === address.trim()) {
         address = null;
     }
-
-    console.log("null email : ", email)
-    console.log("null phone : ", phone)
-    console.log("null address : ", address)
 
     fetch('/user/updatePersonalInfo', {
         method: 'POST',
@@ -142,3 +134,105 @@ modifyInfoSave.addEventListener("click", () => {
             }
         })
 })
+
+document.addEventListener('DOMContentLoaded', function() {
+    let currentStart;
+    var calendarEl = document.getElementById('calendar');
+
+    function addNewEvent(title, startDate, color) {
+        calendar.addEvent({
+            title: title,
+            start: startDate,
+            backgroundColor: color,
+            textColor: 'white'
+        });
+    }
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+
+        initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+        headerToolbar: { // 헤더에 표시할 툴 바
+            left: 'prev',
+            center: 'title',
+            right: 'next today'
+        },
+        titleFormat: function(date) {
+            return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
+        },
+        selectable: false, // 달력 일자 드래그 설정가능
+        locale: 'ko', // 한국어 설정
+        fixedWeekCount: false,
+        events: []
+    });
+
+    // 초기 값 설정
+    var initialDate = calendar.getDate(); // 캘린더 초기 날짜 가져오기
+
+    // datesSet 이벤트로 업데이트 및 출력
+    calendar.on('datesSet', function(info) {
+        // 새로운 계산
+        currentStart = info.start;
+
+        // 서버로 보내기
+        fetch('/attendance/getattendance',{
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                currentStart : currentStart
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("근태 데이터 : ",data)
+
+                // 모든 이벤트를 삭제하는 방법
+                calendar.getEvents().forEach(event => event.remove());
+
+                data.forEach(data =>{
+                    let backgroundColor = data.attStatus === "지각" ? '#ff7b00' :
+                        data.attStatus === "연차" ? "#3c73aa" :
+                            data.attStatus === "반차" ? "#77b6ea" : "#a7c957";
+
+
+                    addNewEvent(data.attStatus,data.attDate,backgroundColor);
+                })
+
+            })
+            .catch(error => console.error("데이터 요청 실패:", error));
+    });
+
+    calendar.render();
+});
+
+
+// 연차 관련 박스 내용 바꾸기
+
+const annualLeaveDiv = document.querySelector('.annualLeave')
+const work_monthDiv = document.querySelector(".work_month")
+
+const today = new Date(); // 오늘 날짜
+const empJoinedDate = new Date(empJoined);
+
+annualLeaveDiv.textContent = (annualLeave-usedAnnualLeave) + "일";
+
+// 유효한 Date 객체인지 확인
+if (isNaN(empJoinedDate)) {
+    console.error("empJoined 값이 유효하지 않은 날짜 형식입니다:", LoginUserInfo.empJoined);
+} else {
+    // 년도와 월 차이를 계산
+    const yearDiff = today.getFullYear() - empJoinedDate.getFullYear();
+    const monthDiff = today.getMonth() - empJoinedDate.getMonth();
+
+    // 전체 개월 수 계산
+    let totalMonths = yearDiff * 12 + monthDiff;
+
+    // 근무 시작일이 오늘보다 이후라면 (미래 날짜 처리)
+    if (empJoinedDate > today) {
+        totalMonths = 0;
+    }
+
+    work_monthDiv.textContent = totalMonths + "개월";
+}
+

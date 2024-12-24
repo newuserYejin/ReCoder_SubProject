@@ -76,7 +76,7 @@ public class EmailConfirmController {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            resetPw = (String) es.sendVerificationCode(sendToEmail,emailTitle,version);
+            resetPw = String.valueOf( es.sendVerificationCode(sendToEmail,emailTitle,version) );
 
             int updatePwResult = es.setResetPw(resetPw,targetEmpId);
 

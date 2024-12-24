@@ -16,16 +16,31 @@ spring:
           starttls:
             enable: true
             required: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+          connectiontimeout: 3000
+          timeout: 3000
+          writetimeout: 3000
+    auth-code-expiration-seconds: 1800  # 30 * 60 * 1000 == 30분
 
 mybatis:
   mapper-locations: mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 
 server:
   servlet:
     session:
-      timeout=1800:
+      timeout: 3600
+  tomcat:
+    max-file-size: 100MB  # 파일 크기 제한 설정
+    max-request-size: 100MB  # 전체 요청 크기 제한 설정
 
+  spring:
+    servlet:
+      multipart:
+        enabled: true  # 파일 업로드 기능을 활성화
+        max-file-size: 100MB  # 업로드할 수 있는 단일 파일의 최대 크기
+        max-request-size: 100MB  # 전체 요청 크기의 최대 크기
+
+
+weather:
+  api-key: e7056fa76f6a6b7d8be7d23179c66858

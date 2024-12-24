@@ -1,0 +1,545 @@
+/* 기본 설정 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* 전체 컨테이너 */
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100vh; /* 전체 화면 높이로 설정 */
+    overflow: hidden;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 20%;
+    border-right: 1px solid black;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+    margin-top: 46px;
+    text-align: center;
+}
+
+.sidebar ul {
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidebar li {
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.sidebar li::after {
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
+}
+
+.sidebar li:last-child::after {
+    display: none;
+}
+
+.sidebar li:hover {
+    font-family: 'Noto Sans KR', Arial, sans-serif;
+    color: #5C1915;
+    font-weight: 1000;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+.sidebar li a:hover {
+    color: #5C1915;
+    font-weight: bold;
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+    flex: 1;
+    background: linear-gradient(135deg, #4A2617 0%, #2C1810 100%);
+    border: 4px solid #FF69B4;
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3),
+    inset 0 0 30px rgba(255, 105, 180, 0.2);
+    padding: 2rem;
+    border-radius: 15px;
+    color: #FFF;
+    position: relative;
+    overflow-y: auto;
+    height: calc(100vh - 180px);
+    margin: 20px;
+    animation: rainbow 10s linear infinite;
+    max-height: calc(100vh - 215px);  /* ⭐ 오른쪽숫자가 커질수록 메인컨텐츠 하단부분이 위로올라감*/
+}
+
+/* 메인 컨테이너 상단 무지개 효과 */
+.main-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(45deg,
+    #FF69B4 0%, #FF69B4 10%,
+    #87CEEB 10%, #87CEEB 20%,
+    #FFD700 20%, #FFD700 30%,
+    #98FB98 30%, #98FB98 40%,
+    #DDA0DD 40%, #DDA0DD 50%,
+    #FF69B4 50%, #FF69B4 60%,
+    #87CEEB 60%, #87CEEB 70%,
+    #FFD700 70%, #FFD700 80%,
+    #98FB98 80%, #98FB98 90%,
+    #DDA0DD 90%, #DDA0DD 100%
+    );
+}
+
+/* 스크롤바 스타일 */
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: #c17f59;
+    border-radius: 4px;
+    border: 2px solid rgba(255, 105, 180, 0.2);
+}
+
+/* 헤더 그룹 */
+.header-group {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-group h2 {
+    color: #FFD700;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 0;
+}
+
+/* 버튼 그룹 */
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.submit-btn {
+    background: linear-gradient(45deg, #90EE90, #32CD32);
+    border: 2px solid #98FB98;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.reject-btn {
+    background: linear-gradient(45deg, #FF4444, #FF0000);
+    border: 2px solid #FF6666;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.finalize-btn {
+    background: linear-gradient(45deg, #FF69B4, #FF1493);
+    border: 2px solid #FF69B4;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn, .reject-btn, .finalize-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn::after,
+.reject-btn::after,
+.finalize-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%
+    );
+    transition: 0.6s;
+    transform: rotate(45deg);
+}
+
+.submit-btn:hover,
+.reject-btn:hover,
+.finalize-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* 비활성화된 버튼 스타일 */
+.submit-btn:disabled,
+.reject-btn:disabled,
+.finalize-btn:disabled {
+    background: linear-gradient(45deg, #e0e0e0, #d3d3d3);  /* 회색 그라데이션 */
+    border: 2px solid #c0c0c0;
+    color: #9e9e9e;
+    opacity: 0.7;  /* 투명도 조절로 색상 연하게 */
+    cursor: not-allowed;
+    transform: none;  /* 호버 효과 제거 */
+    box-shadow: none;  /* 그림자 제거 */
+}
+
+.submit-btn:disabled::after,
+.reject-btn:disabled::after,
+.finalize-btn:disabled::after {
+    display: none;  /* 반짝임 효과 제거 */
+}
+
+.submit-btn:disabled:hover,
+.reject-btn:disabled:hover,
+.finalize-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/*!* 비활성화된 버튼 스타일 *!*/
+/*button:disabled {*/
+/*    background-color: #e0e0e0; !* 비활성화 배경색 *!*/
+/*    color: #9e9e9e; !* 비활성화 텍스트 색상 *!*/
+/*    cursor: not-allowed; !* 클릭 불가 커서 *!*/
+/*    border: 1px solid #d0d0d0; !* 경계선 색상 *!*/
+/*}*/
+
+/* 상세 카드 스타일 */
+.detail-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FF69B4;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    backdrop-filter: blur(5px);
+    font-size: 25px;
+}
+
+.detail-card h3 {
+    color: #FFD700;
+    font-size: 25px;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #FF69B4;
+    padding-bottom: 0.5rem;
+}
+
+.content p {
+    margin: 10px 0;
+    color: #FFF;
+}
+
+.content strong {
+    color: #FFD700;
+    margin-right: 10px;
+}
+
+/* 참조자 정보 */
+.additional-info {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FF69B4;
+    border-radius: 12px;
+    margin: 24px 0;
+    padding: 1.5rem;
+}
+
+/* 첨부파일 영역 */
+.file-link {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #FF69B4;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+    font-size: 25px;
+}
+
+.file-link::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(255, 255, 255, 0.05),
+            transparent
+    );
+    animation: shine 3s infinite;
+    pointer-events: none;
+}
+
+.file-link h3 {
+    color: #FFD700;
+    font-size: 20px;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #FF69B4;
+    padding-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.file-link h3::before {
+    content: '✧';
+    margin-right: 8px;
+}
+
+.file-link ul {
+    list-style: none;
+    padding: 0;
+}
+
+.file-link li {
+    margin: 0.8rem 0;
+    transition: all 0.3s ease;
+}
+
+.file-link a {
+    color: #FFF;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.file-link a::before {
+    content: '📎';
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.file-link a:hover {
+    color: #FFD700;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+
+
+/* 애니메이션 */
+@keyframes rainbow {
+    0% { border-color: #FF69B4; }
+    20% { border-color: #87CEEB; }
+    40% { border-color: #FFD700; }
+    60% { border-color: #98FB98; }
+    80% { border-color: #DDA0DD; }
+    100% { border-color: #FF69B4; }
+}
+
+@keyframes shine {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+
+/* 뒤로가기 버튼 컨테이너 */
+.back-button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;  /* 오른쪽 정렬 */
+}
+
+/* 뒤로가기 버튼 스타일 */
+.back-button button {
+    background: linear-gradient(45deg, #757575, #616161);  /* 차분한 회색 그라데이션 */
+    border: 2px solid #9E9E9E;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 호버 효과 */
+.back-button button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(45deg, #808080, #6C6C6C);  /* 호버 시 약간 어두운 회색 */
+}
+
+.reject-reason {
+    background-color: #ffe6e6 !important;
+    border: 1px solid #ff4d4d !important;
+    padding: 10px !important;
+    margin: 10px 0 !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+
+/* 도장 관련 스타일은 기존 코드 유지 */
+
+/*모달CSS */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#confirmBtn {
+    background-color: #5C1915;
+    color: white;
+}
+
+#cancelBtn {
+    background-color: #d3d3d3;
+    color: black;
+}
+
+#rejectReason {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+}
+
+
+
+
+
+/*!* 공통 도장 스타일 *!*/
+/*.stamp {*/
+/*    position: absolute;*/
+/*    top: -200px; !* 화면 위에서 시작 *!*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%) scale(1.5); !* 약간 확대된 크기 *!*/
+/*    opacity: 0; !* 초기 상태에서 투명 *!*/
+/*    z-index: 100;*/
+/*}*/
+
+/*!* 승인 도장 *!*/
+/*.stamp-approved {*/
+/*    width: 250px; !* 도장의 가로 크기 *!*/
+/*    height: 250px; !* 도장의 세로 크기 *!*/
+/*}*/
+
+/*!* 반려 도장 *!*/
+/*.stamp-rejected {*/
+/*    width: 250px;*/
+/*    height: 250px;*/
+/*}*/
+
+/*!* 도장 애니메이션 *!*/
+/*.stamp-active {*/
+/*    animation: stampDropEffect 0.8s cubic-bezier(0.3, 1.5, 0.5, 1) forwards;*/
+/*}*/
+
+/*!* 도장 찍히는 애니메이션 *!*/
+/*@keyframes stampDropEffect {*/
+/*    0% {*/
+/*        top: -100px; !* 화면 위에서 시작 *!*/
+/*        transform: translate(-50%, -50%) scale(1.5) rotate(0deg); !* 크기 확대 *!*/
+/*        opacity: 0; !* 투명 *!*/
+/*    }*/
+/*    50% {*/
+/*        top: 50%; !* 화면 중앙 근처로 떨어짐 *!*/
+/*        transform: translate(-50%, -50%) scale(1.2) rotate(-10deg); !* 크기 축소하며 약간 기울어짐 *!*/
+/*        opacity: 1; !* 보이기 시작 *!*/
+/*    }*/
+/*    70% {*/
+/*        top: 50%; !* 최종 위치 근처 *!*/
+/*        transform: translate(-50%, -50%) scale(1.1) rotate(5deg); !* 반대쪽으로 살짝 흔들림 *!*/
+/*    }*/
+/*    100% {*/
+/*        top: 50%; !* 최종 위치 *!*/
+/*        transform: translate(-50%, -50%) scale(1) rotate(0deg); !* 크기와 각도 정상 *!*/
+/*        opacity: 1; !* 완전히 보이기 *!*/
+/*    }*/
+/*}*/

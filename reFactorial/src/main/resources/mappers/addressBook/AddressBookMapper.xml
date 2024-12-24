@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.addressBook.model.dao.AddressBookMapper">
+
+
+    <resultMap id="EmployeeMap" type="com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO">
+        <result property="id" column="emp_id"/>
+        <result property="name" column="emp_name"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="positionValue" column="position_value"/>
+        <result property="email" column="emp_email"/>
+        <result property="phone" column="emp_phone"/>
+    </resultMap>
+    <!-- 전체 직원 조회 -->
+    <select id="findAllEmployees" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone,
+               emp_no AS socialNumber, emp_address AS address, annual_leave AS annualLeave
+        FROM employee;
+    </select>
+
+    <!-- 검색 키워드로 직원 조회 -->
+
+    <select id="findEmployeesByKeyword" parameterType="string" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+        FROM employee
+        WHERE emp_name LIKE CONCAT('%', #{keyword}, '%')
+           OR dept_code IN (SELECT dept_code FROM tbl_dept WHERE dept_name LIKE CONCAT('%', #{keyword}, '%'));
+    </select>
+
+    <!-- 부서명 조회 -->
+    <select id="findDeptName" parameterType="int" resultType="string">
+        SELECT dept_name
+        FROM tbl_dept
+        WHERE dept_code = #{deptCode};
+    </select>
+
+    <!-- 직책명 조회 -->
+    <select id="findPositionName" parameterType="int" resultType="string">
+        SELECT position_name
+        FROM tbl_position
+        WHERE position_value = #{positionValue};
+    </select>
+</mapper>
