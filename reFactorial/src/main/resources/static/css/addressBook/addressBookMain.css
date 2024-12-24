@@ -128,113 +128,61 @@ html, body {
 
 }
 
-/* 페이지네이션 컨테이너 스타일 */
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
 
-/* 페이지네이션 리스트 스타일 */
-.pagination ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* 페이지네이션 항목 스타일 */
-.pagination li {
-    margin: 0 5px;
-}
-
-/* 페이지네이션 링크 스타일 */
-.pagination a {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #f0f0f0;
-    color: #333;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 1.2em;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    min-width: 30px;
-    text-align: center;
-}
-
-/* 페이지네이션 링크 호버 스타일 */
-.pagination a:hover {
-    background-color: #5C1915;
-    color: white;
-}
-
-/* 활성화된 페이지 번호 스타일 */
-.pagination .active a {
-    background-color: #5C1915;
-    color: white;
-    font-weight: bold;
-}
-
-/* 비활성화된 페이지 링크 스타일 (이전/다음 버튼) */
-.pagination li a.disabled {
-    background-color: #e0e0e0;
-    color: #ccc;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
-/* 첫 번째, 마지막 페이지 버튼 스타일 */
-.pagination .first, .pagination .last {
-    font-weight: bold;
-}
-
-/* 이전/다음 페이지 버튼 스타일 */
-.pagination .prev, .pagination .next {
-    font-weight: bold;
-}
 
 
 #employee-list {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 18px;
-    text-align: left;
-}
-
-#employee-list th, #employee-list td {
-    border: 1px solid #dddddd;
-    padding: 8px;
-}
-
-#employee-list th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-#employee-list tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-#employee-list tr:hover {
-    background-color: #f1f1f1;
+    margin-top: 20px;
 }
 
 .table-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 0.8fr 1fr 1fr 1fr 2fr 1fr; /* 사번, 이름, 부서, 직책, 이메일, 전화번호 */
+    align-items: center;
     border-bottom: 1px solid #ddd;
+    padding: 10px 20px; /* 좌우 여백 추가 */
+    min-height: 50px; /* 행 높이 고정 */
+    background-color: #fff;
 }
 
-.table-cell {
-    flex: 1;
-    padding: 10px;
-    text-align: center;
+.table-row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-row:hover {
+    background-color: #f1f1f1;
 }
 
 .table-header {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr 1fr 1fr 2fr 1fr;
     font-weight: bold;
     background-color: #f5f5f5;
+    border-bottom: 2px solid #000;
+    padding: 10px 20px; /* 좌우 여백 추가 */
+    min-height: 50px; /* 헤더 높이 고정 */
+}
+
+.table-cell {
+    text-align: center;
+    font-size: 16px; /* 글씨 크기 확대 */
+    padding: 10px; /* 여백 추가 */
+    overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 한 줄로 유지 */
+}
+
+.table-cell:first-child {
+    text-align: left;
+    padding-left: 15px; /* 왼쪽 여백 추가 */
+}
+
+.table-cell:last-child {
+    text-align: right;
+    padding-right: 15px; /* 오른쪽 여백 추가 */
 }
 
 

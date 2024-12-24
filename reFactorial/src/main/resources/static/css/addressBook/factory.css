@@ -208,8 +208,8 @@ html, body {
 }
 
 .factory-image img {
-    width: 300px;
-    height: 300px;
+    width: 340px;
+    height: 350px;
     object-fit: cover;
     border-right: 3px solid #a8c5ff;
     margin-right: 130px;        /*사진과 내용 사이 여백*/
