@@ -80,14 +80,14 @@ const modifyInfoSave = document.querySelector(".modifyInfoSave")
 const modifyInfoList = document.querySelectorAll(".modifyInfo");
 
 // 프로필 사진
-const profileImg = document.querySelector("label[for='profileImg']")
+const profileImgLabel = document.querySelector("label[for='profileImg']")
 
 // input disabled 삭제하기
 personal_InfoBtn.addEventListener("click", () => {
     personal_InfoBtnBox.style.display = "none";
     modifyInfoSave.style.display = "block"
     personal_InfoBtn.style.display = "none"
-    profileImg.style.display="flex"
+    profileImgLabel.style.display="flex"
 
     modifyInfoList.forEach(info => {
         info.disabled = false;
@@ -221,6 +221,29 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render();
 });
 
+
+const profileImgInput = document.querySelector("#profileImg");
+const profileImgBox = document.querySelector(".profileImgBox")
+
+if (profileImgUrl != null && profileImgUrl.trim() != ''){
+    profileImgBox.style.backgroundImage = `url(/uploadImg/${profileImgUrl})`;
+}
+
+// 이미지 업로드 전 미리보기
+profileImgInput.addEventListener('change',function (e){
+    let get_files = e.target.files
+    console.log("get_files: ",get_files)
+
+    let reader = new FileReader();
+
+    reader.onload = function (e){
+        profileImgBox.style.backgroundImage = `url(${e.target.result})`
+    }
+
+    if (get_files){
+        reader.readAsDataURL(get_files[0]);
+    }
+})
 
 // 연차 관련 박스 내용 바꾸기
 

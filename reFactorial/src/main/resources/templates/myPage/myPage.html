@@ -188,16 +188,10 @@
     </script>
 
     <script>
+        // js에서 사용중 삭제 불가
         const profileImgUrl = '[[${LoginUserInfo.profile}]]';
 
         console.log(profileImgUrl)
-
-        const profileImgBox = document.querySelector(".profileImgBox")
-
-        if (profileImgUrl != null && profileImgUrl.trim() != ''){
-            profileImgBox.style.backgroundImage = `url(../images/uploadImg/${profileImgUrl})`;
-        }
-
     </script>
 
     <script th:src="@{/js/myPage/myPage.js}"></script>
