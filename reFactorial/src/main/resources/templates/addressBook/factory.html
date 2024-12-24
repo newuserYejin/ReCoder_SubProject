@@ -93,6 +93,12 @@
             .catch(error => console.error('Error:', error));
   }
 
+  // 전화번호 포맷팅 함수
+  function formatPhoneNumber(phoneNumber) {
+    if (!phoneNumber) return '';
+    return phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+  }
+
   // 협력업체 데이터를 렌더링하는 함수
   function renderFactories(data) {
     const factoryList = document.getElementById('factory-list');
@@ -101,7 +107,7 @@
     if (data.length === 0) {
       factoryList.innerHTML = '<p>검색 결과가 없습니다.</p>';
       return;
-    }
+    }ㅣ
 
     data.forEach(factory => {
       console.log(factory.fabImage); // 경로 출력
@@ -116,8 +122,8 @@
             <div class="factory-details">
                 <h3>${factory.fabName}</h3>
                 <p>위치: ${factory.fabAddress}</p>
-                <p>대표 연락처: ${factory.fabPhone}</p>
-                <p>담당자: ${factory.managerName}, 연락처: ${factory.managerPhone}</p>
+                <p>대표 연락처: ${formatPhoneNumber(factory.fabPhone)}</p>
+                 <p>담당자: ${factory.managerName}, 연락처: ${formatPhoneNumber(factory.managerPhone)}</p>
                 <p>생산 제품: ${factory.fabProduct}</p>
             </div>
         `;
