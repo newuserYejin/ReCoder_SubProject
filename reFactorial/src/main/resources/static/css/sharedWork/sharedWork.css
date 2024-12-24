@@ -8,7 +8,16 @@ html, body {
 .container {
     display: flex; /* 플렉스 레이아웃 사용 */
     flex-direction: row; /* 가로 방향으로 정렬 */
-    height: 100%; /* 컨테이너 높이를 화면 전체로 설정 */
+    gap: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+}
+.calendar-event {
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
 }
 . {
     width: 20%; /* 사이드바 너비 */

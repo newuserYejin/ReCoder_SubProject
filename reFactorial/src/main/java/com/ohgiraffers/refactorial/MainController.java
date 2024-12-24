@@ -3,6 +3,8 @@ package com.ohgiraffers.refactorial;
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
+import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +22,8 @@ public class MainController {
     private MemberService memberService;
     @Autowired
     private CabinetService cabinetService;
+    @Autowired
+    private MailService mailService;
 
 
     @GetMapping("/")
@@ -92,8 +96,14 @@ public class MainController {
     }
 
     @GetMapping("/user/mail")
-    public String mailPage(){
-        return "/mail/mailMain";
+    public String mailPage(Model model , HttpSession session){
+        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String senderEmpId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
+
+        List<MailDTO> sentMails = mailService.getSentMails(senderEmpId); // 보낸 메일만 가져오기
+        model.addAttribute("sentMails", sentMails); // 보낸 메일만 모델에 추가
+
+        return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
     @GetMapping("/user/product")
