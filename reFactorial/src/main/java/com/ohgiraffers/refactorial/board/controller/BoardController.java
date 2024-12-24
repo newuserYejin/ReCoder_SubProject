@@ -4,6 +4,8 @@ import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.*;
 import com.ohgiraffers.refactorial.board.service.BoardService;
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
@@ -12,8 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,10 +29,12 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final UploadFileService uploadService;
 
     @Autowired
-    public BoardController(BoardService boardService) {
+    public BoardController(BoardService boardService, UploadFileService uploadService) {
         this.boardService = boardService;
+        this.uploadService = uploadService;
     }
 
     // 게시물 전체조회
@@ -67,7 +74,8 @@ public class BoardController {
                             @RequestParam(required = false) String option3,
                             @RequestParam(required = false) String option4,
                             @RequestParam(required = false) String option5,
-                            Model model, HttpSession session) {
+                            @RequestParam(required = false) List<MultipartFile> postFileList,
+                            Model model, HttpSession session) throws IOException {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
         String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
@@ -117,6 +125,18 @@ public class BoardController {
 
         }
 
+        if (categoryCode == 3){
+
+            System.out.println("postFileList = " + postFileList);
+
+            if (!postFileList.isEmpty()) {
+                board.setPostfile(postFileList);
+                board.setAttachment(1);
+
+                uploadService.upLoadFile(postFileList,boardId);
+            }
+        }
+
         boardService.post(board);   // 게시물 등록 기능
 
         return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
@@ -130,6 +150,7 @@ public class BoardController {
 
         // 로그인한 유저 정보를 가져옴
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
         // 게시물 상세
         BoardDTO postDetail = boardService.postDetail(postId);
         // 댓글 리스트 가져옴
@@ -141,7 +162,6 @@ public class BoardController {
         // 투표 TotalList
         List<VoteTotalDTO> voteTotalList = boardService.getVoteResults(postId);
         System.out.println("voteTotalList = " + voteTotalList);
-
 
         // 초기 투표 수 0으로 세팅
         voteItemList.stream().forEach(item->{
@@ -166,6 +186,17 @@ public class BoardController {
                     // 로그인한 사용자의 투표 여부
                     model.addAttribute("votedByPost", true);
                     //
+                }
+            }
+        }
+
+        // 첨부파일
+        if (categoryCode == 3){
+            if (postDetail.getAttachment() == 1){
+                List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(postId);
+
+                if (!uploadFileList.isEmpty()){
+                    model.addAttribute("attachmentFileList",uploadFileList);
                 }
             }
         }

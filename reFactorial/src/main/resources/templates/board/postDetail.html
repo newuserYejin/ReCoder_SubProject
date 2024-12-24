@@ -67,6 +67,14 @@
                 <br>
                 <hr>
 
+                <div  th:if="${currentCategory == 3}"  class="attachmentFileBox">
+                    <div>첨부 파일 : </div>
+                    <div class="noAttachment">없음</div>
+                    <div th:each="file : ${attachmentFileList}">
+                        <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}"></a>
+                    </div>
+                </div>
+
                 <!-- 투표 항목 조회 / DB에 전송 -->
                 <form action="/board/vote" method="post" th:if="${currentCategory == 4}">
                     <div>
@@ -84,16 +92,11 @@
                     <input type="hidden" name="postId" th:value="${postDetail.postId}"/>
                     <input type="hidden" name="voteResults" th:value="${voteSelectResult}"/>
                     <input type="hidden" name="voteSelectResult" th:value="${voteSelectResult}"/>
-
                 </form>
-
-
-
 
                 <!-- 목록으로 돌아가기 -->
                 <a th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}"
                    style="display: block; margin-top: 20px;">목록으로 돌아가기</a>
-
 
                 <!-- 댓글 등록-->
                 <form action="/board/comment" method="post">
@@ -179,12 +182,24 @@
 </div>
 
 <script>
-
-
     const voteView = '[[${voteView}]]'
 
     console.log("voteView: ",voteView)
 
+
+</script>
+
+<script>
+    const attachmentFileList = '[[${attachmentFileList}]]'
+
+    const noAttachment = document.querySelector(".noAttachment");
+
+    if (attachmentFileList){
+        console.log("attachmentFileList: ",attachmentFileList)
+        noAttachment.style.display = 'none'
+    } else {
+        noAttachment.style.display = "block";
+    }
 </script>
 
 <script>
