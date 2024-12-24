@@ -1,9 +1,9 @@
 package com.ohgiraffers.refactorial.mail.controller;
-
 import com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO;
 import com.ohgiraffers.refactorial.mail.service.MailEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
