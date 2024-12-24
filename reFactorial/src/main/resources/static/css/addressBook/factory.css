@@ -114,8 +114,8 @@ html, body {
 }
 
 .factory-image img {
-    width: 200px;
-    height: 150px;
+    width: 300px;
+    height: 300px;
     object-fit: cover;
     border-right: 1px solid #ddd;
 }
