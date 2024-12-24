@@ -1,5 +1,7 @@
 package com.ohgiraffers.refactorial.user.controller;
 
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
@@ -7,20 +9,25 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/user/*")
 public class UserController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final UploadFileService uploadService;
 
     @Autowired
-    public UserController(MemberService memberService) {
+    public UserController(MemberService memberService,UploadFileService uploadService) {
         this.memberService = memberService;
+        this.uploadService = uploadService;
     }
 
     @PostMapping("addEmployee")
@@ -96,21 +103,31 @@ public class UserController {
 
     @PostMapping(value = "updatePersonalInfo", produces = "application/json; charset=UTF-8;")
     @ResponseBody
-    public Map<String, Object> updatePersonalInfo(@RequestBody Map<String, String> request, HttpSession session){
-
-        String email = request.get("email");
-        String phone = request.get("phone");
-        String address = request.get("address");
+    public Map<String, Object> updatePersonalInfo(@RequestParam("email") String email,
+                                                  @RequestParam("phone") String phone,
+                                                  @RequestParam("address") String address,
+                                                  @RequestParam(value = "profileImgList", required = false) List<MultipartFile> profileImgList,
+                                                  HttpSession session) throws IOException {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String userId = user.getEmpId();
 
-        Integer result = memberService.updatePersonalInfo(email,phone,address,userId);
+        String fileImgName = "";
+
+        if (profileImgList !=null && !profileImgList.get(0).isEmpty()){
+            uploadService.upLoadFile(profileImgList,userId);
+            List<UploadFileDTO> fileInfo = uploadService.findFileByMappingId(userId);
+
+            fileImgName = fileInfo.get(0).getStoreFileName();
+        }
+
+        Integer result = memberService.updatePersonalInfo(email,phone,address,userId,fileImgName);
 
         if (result > 0) {
-            if (email != null) user.setEmpEmail(email); // 변경된 이메일 저장
-            if (phone != null) user.setEmpPhone(phone); // 변경된 전화번호 저장
-            if (address != null) user.setEmpAddress(address); // 변경된 주소 저장
+            if (email != null && !email.equals("null")) user.setEmpEmail(email); // 이메일이 null이 아니고 'null' 문자열이 아닐 때만 저장
+            if (phone != null && !phone.equals("null")) user.setEmpPhone(phone); // 전화번호가 null이 아니고 'null' 문자열이 아닐 때만 저장
+            if (address != null && !address.equals("null")) user.setEmpAddress(address); // 주소가 null이 아니고 'null' 문자열이 아닐 때만 저장
+            if (fileImgName != "") user.setProfile(fileImgName);
 
             session.setAttribute("LoginUserInfo", user); // 세션 갱신
         }

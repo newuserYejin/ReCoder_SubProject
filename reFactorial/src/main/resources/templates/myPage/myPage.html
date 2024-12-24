@@ -34,8 +34,16 @@
                 <div class="topBox">
     <!--이미지 박스-->
                     <div class="profileImg">
-                        <img src="../images/loopy.jpg">
-    <!--                    <img src="../../static/images/loopy.jpg">-->
+<!--                        <img src="../images/loopy.jpg">-->
+                        <div class="profileImgBox" style="background-image: url('../images/loopy.jpg')">
+<!--                        <div class="profileImgBox" style="background-image: url('../../static/images/loopy.jpg')">-->
+                        <!--                            <img src="../../static/images/loopy.jpg">-->
+                            <label for="profileImg">
+                                <img src="../../static/images/camera-solid.svg" alt="이미지 변경">
+<!--                                <img src="../images/camera-solid.svg" alt="이미지 변경">-->
+                            </label>
+                            <input type="file" id="profileImg" name="profileImg">
+                        </div>
                     </div>
     <!--개인 정보-->
                     <div class="personal_Info">
@@ -177,6 +185,19 @@
         const annualLeave = '[[${LoginUserInfo.annualLeave}]]';
         const usedAnnualLeave = '[[${LoginUserInfo.usedAnnualLeave}]]';
         const empJoined = '[[${LoginUserInfo.empJoined}]]';
+    </script>
+
+    <script>
+        const profileImgUrl = '[[${LoginUserInfo.profile}]]';
+
+        console.log(profileImgUrl)
+
+        const profileImgBox = document.querySelector(".profileImgBox")
+
+        if (profileImgUrl != null && profileImgUrl.trim() != ''){
+            profileImgBox.style.backgroundImage = `url(../images/uploadImg/${profileImgUrl})`;
+        }
+
     </script>
 
     <script th:src="@{/js/myPage/myPage.js}"></script>

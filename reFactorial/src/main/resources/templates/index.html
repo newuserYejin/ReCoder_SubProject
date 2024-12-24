@@ -47,7 +47,11 @@
                             <p th:text="${LoginUserInfo.empId}"></p>
 <!--                         <div>이 름 : 홍길동</div>&ndash;&gt;-->
 <!--                         <p>12321</p>&ndash;&gt;-->
-                            <button>+ 더보기</button>
+                            <button
+                                    onclick="redirectBasedOnAuth()"
+                                    id="linkedMyPage">
+                                + 더보기
+                            </button>
                         </div>
                         <div class="secondLine" th:text="|부 서 : ${LoginUserInfo.deptName}|"></div>
 <!--                    <div class="secondLine">부 서 : 홍보부</div>-->
@@ -86,6 +90,10 @@
         if (message){
             console.log(message);
         }
+
+        const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
+
+        console.log("viewAuth: ",viewAuth)
     </script>
 
     <script th:src="@{/js/mainPage/mainPage.js}"></script>

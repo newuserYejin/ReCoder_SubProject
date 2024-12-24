@@ -79,11 +79,15 @@ const modifyInfoSave = document.querySelector(".modifyInfoSave")
 
 const modifyInfoList = document.querySelectorAll(".modifyInfo");
 
+// 프로필 사진
+const profileImg = document.querySelector("label[for='profileImg']")
+
 // input disabled 삭제하기
 personal_InfoBtn.addEventListener("click", () => {
     personal_InfoBtnBox.style.display = "none";
     modifyInfoSave.style.display = "block"
     personal_InfoBtn.style.display = "none"
+    profileImg.style.display="flex"
 
     modifyInfoList.forEach(info => {
         info.disabled = false;
@@ -97,6 +101,7 @@ modifyInfoSave.addEventListener("click", () => {
     let email = document.querySelector("#email").value;
     let phone = document.querySelector("#phone").value;
     let address = document.querySelector("#address").value;
+    let profileImg = document.querySelector("#profileImg").files[0];
 
     // 이메일 값이 서버 값과 같으면 null로 처리
     if (currentEmail.trim() === email.trim()) {
@@ -109,16 +114,25 @@ modifyInfoSave.addEventListener("click", () => {
         address = null;
     }
 
+    const formData = new FormData();
+
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("address", address);
+
+    if (profileImg) {
+        formData.append("profileImgList", profileImg); // 파일 추가
+    } else{
+        formData.append("profileImgList", null); // 파일 추가
+    }
+
+    console.log("profileImgList : ",formData.get('profileImgList'))
+
+    console.log("formData: ",formData)
+
     fetch('/user/updatePersonalInfo', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: email,
-            phone: phone,
-            address: address
-        })
+        body: formData
     })
         .then(response => response.json())
         .then(data => {
@@ -128,7 +142,8 @@ modifyInfoSave.addEventListener("click", () => {
             if (data.result > 0) {
                 location.reload(); // 페이지 새로 고침
             } else if (data.result === 0) {
-                alert("데이터 업데이트 내용 없음");
+                location.reload(); // 페이지 새로 고침
+                // alert("데이터 업데이트 내용 없음");
             } else {
                 alert("업데이트 오류")
             }
