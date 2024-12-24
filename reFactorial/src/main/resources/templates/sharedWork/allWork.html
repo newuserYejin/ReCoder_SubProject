@@ -30,11 +30,8 @@
             </ul>
         </div>
 
-        <!-- 공유업무 등록 버튼 -->
+        <!-- 메인 폼 -->
         <div class="main-content">
-            <div class="top-bar">
-                <button>공유업무 등록</button>
-            </div>
 
         <!-- 캘린더 출력 -->
             <div id='calendar'></div>
@@ -47,6 +44,10 @@
                 <input type="text" id="eventTitle" placeholder="이벤트 제목을 입력하세요">
                 <label for="eventDescription">설명:</label>
                 <textarea id="eventDescription" placeholder="이벤트 설명을 입력하세요"></textarea>
+                <label for="eventStartDate">시작 날짜:</label>
+                <input type="date" id="eventStartDate">
+                <label for="eventEndDate">종료 날짜:</label>
+                <input type="date" id="eventEndDate">
                 <button id="saveEventBtn">저장</button>
                 <button id="deleteEventBtn">삭제</button>
                 <button id="closeModalBtn">닫기</button>
@@ -74,6 +75,8 @@
         var deleteEventBtn = document.getElementById('deleteEventBtn');
         var eventTitleInput = document.getElementById('eventTitle');
         var eventDescriptionInput = document.getElementById('eventDescription');
+        var eventStartDateInput = document.getElementById('eventStartDate'); // 시작 날짜
+        var eventEndDateInput = document.getElementById('eventEndDate');     // 종료 날짜
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -86,21 +89,29 @@
                 // 모달 창 초기화
                 eventTitleInput.value = '';
                 eventDescriptionInput.value = '';
+                eventStartDateInput.value = info.dateStr; // 시작 날짜를 클릭한 날짜로 설정
+                eventEndDateInput.value = info.dateStr;   // 종료 날짜 기본값도 동일하게 설정
+
                 saveEventBtn.onclick = function() {
                     var eventTitle = eventTitleInput.value;
                     var eventDescription = eventDescriptionInput.value;
-                    if (eventTitle && eventDescription) {
+                    var eventStartDate = eventStartDateInput.value;
+                    var eventEndDate = eventEndDateInput.value;
+
+                    if (eventTitle && eventDescription && eventStartDate && eventEndDate) {
                         // 새 이벤트를 추가
                         calendar.addEvent({
                             title: eventTitle,
-                            start: info.dateStr,
+                            start: eventStartDate,
+                            end: eventEndDate,
                             description: eventDescription
                         });
                         closeModal(); // 모달 닫기
                     } else {
-                        alert('제목과 설명을 모두 입력해주세요.');
+                        alert('모든 필드를 입력해주세요.');
                     }
                 };
+
                 modal.style.display = 'block';
                 modalOverlay.style.display = 'block';
             },
@@ -110,11 +121,15 @@
                 var event = info.event;
                 eventTitleInput.value = event.title;
                 eventDescriptionInput.value = event.extendedProps.description;
+                eventStartDateInput.value = event.startStr;
+                eventEndDateInput.value = event.endStr ? event.endStr.split('T')[0] : event.startStr; // 종료 날짜가 없으면 시작 날짜로 설정
 
                 // 저장 버튼 클릭 시 수정된 정보 저장
                 saveEventBtn.onclick = function() {
                     event.setProp('title', eventTitleInput.value);
                     event.setExtendedProp('description', eventDescriptionInput.value);
+                    event.setStart(eventStartDateInput.value);
+                    event.setEnd(eventEndDateInput.value ? eventEndDateInput.value : null);
                     closeModal(); // 모달 닫기
                 };
 
