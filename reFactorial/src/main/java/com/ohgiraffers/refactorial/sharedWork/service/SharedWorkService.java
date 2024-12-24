@@ -1,8 +1,11 @@
 package com.ohgiraffers.refactorial.sharedWork.service;
 
 import com.ohgiraffers.refactorial.sharedWork.model.dao.SharedWorkMapper;
+import com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SharedWorkService {
@@ -13,6 +16,18 @@ public class SharedWorkService {
     public SharedWorkService(SharedWorkMapper sharedWorkMapper) {
         this.sharedWorkMapper = sharedWorkMapper;
     }
+
+    // 업무 전체 조회
+    public void saveSharedWork(SharedWorkDTO sharedWork) {
+        sharedWorkMapper.insertSharedWork(sharedWork);
+    }
+
+    // 업무 저장
+    public List<SharedWorkDTO> getAllSharedWork() {
+        return sharedWorkMapper.getAllSharedWork();
+    }
+
+
 
 
 }
