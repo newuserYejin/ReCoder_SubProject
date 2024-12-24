@@ -37,9 +37,12 @@
             </button>
             <!-- 휴지통으로 보내기 버튼 -->
             <form th:action="@{/mail/moveToTrash}" method="post" style="display: inline;">
-                <input type="hidden" th:name="emailId" th:value="${mailDetail.emailId}">
+                <input type="hidden" name="emailId" th:value="${mailDetail.emailId}">
+                <!-- 쉼표로 구분된 문자열로 전달 -->
+                <input type="hidden" name="receiverEmpIds" th:value="${#strings.arrayJoin(mailDetail.receiverEmpIds, ',')}">
                 <button type="submit">휴지통으로 보내기</button>
             </form>
+
         </div>
 
         <!-- Mail Detail Section -->
@@ -58,31 +61,3 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>
-<script>
-    function moveToTrash(emailId) {
-        // 선택된 수신자들의 ID를 배열로 가져옴
-        const receiverEmpIds = [...document.querySelectorAll('.selected-receiver:checked')].map(cb => cb.value);
-
-        fetch('/moveToTrash', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                emailId: emailId,
-                receiverEmpId: receiverEmpIds.join(',')
-            })
-        })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/mail/mailBin'; // 성공적으로 이동 후 리디렉션
-                } else {
-                    alert('Error moving email to trash.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-
-</script>

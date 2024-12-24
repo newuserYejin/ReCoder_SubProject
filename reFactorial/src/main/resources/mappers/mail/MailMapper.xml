@@ -37,7 +37,8 @@
         SELECT *
         FROM tbl_mail m
         INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
-        WHERE m.sender_emp_id = #{senderEmpId} and mr.trash_status = 0
+        WHERE m.sender_emp_id = #{senderEmpId}
+        AND mr.trash_status = 0
     </select>
 
     <!--내가 받은 메일-->
@@ -45,7 +46,8 @@
         SELECT *
         FROM tbl_mail m
         INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
-        WHERE receiver_emp_id = #{receiverEmpId} and trash_status = 0
+        WHERE mr.receiver_emp_id = #{receiverEmpId}
+        AND mr.trash_status = 0
     </select>
 
     <!-- 내가 보낸 메일의 수신자 사원 ID 가져오기 -->
@@ -73,7 +75,7 @@
     <!-- 특정 수신자에 대해 휴지통 이동 -->
     <update id="updateTrashStatus" parameterType="map">
         UPDATE tbl_mail_receivers
-        SET trash_status = 1
+        SET trash_status = #{trashStatus}
         WHERE email_id = #{emailId} AND receiver_emp_id = #{receiverEmpId}
     </update>
 
@@ -98,4 +100,5 @@
         WHERE mr.trash_status = 1
     </select>
 
-</mapper>
+
+        </mapper>

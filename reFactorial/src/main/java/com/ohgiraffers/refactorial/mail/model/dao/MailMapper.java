@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MailMapper {
@@ -39,5 +40,5 @@ public interface MailMapper {
     void updateTrashRemove(String emailId, int i);
 
 
-    void updateTrashStatus(String emailId, String receiverEmpIds, int i);
+    void updateTrashStatus(Map<String, Object> params);
 }

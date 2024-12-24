@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MailService {
@@ -114,16 +111,26 @@ public class MailService {
         return mailMapper.getMailDetail(emailId);
     }
 
-    public void moveToTrash(String emailId, String receiverEmpIds) {
-            mailMapper.updateTrashStatus(emailId, receiverEmpIds, 1); // trashStatus 를 1로 변경 (휴지통으로 이동)
+    // 휴지통으로 보내기
+    public void moveToTrash(String emailId, String receiverEmpId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("emailId", emailId);
+        params.put("receiverEmpId", receiverEmpId);
+        params.put("trashStatus", 1);
+
+        mailMapper.updateTrashStatus(params);
     }
 
+
+    // 휴지통 상세 페이지
     public MailDTO getMailDetailBin(String emailId) {
 
         return mailMapper.getMailDetailBin(emailId);
     }
 
+    // 휴지통 복구하기
     public void removeToTrash(String emailId) {
         mailMapper.updateTrashRemove(emailId,0); // trashStatus 를 0로 변경 (휴지통으로 이동)
     }
+
 }

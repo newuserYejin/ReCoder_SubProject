@@ -43,14 +43,19 @@
         </div>
 
         <!-- Table Body -->
-        <div>
-            <div th:each="mails : ${receivedMails}" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-                <!-- 수신자 -->
-                <div style="width: 35%;" th:text="${mails.senderEmpId}">수신자</div>
-                <!-- 제목 -->
-                <a style="width: 40%;" th:href="@{'/mail/detail?emailId=' + ${mails.emailId}}" th:text="${mails.emailTitle}">제목</a>
-                <!-- 날짜 -->
-                <div style="width: 30%;" th:text="${#dates.format(mails.sentDate, 'yyyy-MM-dd')}">날짜</div>
+        <div th:each="mail : ${receivedMails}">
+            <div class="table-row">
+
+                <!-- 받는 사람 -->
+                <div class="table-cell" th:text="${mail.receiverEmpId}"></div>
+
+                <!-- 제목, 클릭 시 mailDetail로 이동 -->
+                <div class="table-cell">
+                    <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
+                </div>
+
+                <!-- 작성일 -->
+                <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
             </div>
         </div>
 
