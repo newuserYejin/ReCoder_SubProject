@@ -1,0 +1,135 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.sidebar {
+    width: 20%; /* 사이드바 너비 */
+    background-color: white;
+    border-right: 1px solid black;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+    margin-top: 46px;
+    text-align: center;
+}
+
+.sidebar ul {
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidebar li {
+
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.sidebar li::after {
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
+}
+
+.sidebar li:last-child::after {
+    display: none;
+}
+
+.sidebar li:hover {
+    font-family: 'Noto Sans KR', Arial, sans-serif; /* 마우스 오버 시 글꼴 설정 */
+    color: #5C1915;
+    font-weight: 1000;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 215px);  /* ⭐ 오른쪽숫자가 커질수록 메인컨텐츠 하단부분이 위로올라감*/
+    margin-left: 0; /* 사이드바와 겹치지 않도록 */
+    margin-top: 0;
+}
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+.top-bar input {
+    width: 200px;
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.top-bar button {
+    padding: 8px 16px;
+    background-color: #5C1915;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.top-bar button:hover {
+    background-color: #7e2411;
+}
+
+
+
+.factory-card {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.factory-image img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-right: 1px solid #ddd;
+}
+
+.factory-details {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.factory-details h3 {
+    margin: 0 0 10px;
+    font-size: 1.5em;
+    color: #333;
+}
+

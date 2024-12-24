@@ -16,9 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
 
     <link rel="stylesheet" th:href="@{/css/addressBook/addressBookMain.css}">
-    <style>
 
-    </style>
 </head>
 <body>
 
@@ -30,8 +28,8 @@
         <div class="sidebar">
             <div class="sidebar-title">주소록</div>
             <ul>
-                <li><a href="/addressBook/addressBookMain">사내 직원</a></li>
-                <li><a href="/addressBook/partners">협력 업체</a></li>
+                <li><a href="/addressBook/employeeAddressBook">사내 직원</a></li>
+                <li><a href="/addressBook/factoryAddressBook">협력 업체</a></li>
             </ul>
         </div>
 
@@ -56,10 +54,42 @@
                 <!-- 여기에서 검색 결과가 실시간으로 표시됩니다 -->
             </div>
 
+            <!-- 페이지네이션 표시 -->
+            <div class="pagination">
+                <ul>
+
+                    <!-- 첫 페이지 -->
+                    <li class="first">
+                        <a href="?page=1"><<</a>
+                    </li>
+                    <!-- 이전 페이지 -->
+                    <li class="prev">
+                        <a th:href="@{'/addressBook/employeeAddressBook?page=' + ${prevPage}}" class="prev"><</a>
+                    </li>
+
+                    <!-- 페이지 번호들 -->
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a th:href="@{'/addressBook/employeeAddressBook?page=' + ${i}}" th:text="${i}"></a>
+                        </li>
+                    </th:block>
+
+                    <!-- 다음 페이지 -->
+                    <li class="next">
+                        <a th:href="@{'/addressBook/employeeAddressBook?page=' + ${nextPage}}" class="next">></a>
+                    </li>
+                    <!-- 마지막 페이지 -->
+                    <li class="last">
+                        <a th:href="@{'/addressBook/employeeAddressBook?page=' + ${totalPages}}" class="last">>></a>
+                    </li>
+                </ul>
+            </div>
 
         </div>
-    </section>
 
+
+    </section>
+    <footer th:replace="~{/common/footer::footerFragment}"></footer>
 <script>
     // 페이지 로드 시 전체 직원 조회 실행
     document.addEventListener('DOMContentLoaded', function () {
@@ -125,6 +155,11 @@
             const row = document.createElement('div');
             row.className = "table-row";
 
+            function formatPhoneNumber(phoneNumber) {
+                if (!phoneNumber) return '';
+                // 숫자를 하이픈으로 포맷 (000-0000-0000)
+                return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+            }
             // 각 직원 데이터를 테이블 셀에 추가
             row.innerHTML = `
             <div class="table-cell">${employee.id}</div>
@@ -132,7 +167,7 @@
             <div class="table-cell">${employee.deptName}</div>
             <div class="table-cell">${employee.positionName}</div>
             <div class="table-cell">${employee.email}</div>
-            <div class="table-cell">${employee.phone}</div>
+             <div class="table-cell">${formatPhoneNumber(employee.phone)}</div>
         `;
 
             tableBody.appendChild(row);
@@ -141,6 +176,6 @@
 
 
 </script>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
 </body>
 </html>

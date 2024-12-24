@@ -43,4 +43,39 @@
         FROM tbl_position
         WHERE position_value = #{positionValue};
     </select>
+
+
+    <!-- 직원 총 수 -->
+    <select id="getTotalEmployeeCount" resultType="int">
+        SELECT COUNT(*) FROM employee;
+    </select>
+
+    <!-- 페이지네이션 적용된 직원 조회 -->
+    <select id="findEmployeesWithPagination" parameterType="map" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+        FROM employee
+        ORDER BY emp_id ASC
+            LIMIT #{limit} OFFSET #{offset};
+    </select>
+
+    <!-- 전체 협력업체 조회 -->
+    <select id="findAllFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT fab_id, manager_name, manager_phone, fab_email, fab_name,
+               fab_address, fab_product, emp_id, fab_phone, fab_image
+        FROM tbl_factory
+        ORDER BY fab_name ASC;
+    </select>
+
+    <!-- 키워드로 협력업체 검색 -->
+    <select id="searchFactoriesByKeyword" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT fab_id, manager_name, manager_phone, fab_email, fab_name,
+               fab_address, fab_product, emp_id, fab_phone, fab_image
+        FROM tbl_factory
+        WHERE fab_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_address LIKE CONCAT('%', #{keyword}, '%')
+           OR manager_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_product LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY fab_name ASC;
+    </select>
+
 </mapper>

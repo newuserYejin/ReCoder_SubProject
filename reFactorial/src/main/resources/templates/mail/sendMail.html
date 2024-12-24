@@ -2,81 +2,185 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>sendMail</title>
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/common/style.css">
     <link rel="stylesheet" href="/css/mail/sendMail.css">
 </head>
 <body>
-<h1>메일 보내기</h1>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">사내 메일</div>
+            <ul>
+                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>
+                <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
+                <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
+                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>
+            </ul>
+        </div>
 
-<form action="#" th:action="@{/mail/sendMail}" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="senderEmpId" th:value="${session.LoginUserInfo.empId}"/>
-    <div>
-        <label for="emailTitle">메일 제목</label>
-        <input type="text" id="emailTitle" name="emailTitle"  required/>
-    </div>
 
-    <div>
-        <label for="emailContent">메일 내용</label>
-        <textarea id="emailContent" name="emailContent" required></textarea>
-    </div>
+        <div class="form-container">
+            <form id="sendMailForm" th:action="@{/mail/sendMail}" method="post">
 
-    <div>
-        <label for="receiverEmpId">수신자 사원번호</label>
-        <input type="text" id="receiverEmpId" name="receiverEmpId" data-toggle="modal" data-target="#seachItems"  required/>
-    </div>
+                <div class="sendMail_topBox">
 
-    <div>
-        <button type="submit">메일 보내기</button>
-    </div>
-</form>
+                    <!-- 제출 버튼 -->
+                    <div class="button-group">
+                        <button type="submit" class="submit-btn">등 록</button>
+                    </div>
 
-<div class="modal fade" id="seachItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">
-<!--                            <img src="../../static/images/close.svg" alt="닫기 버튼">-->
-                            <img src="/images/close.svg" alt="닫기 버튼">
-                        </span>
-                </button>
-                <div>회원 검색</div>
-            </div>
+                    <!-- 제목 -->
+                    <div class="form-group">
+                        <label for="emailTitle">제목:</label>
+                        <input type="text" id="emailTitle" name="emailTitle">
+                    </div>
 
-            <form action="searchReceiver" method="post" id="changePWForm">
-                <div class="modal-body">
-                    <label for="searchReceiverInput">회원</label>
-                    <input type="text" id="searchReceiverInput" name="presentPW">
-                </div>
-                <div class="modal-footer">
-                    <!--                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-                    <button type="submit" id="matchPW">회원 검색</button>
+                    <!-- 분류 -->
+                    <div class="form-group">
+                        <label for="receiverEmpIds">수신자:</label>
+                        <div id="selectedReceivers">
+                            <!-- 선택된 수신자 목록이 여기에 표시됩니다. -->
+                        </div>
+                        <input type="hidden" id="receiverEmpIds" name="receiverEmpIds" required/>
+                        <button type="button" data-toggle="modal" data-target="#searchItems">수신자 검색</button>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-group content">
+                        <label for="emailContent">내용:</label>
+                        <textarea id="emailContent" name="emailContent"></textarea>
+                    </div>
                 </div>
             </form>
-
-            <!-- 검색 결과 -->
-            <div th:if="${employees != null}">
-                <h4>검색된 직원 목록</h4>
-                <ul>
-                    <li th:each="employee : ${employees}">
-                        <input type="checkbox" name="selectedEmployees" th:value="${employee.empId}" />
-                        <span th:text="${employee.empName}"></span> -
-                        <span th:text="${employee.deptCode}"></span> -
-                        <span th:text="${employee.positionValue}"></span> -
-                        <span th:text="${employee.empEmail}"></span>
-                    </li>
-                </ul>
-            </div>
-
         </div>
     </div>
-</div>
 
-<!--boostrap-->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<!--boostrap-->
+    <div class="modal fade" id="searchItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                        <img src="/images/close.svg" alt="닫기 버튼">
+                    </span>
+                    </button>
+                    <div>회원 검색</div>
+                </div>
+
+                <form action="#" method="post" id="searchReceiverForm">
+                    <div class="modal-body">
+                        <label for="searchReceiverInput">회원</label>
+                        <input type="text" id="searchReceiverInput" name="searchReceiverInput" oninput="searchReceiver()"/>
+                        <table id="employeeList">
+                            <!-- 직원 목록이 여기에 로드됩니다. -->
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="confirmSelection()">선택</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const selectedEmployees = []; // 선택된 직원 목록
+
+        // 처음에 직원 목록을 로드합니다.
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchEmployees('');
+        });
+
+        // 직원 검색을 처리하는 함수
+        function searchReceiver() {
+            const searchInput = document.getElementById('searchReceiverInput').value;
+            fetchEmployees(searchInput);
+        }
+
+        // 직원 목록을 fetch 로 가져오는 함수
+        function fetchEmployees(searchQuery) {
+            fetch(`/mail/searchReceiver?searchReceiverInput=${searchQuery}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    const table = document.getElementById('employeeList');
+                    table.innerHTML = ''; // 기존 목록을 지우고
+                    data.forEach(function(employee) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td><input type="checkbox" class="employee-checkbox" value="${employee.empId}" data-emp-name="${employee.empName}"></td>
+                    <td>${employee.empId}</td>
+                    <td>${employee.empName}</td>
+                `;
+                        table.appendChild(row);
+                    });
+                });
+        }
+
+        function confirmSelection() {
+            const checkboxes = document.querySelectorAll('.employee-checkbox:checked');
+            checkboxes.forEach(function(checkbox) {
+                const empId = checkbox.value;
+                const empName = checkbox.getAttribute('data-emp-name');
+
+                if (!selectedEmployees.some(function(emp) { return emp.empId === empId; })) {
+                    selectedEmployees.push({ empId: empId, empName: empName });
+                    updateSelectedReceivers();
+                }
+            });
+
+            $('#searchItems').modal('hide');
+        }
+
+        function updateSelectedReceivers() {
+            const container = document.getElementById('selectedReceivers');
+            container.innerHTML = '';
+            const hiddenInput = document.getElementById('receiverEmpIds');  // 변경된 부분
+
+            selectedEmployees.forEach(function(employee) {
+                const div = document.createElement('div');
+                div.className = 'selected-employee';
+                div.innerHTML = `${employee.empName} (${employee.empId}) <button type="button" onclick="removeReceiver('${employee.empId}')">삭제</button>`;
+                container.appendChild(div);
+            });
+
+            // 선택된 직원 ID를 숨겨진 input에 쉼표로 구분하여 설정
+            hiddenInput.value = selectedEmployees.map(function(emp) { return emp.empId; }).join(',');
+        }
+
+        function removeReceiver(empId) {
+            const index = selectedEmployees.findIndex(function(emp) { return emp.empId === empId; });
+            if (index > -1) {
+                selectedEmployees.splice(index, 1);
+                updateSelectedReceivers();
+            }
+        }
+
+    </script>
+
+    <!-- 부트스트랩 JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 </body>
 </html>
