@@ -114,12 +114,16 @@ public class MailService {
         return mailMapper.getMailDetail(emailId);
     }
 
-    public void moveToTrash(String emailId) {
-        mailMapper.updateTrashStatus(emailId, 1); // trashStatus 를 1로 변경 (휴지통으로 이동)
+    public void moveToTrash(String emailId, String receiverEmpIds) {
+            mailMapper.updateTrashStatus(emailId, receiverEmpIds, 1); // trashStatus 를 1로 변경 (휴지통으로 이동)
     }
 
     public MailDTO getMailDetailBin(String emailId) {
 
         return mailMapper.getMailDetailBin(emailId);
+    }
+
+    public void removeToTrash(String emailId) {
+        mailMapper.updateTrashRemove(emailId,0); // trashStatus 를 0로 변경 (휴지통으로 이동)
     }
 }

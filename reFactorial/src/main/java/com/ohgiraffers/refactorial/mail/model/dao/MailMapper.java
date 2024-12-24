@@ -35,6 +35,9 @@ public interface MailMapper {
     List<MailDTO> getReceivedMailsBin(String receiverEmpIds);
     List<MailDTO> getSentMailsBin(String senderEmpId);
 
-    void updateTrashStatus(String emailId, int i);
+    // 휴지통 복구 삭제
+    void updateTrashRemove(String emailId, int i);
 
+
+    void updateTrashStatus(String emailId, String receiverEmpIds, int i);
 }

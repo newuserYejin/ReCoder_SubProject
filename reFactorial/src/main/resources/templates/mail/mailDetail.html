@@ -58,3 +58,31 @@
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>
+<script>
+    function moveToTrash(emailId) {
+        // 선택된 수신자들의 ID를 배열로 가져옴
+        const receiverEmpIds = [...document.querySelectorAll('.selected-receiver:checked')].map(cb => cb.value);
+
+        fetch('/moveToTrash', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                emailId: emailId,
+                receiverEmpId: receiverEmpIds.join(',')
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/mail/mailBin'; // 성공적으로 이동 후 리디렉션
+                } else {
+                    alert('Error moving email to trash.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+</script>
