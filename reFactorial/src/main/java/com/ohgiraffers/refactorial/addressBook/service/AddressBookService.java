@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.addressBook.service;
 
 
 import com.ohgiraffers.refactorial.addressBook.model.dao.AddressBookMapper;
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
 import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,7 @@ public class AddressBookService {
             employee.setDeptName(deptName);
             employee.setPositionName(positionName);
         }
-        // 디버깅: employees 리스트 출력
-        employees.forEach(System.out::println);
+
         return employees;
     }
 
@@ -40,5 +40,23 @@ public class AddressBookService {
             employee.setPositionName(positionName);
         }
         return employees;
+    }
+    public int getEmployeeCount() {
+        return addressBookMapper.getTotalEmployeeCount();
+    }
+
+    public List<EmployeeDTO> getEmployeesByPage(int limit, int offset) {
+        return addressBookMapper.findEmployeesWithPagination(limit, offset);
+    }
+
+
+    // 전체 협력업체 조회
+    public List<FactoryDTO> getAllFactories() {
+        return addressBookMapper.findAllFactories();
+    }
+
+    // 키워드로 협력업체 검색
+    public List<FactoryDTO> searchFactories(String keyword) {
+        return addressBookMapper.searchFactoriesByKeyword(keyword);
     }
 }
