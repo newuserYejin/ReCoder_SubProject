@@ -13,6 +13,7 @@
         <result property="empId" column="emp_id"/>
         <result property="empName" column="emp_name"/>
         <result property="categoryCode" column="category_code"/>
+        <result property="attachment" column="attachment"/>
     </resultMap>
 
     <!-- 게시물 전체 조회 -->
@@ -41,7 +42,8 @@
         post_creationDate,
         emp_id,
         post_modificationDate,
-        category_code
+        category_code,
+        attachment
         )
         values
         (
@@ -51,7 +53,8 @@
         #{postCreationDate},
         #{empId},
         #{postModificationDate},
-        #{categoryCode}
+        #{categoryCode},
+        #{attachment}
         )
     </insert>
 

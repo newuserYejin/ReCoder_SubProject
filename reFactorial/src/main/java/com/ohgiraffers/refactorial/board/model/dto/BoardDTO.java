@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.board.model.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,10 @@ public class BoardDTO {
     private String empId;                        // 작성자 ID (emp_id)
     private int categoryCode;                    // 게시물 카테고리 코드 (category_code)
     private String empName;                      // 작성자 이름 (emp_name)
+    private int attachment;                      // 업로드 여부
 
     private List<VoteItemDTO> voteItems;         // 투표 항목
+
+    private List<MultipartFile> postfile;
 
 }

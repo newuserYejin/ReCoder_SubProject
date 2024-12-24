@@ -186,7 +186,7 @@ public class AdminController {
         System.out.println("select_tkt = " + select_tkt);
 
 
-        // PDF 생성 로직 등 처리...
+        // PDF 생성 로직 등 처리
         List<TktReserveDTO> reserveDataList = new ArrayList<>();
 
         for (String reserveId : select_tkt){

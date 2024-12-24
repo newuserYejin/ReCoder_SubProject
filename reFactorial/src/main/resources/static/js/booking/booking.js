@@ -147,6 +147,7 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
     selectable: true, // 날짜 선택 여부 설정
     locale: 'ko', // 한국어 설정
     fixedWeekCount: false,
+    electMirror: false,
     events: []
 });
 
@@ -164,6 +165,9 @@ function setDate(dayInfo){
     itemArray.forEach(item =>{
         item.checked = false;
     })
+
+    start = null;
+    end = null;
 
     fetchData(selectDayValue,roomNo);
 }
@@ -271,7 +275,7 @@ function disableReservedTimes(reservationList) {
 
         // 해당 시간과 사이 시간 비활성화
         for (let time = startTime; time <= endTime; time++) {
-            const input = document.querySelector(`.timeList input[value="${time.toString()}:00:00"]`);
+            const input = document.querySelector(`.timeList input[value="${time.toString().padStart(2, '0')}:00:00"]`);
             if (input) {
                 input.disabled = true;
             }
