@@ -3,9 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>메일 쓰레기통</title>
+    <title>mailBin</title>
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/common/style.css">
+    <link rel="stylesheet" href="/css/mail/mailBin.css">
 </head>
 <body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">사내 메일</div>
+            <ul>
+                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>
+                <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
+                <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
+                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>
+            </ul>
+        </div>
 
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <button>복구하기</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-header">
+                <div class="table-cell">보낸 사람</div>
+                <div class="table-cell">받는 사람</div>
+                <div class="table-cell">제목</div>
+                <div class="table-cell">작성일</div>
+            </div>
+
+            <!-- Table Body -->
+            <!-- Table Body -->
+            <div>
+                <!-- Received Mails -->
+                <div th:each="mail : ${receivedMailsBin}" style="display: flex; padding: 10px; border-bottom: 1px solid gray;">
+                    <!-- 보낸 사람 -->
+                    <div style="width: 20%;" th:text="${mail.senderEmpId}">보낸 사람</div>
+                    <!-- 받는 사람 -->
+                    <div style="width: 20%;" th:text="${mail.receiverEmpIds}">받는 사람</div>
+                    <!-- 제목 -->
+                    <a style="width: 40%;" th:href="@{'/mail/detailBin'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}">제목</a>
+                    <!-- 작성일 -->
+                    <div style="width: 20%;" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}">작성일</div>
+                </div>
+
+                <!-- Sent Mails -->
+                <div th:each="mail : ${sentMailsBin}">
+                    <!-- 각 수신자마다 border-bottom을 적용 -->
+                    <div th:each="receiverEmpId : ${mail.receiverEmpIds}"
+                         style="display: flex; padding: 10px; border-bottom: 1px solid gray;">
+                        <!-- 보낸 사람 -->
+                        <div style="width: 20%;" th:text="${mail.senderEmpId}">보낸 사람</div>
+                        <!-- 받는 사람 -->
+                        <div style="width: 20%;" th:text="${receiverEmpId}">받는 사람</div>
+                        <!-- 제목 -->
+                        <a style="width: 40%;" th:href="@{'/mail/detailBin'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}">제목</a>
+                        <!-- 날짜 -->
+                        <div style="width: 20%;" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}">날짜</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>

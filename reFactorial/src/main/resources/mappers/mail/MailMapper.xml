@@ -9,37 +9,83 @@
         <id property="emailId" column="email_id"/>
         <result property="emailTitle" column="email_title"/>
         <result property="emailContent" column="email_content"/>
-        <result property="readStatus" column="read_status"/>
         <result property="sentDate" column="sent_date"/>
         <result property="trashStatus" column="trash_status"/>
         <result property="senderEmpId" column="sender_emp_id"/>
+    </resultMap>
+
+    <resultMap id="MailReceiverResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
+        <id property="id" column="id"/>
+        <result property="emailId" column="email_id"/>
         <result property="receiverEmpId" column="receiver_emp_id"/>
+        <result property="readStatus" column="read_status"/>
     </resultMap>
 
     <!-- 메일 보내기 -->
     <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
-        INSERT INTO tbl_mail (
-        email_id, email_title, email_content, read_status, sent_date, trash_status, sender_emp_id, receiver_emp_id
-        ) VALUES (
-        #{emailId}, #{emailTitle}, #{emailContent}, #{readStatus}, CURDATE(), #{trashStatus}, #{senderEmpId}, #{receiverEmpId}
-        )
+        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, trash_status, sender_emp_id)
+        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE(), 0 , #{senderEmpId})
+    </insert>
+    <insert id="saveReceiver" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
+        INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status)
+        VALUES (#{emailId}, #{receiverEmpId}, #{readStatus})
     </insert>
 
-    <!-- 내가 보낸 메일 조회 -->
+    <!--내가 보낸 메일-->
     <select id="getSentMails" resultMap="MailResultMap">
         SELECT *
         FROM tbl_mail
-        WHERE sender_emp_id = #{senderEmpId} AND trash_status = 0
-        ORDER BY sent_date DESC
+        WHERE sender_emp_id = #{senderEmpId} and trash_status = 0
     </select>
 
-    <!-- 내가 받은 메일 조회 -->
+    <!--내가 받은 메일-->
     <select id="getReceivedMails" resultMap="MailResultMap">
         SELECT *
-        FROM tbl_mail
-        WHERE receiver_emp_id = #{receiverEmpId} AND trash_status = 0
-        ORDER BY sent_date DESC
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
+        WHERE mr.receiver_emp_id = #{receiverEmpId} and trash_status = 0
     </select>
 
+    <!-- 내가 보낸 메일의 수신자 사원 ID 가져오기 -->
+    <select id="getReceiverEmpIds" resultType="java.lang.String">
+        SELECT receiver_emp_id
+        FROM tbl_mail_receivers
+        WHERE email_id = #{emailId}
+    </select>
+
+    <!-- 메일의 상세 페이지 -->
+    <select id="getMailDetail" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE email_id = #{emailId}
+    </select>
+
+    <!-- 휴지통 메일의 상세 페이지-->
+    <select id="getMailDetailBin" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE email_id = #{emailId}
+    </select>
+
+    <!-- 휴지통으로 이동 -->
+    <update id="updateTrashStatus" parameterType="java.lang.String">
+        UPDATE tbl_mail
+        SET trash_status = 1
+        WHERE email_id = #{emailId}
+    </update>
+
+    <!--받은 메일 보낸 메일 휴지통에서 불러오기-->
+    <select id="getReceivedMailsBin" resultMap="MailResultMap">
+        SELECT m.*, mr.receiver_emp_id
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
+        WHERE m.trash_status = 1
+    </select>
+    <select id="getSentMailsBin" resultMap="MailResultMap">
+        SELECT m.*, mr.receiver_emp_id
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
+        WHERE m.trash_status = 1
+    </select>
 
 </mapper>
