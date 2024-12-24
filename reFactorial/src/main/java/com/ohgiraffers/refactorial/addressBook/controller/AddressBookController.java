@@ -30,6 +30,8 @@ public class AddressBookController {
         this.userMapper = userMapper;
     }
 
+
+    // 사내 직원 검색
     @ResponseBody
     @GetMapping("/employees")
     public List<EmployeeDTO> getAllEmployees() {
@@ -43,40 +45,13 @@ public class AddressBookController {
     }
 
     @GetMapping("/employeeAddressBook")
-    public String getAddressBookPage(
-            @RequestParam(value = "page", defaultValue = "1") int currentPage,
-            Model model) {
-
-        int limit = 10; // 한 페이지당 표시할 직원 수
-        int totalEmployees = addressBookService.getEmployeeCount(); // 전체 직원 수
-        int totalPages = totalEmployees > 0 ? (int) Math.ceil((double) totalEmployees / limit) : 1;
-
-        // 현재 페이지 범위 검증
-        if (currentPage < 1) currentPage = 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        int offset = (currentPage - 1) * limit;
-
-        // 현재 페이지의 직원 데이터 가져오기
-        List<EmployeeDTO> employees = addressBookService.getEmployeesByPage(limit, offset);
-        if (employees == null) { // null 방지
-            employees = new ArrayList<>();
-        }
-
-        // 이전/다음 페이지 설정
-        int prevPage = currentPage > 1 ? currentPage - 1 : 1;
-        int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-
-        // 모델에 데이터 추가
-        model.addAttribute("employees", employees);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("prevPage", currentPage > 1 ? currentPage - 1 : 1);
-        model.addAttribute("nextPage", currentPage < totalPages ? currentPage + 1 : totalPages);
+    public String getAddressBookPage(){
 
         return "/addressBook/addressBookMain";
     }
 
+
+    //협력업체 검색
     @ResponseBody
     @GetMapping("/factory")
     public List<FactoryDTO> getAllFactories(){
@@ -94,5 +69,8 @@ public class AddressBookController {
     public String factoryAddressBook(){
         return "/addressBook/factory";
     }
+
+
+
 
 }
