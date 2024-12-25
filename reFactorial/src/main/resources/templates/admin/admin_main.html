@@ -32,7 +32,9 @@
                     <div class="eventReaction">이벤트 반응</div>
                     <div class="attendanceChart">
                         <div class="chartTitle">오늘의 근태</div>
-                        <canvas id="firstChart"></canvas>
+                        <div class="firstChartBox">
+                            <canvas id="firstChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -49,10 +51,10 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Red', 'Blue', 'Yellow',"Green"],
+                labels: ['Red', 'Blue', 'Yellow'],
                 datasets: [{
                     label: '해당 직원 수',
-                    data: [12, 19, 3, 40],
+                    data: [12, 19, 3],
                     borderWidth: 1,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -69,6 +71,7 @@
                 }]
             },
             options: {
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         ticks:{
