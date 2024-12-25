@@ -69,9 +69,9 @@ public class MemberService {
     }
 
     @Transactional
-    public Integer updatePersonalInfo(String email, String phone, String address, String userId) {
+    public Integer updatePersonalInfo(String email, String phone, String address, String userId,String fileImgName) {
 
-        if (email == null && phone == null && address == null) {
+        if (email.equals("null") && phone.equals("null") && address.equals("null") && fileImgName.isEmpty()) {
             System.out.println("업데이트할 데이터가 없습니다.");
             return 0; // 업데이트 실행 안 함
         }
@@ -82,6 +82,7 @@ public class MemberService {
         updateData.put("phone",phone);
         updateData.put("address",address);
         updateData.put("userId",userId);
+        updateData.put("fileImgName",fileImgName);
 
         int result = userMapper.updatePersonalInfo(updateData);
 

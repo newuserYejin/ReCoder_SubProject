@@ -14,15 +14,72 @@
     <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
 
     <link rel="stylesheet" th:href="@{/css/admin/admin_main.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_main.css">
 </head>
 <body>
 
     <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
     <section>
-        <div style="--menu-size: 400px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        <div class="pageTitle">관리자 페이지</div>
+        <div class="mainBox">
+            <div class="mainLeft_box">
+                <div style="--menu-size: 350px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+                <div class="inquiryBox">1 : 1 문의사항</div>
+            </div>
+            <div class="mainRight_box">
+                <div class="hiredDateChart">입사 현황</div>
+                <div class="mainRightBottom_box">
+                    <div class="eventReaction">이벤트 반응</div>
+                    <div class="attendanceChart">
+                        <div class="chartTitle">오늘의 근태</div>
+                        <canvas id="firstChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <!-- 유저 페이지들과 footer 공동 사용 -->
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('firstChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow',"Green"],
+                datasets: [{
+                    label: '해당 직원 수',
+                    data: [12, 19, 3, 40],
+                    borderWidth: 1,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                    ],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        ticks:{
+                            stepSize: 2 // 단위
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
 
 </body>
 </html>

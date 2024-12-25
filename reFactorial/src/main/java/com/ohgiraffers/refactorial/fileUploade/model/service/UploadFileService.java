@@ -61,6 +61,14 @@ public class UploadFileService {
 
             // 파일 저장경로에 저장
             file.transferTo(new File(filePath));
+            
+            List<UploadFileDTO> existList = uploadMapper.findFileByMappingId(mappingId);
+            System.out.println("existList = " + existList);
+            
+            if (existList != null){
+                uploadMapper.deleteByMappingId(mappingId);
+                System.out.println("삭제함");
+            }
 
             int uploadResult = uploadMapper.addFile(uploadFile);
 

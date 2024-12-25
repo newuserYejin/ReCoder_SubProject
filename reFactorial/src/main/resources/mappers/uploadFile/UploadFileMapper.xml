@@ -45,5 +45,10 @@
             file_id = #{fileId}
     </select>
 
+    <delete id="deleteByMappingId" parameterType="String">
+        DELETE FROM tbl_files
+        WHERE mapping_id = #{mappingId}
+    </delete>
+
 
 </mapper>
