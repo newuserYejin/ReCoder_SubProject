@@ -92,8 +92,6 @@
         </div>
     </div>
 
-
-
     <script>
         const selectedEmployees = []; // 선택된 직원 목록
 
@@ -161,7 +159,7 @@
                 container.appendChild(div);
             });
 
-            // 선택된 직원 ID를 숨겨진 input에 쉼표로 구분하여 설정
+            // 선택된 직원 ID를 숨겨진 input 에 쉼표로 구분하여 설정
             hiddenInput.value = selectedEmployees.map(function(emp) { return emp.empId; }).join(',');
         }
 
