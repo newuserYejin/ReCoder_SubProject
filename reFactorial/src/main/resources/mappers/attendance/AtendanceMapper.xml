@@ -32,4 +32,29 @@
                 att_date BETWEEN #{firstDayOfMonth} AND #{lastDayOfMonth}
     </select>
 
+    <select id="getAttendanceGroupBy" resultType="map" parameterType="java.time.LocalDate">
+        SELECT
+            COALESCE(a.att_status, '결근') AS att_status,
+            COUNT(*) AS count
+        FROM
+            employee e
+            LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id AND a.att_date = #{today}
+        GROUP BY
+            a.att_status
+    </select>
+
+<!--    <select id="getAttendanceGroupBy" resultType="map" parameterType="java.time.LocalDate">-->
+<!--        SELECT-->
+<!--        COALESCE(a.att_status, '결근') AS att_status,-->
+<!--        COUNT(*) AS count-->
+<!--        FROM-->
+<!--        employee e-->
+<!--        LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id-->
+<!--        WHERE-->
+<!--        a.att_date = #{today}-->
+<!--        GROUP BY-->
+<!--        COALESCE(a.att_status, '결근')-->
+<!--    </select>-->
+
+
 </mapper>

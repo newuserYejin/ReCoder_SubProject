@@ -45,16 +45,26 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
+    <script th:inline="javascript">
+        const attendanceChart = /*[[${attendanceChart}]]*/
+
+        console.log(attendanceChart)
+
+        const chartItem = Object.keys(attendanceChart);
+        const chartCount = Object.values(attendanceChart);
+
+        console.log("chartItem: ",chartItem);
+        console.log("chartCount: ",chartCount);
+
         const ctx = document.getElementById('firstChart');
 
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Red', 'Blue', 'Yellow'],
+                labels: chartItem,
                 datasets: [{
                     label: '해당 직원 수',
-                    data: [12, 19, 3],
+                    data: chartCount,
                     borderWidth: 1,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',

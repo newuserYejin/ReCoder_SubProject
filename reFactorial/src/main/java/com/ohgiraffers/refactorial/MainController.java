@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial;
 
+import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
@@ -13,17 +14,29 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
 
+    private final MemberService memberService;
+    private final CabinetService cabinetService;
+    private final MailService mailService;
+    private final AttendanceService attendanceService;
+
     @Autowired
-    private MemberService memberService;
-    @Autowired
-    private CabinetService cabinetService;
-    @Autowired
-    private MailService mailService;
+    public MainController(MemberService memberService,
+                          CabinetService cabinetService,
+                          MailService mailService,
+                          AttendanceService attendanceService
+                        ){
+        this.memberService = memberService;
+        this.cabinetService = cabinetService;
+        this.mailService = mailService;
+        this.attendanceService = attendanceService;
+    }
 
 
     @GetMapping("/")
@@ -77,7 +90,16 @@ public class MainController {
 
 
     @GetMapping("/admin/main")
-    public String adminPage(){
+    public String adminPage(Model model){
+
+        LocalDate today = LocalDate.now();
+
+        Map<String,Object> attendanceChart = attendanceService.getAttendanceGroupBy(today);
+
+        System.out.println("chartData = " + attendanceChart);
+
+        model.addAttribute("attendanceChart",attendanceChart);
+
         return "admin/admin_main";
     };
 
