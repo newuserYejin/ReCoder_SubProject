@@ -76,7 +76,8 @@
     <update id="updateTrashStatus" parameterType="map">
         UPDATE tbl_mail_receivers
         SET trash_status = #{trashStatus}
-        WHERE email_id = #{emailId} AND receiver_emp_id = #{receiverEmpId}
+        WHERE email_id = #{emailId}
+        AND receiver_emp_id = #{receiverEmpId} <!-- 특정 수신자에 대해서만 업데이트 -->
     </update>
 
     <!-- 휴지통에서 복구하기-->
@@ -101,4 +102,4 @@
     </select>
 
 
-        </mapper>
+</mapper>
