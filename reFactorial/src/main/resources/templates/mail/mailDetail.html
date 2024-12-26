@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="/css/mail/mailDetail.css">
 
 </head>
-
 <body>
 <header th:replace="~{/common/header::headerFragment}"></header>
 <section>
@@ -36,14 +35,51 @@
                 답신 하기
             </button>
             <!-- 휴지통으로 보내기 버튼 -->
-            <form th:action="@{/mail/moveToTrash}" method="post" style="display: inline;">
-                <input type="hidden" name="emailId" th:value="${mailDetail.emailId}">
-                <!-- 쉼표로 구분된 문자열로 전달 -->
-                <input type="hidden" name="receiverEmpIds" th:value="${#strings.arrayJoin(mailDetail.receiverEmpIds, ',')}">
-                <button type="submit">휴지통으로 보내기</button>
-            </form>
+            <div id="move-to-trash-buttons">
+                <!-- 각 수신자별로 버튼이 JavaScript에서 추가됩니다 -->
+                    <script th:inline="javascript">
+                        /* 수신자 목록과 메일 ID 가져오기 */
+                        const emailId = /*[[${mailDetail.emailId}]]*/ '';
+                        const receiverEmpIds = /*[[${mailDetail.receiverEmpIds}]]*/ [];
 
-        </div>
+                        const container = document.getElementById('move-to-trash-buttons');
+
+                        receiverEmpIds.forEach(receiverEmpId => {
+                        const form = document.createElement('form');
+                        form.action = '/mail/moveToTrash';
+                        form.method = 'post';
+                        form.style.display = 'inline';
+
+                        const emailInput = document.createElement('input');
+                        emailInput.type = 'hidden';
+                        emailInput.name = 'emailId';
+                        emailInput.value = emailId;
+
+                        const receiverInput = document.createElement('input');
+                        receiverInput.type = 'hidden';
+                        receiverInput.name = 'receiverEmpId';
+                        receiverInput.value = receiverEmpId;
+
+                        const button = document.createElement('button');
+                        button.type = 'submit';
+                        button.textContent = `휴지통으로 보내기 (수신자: ${receiverEmpId})`;
+
+                        form.appendChild(emailInput);
+                        form.appendChild(receiverInput);
+                        form.appendChild(button);
+                        container.appendChild(form);
+                    });
+                </script>
+            <!-- 각 수신자별로 휴지통으로 보내기 버튼 -->
+<!--            <div th:each="receiverEmpId : ${mailDetail.receiverEmpIds}">-->
+<!--                <form th:action="@{/mail/moveToTrash}" method="post" style="display: inline;">-->
+<!--                    <input type="hidden" name="emailId" th:value="${mailDetail.emailId}">-->
+<!--                    <input type="hidden" name="receiverEmpId" th:value="${receiverEmpId}">-->
+<!--                    <button type="submit">휴지통으로 보내기 (수신자: [[${receiverEmpId}]])</button>-->
+<!--                </form>-->
+<!--            </div>-->
+            </div>
+            </div>
 
         <!-- Mail Detail Section -->
         <div class="mail-detail">

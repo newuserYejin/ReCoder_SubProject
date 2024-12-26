@@ -3,6 +3,7 @@ package com.ohgiraffers.refactorial.mail.controller;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
+import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -61,8 +63,6 @@ public class MailController {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String senderEmpId = loginUser.getEmpId();
 
-
-
         // 보낸 메일 목록을 모델에 추가
         List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
 
@@ -91,10 +91,14 @@ public class MailController {
     @GetMapping("/detail")
     public String mailDetail(@RequestParam("emailId") String emailId, Model model) {
         MailDTO mailDetail = mailService.getMailDetail(emailId);
+        List<String> mailReceiver = mailService.getReceiverEmpIds(emailId);
+
         model.addAttribute("mailDetail", mailDetail);
+        model.addAttribute("mailReceiver", mailReceiver);
         return "/mail/mailDetail";
     }
 
+    // 메일 휴지통 페이지
     @GetMapping("/detailBin")
     public String mailDetailBin(@RequestParam("emailId") String emailId, Model model) {
         MailDTO mailDetailBin = mailService.getMailDetailBin(emailId);
@@ -146,18 +150,17 @@ public class MailController {
         return "/mail/mailBin";
     }
 
+    // 휴지통으로 보내기
     @PostMapping("/moveToTrash")
     public String moveToTrash(@RequestParam("emailId") String emailId,
-                              @RequestParam("receiverEmpIds") String receiverEmpIds) {
-        if (receiverEmpIds != null && !receiverEmpIds.isEmpty()) {
-            List<String> receiverEmpIdList = Arrays.asList(receiverEmpIds.split(","));
-            for (String receiverEmpId : receiverEmpIdList) {
-                mailService.moveToTrash(emailId, receiverEmpId);
-            }
+                              @RequestParam("receiverEmpId") String receiverEmpId
+                              ) {
+        // 특정 수신자에 대해 휴지통으로 이동
+        if (receiverEmpId != null && !receiverEmpId.isEmpty()) {
+            mailService.moveToTrash(emailId, Collections.singletonList(receiverEmpId));
         }
-        return "redirect:/mail/mailBin";
+        return "redirect:/mail/mailBin"; // 휴지통 페이지로 리디렉션
     }
-
 
     @PostMapping("/removeToTrash")
     public String removeToTrash(@RequestParam("emailId") String emailId) {
