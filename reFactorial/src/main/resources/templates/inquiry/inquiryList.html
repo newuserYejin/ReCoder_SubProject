@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>inquiryList</title>
+</head>
+<body>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">1:1 문의</div>
+            <ul>
+                <li th:onclick="|location.href='@{/user/sendInquiry}'|">1:1 문의하기</li>
+                <li th:onclick="|location.href='@{/inquiry/inquiryList}'|">문의 내역</li>
+            </ul>
+        </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="top-bar">
+                    <button type="button" th:onclick="|location.href='@{/mail/sendMail}'|">
+                        메일 쓰기
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-header">
+                    <div class="table-cell">보낸 사람</div>
+                    <div class="table-cell">제목</div>
+                    <div class="table-cell">작성일</div>
+                    <div class="table-cell">상태</div>
+                </div>
+
+                <!-- Table body -->
+                <div>
+                    <div class="table-row">
+                        <!-- 보낸 사람 -->
+                        <div class="table-cell"></div>
+                        <!-- 제목, 클릭 시 inquiryDetail 로 이동 -->
+                        <div class="table-cell">
+                            <a></a>
+                        </div>
+                        <!-- 작성일 -->
+                        <div class="table-cell"></div>
+                        <!-- 상태 -->
+                        <div class="table-cell"></div>
+                    </div>
+                </div>
+</section>
+</body>
+</html>

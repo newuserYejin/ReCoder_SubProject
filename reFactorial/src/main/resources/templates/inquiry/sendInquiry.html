@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sendInquiry</title>
+
+    <!-- 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry/sendInquiry.css}">
+
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">1:1 문의</div>
+            <ul>
+                <li th:onclick="|location.href='@{/user/inquiry}'|">1:1 문의하기</li>
+                <li th:onclick="|location.href='@{/inquiry/inquiryList}'|">문의 내역</li>
+            </ul>
+        </div>
+
+        <div class="form-container">
+            <form id="sendInquiryForm" th:action="@{/user/inquiry}" method="post">
+
+                <div class="sendInquiry_topBox">
+
+                    <!-- 제출 버튼 -->
+                    <div class="button-group">
+                        <button type="submit" class="submit-btn">등 록</button>
+                    </div>
+
+                    <!-- 제목 -->
+                    <div class="form-group">
+                        <label for="iqrSubject">제목:</label>
+                        <input type="text" id="iqrSubject" name="iqrSubject" required>
+                    </div>
+
+                    <!-- 분류 -->
+                    <div class="form-group">
+                        <label for="iqrCategory">분류:</label>
+                        <select id="iqrCategory" name="iqrCategory" onchange="onChangeSelectOption()" required>
+                            <option value="">선택</option>
+                            <option value="1" th:selected="${iqrCategory == 1}">시스템 오류</option>
+                            <option value="2" th:selected="${iqrCategory == 2}">비밀번호 재설정</option>
+                            <option value="3" th:selected="${iqrCategory == 3}">기능 추가 요청</option>
+                            <option value="4" th:selected="${iqrCategory == 4}">문서 수정 요청</option>
+                            <option value="5" th:selected="${iqrCategory == 5}">회의실 예약</option>
+                            <option value="6" th:selected="${iqrCategory == 6}">기기 연결 문제</option>
+                            <option value="7" th:selected="${iqrCategory == 7}">근태 문제</option>
+                            <option value="8" th:selected="${iqrCategory == 8}">회식 일정</option>
+                        </select>
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="form-group content">
+                        <label for="iqrDetails">내용:</label>
+                        <textarea id="iqrDetails" name="iqrDetails" required></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+</body>
+</html>

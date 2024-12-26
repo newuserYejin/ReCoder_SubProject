@@ -41,7 +41,7 @@
                     <!-- 제목 -->
                     <div class="form-group">
                         <label for="emailTitle">제목:</label>
-                        <input type="text" id="emailTitle" name="emailTitle">
+                        <input type="text" id="emailTitle" name="emailTitle" required>
                     </div>
 
                     <!-- 분류 -->
@@ -51,13 +51,13 @@
                             <!-- 선택된 수신자 목록이 여기에 표시됩니다. -->
                         </div>
                         <input type="hidden" id="receiverEmpIds" name="receiverEmpIds" required/>
-                        <button type="button" data-toggle="modal" data-target="#searchItems">수신자 검색</button>
+                        <button type="button" data-toggle="modal" data-target="#searchItems" >수신자 검색</button>
                     </div>
 
                     <!-- 내용 -->
                     <div class="form-group content">
                         <label for="emailContent">내용:</label>
-                        <textarea id="emailContent" name="emailContent"></textarea>
+                        <textarea id="emailContent" name="emailContent" required></textarea>
                     </div>
                 </div>
             </form>

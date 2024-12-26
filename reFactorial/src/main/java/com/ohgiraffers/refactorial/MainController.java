@@ -7,6 +7,8 @@ import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO;
+import com.ohgiraffers.refactorial.inquiry.service.InquiryService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,19 +33,22 @@ public class MainController {
     private final MailService mailService;
     private final AttendanceService attendanceService;
     private final BoardService boardService;
+    private final InquiryService inquiryService;
 
     @Autowired
     public MainController(MemberService memberService,
                           CabinetService cabinetService,
                           MailService mailService,
                           AttendanceService attendanceService,
-                          BoardService boardService
+                          BoardService boardService,
+                          InquiryService inquiryService
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
         this.mailService = mailService;
         this.attendanceService = attendanceService;
         this.boardService = boardService;
+        this.inquiryService = inquiryService;
     }
 
 
@@ -74,8 +81,23 @@ public class MainController {
     }
 
     @GetMapping("/user/inquiry")
-    public String inquiryPage() {
-        return "/inquiry/inquiry";
+    public String showInquiryPage(){
+        return "inquiry/sendInquiry";
+    }
+
+    @PostMapping("/inquiry/sendInquiry")
+    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO, HttpSession session, Model model) {
+        // 로그인 유저 가져오기
+        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        // 유저의 empId를 InquiryDTO에 설정
+        String senderEmpId = loginUser.getEmpId();
+        inquiryDTO.setEmpId(senderEmpId);
+
+        // InquiryDTO를 서비스로 전달하여 데이터 저장
+        inquiryService.sendInquiry(inquiryDTO);
+
+        return "redirect:/inquiry/sendInquiry";  // 폼 제출 후 다시 같은 페이지로 리다이렉트
     }
 
     @GetMapping("/user/approvalMain")
