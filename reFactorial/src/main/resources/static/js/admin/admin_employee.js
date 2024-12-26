@@ -84,8 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     item.addEventListener("click", () => {
                         const empId = item.dataset.empId;
 
-                        console.log("보여줄 대상자 : ", empId)
-
                         fetch(`/admin/modifyEmpInfo?empId=${empId}`)
                             .then(response => response.json())
                             .then(data => {

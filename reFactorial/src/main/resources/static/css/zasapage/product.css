@@ -125,9 +125,9 @@
         .card-wrapper {
             position: absolute;
             width: 250px;
-            height: 350px;
+            height: 400px;
             left: 50%;
-            top: 60%;
+            top: 54%;
             transform-style: preserve-3d;
             margin-left: -150px;
             margin-top: -200px; /* 카드 중앙 정렬 */
@@ -154,100 +154,113 @@
     /* 제품 이미지 */
     .product-card img {
         width: 100%;
-        height: 260px;
+        /*height: 260px;*/
+        aspect-ratio: 1 / 1;
         object-fit: cover;
-        border-radius: 10px;
-
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
     }
 
     /* 제품 정보 스타일링 */
     .product-card h3 {
-        font-size: 1.5em;
+        font-size: 1.1em;
         color: #7B4397;
-        margin-top: 3px; /* 상단 마진 추가 */
-        margin-bottom: 5px;
+        margin: 3px 5px 5px;
     }
 
-    .price {
-        font-size: 1.2em;
-        color: #DC2430;
-        font-weight: bold;
+    .product-card {
+        p {
+            color: #666;
+            margin-left: 5px;
+            line-height: 1;
+            font-size: 0.9em;
 
-        margin-top: 5px; /* 상단 마진 추가 */
-    }
-
-    .product-card p {
-        color: #666;
-        line-height: 1.4;
-    }
-
-    /* 컨트롤 버튼 위치 및 스타일 수정 */
-    .control-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: linear-gradient(145deg, #C4A0FF, #FFB0B0);
-        color: white;
-        border: none;
-        width: 50px;
-        height: 50px;
-        border-radius: 25px;
-        cursor: pointer;
-        z-index: 10;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        font-size: 24px; /* 화살표 크기 증가 */
-    }
-
-    .control-button:hover {
-        transform: translateY(-50%) scale(1.1);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    .control-button.prev {
-        left: 10%; /* 위치 조정 */
-    }
-
-    .control-button.next {
-        right: 10%; /* 위치 조정 */
-    }
-
-
-    /* 눈 내리는 효과 */
-    body, html {
-        min-height: 100vh;
-    }
-
-    .snowfall-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        min-height: 100vh;
-        pointer-events: none;
-        z-index: 1000;
-    }
-
-    .snowflake {
-        position: fixed;
-        color: rgba(176, 224, 230, 0.4);
-        text-shadow:
-                0 0 5px #add8e6,
-                0 0 10px #87ceeb,
-                0 0 15px #b0e0e6;
-        animation: snowfall linear infinite;
-    }
-
-    @keyframes snowfall {
-        0% {
-            transform: translateY(-10px) translateX(0) rotate(0deg);
-            opacity: 1;
+            max-height: 17%;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-        75% {
-            opacity: 0.8;
-        }
-        100% {
-            transform: translateY(100vh) translateX(20px) rotate(360deg);
-            opacity: 0;
+
+        .price {
+            font-size: 1em;
+            color: #DC2430;
+            font-weight: bold;
+
+            margin-top: 5px; /* 상단 마진 추가 */
+            margin-left: 5px;
+
+            overflow-y: hidden;
         }
     }
+
+
+
+        /* 컨트롤 버튼 위치 및 스타일 수정 */
+        .control-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(145deg, #C4A0FF, #FFB0B0);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-size: 24px; /* 화살표 크기 증가 */
+        }
+
+        .control-button:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-button.prev {
+            left: 10%; /* 위치 조정 */
+        }
+
+        .control-button.next {
+            right: 10%; /* 위치 조정 */
+        }
+
+
+        /* 눈 내리는 효과 */
+        body, html {
+            min-height: 100vh;
+        }
+
+        .snowfall-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .snowflake {
+            position: fixed;
+            color: rgba(176, 224, 230, 0.4);
+            text-shadow:
+                    0 0 5px #add8e6,
+                    0 0 10px #87ceeb,
+                    0 0 15px #b0e0e6;
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-10px) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            75% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
