@@ -38,12 +38,7 @@
     <!-- 모든 업무 조회 -->
     <select id="getAllSharedWork" resultMap="sharedWorkResultMap">
         SELECT
-            work_id AS workId,
-            work_title AS workTitle,
-            work_explanation AS workExplanation,
-            deadline,
-            work_schedule AS workSchedule,
-            dept_code AS deptCode
+            *
         FROM
             tbl_sharedWork
         WHERE

@@ -46,7 +46,6 @@
                 <label for="eventEndDate">종료 날짜</label>
                 <input type="date" id="eventEndDate">
 
-                <!-- 색상 표시 부분 삭제됨 -->
                 <button id="saveEventBtn">저장</button>
                 <button id="deleteEventBtn">삭제</button>
                 <button id="closeModalBtn">닫기</button>
@@ -72,6 +71,7 @@
         var eventDescriptionInput = document.getElementById('eventDescription');
         var eventStartDateInput = document.getElementById('eventStartDate');
         var eventEndDateInput = document.getElementById('eventEndDate');
+
 
         // 부서별 색상 설정 (dept_code와 매핑)
         var departmentColors = {
@@ -129,6 +129,8 @@
 
                 // 부서 코드에서 색상 자동 적용
                 var departmentCode = event.extendedProps.departmentCode;
+
+                console.log(departmentCode)
 
                 saveEventBtn.onclick = function() {
                     event.setProp('title', eventTitleInput.value);

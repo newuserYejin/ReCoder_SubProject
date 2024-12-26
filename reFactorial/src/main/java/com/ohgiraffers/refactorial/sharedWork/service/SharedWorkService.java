@@ -18,9 +18,10 @@ public class SharedWorkService {
     }
 
     // 업무 전체 조회
-    public List<SharedWorkDTO> getAllSharedWork(int userDeptCode) {
-        return sharedWorkMapper.getAllSharedWork(userDeptCode);
+    public List<SharedWorkDTO> getAllSharedWork(int deptCode) {
+        return sharedWorkMapper.getAllSharedWork(deptCode);
     }
+
 
     // 업무 저장
     public void saveSharedWork(SharedWorkDTO sharedWork) {

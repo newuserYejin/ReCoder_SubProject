@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -25,8 +26,9 @@ public class SharedWorkController {
     }
 
     // 전체 업무 조회
-    @GetMapping("/allWork")
-    public String getAllSharedWork(HttpSession session) {
+    @GetMapping("/event")
+    @ResponseBody
+    public List<SharedWorkDTO> getAllSharedWork(HttpSession session) {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
 
@@ -34,13 +36,9 @@ public class SharedWorkController {
             throw new IllegalStateException("유효한 사용자 세션이 아닙니다.");
         }
 
-        int userDeptCode = user.getDeptCode();
+        int deptCode = user.getDeptCode();
 
-        System.out.println("userDeptCode = " + userDeptCode);
-
-        sharedService.getAllSharedWork(userDeptCode);
-
-        return "/sharedWork/allWork";
+        return sharedService.getAllSharedWork(deptCode);
     }
 
     // 일정 저장
