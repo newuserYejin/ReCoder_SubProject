@@ -86,15 +86,15 @@ public class MainController {
     }
 
     @PostMapping("/inquiry/sendInquiry")
-    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO, HttpSession session, Model model) {
+    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO, HttpSession session) {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-        // 유저의 empId를 InquiryDTO에 설정
+        // 유저의 empId를 InquiryDTO 에 설정
         String senderEmpId = loginUser.getEmpId();
         inquiryDTO.setEmpId(senderEmpId);
 
-        // InquiryDTO를 서비스로 전달하여 데이터 저장
+        // InquiryDTO 를 서비스로 전달하여 데이터 저장
         inquiryService.sendInquiry(inquiryDTO);
 
         return "redirect:/inquiry/sendInquiry";  // 폼 제출 후 다시 같은 페이지로 리다이렉트

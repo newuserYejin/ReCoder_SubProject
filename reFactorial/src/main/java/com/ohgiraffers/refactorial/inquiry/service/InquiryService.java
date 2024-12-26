@@ -30,6 +30,5 @@ public class InquiryService {
         inquiryDTO.setIqrValue(IQRid);
 
         inquiryMapper.sendInquiry(inquiryDTO);
-
     }
 }
