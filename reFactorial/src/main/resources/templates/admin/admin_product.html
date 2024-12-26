@@ -31,10 +31,77 @@
             </div>
             <div class="menuMainBox">
 
+                <!-- 제품 등록 폼 -->
+                <div>
+                    <h2>제품 등록</h2>
+                    <form id="addProductForm" onsubmit="event.preventDefault(); addProduct();">
+
+                        <label for="prodName">제품명:</label>
+                        <input type="text" id="prodName" required>
+
+                        <label for="prodDescription">설명:</label>
+                        <textarea id="prodDescription" required></textarea>
+
+                        <label for="prodPrice">가격:</label>
+                        <input type="number" id="prodPrice" required>
+
+                        <label for="prodImage">이미지 URL:</label>
+                        <input type="text" id="prodImage" required>
+
+                        <label for="prodCategory">카테고리:</label>
+                        <input type="text" id="prodCategory" required>
+
+                        <button type="submit">등록</button>
+                    </form>
+                </div>
+
+
             </div>
         </div>
 
     </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+
+    <script>
+
+    // 새 제품 등록 요청 함수
+    async function addProduct() {
+        // 폼에서 입력된 값을 객체로 만듦
+        const newProduct = {
+
+            name: document.getElementById("prodName").value, // 제품명
+            description: document.getElementById("prodDescription").value, // 제품 설명
+            price: document.getElementById("prodPrice").value, // 제품 가격
+            image: document.getElementById("prodImage").value, // 이미지 URL
+            category: document.getElementById("prodCategory").value // 제품 카테고리
+        };
+
+        console.log("등록 요청 데이터:", newProduct); // 확인용 로그
+
+        // 서버에 POST 요청으로 새 제품 등록
+        const response = await fetch('/admin/addProduct', {
+            method: 'POST', // 데이터 저장 요청
+            headers: {
+                'Content-Type': 'application/json', // 요청 데이터 타입 (JSON)
+            },
+            body: JSON.stringify(newProduct), // JSON 형태로 데이터 전송
+        });
+
+        // 서버로부터 응답 받기
+        const result = await response.text();
+        console.log("서버 응답:", result); // 서버 응답 확인용 로그
+
+        // 성공 여부에 따라 알림 표시
+        if (result === "success") {
+            alert("제품 등록 성공!"); // 등록 성공
+            fetchProducts(); // 사용자 페이지의 최신 제품 리스트 업데이트 요청
+        } else {
+            alert("제품 등록 실패!"); // 등록 실패
+        }
+    }
+
+
+</script>
 </body>
 </html>
