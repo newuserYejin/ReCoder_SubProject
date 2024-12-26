@@ -14,7 +14,6 @@ let searchEmpName = null;
 let randomStr = 'P';
 
 // 정보수정 꺼
-
 document.addEventListener("DOMContentLoaded", function () {
     menuMainBox.innerHTML = `
                         <div class="employeeListBox">
@@ -62,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     employeeList += `<div class="empItem" data-emp-id = "${employee.empId}">
                                             <div class="profileImg">
 <!--                                                <img src=${employee.profile} alt="사진">-->
-                                                <img src="#" alt="사진">
+                                                <img src="/uploadImg/${employee.profile || 'defaultImg.png'}" alt="사진">
                                             </div>
 
                                             <div>${employee.empName}</div>
