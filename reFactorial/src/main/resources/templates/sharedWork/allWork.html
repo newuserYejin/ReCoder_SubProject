@@ -179,16 +179,39 @@
             var eventColor = departmentColors[departmentCode];
 
             if (eventTitle && eventDescription && eventStartDate && eventEndDate) {
-                calendar.addEvent({
-                    title: eventTitle,
-                    start: eventStartDate,
-                    end: eventEndDate,
-                    description: eventDescription,
-                    color: eventColor,
-                    extendedProps: {
-                        departmentCode: departmentCode
-                    }
-                });
+                // JSON 형태로 데이터 준비
+                var eventData = {
+                    workTitle: eventTitle,
+                    workExplanation: eventDescription,
+                    workSchedule: eventStartDate,
+                    deadLine: eventEndDate,
+                    deptCode: departmentCode
+                };
+
+                // 데이터 들어왔나 확인
+                console.log('Event Data:', eventData);
+
+
+                closeModal();
+                // 서버로 데이터 전송
+                fetch('/allWork', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('일정이 저장되었습니다.');
+                            location.reload();
+                        } else {
+                            alert('저장 실패');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 closeModal();
             } else {
                 alert('모든 필드를 입력해주세요.');

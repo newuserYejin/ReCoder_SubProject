@@ -131,14 +131,16 @@ public class MainController {
         // 최근 이벤트 게시물
         List<BoardDTO> eventList = boardService.postList(5);
 
-        String postId = eventList.get(0).getPostId();
+        if (eventList != null && !eventList.isEmpty()){
+            model.addAttribute("recentlyEvent",eventList.get(0));
+            String postId = eventList.get(0).getPostId();
+            List<CommentDTO> commentList = boardService.commentView(postId);
+            model.addAttribute("commentList",commentList);
+        }
 
-        List<CommentDTO> commentList = boardService.commentView(postId);
 
         model.addAttribute("attendanceChart",attendanceChart);
         model.addAttribute("empHiredDateChart",empHiredDateChart);
-        model.addAttribute("recentlyEvent",eventList.get(0));
-        model.addAttribute("commentList",commentList);
 
         return "admin/admin_main";
     };
@@ -176,10 +178,7 @@ public class MainController {
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
-    @GetMapping("/user/product")
-    public String zasaPage(){
-        return "zasaPage/product";
-    }
+
 
 }
 

@@ -18,16 +18,17 @@ public class SharedWorkService {
     }
 
     // 업무 전체 조회
-    public void saveSharedWork(SharedWorkDTO sharedWork) {
-        sharedWorkMapper.insertSharedWork(sharedWork);
+    public List<SharedWorkDTO> getAllSharedWork(int userDeptCode) {
+        return sharedWorkMapper.getAllSharedWork(userDeptCode);
     }
 
     // 업무 저장
-    public List<SharedWorkDTO> getAllSharedWork() {
-        return sharedWorkMapper.getAllSharedWork();
+    public void saveSharedWork(SharedWorkDTO sharedWork) {
+
+        System.out.println("sharedWork 서비스 = " + sharedWork);
+
+        sharedWorkMapper.saveSharedWork(sharedWork);
     }
-
-
 
 
 }

@@ -9,9 +9,13 @@ import java.util.List;
 public interface SharedWorkMapper {
 
     // 업무 전체 조회
-    void insertSharedWork(SharedWorkDTO sharedWork);
+    List<SharedWorkDTO> getAllSharedWork(int userDeptCode);
 
     // 업무 저장
-    List<SharedWorkDTO> getAllSharedWork();
+    void saveSharedWork(SharedWorkDTO sharedWork);
+
+
+
+
 
 }
