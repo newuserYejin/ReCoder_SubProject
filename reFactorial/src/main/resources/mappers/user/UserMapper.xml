@@ -112,4 +112,14 @@
         WHERE emp_id = #{empId}
     </select>
 
+    <select id="getHiredDateGroupBy">
+        SELECT
+            DATE_FORMAT(emp_joined, '%Y-%m') as joined, COUNT(*) as num
+        FROM
+            employee
+        WHERE
+            emp_joined >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m');
+    </select>
+
 </mapper>
