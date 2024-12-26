@@ -13,9 +13,10 @@ public interface SharedWorkMapper {
     List<SharedWorkDTO> getAllSharedWork(@Param("deptCode") int deptCode);
     // 업무 저장
     void saveSharedWork(SharedWorkDTO sharedWork);
-
-
-
-
-
+    // 일정 삭제
+    int deleteEventById(String workId);
+    // 일정 조회
+    SharedWorkDTO findEventById(String workId);
+    // 일정 수정
+    int updateSharedWork(SharedWorkDTO updatedWork);
 }

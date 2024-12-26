@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.sharedWork.service.SharedWorkService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -103,6 +104,41 @@ public class SharedWorkController {
         sharedService.saveSharedWork(sharedWork);
 
         return "/sharedWork/allWork";
-
     }
+
+    // 일정 삭제
+    @PostMapping("/workDelete")
+    @ResponseBody
+    public String deleteEvent(@RequestBody Map<String, String> requestBody) {
+        String workId = requestBody.get("workId"); // JSON에서 workId 추출
+        try {
+            sharedService.deleteEvent(workId);
+            return "삭제 성공";
+        } catch (Exception e) {
+            return "삭제 실패: " + e.getMessage();
+        }
+    }
+
+    // 일정 수정
+    @PostMapping("/workModify")
+    @ResponseBody
+    public String updateSharedWork(@RequestBody SharedWorkDTO updatedWork, HttpSession session) {
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "유효한 사용자 세션이 아닙니다.";
+        }
+
+        updatedWork.setDeptCode(user.getDeptCode());
+        boolean isUpdated = sharedService.updateSharedWork(updatedWork);
+        if (isUpdated) {
+            return "일정이 성공적으로 수정되었습니다.";
+        } else {
+            return "일정 수정에 실패했습니다.";
+        }
+    }
+
+
+
 }
