@@ -26,7 +26,7 @@ public class AuthService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws AuthenticationException {
 
         // 입력한 id가 자동으로 들어오는지 확인하기 위한 sout
-        System.out.println("username = " + username);
+//        System.out.println("username = " + username);
 
         LoginUserDTO user = memberService.findUserId(username);
 
