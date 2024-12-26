@@ -71,7 +71,27 @@
                     </div>
                 </div>
 
-                <div class="companyMailBox">사내 메일</div>
+                <div class="companyMailBox">
+                    <div class="mailBoxTitle">사내 메일</div>
+                    <div class="mailContent">
+                        <div class="noMailMsg" th:if="!${receivedMails}">받은 메일이 없습니다.</div>
+
+                        <div class="mailTh" th:if="${receivedMails}">
+                            <div class="mailNum"></div>
+                            <div class="sender">보낸사람</div>
+                            <div class="mailTitle">제목</div>
+                            <div class="mailDate">수신일</div>
+                        </div>
+
+                        <div th:onclick="|location.href='@{'/mail/detail'(emailId=${mail.value.mail.emailId})}'|" class="mailTd" th:each="mail, num : ${receivedMails}">
+                            <div class="mailNum" th:text="${num.count}">번호</div>
+                            <div class="sender" th:text="${mail.key}">보낸사람</div>
+                            <div class="mailTitle" th:text="${mail.value.mail.emailTitle}">제목</div>
+                            <div class="mailDate" th:text="${mail.value.date}">수신일</div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             <!-- 출석체크 이벤트, 투표 요약, 게시판 -->
@@ -118,6 +138,11 @@
 
         const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
         const profileUrl = '[[${LoginUserInfo.profile}]]';
+        const receivedMails = '[[${receivedMails}]]'
+
+        if (receivedMails){
+            console.log(receivedMails)
+        }
     </script>
 
     <script th:src="@{/js/mainPage/mainPage.js}"></script>
