@@ -257,6 +257,58 @@ section{
                         }
                     }
                 }
+
+                .pagination{
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 20px;
+
+                    ul {
+                        display: flex;
+                        list-style: none;
+                        padding: 0;
+                        margin: 0;
+
+                        li {
+                            margin: 0 5px;
+
+                            a {
+                                display: inline-block;
+                                padding: 10px 15px;
+                                background-color: #f0f0f0;
+                                color: #333;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                font-weight: bold;
+                                font-size: 1.2em;
+                                transition: background-color 0.3s ease, color 0.3s ease;
+                                min-width: 30px;
+                                text-align: center;
+                            }
+
+                            a:hover {
+                                background-color: #5C1915;
+                                color: white;
+                            }
+                        }
+
+                        .active a {
+                            background-color: #5C1915;
+                            color: white;
+                            font-weight: bold;
+                        }
+                    }
+
+                    /* 첫 번째, 마지막 페이지 버튼 스타일 */
+                    .first, .pagination .last {
+                        font-weight: bold;
+                    }
+
+                    /* 이전/다음 페이지 버튼 스타일 */
+                    .prev, .pagination .next {
+                        font-weight: bold;
+                    }
+                }
             }
 
         }

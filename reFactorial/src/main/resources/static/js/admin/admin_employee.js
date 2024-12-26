@@ -198,18 +198,85 @@ const fetchData = (page = 1, searchEmpName) => {
             if (totalPages == '0' || totalPages == '1'){
                 pagination.style.display = "none";
             } else {
-                pagination.style.display = "block";
+                pagination.style.display = "flex";
                 pagination.innerHTML = '';  // 기존 페이지네이션 초기화
 
+                pagination.innerHTML = `
+                    <ul>
+                        <!-- 첫 페이지 -->
+                        <li class="firstPage">
+                            <a><<</a>
+                        </li>
+                        <!-- 이전 페이지 -->
+                        <li class="prevPage">
+                            <a class="prev"><</a>
+                        </li>
+    
+                        <!-- 다음 페이지 -->
+                        <li class="nextPage">
+                            <a class="next">></a>
+                        </li>
+                        
+                        <!-- 마지막 페이지 -->
+                        <li class="lastPage">
+                            <a class="last">>></a>
+                        </li>
+                    </ul>
+                `
+
+                const firstPage = document.querySelector(".firstPage")
+                firstPage.addEventListener("click",()=>{fetchData(1,presentValue)})
+
+                const prevPage = document.querySelector(".prevPage")
+                prevPage.addEventListener("click",()=>{
+                    if (page == 1){
+                        fetchData(1,presentValue)
+                    } else{
+                        fetchData((page-1),presentValue)
+                    }
+                })
+
+                const nextPage = document.querySelector(".nextPage")
+                nextPage.addEventListener("click",()=>{
+                    if (page == totalPages){
+                        fetchData(totalPages,presentValue)
+                    } else{
+                        fetchData((page+1),presentValue)
+                    }
+                })
+
+                const lastPage = document.querySelector(".lastPage")
+                lastPage.addEventListener("click",()=>{fetchData(totalPages,presentValue)})
+
                 for (let i = 1; i <= totalPages; i++) {
-                    const pageButton = document.createElement('button');
-                    pageButton.textContent = i;
-                    pageButton.addEventListener('click', () => {
-                        page = i
-                        fetchData(page, presentValue);  // 해당 페이지 데이터 가져오기
-                    });
-                    pagination.appendChild(pageButton);
+                    const pageHTML = `
+                        <li>
+                            <a href="#" data-page="${i}">${i}</a>
+                        </li>`;
+                    nextPage.insertAdjacentHTML("beforebegin", pageHTML);
                 }
+
+                document.querySelectorAll('li a[data-page]').forEach(link => {
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault(); // 기본 링크 동작 방지
+                        const page = parseInt(event.target.getAttribute('data-page'));
+
+                        fetchData(page, presentValue);
+                    });
+                });
+
+                // for (let i = 1; i <= totalPages; i++) {
+                //     const pageButton = document.createElement('li');
+                //     const link = document.createElement('a'); // <a> 생성
+                //
+                //     link.textContent = i; // 페이지 번호 설정
+                //     pageButton.appendChild(link);
+                //     pageButton.addEventListener('click', () => {
+                //         page = i
+                //         fetchData(page, presentValue);  // 해당 페이지 데이터 가져오기
+                //     });
+                //     prevPage.insertAdjacentHTML("afterend",pageButton);
+                // }
             }
 
             console.log("전체 사원 근태 data: ", data);
