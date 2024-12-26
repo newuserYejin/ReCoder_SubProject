@@ -94,9 +94,9 @@
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'ko',
-            events: [],
             fixedWeekCount: false,
             displayEventTime: false,
+            events: '/event',
 
             // 날짜 클릭 시 일정 추가 모달
             dateClick: function(info) {

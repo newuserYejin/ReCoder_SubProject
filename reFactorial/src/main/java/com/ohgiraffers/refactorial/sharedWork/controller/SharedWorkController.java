@@ -28,18 +28,38 @@ public class SharedWorkController {
     // 전체 업무 조회
     @GetMapping("/event")
     @ResponseBody
-    public List<SharedWorkDTO> getAllSharedWork(HttpSession session) {
-
-        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
+    public List<Map<String, String>> getAllSharedWork(HttpSession session) {
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
             throw new IllegalStateException("유효한 사용자 세션이 아닙니다.");
         }
 
         int deptCode = user.getDeptCode();
+        List<SharedWorkDTO> workList = sharedService.getAllSharedWork(deptCode);
 
-        return sharedService.getAllSharedWork(deptCode);
+        // 부서별 색상 매핑
+        Map<Integer, String> departmentColors = Map.of(
+                1, "#FF5733", // 인사팀
+                2, "#33FF57", // 개발팀
+                3, "#FF33A1", // 마케팅팀
+                4, "#FFBD33", // 회계팀
+                5, "#3357FF"  // 영업팀
+        );
+
+        // 풀캘린더 형식으로 변환
+        return workList.stream()
+                .map(work -> Map.of(
+                        "id", work.getWorkId(),
+                        "title", work.getWorkTitle(),
+                        "start", work.getWorkSchedule().toString(),
+                        "end", work.getDeadLine() != null ? work.getDeadLine().toString() : null,
+                        "description", work.getWorkExplanation(),
+                        "color", departmentColors.get(deptCode)
+                ))
+                .toList();
     }
+
 
     // 일정 저장
     @PostMapping("/allWork")
