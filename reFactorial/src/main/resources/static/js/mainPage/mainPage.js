@@ -56,6 +56,13 @@ window.onload = function () {
             });
 
     });
+
+    const profileImg = document.querySelector(".profileImg img");
+
+    if (profileUrl != null && profileUrl.trim() != ''){
+        profileImg.src = `/uploadImg/${profileUrl}`;
+    }
+
 }
 
 function setWeather (maxTemp,minTemp,icon){

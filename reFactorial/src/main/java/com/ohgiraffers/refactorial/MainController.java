@@ -1,6 +1,9 @@
 package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
+import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
+import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
+import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
@@ -25,17 +28,20 @@ public class MainController {
     private final CabinetService cabinetService;
     private final MailService mailService;
     private final AttendanceService attendanceService;
+    private final BoardService boardService;
 
     @Autowired
     public MainController(MemberService memberService,
                           CabinetService cabinetService,
                           MailService mailService,
-                          AttendanceService attendanceService
+                          AttendanceService attendanceService,
+                          BoardService boardService
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
         this.mailService = mailService;
         this.attendanceService = attendanceService;
+        this.boardService = boardService;
     }
 
 
@@ -49,10 +55,13 @@ public class MainController {
     
     @GetMapping("/user")
     public String mainControll(Model model){
+        List<BoardDTO> boardList = boardService.postList(1);
+
+        model.addAttribute("boardList",boardList);
+
         return "index";
     }
 
-    
     @GetMapping("/booking")
     public String showReservations(HttpSession session , Model model) {
 
@@ -87,18 +96,27 @@ public class MainController {
     @GetMapping("/auth/login")
     public void loginPage(){};
 
-
-
     @GetMapping("/admin/main")
     public String adminPage(Model model){
 
+        // 입사 현황
+        Map<String, Object> empHiredDateChart = memberService.getHiredDateGroupBy();
+        
+        // 오늘 출근 현황
         LocalDate today = LocalDate.now();
-
         Map<String,Object> attendanceChart = attendanceService.getAttendanceGroupBy(today);
 
-        System.out.println("chartData = " + attendanceChart);
+        // 최근 이벤트 게시물
+        List<BoardDTO> eventList = boardService.postList(5);
+
+        String postId = eventList.get(0).getPostId();
+
+        List<CommentDTO> commentList = boardService.commentView(postId);
 
         model.addAttribute("attendanceChart",attendanceChart);
+        model.addAttribute("empHiredDateChart",empHiredDateChart);
+        model.addAttribute("recentlyEvent",eventList.get(0));
+        model.addAttribute("commentList",commentList);
 
         return "admin/admin_main";
     };

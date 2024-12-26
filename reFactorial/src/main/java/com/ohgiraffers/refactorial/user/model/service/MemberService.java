@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -91,5 +92,22 @@ public class MemberService {
 
     public String getNameById(String empId) {
         return userMapper.getNameById(empId);
+    }
+
+    public Map<String, Object> getHiredDateGroupBy() {
+        Map<String, Object> result = new HashMap<>();
+
+        List<Map<String, Object>> chartData = userMapper.getHiredDateGroupBy();
+
+        System.out.println("chartData = " + chartData);
+
+        for (Map<String, Object> data : chartData){
+            String key = String.valueOf(data.get("joined"));
+            Integer value = Integer.parseInt(String.valueOf(data.get("num")));
+
+            result.put(key,value);
+        }
+
+        return result;
     }
 }
