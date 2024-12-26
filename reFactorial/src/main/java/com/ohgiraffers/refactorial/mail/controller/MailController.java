@@ -61,6 +61,8 @@ public class MailController {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String senderEmpId = loginUser.getEmpId();
 
+
+
         // 보낸 메일 목록을 모델에 추가
         List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
 
@@ -94,9 +96,9 @@ public class MailController {
     }
 
     @GetMapping("/detailBin")
-    public String mailDetailBin(@RequestParam("emailId") String emailId , Model model){
+    public String mailDetailBin(@RequestParam("emailId") String emailId, Model model) {
         MailDTO mailDetailBin = mailService.getMailDetailBin(emailId);
-        model.addAttribute("mailDetailBin",mailDetailBin);
+        model.addAttribute("mailDetailBin", mailDetailBin);
         return "/mail/mailDetailBin";
     }
 
@@ -136,11 +138,7 @@ public class MailController {
     @GetMapping("/mailBin")
     public String viewMailBin(Model model, HttpSession session) {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        String receiverEmpIds = loginUser.getEmpId();
         String senderEmpId = loginUser.getEmpId();
-
-        List<MailDTO> receivedMailsBin = mailService.getReceivedMailsBin(receiverEmpIds);
-        model.addAttribute("receivedMailsBin", receivedMailsBin);
 
         List<MailDTO> sentMailsBin = mailService.getSentMailsBin(senderEmpId);
         model.addAttribute("sentMailsBin", sentMailsBin);
@@ -149,9 +147,22 @@ public class MailController {
     }
 
     @PostMapping("/moveToTrash")
-    public String moveToTrash(@RequestParam("emailId") String emailId) {
+    public String moveToTrash(@RequestParam("emailId") String emailId,
+                              @RequestParam("receiverEmpIds") String receiverEmpIds) {
+        if (receiverEmpIds != null && !receiverEmpIds.isEmpty()) {
+            List<String> receiverEmpIdList = Arrays.asList(receiverEmpIds.split(","));
+            for (String receiverEmpId : receiverEmpIdList) {
+                mailService.moveToTrash(emailId, receiverEmpId);
+            }
+        }
+        return "redirect:/mail/mailBin";
+    }
+
+
+    @PostMapping("/removeToTrash")
+    public String removeToTrash(@RequestParam("emailId") String emailId) {
         // 메일을 휴지통으로 보내는 서비스 호출
-        mailService.moveToTrash(emailId);
+        mailService.removeToTrash(emailId);
 
         return "redirect:/mail/mailBin"; // 휴지통 페이지로 리디렉션
     }

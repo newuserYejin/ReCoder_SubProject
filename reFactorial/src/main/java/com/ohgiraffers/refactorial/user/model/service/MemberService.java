@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -69,9 +70,9 @@ public class MemberService {
     }
 
     @Transactional
-    public Integer updatePersonalInfo(String email, String phone, String address, String userId) {
+    public Integer updatePersonalInfo(String email, String phone, String address, String userId,String fileImgName) {
 
-        if (email == null && phone == null && address == null) {
+        if (email.equals("null") && phone.equals("null") && address.equals("null") && fileImgName.isEmpty()) {
             System.out.println("업데이트할 데이터가 없습니다.");
             return 0; // 업데이트 실행 안 함
         }
@@ -82,6 +83,7 @@ public class MemberService {
         updateData.put("phone",phone);
         updateData.put("address",address);
         updateData.put("userId",userId);
+        updateData.put("fileImgName",fileImgName);
 
         int result = userMapper.updatePersonalInfo(updateData);
 
@@ -90,5 +92,22 @@ public class MemberService {
 
     public String getNameById(String empId) {
         return userMapper.getNameById(empId);
+    }
+
+    public Map<String, Object> getHiredDateGroupBy() {
+        Map<String, Object> result = new HashMap<>();
+
+        List<Map<String, Object>> chartData = userMapper.getHiredDateGroupBy();
+
+        System.out.println("chartData = " + chartData);
+
+        for (Map<String, Object> data : chartData){
+            String key = String.valueOf(data.get("joined"));
+            Integer value = Integer.parseInt(String.valueOf(data.get("num")));
+
+            result.put(key,value);
+        }
+
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -24,4 +25,6 @@ public interface UserMapper {
     String findEmpIdByName(String name);
 
     String getNameById(String empId);
+
+    List<Map<String, Object>> getHiredDateGroupBy();
 }

@@ -19,31 +19,35 @@
         <result property="emailId" column="email_id"/>
         <result property="receiverEmpId" column="receiver_emp_id"/>
         <result property="readStatus" column="read_status"/>
+        <result property="trashStatus" column="trash_status"/>
     </resultMap>
 
     <!-- 메일 보내기 -->
     <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
-        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, trash_status, sender_emp_id)
-        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE(), 0 , #{senderEmpId})
+        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, sender_emp_id)
+        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE() , #{senderEmpId})
     </insert>
     <insert id="saveReceiver" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
-        INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status)
-        VALUES (#{emailId}, #{receiverEmpId}, #{readStatus})
+        INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status ,trash_status )
+        VALUES (#{emailId}, #{receiverEmpId}, #{readStatus} , 0 )
     </insert>
 
     <!--내가 보낸 메일-->
     <select id="getSentMails" resultMap="MailResultMap">
         SELECT *
-        FROM tbl_mail
-        WHERE sender_emp_id = #{senderEmpId} and trash_status = 0
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
+        WHERE m.sender_emp_id = #{senderEmpId}
+        AND mr.trash_status = 0
     </select>
 
     <!--내가 받은 메일-->
     <select id="getReceivedMails" resultMap="MailResultMap">
         SELECT *
         FROM tbl_mail m
-        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
-        WHERE mr.receiver_emp_id = #{receiverEmpId} and trash_status = 0
+        INNER JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
+        WHERE mr.receiver_emp_id = #{receiverEmpId}
+        AND mr.trash_status = 0
     </select>
 
     <!-- 내가 보낸 메일의 수신자 사원 ID 가져오기 -->
@@ -68,9 +72,17 @@
     </select>
 
     <!-- 휴지통으로 이동 -->
-    <update id="updateTrashStatus" parameterType="java.lang.String">
-        UPDATE tbl_mail
-        SET trash_status = 1
+    <!-- 특정 수신자에 대해 휴지통 이동 -->
+    <update id="updateTrashStatus" parameterType="map">
+        UPDATE tbl_mail_receivers
+        SET trash_status = #{trashStatus}
+        WHERE email_id = #{emailId} AND receiver_emp_id = #{receiverEmpId}
+    </update>
+
+    <!-- 휴지통에서 복구하기-->
+    <update id="updateTrashRemove" parameterType="java.lang.String">
+        UPDATE tbl_mail_receivers
+        SET trash_status = 0
         WHERE email_id = #{emailId}
     </update>
 
@@ -79,13 +91,14 @@
         SELECT m.*, mr.receiver_emp_id
         FROM tbl_mail m
         INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
-        WHERE m.trash_status = 1
+        WHERE mr.trash_status = 1
     </select>
     <select id="getSentMailsBin" resultMap="MailResultMap">
         SELECT m.*, mr.receiver_emp_id
         FROM tbl_mail m
         INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
-        WHERE m.trash_status = 1
+        WHERE mr.trash_status = 1
     </select>
 
-</mapper>
+
+        </mapper>

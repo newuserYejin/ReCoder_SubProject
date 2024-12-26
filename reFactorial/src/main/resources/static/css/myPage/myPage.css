@@ -10,7 +10,7 @@ body{
 }
 
 .myPageSection{
-    padding: 30px 55px 10px;
+    padding: 12px 55px 10px;
     height: 100%;
     box-sizing: border-box;
     display: flex;
@@ -42,15 +42,52 @@ body{
                 justify-content: center;
                 align-items: center;
 
-                img{
+                .profileImgBox{
                     width: 45%;
                     aspect-ratio: 1 / 1 ;
                     border-radius: 50%;
-                    background-position: center;
                     border: solid 5px black;
                     padding: 10px;
+                    background-position: center;
+                    background-size: 90%;
 
                     box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+
+                    position: relative;
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                }
+
+
+                label[for="profileImg"] {
+                    position: absolute;
+                    width: 20%;
+                    aspect-ratio: 1 / 1; /* 정사각형 비율 */
+                    right: 10px;
+                    bottom: 10px;
+                    z-index: 3;
+
+                    border-radius: 50%;
+
+                    box-sizing: border-box;
+                    padding: 8px;
+                    background-color: white;
+
+                    display: flex;
+                    justify-content: center;
+                    align-self: center;
+
+                    border: solid 3px black;
+
+                    display: none;
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                #profileImg{
+                    display: none;
                 }
             }
 

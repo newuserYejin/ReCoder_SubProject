@@ -83,14 +83,17 @@
     <update id="updatePersonalInfo" parameterType="map">
         UPDATE employee
         <set>
-            <if test="email != null">
+            <if test="email != null and email != 'null'">
                 emp_email = #{email},
             </if>
-            <if test="phone != null">
+            <if test="phone != null and phone != 'null'">
                 emp_phone = #{phone},
             </if>
-            <if test="address != null">
+            <if test="address != null and address != 'null'">
                 emp_address = #{address},
+            </if>
+            <if test="fileImgName != null and fileImgName != ''">
+                profile = #{fileImgName},
             </if>
         </set>
         WHERE emp_id = #{userId}
@@ -107,6 +110,16 @@
         SELECT emp_name
         FROM employee
         WHERE emp_id = #{empId}
+    </select>
+
+    <select id="getHiredDateGroupBy">
+        SELECT
+            DATE_FORMAT(emp_joined, '%Y-%m') as joined, COUNT(*) as num
+        FROM
+            employee
+        WHERE
+            emp_joined >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m');
     </select>
 
 </mapper>

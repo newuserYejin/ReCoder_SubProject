@@ -69,4 +69,21 @@ public class AttendanceService {
 
         return attendanceList;
     }
+
+    public Map<String, Object> getAttendanceGroupBy(LocalDate today) {
+        List<Map<String,Object>> resultList =  attendanceMapper.getAttendanceGroupBy(today);
+
+        System.out.println("List<Map<String,Object>> = " + resultList);
+
+        Map<String, Object> returnData = new HashMap<>();
+
+        for (Map<String, Object> result : resultList){
+            String key = String.valueOf(result.get("att_status"));
+            Integer value = Integer.parseInt(String.valueOf(result.get("count")));
+
+            returnData.put(key,value);
+        }
+
+        return returnData;
+    }
 }

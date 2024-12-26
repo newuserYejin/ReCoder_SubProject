@@ -14,15 +14,157 @@
     <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
 
     <link rel="stylesheet" th:href="@{/css/admin/admin_main.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_main.css">
 </head>
 <body>
 
     <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
     <section>
-        <div style="--menu-size: 400px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        <div class="pageTitle">관리자 페이지</div>
+        <div class="mainBox">
+            <div class="mainLeft_box">
+                <div style="--menu-size: 350px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+                <div class="inquiryBox">1 : 1 문의사항</div>
+            </div>
+            <div class="mainRight_box">
+                <div class="hiredDateChart">
+                    <div class="chartTitle">입사 현황 ( 최근 2년 이내)</div>
+                    <div class="hiredChartBox">
+                        <canvas id="hiredChart"></canvas>
+                    </div>
+                </div>
+                <div class="mainRightBottom_box">
+                    <div class="eventReaction">
+                        <div class="chartTitle">이벤트 반응</div>
+
+                        <div class="reactionCommentBox">
+                            <div class="noEventText" th:if="${recentlyEvent} == null">아직 이벤트가 없습니다.</div>
+                            <div id="reactionComment" th:if="${recentlyEvent} != null">
+                                <div class="postInfo">
+                                    <div class="postDate" th:text="|작성일 : ${#temporals.format(recentlyEvent.postCreationDate, 'yyyy-MM-dd')}|"></div>
+                                    <div class="postContent"  th:text="${recentlyEvent.postContent}"></div>
+                                </div>
+                                <div class="commentInfo">
+                                    <div class="noComment" th:if="${commentList.size()} == 0">댓글이 없습니다 ㅠㅠ </div>
+                                    <div class="commentBox" th:each="comment, num : ${commentList}" th:if="${commentList.size()} > 0">
+                                        <div class="commentNum" th:text="${num.count}"></div>
+                                        <div class="commentContent" th:text="${comment.commentContent}"></div>
+                                        <div class="commentEmpName" th:text="${comment.empName}"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attendanceChart">
+                        <div class="chartTitle">오늘의 근태</div>
+                        <div class="attChartBox">
+                            <canvas id="attChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
     <!-- 유저 페이지들과 footer 공동 사용 -->
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        const attendanceChart = /*[[${attendanceChart}]]*/{}
+        const empHiredDateChart = /*[[${empHiredDateChart}]]*/{}
+        console.log(attendanceChart)
+
+        const attChartItem = Object.keys(attendanceChart);
+        const attChartCount = Object.values(attendanceChart);
+
+        const hiredChartItem = Object.keys(empHiredDateChart);
+        const hiredChartCount = Object.values(empHiredDateChart);
+
+        const attChart = document.getElementById('attChart');
+        const hiredChart = document.getElementById('hiredChart');
+
+        new Chart(attChart, {
+            type: 'bar',
+            data: {
+                labels: attChartItem,
+                datasets: [{
+                    label: '해당 직원 수',
+                    data: attChartCount,
+                    borderWidth: 1,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(255, 159, 64, 0.5)',
+                        'rgba(255, 205, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                    ],
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        ticks:{
+                            stepSize: 2 // 단위
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(hiredChart, {
+            type: 'line',
+            data: {
+                labels: hiredChartItem,
+                datasets: [
+                    {
+                        label: '입사 현황',
+                        data: hiredChartCount,
+                        borderColor: 'rgba(92, 25, 21, 1)',
+                        backgroundColor: 'rgba(92, 25, 21, 1)',
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true, // y축 0부터 시작,
+                        ticks:{
+                            stepSize: 1 // 단위
+                        },
+                        suggestedMax: Math.max(...hiredChartCount) + 1,
+                    }
+                }
+            },
+        });
+
+    </script>
+
+    <script>
+        const recentlyEvent = '[[${recentlyEvent}]]';
+
+        const commentList = '[[${commentList}]]';
+
+        console.log("commentList: ",commentList);
+        console.log("recentlyEvent :",recentlyEvent );
+    </script>
 
 </body>
 </html>

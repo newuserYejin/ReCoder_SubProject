@@ -56,6 +56,13 @@ window.onload = function () {
             });
 
     });
+
+    const profileImg = document.querySelector(".profileImg img");
+
+    if (profileUrl != null && profileUrl.trim() != ''){
+        profileImg.src = `/uploadImg/${profileUrl}`;
+    }
+
 }
 
 function setWeather (maxTemp,minTemp,icon){
@@ -75,4 +82,14 @@ function setWeather (maxTemp,minTemp,icon){
     `
     weatherAPIBox.innerHTML =''
     weatherAPIBox.innerHTML = result
+}
+
+function redirectBasedOnAuth() {
+    // LoginUserInfo.viewAuth 값을 서버에서 미리 렌더링하여 가져옵니다.
+     // 기본값은 'USER'로 설정
+    if (viewAuth === 'ADMIN') {
+        location.href = '/admin/main';
+    } else {
+        location.href = '/user/myPage';
+    }
 }

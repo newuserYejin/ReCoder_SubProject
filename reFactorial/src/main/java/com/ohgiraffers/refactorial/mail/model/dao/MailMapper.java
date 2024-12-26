@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MailMapper {
@@ -35,6 +36,9 @@ public interface MailMapper {
     List<MailDTO> getReceivedMailsBin(String receiverEmpIds);
     List<MailDTO> getSentMailsBin(String senderEmpId);
 
-    void updateTrashStatus(String emailId, int i);
+    // 휴지통 복구 삭제
+    void updateTrashRemove(String emailId, int i);
 
+
+    void updateTrashStatus(Map<String, Object> params);
 }
