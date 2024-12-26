@@ -242,4 +242,13 @@ public class AdminController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("product")
+    public String adminProduct(){
+        return "/admin/admin_product";
+    }
+
+
+
+
 }
