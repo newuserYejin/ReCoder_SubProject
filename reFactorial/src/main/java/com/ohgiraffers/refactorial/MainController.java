@@ -109,7 +109,8 @@ public class MainController {
         // 최근 이벤트 게시물
         List<BoardDTO> eventList = boardService.postList(5);
 
-        if (eventList != null){
+        if (eventList != null && !eventList.isEmpty()){
+            model.addAttribute("recentlyEvent",eventList.get(0));
             String postId = eventList.get(0).getPostId();
             List<CommentDTO> commentList = boardService.commentView(postId);
             model.addAttribute("commentList",commentList);
@@ -118,7 +119,6 @@ public class MainController {
 
         model.addAttribute("attendanceChart",attendanceChart);
         model.addAttribute("empHiredDateChart",empHiredDateChart);
-        model.addAttribute("recentlyEvent",eventList.get(0));
 
         return "admin/admin_main";
     };
