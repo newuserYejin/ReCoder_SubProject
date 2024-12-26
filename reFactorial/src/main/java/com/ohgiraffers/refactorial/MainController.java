@@ -109,14 +109,16 @@ public class MainController {
         // 최근 이벤트 게시물
         List<BoardDTO> eventList = boardService.postList(5);
 
-        String postId = eventList.get(0).getPostId();
+        if (eventList != null){
+            String postId = eventList.get(0).getPostId();
+            List<CommentDTO> commentList = boardService.commentView(postId);
+            model.addAttribute("commentList",commentList);
+        }
 
-        List<CommentDTO> commentList = boardService.commentView(postId);
 
         model.addAttribute("attendanceChart",attendanceChart);
         model.addAttribute("empHiredDateChart",empHiredDateChart);
         model.addAttribute("recentlyEvent",eventList.get(0));
-        model.addAttribute("commentList",commentList);
 
         return "admin/admin_main";
     };
