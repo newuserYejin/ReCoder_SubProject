@@ -14,16 +14,11 @@
 
         <form class="addEmployeeFragment" th:fragment="addEmployeeFragment" th:action="${ModifyUser != null ? '/admin/modifyEmpInfo' : '/user/addEmployee'}" method="post">
             <div class="uploadFile">
-                <label for="profile">
-<!--                    <img src="../../static/images/loopy.jpg" alt="프로필 사진">-->
-                    <img th:if="${ModifyUser == null || ModifyUser.profile == null}" src="/uploadImg/defaultImg.png">
-                    <img th:if="${ModifyUser != null && ModifyUser.profile != null}" th:src="/uploadImg/${ModifyUser.profile}">
-<!--                    <img  th:src="@{${ModifyUser != null && ModifyUser.profile != null ? '/uploadImg/' + ModifyUser.profile : '/uploadImg/defaultImg.png'}}" alt="프로필 사진">-->
-<!--                    <img th:src="${ModifyUser != null ? ModifyUser.profile : ''}" alt="프로필 사진">-->
-<!--                    <img th:src="${ModifyUser != null && ModifyUser.profile != null ? '/uploadImg/' + ModifyUser.profile : '/uploadImg/defaultImg.png'}" alt="프로필 사진">-->
+                <label>
+                    <img th:src="${ModifyUser != null && ModifyUser.profile != null && ModifyUser.profile != '' && ModifyUser.profile != 'null' ? '/uploadImg/' + ModifyUser.profile : '/uploadImg/defaultImg.png'}" alt="프로필 이미지">
                 </label>
-                <input type="file" id="profile" name="profile"><br>
             </div>
+
 
             <div class="inputInfo">
                 <div class="inputSet">
