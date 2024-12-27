@@ -38,15 +38,36 @@
     <!-- 모든 업무 조회 -->
     <select id="getAllSharedWork" resultMap="sharedWorkResultMap">
         SELECT
-            work_id AS workId,
-            work_title AS workTitle,
-            work_explanation AS workExplanation,
-            deadline,
-            work_schedule AS workSchedule,
-            dept_code AS deptCode
+            *
         FROM
             tbl_sharedWork
         WHERE
             dept_code = #{deptCode}
     </select>
+
+    <!-- 업무 삭제 -->
+    <delete id="deleteEventById" parameterType="String">
+        DELETE FROM tbl_sharedWork
+        WHERE work_id = #{workId}
+    </delete>
+
+    <!-- 업무 조회 -->
+    <select id="findEventById" parameterType="String" resultType="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        SELECT *
+        FROM tbl_sharedWork
+        WHERE work_id = #{workId}
+    </select>
+
+    <!-- 업무 수정 -->
+    <update id="updateSharedWork" parameterType="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        UPDATE tbl_sharedWork
+        SET
+        work_title = #{workTitle},
+        work_explanation = #{workExplanation},
+        work_schedule = #{workSchedule},
+        deadline = #{deadLine},
+        dept_code = #{deptCode}
+        WHERE work_id = #{workId}
+    </update>
+
 </mapper>
