@@ -206,7 +206,7 @@ section{
             width: 60%;
             height: 100%;
 
-            padding: 10px;
+            padding: 20px;
 
             box-sizing: border-box;
 
@@ -217,10 +217,22 @@ section{
             box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
             border-radius: 10px;
 
-            .mailBoxTitle{
-                font-size: 1.2em;
-                font-weight: bold;
-                margin-bottom: 10px;
+            .mailBoxTitleBox{
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                color: rgba(0,0,0,0.8);
+
+                div{
+                    font-size: 0.5em;
+                    cursor: pointer;
+                }
+
+                .mailBoxTitle{
+                    font-size: 1.5em;
+                    padding: 0 10px;
+                    border-bottom: solid 4px #5C1915;
+                }
             }
 
             .mailContent{
@@ -232,6 +244,8 @@ section{
                 justify-content: start;
                 align-items: center;
 
+                font-family: "Noto Sans KR", sans-serif;
+
                 .noMailMsg{
                     font-size: 1.3em;
                 }
@@ -242,6 +256,8 @@ section{
                     display: flex;
                     margin-bottom: 5px;
                     border-bottom: solid 1px #4F4F4F;
+                    font-size: 0.8em;
+                    font-weight: bold;
 
                     .mailNum{
                         width: 10%;
@@ -267,6 +283,7 @@ section{
 
                 .mailTd{
                     cursor: pointer;
+                    margin-bottom: 10px;
                 }
 
                 .mailTh{
@@ -310,7 +327,79 @@ section{
                 width: 39%;
                 height: 100%;
 
-                border: solid 1px blue;
+                border: solid 1px rgba(79, 79, 79, 40%);
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+                border-radius: 10px;
+
+                padding: 20px;
+                box-sizing: border-box;
+
+                display: flex;
+                flex-direction: column;
+
+                .voteTitleBox{
+                    display: flex;
+                    justify-content: space-between;
+                    color: rgba(0,0,0,0.8);
+
+                    .voteTitle{
+                        font-size: 1.5em;
+                        padding: 0 10px;
+                        border-bottom: solid 4px #5C1915;
+                    }
+                }
+
+                .voteContentBoxBox{
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    flex: 1;
+
+                    display: none;
+
+                    img{
+                        cursor: pointer;
+                    }
+
+                    .voteContentBox{
+                        width: 100%;
+                        flex: 1;
+
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        >div{
+                            width: 10%;
+                        }
+
+                        .prevBtn:disabled, .nextBtn:disabled{
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+
+                        .voteContent{
+                            width: 80%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                    }
+
+                    button{
+                        background-color: #5C1915;
+                        color: white;
+                        padding: 10px 20px;
+                        border-radius: 10px;
+                        border: none;
+                        cursor: pointer;
+                    }
+                }
+
+
             }
 
             .boardSummary{
@@ -321,7 +410,7 @@ section{
                 display: flex;
                 flex-direction: column;
 
-                padding: 10px;
+                padding: 20px;
 
                 border: solid 1px rgba(79, 79, 79, 40%);
                 box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
@@ -341,16 +430,19 @@ section{
                         align-items: center;
 
                         height: fit-content;
-                        margin-bottom: 15px;
+                        margin-bottom: 20px;
 
                         .boardTitle{
-                            font-size: 1.2em;
-                            font-weight: bold;
+                            color: rgba(0,0,0,0.8);
+                            font-size: 1.5em;
+                            padding:0 10px;
+                            border-bottom: solid 4px #5C1915;
                         }
 
                         div{
                             font-size: 0.5em;
-                            color: #4F4F4F;
+                            color: rgba(0,0,0,0.8);
+                            cursor: pointer;
                         }
 
                         div:last-child{
@@ -370,6 +462,9 @@ section{
 
                         font-size: 1.1em;
 
+                        font-family: "Noto Sans KR", sans-serif;
+                        font-weight: bold;
+
                         .DataHeader {
                             width: 100%;
                             display: flex;
@@ -381,13 +476,21 @@ section{
                             margin-bottom: 15px;
 
                             div{
-                                width: 25%;
+                                width: 10%;
                                 text-align: center;
                                 font-size: 0.8em;
                             }
 
+                            .postEmpName{
+                                width: 15%;
+                            }
+
                             .postTitle{
                                 width: 50%;
+                            }
+
+                            .postDate{
+                                width: 25%;
                             }
                         }
 
@@ -413,15 +516,23 @@ section{
                                 border-bottom: solid 1px #4F4F4F;
 
                                 div{
-                                    width: 25%;
+                                    width: 10%;
                                     text-align: center;
                                     font-size: 0.8em;
 
                                     cursor: pointer;
                                 }
 
+                                .postEmpName{
+                                    width: 15%;
+                                }
+
                                 .postTitle{
                                     width: 50%;
+                                }
+
+                                .postDate{
+                                    width: 25%;
                                 }
                             }
 
