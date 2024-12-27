@@ -18,6 +18,12 @@
     <insert id="sendInquiry" parameterType="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
         INSERT INTO tbl_inquiry (iqr_value, iqr_title, iqr_details ,emp_id, iqr_creationDate )
         VALUES (#{iqrValue}, #{iqrTitle} ,#{iqrDetails}, #{empId}, now())
-        </insert>
+    </insert>
 
+    <!-- 1:1 문의내역 -->
+    <select id="sentInquiries" resultMap="InquiryResultMap">
+        SELECT *
+        FROM tbl_inquiry
+        WHERE emp_id = #{emp_id}
+    </select>
 </mapper>

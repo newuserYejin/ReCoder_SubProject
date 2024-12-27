@@ -7,15 +7,23 @@
 
     <!-- 회원 이름으로 검색 -->
     <select id="searchMailEmployeesByName" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
-        SELECT emp_id, emp_name, emp_no, emp_address, emp_email, emp_joined, annual_leave, emp_pwd, profile, emp_phone, dept_code, position_value, view_auth
-        FROM employee
-        WHERE emp_name LIKE CONCAT('%' , #{searchReceiverInput}, '%')
+        SELECT
+        e.*, d.dept_name, p.position_name
+        FROM
+        employee e
+        JOIN tbl_dept d ON e.dept_code = d.dept_code
+        JOIN tbl_position p ON e.position_value = p.position_value
+        WHERE
+        emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
     </select>
 
-    <!-- 모든 직원 조회 -->
+    <!-- 전체 직원 조회 -->
     <select id="getAllMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
-        SELECT emp_id, emp_name, emp_no, emp_address, emp_email, emp_joined, annual_leave, emp_pwd, profile, emp_phone, dept_code, position_value, view_auth
-        FROM employee
+        SELECT
+        e.*, d.dept_name, p.position_name
+        FROM
+        employee e
+        JOIN tbl_dept d ON e.dept_code = d.dept_code
+        JOIN tbl_position p ON e.position_value = p.position_value
     </select>
-
 </mapper>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -30,5 +31,9 @@ public class InquiryService {
         inquiryDTO.setIqrValue(IQRid);
 
         inquiryMapper.sendInquiry(inquiryDTO);
+    }
+
+    public List<InquiryDTO> sentInquiries(String senderEmpId) {
+        return inquiryMapper.sentInquiries(senderEmpId);
     }
 }

@@ -21,5 +21,8 @@ public class MailDTO {
     private String receiverEmpId;
     private List<String> receiverEmpIds; // 수신자 목록 (새로 추가된 필드)
 
+    private String deptName;        // 부서명
+    private String positionName;    // 직책명
+
 }
 
