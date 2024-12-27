@@ -13,6 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///C:/uploads/"); // 실제 저장 경로
 
         registry.addResourceHandler("/uploadImg/**")
-                .addResourceLocations("file:///C:/Users/문정현/Desktop/그룹웨어프로젝트/reFactorial/src/main/resources/static/images/uploadImg/");
+                .addResourceLocations("file:///C:/Lecture/reCoder/reFactorial/src/main/resources/static/images/uploadImg/");
     }
 }

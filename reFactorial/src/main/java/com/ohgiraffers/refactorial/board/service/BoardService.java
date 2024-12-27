@@ -99,10 +99,10 @@ public class BoardService {
     }
 
 
-//    // 투표 결과(12/22)
-//    public List<VoteItemDTO> getUserVote(String postId, String empId) {
-//        return boardMapper.getUserVote(postId, empId);
+    // 페이지네이션 하는중
+//    public int getRejectedDocumentsCount() {
 //    }
-
-
+//
+//    public List<BoardDTO> BoardList(int limit, int offset) {
+//    }
 }
