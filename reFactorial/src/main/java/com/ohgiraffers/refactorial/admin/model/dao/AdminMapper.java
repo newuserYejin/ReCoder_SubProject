@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.admin.model.dao;
 
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -45,4 +46,8 @@ public interface AdminMapper {
     ProductDTO getProductById(String id);
 
     int updateProduct(ProductDTO productDTO);
+
+    int insertFactory(FactoryDTO factoryDTO);
+
+    String getMaxFactoryId();
 }

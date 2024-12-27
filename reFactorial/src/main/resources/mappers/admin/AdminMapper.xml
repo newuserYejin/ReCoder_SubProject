@@ -162,6 +162,7 @@
         WHERE prod_id = #{id}
     </select>
 
+
     <update id="updateProduct" parameterType="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
         UPDATE tbl_product
         SET prod_name = #{name},
@@ -175,5 +176,17 @@
 
 
 
+    <!-- 협력업체 등록 -->
+    <insert id="insertFactory" parameterType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        INSERT INTO tbl_factory
+        (fab_id, manager_name, manager_phone, fab_email, fab_name, fab_address, fab_product, emp_id, fab_phone, fab_image)
+        VALUES
+            (#{fabId}, #{managerName}, #{managerPhone}, #{fabEmail}, #{fabName}, #{fabAddress}, #{fabProduct}, #{empId}, #{fabPhone}, #{fabImage})
+    </insert>
+
+    <!-- 가장 큰 ID 가져오기 -->
+    <select id="getMaxFactoryId" resultType="string">
+        SELECT MAX(fab_id) FROM tbl_factory
+    </select>
 
 </mapper>

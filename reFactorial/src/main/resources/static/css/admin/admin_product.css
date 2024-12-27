@@ -53,9 +53,9 @@ form#addProductForm button:hover {
 footer {
     position: relative; /* 푸터를 페이지 레이어 상위로 설정 */
     z-index: 10; /* 높은 z-index 값으로 다른 요소 위에 표시 */
-    
 
-    text-align: center;
+
+
 }
 
 .menuMainBox{

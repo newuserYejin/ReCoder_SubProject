@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
@@ -319,5 +320,30 @@ public class AdminController {
     }
 
 
+    @PostMapping("/addFactory")
+    @ResponseBody
+    public String addFactory(@ModelAttribute FactoryDTO factoryDTO, HttpSession session){
+        System.out.println("FactoryDTO Data: " + factoryDTO);
+        System.out.println("Image URL: " + factoryDTO.getFabImage());
+
+        // 로그인된 사용자 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "로그인 정보가 없습니다.";
+        }
+
+        // 로그인된 사용자의 empId 설정
+        factoryDTO.setEmpId(user.getEmpId());
+
+        // ID 자동 생성
+        String newFactoryId = adminService.generateFactoryId();
+        factoryDTO.setFabId(newFactoryId);
+
+        // 등록 처리
+        int result = adminService.addFactory(factoryDTO);
+        return result > 0 ? "success" : "fail";
+
+    }
 
 }

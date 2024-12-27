@@ -28,11 +28,62 @@
             </ul>
         </div>
         <div class="menuMainBox">
+            <h2>업체 등록</h2>
+            <form id="addFactoryForm" enctype="multipart/form-data">
+                <label for="fabName">업체 이름:</label>
+                <input type="text" id="fabName" name="fabName" placeholder="업체 이름 입력" required>
 
+                <label for="fabAddress">업체 주소:</label>
+                <input type="text" id="fabAddress" name="fabAddress" placeholder="업체 주소 입력" required>
+
+                <label for="fabPhone">대표 연락처:</label>
+                <input type="text" id="fabPhone" name="fabPhone" placeholder="연락처 입력" required>
+
+                <label for="managerName">담당자 이름:</label>
+                <input type="text" id="managerName" name="managerName" placeholder="담당자 이름 입력" required>
+
+                <label for="managerPhone">담당자 연락처:</label>
+                <input type="text" id="managerPhone" name="managerPhone" placeholder="담당자 연락처 입력" required>
+
+                <label for="fabEmail">이메일:</label>
+                <input type="email" id="fabEmail" name="fabEmail" placeholder="이메일 입력" required>
+
+                <label for="fabProduct">생산 제품:</label>
+                <input type="text" id="fabProduct" name="fabProduct" placeholder="생산 제품 입력" required>
+
+                <label for="fabImage">업체 사진:</label>
+                <input type="text" id="fabImage" name="fabImage" accept="images/addressBook/" placeholder="images/addressBook/..." required>
+
+                <button type="button" id="registerFactory">등록</button>
+            </form>
         </div>
     </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
+<script>
+    document.getElementById('registerFactory').addEventListener('click', function () {
+        const form = document.getElementById('addFactoryForm');
+        const formData = new FormData(form);
 
+        // 디버깅: FormData 내용을 확인
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        fetch('/admin/addFactory', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('업체가 성공적으로 등록되었습니다.');
+                    form.reset();
+                } else {
+                    throw new Error('등록에 실패했습니다.');
+                }
+            })
+            .catch(error => alert(error.message));
+    });
+</script>
 </body>
 </html>

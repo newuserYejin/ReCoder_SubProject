@@ -1,0 +1,72 @@
+
+/* 기본 스타일 */
+html, body {
+
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    overflow: hidden; /* 페이지 스크롤 제거 */
+}
+
+/* 메인 박스 */
+.menuMainBox {
+    width: 90%; /* 메인 콘텐츠 너비를 화면의 90%로 설정 */
+    margin: 20px auto; /* 가운데 정렬 및 상하 여백 추가 */
+    max-height: calc(100vh - 300px); /* 화면 높이에서 상단과 하단 여백을 제외한 크기 */
+    overflow-y: auto; /* 세로 스크롤만 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 제거 */
+    background-color: #ffffff; /* 흰색 배경 추가 */
+    padding: 20px; /* 내부 여백 */
+    border-radius: 10px; /* 둥근 모서리 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+}
+
+.menuMainBox h2 {
+    margin-bottom: 20px;
+    font-size: 24px; /* 제목 크기 조정 */
+    color: #343a40;
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 폼 스타일 */
+form#addFactoryForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 입력 필드 간격 */
+    max-width: 600px; /* 폼의 최대 너비 설정 */
+    margin: 0 auto; /* 폼을 가운데 정렬 */
+}
+
+form#addFactoryForm label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #495057; /* 약간 어두운 회색 텍스트 */
+}
+
+form#addFactoryForm input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+form#addFactoryForm input[type="file"] {
+    padding: 5px; /* 파일 업로드 필드의 여백 조정 */
+}
+
+form#addFactoryForm button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold; /* 텍스트 강조 */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* 배경색 변경 효과 */
+}
+
+form#addFactoryForm button:hover {
+    background-color: #0056b3; /* 호버 시 진한 파란색 */
+}
