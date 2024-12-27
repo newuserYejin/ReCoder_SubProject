@@ -1,5 +1,7 @@
 package com.ohgiraffers.refactorial;
 
+import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
+import com.ohgiraffers.refactorial.admin.model.service.AdminService;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
@@ -13,12 +15,14 @@ import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,19 +35,22 @@ public class MainController {
     private final MailService mailService;
     private final AttendanceService attendanceService;
     private final BoardService boardService;
+    private final AdminService as;
 
     @Autowired
     public MainController(MemberService memberService,
                           CabinetService cabinetService,
                           MailService mailService,
                           AttendanceService attendanceService,
-                          BoardService boardService
+                          BoardService boardService,
+                          AdminService as
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
         this.mailService = mailService;
         this.attendanceService = attendanceService;
         this.boardService = boardService;
+        this.as = as;
     }
 
 
@@ -57,14 +64,27 @@ public class MainController {
     
     @GetMapping("/user")
     public String mainControll(Model model,HttpSession session){
+        // 공지사항 게시물 가져오기
         List<BoardDTO> boardList = boardService.postList(1);
 
         model.addAttribute("boardList",boardList);
 
+        // 투표 게시물 가져오기
+        List<BoardDTO> votePostList = boardService.postList(4);
+
+        // 최근꺼 3개만 가져오기
+        List<BoardDTO> recently3List = new ArrayList<>();
+
+        for (int i = 0; i <3 ;i++){
+            recently3List.add(votePostList.get(i));
+        }
+
+        model.addAttribute("recently3List",recently3List);
+
+        // 내가 받은 메일 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
 
-        // 내가 받은 메일만 가져오기, 내가 보낸 메일은 제외
         List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
         
         Map<String,Object> findSender = new HashMap<>();
@@ -83,9 +103,6 @@ public class MainController {
             findSender.put(name, mailWithDate);
         }
 
-        System.out.println("findSender = " + findSender);
-        
-        // 자신에게 보낸 메일을 제외한 받은 메일만 모델에 추가
         model.addAttribute("receivedMails", findSender);
 
         return "index";
@@ -99,7 +116,7 @@ public class MainController {
 
         model.addAttribute("cabinets",allCabinets);
 
-        return "/booking/booking";
+        return "booking/booking";
     }
 
     @GetMapping("/user/inquiry")
@@ -185,7 +202,20 @@ public class MainController {
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
+    @Value("${kakao.map.api-key}")
+    private String kakaoApiKey;
 
+    @GetMapping("/goldTicket")
+    public String goldTicket(Model model){
+        
+        String selectedDay = null;
+
+        List<TktReserveDTO> result = as.getTktReserve(selectedDay);
+
+        model.addAttribute("goldTicket",result);
+
+        return "goldTicket/goldTicket";
+    }
 
 }
 

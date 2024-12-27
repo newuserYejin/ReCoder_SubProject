@@ -19,9 +19,6 @@
 
     <link rel="stylesheet" th:href="@{/css/mainPage/mainPage.css}">
 
-    <link rel="stylesheet" href="../static/css/common/style.css">
-    <link rel="stylesheet" href="../static/css/mainPage/mainPage.css">
-
 </head>
 <body>
 
@@ -72,12 +69,16 @@
                 </div>
 
                 <div class="companyMailBox">
-                    <div class="mailBoxTitle">사내 메일</div>
+                    <div class="mailBoxTitleBox">
+                        <div class="mailBoxTitle">사내 메일</div>
+                        <div onclick="location.href='mail/receivedMails'">+ 더보기</div>
+                    </div>
+
                     <div class="mailContent">
                         <div class="noMailMsg" th:if="!${receivedMails}">받은 메일이 없습니다.</div>
 
                         <div class="mailTh" th:if="${receivedMails}">
-                            <div class="mailNum"></div>
+                            <div class="mailNum">번호</div>
                             <div class="sender">보낸사람</div>
                             <div class="mailTitle">제목</div>
                             <div class="mailDate">수신일</div>
@@ -98,28 +99,48 @@
             <div class="main_footerBox">
             <div class="checkEvent">출석체크</div>
             <div class="voteBoardSummary">
-                <div class="voteSummary">투표 요약</div>
+                <div class="voteSummary">
+                    <div class="voteTitleBox">
+                        <div class="voteTitle">투표</div>
+                    </div>
+                    <div  th:each="post, postStat : ${recently3List}"  th:data-num="${postStat.index}" class="voteContentBoxBox">
+                        <div class="voteContentBox">
+                            <div class="prevBtn" th:id="|prevBtn_${postStat.index}|">
+                                <img src="/images/angle-left-solid.svg" alt="왼쪽 이동">
+                            </div>
+                            <div class="voteContent">
+                                <div class="voteContentGle" th:text="${post.postContent}"></div>
+                            </div>
+                            <div class="nextBtn" th:id="|nextBtn_${postStat.index}|">
+                                <img src="/images/angle-right-solid.svg" alt="왼쪽 이동">
+                            </div>
+                        </div>
+                        <button class="moveVote" th:onclick="|location.href = '@{/board/postDetail(postId=${post.postId}, categoryCode=4)}'|">투표하러 가기</button>
+                    </div>
+                </div>
                 <div class="boardSummary">
                     <div class="totalBox">
                         <div class="boardTitleBox">
-                            <div class="boardTitle">공지사항 게시물</div>
-                            <div onclick="location.href='/board/list?categoryCode=1'">+ 더보기</div>
+                            <div class="boardTitle">게시물</div>
+                            <div onclick="location.href='board/list?categoryCode=1'">+ 더보기</div>
                         </div>
 
                         <div class="boardDataBox">
                             <!-- 테이블 헤더 -->
                             <div class="DataHeader">
-                                <div>게시글 번호</div>
+                                <div>번호</div>
+                                <div class="postEmpName">작성자</div>
                                 <div class="postTitle">제목</div>
-                                <div>작성일</div>
+                                <div class="postDate">작성일</div>
                             </div>
 
                            <div class="DataBody">
                                <div class="MainData" th:unless="${boardList} != null">없음</div>
                                <div th:onclick="|location.href='@{/board/postDetail(postId=${board.postId}, categoryCode=${1})}'|" class="MainData" th:if="${boardList} != null" th:each="board, boardStat : ${boardList}">
                                    <div th:text="${boardStat.count}"></div>
-                                   <div th:text="${board.postTitle}"></div>
-                                   <div th:text="${#temporals.format(board.postCreationDate, 'yyyy-MM-dd')}"></div>
+                                   <div class="postEmpName" th:text="${board.empName}"></div>
+                                   <div class="postTitle" th:text="${board.postTitle}"></div>
+                                   <div class="postDate" th:text="${#temporals.format(board.postCreationDate, 'yyyy-MM-dd')}"></div>
                                </div>
                            </div>
 
@@ -138,11 +159,8 @@
 
         const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
         const profileUrl = '[[${LoginUserInfo.profile}]]';
-        const receivedMails = '[[${receivedMails}]]'
 
-        if (receivedMails){
-            console.log(receivedMails)
-        }
+        const recently3List = '[[${recently3List}]]';
     </script>
 
     <script th:src="@{/js/mainPage/mainPage.js}"></script>

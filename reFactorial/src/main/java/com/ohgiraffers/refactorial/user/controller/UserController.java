@@ -43,10 +43,10 @@ public class UserController {
             message = "중복된 회원이 존재합니다.";
         } else if (result == 0){        // insert 구문이 실행되다가 실패
             message = "서번 내부에서 오류가 발생했습니다.";
-            mv.setViewName("/admin/admin_employee");
+            mv.setViewName("admin/admin_employee");
         } else if (result >= 1) {
             message = "회원 가입이 완료되었습니다.";
-            mv.setViewName("/admin/admin_employee");
+            mv.setViewName("admin/admin_employee");
         }
 
         mv.addObject("message", message);
@@ -90,10 +90,10 @@ public class UserController {
         if (result > 0){
             msg = "비밀번호 변경 성공";
             session.invalidate();
-            mv.setViewName("/auth/login");
+            mv.setViewName("auth/login");
         } else {
             msg = "비밀번호 변경 실패";
-            mv.setViewName("/myPage/myPage");
+            mv.setViewName("myPage/myPage");
         }
 
         mv.addObject("msg",msg);

@@ -112,7 +112,7 @@ public class AdminController {
 
         model.addAttribute("ModifyUser", user);
 
-        return "/admin/addEmployee";
+        return "admin/addEmployee";
     }
 
     @GetMapping("getByDateAtt")
@@ -166,7 +166,7 @@ public class AdminController {
 
     // 예약자 관리 페이지
     @GetMapping("tktreserve")
-    public String adminTktreserve(){ return "/admin/admin_tktreserve"; }
+    public String adminTktreserve(){ return "admin/admin_tktreserve"; }
 
     @GetMapping("getTktReserve")
     @ResponseBody
