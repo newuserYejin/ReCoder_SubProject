@@ -5,7 +5,6 @@ import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
-import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,38 +38,34 @@ public class MailController {
 
     // 메일 보내기
     @PostMapping("/sendMail")
-    public String sendMail(@ModelAttribute MailDTO mailDTO, HttpSession session, Model model,@RequestParam(required = false) List<MultipartFile> mailFileList) throws IOException {
+    public String sendMail(@ModelAttribute MailDTO mailDTO,
+                           @RequestParam("mailFiles") List<MultipartFile> mailFiles,
+                           HttpSession session,
+                           Model model) throws IOException {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         // 발신자 정보 설정
-        String senderEmpId = loginUser.getEmpId();
-        mailDTO.setSenderEmpId(senderEmpId);  // 발신자 정보 설정
+        mailDTO.setSenderEmpId(loginUser.getEmpId());
 
-        // 수신자 정보가 없을 경우 예외 처리 또는 안내
+        // 수신자 확인
         if (mailDTO.getReceiverEmpIds() == null || mailDTO.getReceiverEmpIds().isEmpty()) {
             model.addAttribute("error", "수신자를 선택해주세요.");
-            return "mail/sendMail"; // 다시 메일 보내기 페이지로 이동
+            return "mail/sendMail";
         }
 
-        // ID 생성 및 중복 방지 로직
-        Set<String> generatedIds = new HashSet<>();
-        String emId;
-        do {
-            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
-        } while (!generatedIds.add(emId)); // 중복이 아니면 Set에 추가
-
-        if (!mailFileList.isEmpty()) {
-            mailDTO.setMailfile(mailFileList);
-            mailDTO.setAttachment(1);
-
-            uploadService.upLoadFile(mailFileList,emId);
+        // 첨부 파일이 있는 경우 처리
+        if (!mailFiles.isEmpty()) {
+            mailDTO.setMailfile(mailFiles);
+            mailDTO.setAttachment(1); // 첨부 파일 있음 표시
+            uploadService.upLoadFile(mailFiles, mailDTO.getEmailId());
+        } else {
+            mailDTO.setAttachment(0); // 첨부 파일 없음 표시
         }
 
-        // 메일 서비스 호출
-        mailService.sendMail(mailDTO);
+        // 메일 전송
+        mailService.sendMail(mailDTO, mailFiles);
 
-        // 리디렉션 후 메일 보내기 화면으로 이동
         return "redirect:/mail/sendMail";
     }
 
@@ -147,7 +142,7 @@ public class MailController {
 
     // 메일 답신
     @PostMapping("/reply")
-    public String replyMail(@ModelAttribute MailDTO mailDTO, HttpSession session) {
+    public String replyMail(@ModelAttribute MailDTO mailDTO, HttpSession session) throws IOException {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -158,8 +153,10 @@ public class MailController {
         String receiverEmpId = mailDTO.getReceiverEmpIds().get(0); // 원본 메일의 발신자를 수신자로 설정
         mailDTO.setReceiverEmpIds(Arrays.asList(receiverEmpId));
 
+        List<MultipartFile> mailFileList = new ArrayList<>();
+
         // 메일 서비스 호출 (답신 메일 보내기)
-        mailService.sendMail(mailDTO);
+        mailService.sendMail(mailDTO,mailFileList);
 
         return "redirect:/mail/sentMails"; // 답신 후 보낸 메일 목록으로 리디렉션
     }

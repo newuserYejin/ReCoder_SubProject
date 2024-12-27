@@ -21,8 +21,8 @@
         e.dept_code,
         e.position_value,
         e.view_auth,
-        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO와 일치시킴
-        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO와 일치시킴
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
         FROM
         employee e
         JOIN
@@ -31,6 +31,7 @@
         tbl_position p ON e.position_value = p.position_value
         WHERE
         e.emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
+        ORDER BY d.dept_name DESC;
     </select>
 
     <!-- 전체직원조회  -->
@@ -49,14 +50,15 @@
         e.dept_code,
         e.position_value,
         e.view_auth,
-        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO와 일치시킴
-        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO와 일치시킴
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
         FROM
         employee e
         JOIN
         tbl_dept d ON e.dept_code = d.dept_code
         JOIN
         tbl_position p ON e.position_value = p.position_value
+        ORDER BY d.dept_name DESC;
     </select>
 
 
