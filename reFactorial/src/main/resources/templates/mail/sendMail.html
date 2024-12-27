@@ -29,7 +29,7 @@
 
 
         <div class="form-container">
-            <form id="sendMailForm" th:action="@{/mail/sendMail}" method="post">
+            <form id="sendMailForm" th:action="@{/mail/sendMail}" method="post" enctype="multipart/form-data">
 
                 <div class="sendMail_topBox">
 
@@ -42,6 +42,12 @@
                     <div class="form-group">
                         <label for="emailTitle">제목:</label>
                         <input type="text" id="emailTitle" name="emailTitle" required>
+                    </div>
+
+                    <!-- 첨부 파일 -->
+                    <div class="form-group mailFileBox">
+                        <label for="mailFileList">첨부파일:</label>
+                        <input type="file" id="mailFileList" name="mailFileList" multiple>
                     </div>
 
                     <!-- 분류 -->
@@ -125,6 +131,8 @@
                         row.innerHTML = `
                     <td><input type="checkbox" class="employee-checkbox" value="${employee.empId}" data-emp-name="${employee.empName}"></td>
                     <td>${employee.empId}</td>
+                    <td>${employee.deptName}</td>
+                    <td>${employee.positionName}</td>
                     <td>${employee.empName}</td>
                 `;
                         table.appendChild(row);

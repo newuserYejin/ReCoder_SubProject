@@ -12,6 +12,7 @@
         <result property="sentDate" column="sent_date"/>
         <result property="trashStatus" column="trash_status"/>
         <result property="senderEmpId" column="sender_emp_id"/>
+        <result property="attachment" column="attachment"/>
     </resultMap>
 
     <resultMap id="MailReceiverResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
@@ -24,8 +25,8 @@
 
     <!-- 메일 보내기 -->
     <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
-        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, sender_emp_id)
-        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE() , #{senderEmpId})
+        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, sender_emp_id, attachment)
+        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE() , #{senderEmpId}, #{attachment})
     </insert>
     <insert id="saveReceiver" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
         INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status ,trash_status )

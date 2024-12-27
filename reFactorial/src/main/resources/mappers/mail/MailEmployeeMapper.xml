@@ -8,22 +8,56 @@
     <!-- 회원 이름으로 검색 -->
     <select id="searchMailEmployeesByName" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
         SELECT
-        e.*, d.dept_name, p.position_name
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO와 일치시킴
         FROM
         employee e
-        JOIN tbl_dept d ON e.dept_code = d.dept_code
-        JOIN tbl_position p ON e.position_value = p.position_value
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
         WHERE
-        emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
+        e.emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
     </select>
 
-    <!-- 전체 직원 조회 -->
+    <!-- 전체직원조회  -->
     <select id="getAllMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
         SELECT
-        e.*, d.dept_name, p.position_name
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO와 일치시킴
         FROM
         employee e
-        JOIN tbl_dept d ON e.dept_code = d.dept_code
-        JOIN tbl_position p ON e.position_value = p.position_value
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
     </select>
+
+
 </mapper>

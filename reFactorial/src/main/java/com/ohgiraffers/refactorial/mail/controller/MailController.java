@@ -1,5 +1,7 @@
 package com.ohgiraffers.refactorial.mail.controller;
 
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -9,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 
 @Controller
@@ -20,9 +22,11 @@ import java.util.List;
 public class MailController {
 
     private MailService mailService;
+    private UploadFileService uploadService;
 
     @Autowired
-    public MailController(MailService mailService) {
+    public MailController(MailService mailService, UploadFileService uploadService) {
+        this.uploadService = uploadService;
         this.mailService = mailService;
     }
 
@@ -35,7 +39,7 @@ public class MailController {
 
     // 메일 보내기
     @PostMapping("/sendMail")
-    public String sendMail(@ModelAttribute MailDTO mailDTO, HttpSession session, Model model) {
+    public String sendMail(@ModelAttribute MailDTO mailDTO, HttpSession session, Model model,@RequestParam(required = false) List<MultipartFile> mailFileList) throws IOException {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -47,6 +51,20 @@ public class MailController {
         if (mailDTO.getReceiverEmpIds() == null || mailDTO.getReceiverEmpIds().isEmpty()) {
             model.addAttribute("error", "수신자를 선택해주세요.");
             return "mail/sendMail"; // 다시 메일 보내기 페이지로 이동
+        }
+
+        // ID 생성 및 중복 방지 로직
+        Set<String> generatedIds = new HashSet<>();
+        String emId;
+        do {
+            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+        } while (!generatedIds.add(emId)); // 중복이 아니면 Set에 추가
+
+        if (!mailFileList.isEmpty()) {
+            mailDTO.setMailfile(mailFileList);
+            mailDTO.setAttachment(1);
+
+            uploadService.upLoadFile(mailFileList,emId);
         }
 
         // 메일 서비스 호출
@@ -92,6 +110,14 @@ public class MailController {
     public String mailDetail(@RequestParam("emailId") String emailId, Model model) {
         MailDTO mailDetail = mailService.getMailDetail(emailId);
         List<String> mailReceiver = mailService.getReceiverEmpIds(emailId);
+
+        if (mailDetail.getAttachment() == 1){
+            List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(emailId);
+
+            if (!uploadFileList.isEmpty()){
+                model.addAttribute("attachmentFileList",uploadFileList);
+            }
+        }
 
         model.addAttribute("mailDetail", mailDetail);
         model.addAttribute("mailReceiver", mailReceiver);

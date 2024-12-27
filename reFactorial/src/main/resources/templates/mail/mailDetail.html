@@ -83,6 +83,9 @@
         <!-- Mail Detail Section -->
         <div class="mail-detail">
             <h2 th:text="${mailDetail.emailTitle}"></h2>  <!-- 이메일 제목 -->
+            <div th:each="file : ${attachmentFileList}">
+                <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}"></a>
+            </div>
             <div class="mail-meta">
                 <span>보낸사람: <span th:text="${mailDetail.senderEmpId}"></span></span> <!-- 발신자 -->
                 <span>보낸 날짜: <span th:text="${#dates.format(mailDetail.sentDate, 'yyyy-MM-dd')}"></span></span> <!-- 발송 날짜 -->
