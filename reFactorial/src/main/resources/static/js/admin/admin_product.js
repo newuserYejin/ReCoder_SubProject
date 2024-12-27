@@ -181,3 +181,11 @@ function updateProduct() {
         })
         .catch((error) => console.error("Error updating product:", error));
 }
+function goBackToList() {
+    // 수정 폼 숨기기
+    document.getElementById("editProductForm").style.display = "none";
+
+    // 검색창과 제품 리스트 다시 표시
+    document.getElementById("product-list").style.display = "flex";
+    document.querySelector(".search-container").style.display = "block";
+}
