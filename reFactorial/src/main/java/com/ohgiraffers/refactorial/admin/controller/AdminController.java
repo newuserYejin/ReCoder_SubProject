@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
@@ -279,7 +280,70 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/products")
+    @ResponseBody
+    public List<ProductDTO> getAllProducts() {
+        return adminService.getAllProducts();
+    }
+
+    @GetMapping("/searchProduct")
+    @ResponseBody
+    public List<ProductDTO> searchProducts(@RequestParam String keyword) {
+        return adminService.searchProducts(keyword);
+    }
+
+    @GetMapping("/product/{id}")
+    @ResponseBody
+    public ProductDTO getProductById(@PathVariable String id) {
+        return adminService.getProductById(id);
+    }
+
+    @PostMapping("/updateProduct")
+    @ResponseBody
+    public String updateProduct(@RequestBody ProductDTO productDTO,HttpSession session) {
+        System.out.println("수정 요청 데이터: " + productDTO);
 
 
+        int result = adminService.updateProduct(productDTO);
+
+        if (result > 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+
+    @GetMapping("factoryAddressBook")
+    public String adminFactoryAddressBook(){
+        return "/admin/admin_factoryAddressBook";
+    }
+
+
+    @PostMapping("/addFactory")
+    @ResponseBody
+    public String addFactory(@ModelAttribute FactoryDTO factoryDTO, HttpSession session){
+        System.out.println("FactoryDTO Data: " + factoryDTO);
+        System.out.println("Image URL: " + factoryDTO.getFabImage());
+
+        // 로그인된 사용자 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "로그인 정보가 없습니다.";
+        }
+
+        // 로그인된 사용자의 empId 설정
+        factoryDTO.setEmpId(user.getEmpId());
+
+        // ID 자동 생성
+        String newFactoryId = adminService.generateFactoryId();
+        factoryDTO.setFabId(newFactoryId);
+
+        // 등록 처리
+        int result = adminService.addFactory(factoryDTO);
+        return result > 0 ? "success" : "fail";
+
+    }
 
 }

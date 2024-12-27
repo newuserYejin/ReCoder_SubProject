@@ -133,4 +133,60 @@
     </select>
 
 
+    <resultMap id="ProductResultMap" type="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        <result property="id" column="prod_id"/>
+        <result property="name" column="prod_name"/>
+        <result property="price" column="prod_price"/>
+        <result property="description" column="prod_description"/>
+        <result property="image" column="prod_image_path"/>
+        <result property="empId" column="emp_id"/>
+        <result property="category" column="prod_category"/>
+        <result property="status" column="prod_status"/>
+    </resultMap>
+
+    <select id="getAllProducts" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+
+    </select>
+
+    <select id="searchProducts" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+        WHERE prod_name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="getProductById" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+        WHERE prod_id = #{id}
+    </select>
+
+
+    <update id="updateProduct" parameterType="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        UPDATE tbl_product
+        SET prod_name = #{name},
+            prod_price = #{price},
+            prod_description = #{description},
+            prod_image_path = #{image},
+            prod_category = #{category},
+            prod_status = #{status}
+        WHERE prod_id = #{id}
+    </update>
+
+
+
+    <!-- 협력업체 등록 -->
+    <insert id="insertFactory" parameterType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        INSERT INTO tbl_factory
+        (fab_id, manager_name, manager_phone, fab_email, fab_name, fab_address, fab_product, emp_id, fab_phone, fab_image)
+        VALUES
+            (#{fabId}, #{managerName}, #{managerPhone}, #{fabEmail}, #{fabName}, #{fabAddress}, #{fabProduct}, #{empId}, #{fabPhone}, #{fabImage})
+    </insert>
+
+    <!-- 가장 큰 ID 가져오기 -->
+    <select id="getMaxFactoryId" resultType="string">
+        SELECT MAX(fab_id) FROM tbl_factory
+    </select>
+
 </mapper>
