@@ -5,12 +5,14 @@ import com.ohgiraffers.refactorial.sharedWork.service.SharedWorkService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -25,23 +27,40 @@ public class SharedWorkController {
     }
 
     // 전체 업무 조회
-    @GetMapping("/allWork")
-    public String getAllSharedWork(HttpSession session) {
-
-        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
+    @GetMapping("/event")
+    @ResponseBody
+    public List<Map<String, String>> getAllSharedWork(HttpSession session) {
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
         if (user == null) {
             throw new IllegalStateException("유효한 사용자 세션이 아닙니다.");
         }
 
-        int userDeptCode = user.getDeptCode();
+        int deptCode = user.getDeptCode();
+        List<SharedWorkDTO> workList = sharedService.getAllSharedWork(deptCode);
 
-        System.out.println("userDeptCode = " + userDeptCode);
+        // 부서별 색상 매핑
+        Map<Integer, String> departmentColors = Map.of(
+                1, "#FF5733", // 인사팀
+                2, "#33FF57", // 개발팀
+                3, "#FF33A1", // 마케팅팀
+                4, "#FFBD33", // 회계팀
+                5, "#3357FF"  // 영업팀
+        );
 
-        sharedService.getAllSharedWork(userDeptCode);
-
-        return "/sharedWork/allWork";
+        // 풀캘린더 형식으로 변환
+        return workList.stream()
+                .map(work -> Map.of(
+                        "id", work.getWorkId(),
+                        "title", work.getWorkTitle(),
+                        "start", work.getWorkSchedule().toString(),
+                        "end", work.getDeadLine() != null ? work.getDeadLine().toString() : null,
+                        "description", work.getWorkExplanation(),
+                        "color", departmentColors.get(deptCode)
+                ))
+                .toList();
     }
+
 
     // 일정 저장
     @PostMapping("/allWork")
@@ -85,6 +104,41 @@ public class SharedWorkController {
         sharedService.saveSharedWork(sharedWork);
 
         return "/sharedWork/allWork";
-
     }
+
+    // 일정 삭제
+    @PostMapping("/workDelete")
+    @ResponseBody
+    public String deleteEvent(@RequestBody Map<String, String> requestBody) {
+        String workId = requestBody.get("workId"); // JSON에서 workId 추출
+        try {
+            sharedService.deleteEvent(workId);
+            return "삭제 성공";
+        } catch (Exception e) {
+            return "삭제 실패: " + e.getMessage();
+        }
+    }
+
+    // 일정 수정
+    @PostMapping("/workModify")
+    @ResponseBody
+    public String updateSharedWork(@RequestBody SharedWorkDTO updatedWork, HttpSession session) {
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "유효한 사용자 세션이 아닙니다.";
+        }
+
+        updatedWork.setDeptCode(user.getDeptCode());
+        boolean isUpdated = sharedService.updateSharedWork(updatedWork);
+        if (isUpdated) {
+            return "일정이 성공적으로 수정되었습니다.";
+        } else {
+            return "일정 수정에 실패했습니다.";
+        }
+    }
+
+
+
 }
