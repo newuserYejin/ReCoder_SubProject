@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ public class AdminService {
 
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private AdminMapper adminMapper;
 
     public List<LoginUserDTO> getAllEmployee(int sendDept, String sendSearchEmpName) {
         Map<String, Object> searchData = new HashMap<>();
@@ -82,4 +85,23 @@ public class AdminService {
     public TktReserveDTO getReserveById(String reserveId) {
         return am.getReserveById(reserveId);
     }
+
+    public int addProduct(ProductDTO productDTO) {
+        return adminMapper.insertProduct(productDTO);
+    }
+
+    public String generateProductId() {
+        // 데이터베이스에서 가장 큰 제품 ID 가져오기
+        String maxId = adminMapper.getMaxProductId();
+
+        // 데이터베이스에 아무 데이터가 없을 경우 기본값 "PD001" 반환
+        if (maxId == null || maxId.isEmpty()) {
+            return "PD001"; // 데이터베이스에 아무 것도 없을 때 첫 ID
+        }
+
+        // maxId 에서 숫자 부분만 추출하고 정수로 변환한 후 1 증가
+        int newIdNum = Integer.parseInt(maxId.substring(2)) + 1;
+
+        // 새로운 ID를 "PD" 접두사와 3자리 숫자로 조합
+        return String.format("PD%03d", newIdNum);}
 }

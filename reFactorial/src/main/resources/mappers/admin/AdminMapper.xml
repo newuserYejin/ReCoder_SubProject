@@ -121,4 +121,16 @@
             tkt_reserv_id = ${reserveId}
     </select>
 
+    <insert id="insertProduct">
+    INSERT INTO tbl_product
+    (prod_id, prod_name, prod_description, emp_id, prod_price, prod_image_path, prod_category)
+    VALUES
+    (#{id}, #{name}, #{description}, #{empId}, #{price}, #{image}, #{category})
+    </insert>
+
+    <select id="getMaxProductId" resultType="string">
+        SELECT MAX(prod_id) FROM tbl_product
+    </select>
+
+
 </mapper>

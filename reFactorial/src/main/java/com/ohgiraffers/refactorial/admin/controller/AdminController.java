@@ -10,7 +10,9 @@ import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
+import com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -242,4 +244,42 @@ public class AdminController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("product")
+    public String adminProduct(){
+        return "/admin/admin_product";
+    }
+
+    @PostMapping("addProduct")
+    @ResponseBody
+    public String addProduct(@RequestBody ProductDTO productDTO, HttpSession session) {
+        // 세션에서 로그인된 사용자 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            // 로그인 정보가 없으면 실패 메시지 반환
+            return "로그인 정보가 없습니다. 다시 로그인해주세요.";
+        }
+
+        // 로그인된 사용자의 emp_id 설정
+        productDTO.setEmpId(user.getEmpId());
+
+        // ID 자동 생성
+        String newProductId = adminService.generateProductId();
+        productDTO.setId(newProductId);
+
+
+        int result = adminService.addProduct(productDTO);
+
+
+        if (result > 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+
+
+
 }

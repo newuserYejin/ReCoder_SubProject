@@ -4,6 +4,7 @@ import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
+import com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -32,4 +33,8 @@ public interface AdminMapper {
     List<TktReserveDTO> getTktReserve(String selectedDay);
 
     TktReserveDTO getReserveById(String reserveId);
+
+    int insertProduct(ProductDTO productDTO);
+
+    String getMaxProductId();
 }

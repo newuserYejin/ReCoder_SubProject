@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,10 +63,37 @@ public class MainController {
     private ReservationService reservationService;
     
     @GetMapping("/user")
-    public String mainControll(Model model){
+    public String mainControll(Model model,HttpSession session){
         List<BoardDTO> boardList = boardService.postList(1);
 
         model.addAttribute("boardList",boardList);
+
+        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
+
+        // 내가 받은 메일만 가져오기, 내가 보낸 메일은 제외
+        List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
+        
+        Map<String,Object> findSender = new HashMap<>();
+
+        SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
+        
+        for (MailDTO mail : receivedMails){
+            String name = memberService.getNameById(mail.getSenderEmpId());
+
+            String date = (smp.format(mail.getSentDate()));
+
+            Map<String, Object> mailWithDate = new HashMap<>();
+            mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
+            mailWithDate.put("date", date);  // 날짜 정보 추가
+            
+            findSender.put(name, mailWithDate);
+        }
+
+        System.out.println("findSender = " + findSender);
+        
+        // 자신에게 보낸 메일을 제외한 받은 메일만 모델에 추가
+        model.addAttribute("receivedMails", findSender);
 
         return "index";
     }
