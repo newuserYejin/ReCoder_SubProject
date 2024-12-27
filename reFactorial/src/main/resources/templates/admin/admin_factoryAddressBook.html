@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_factoryAddressBook.css}">
+</head>
+<body>
+<header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
+<section>
+    <div class="leftBox">
+        <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+    </div>
+
+    <div class="rightBox">
+        <div class="sideMenu">
+            <div class="sideTitle">업체 관리</div>
+
+            <ul class="sideMenuUl">
+                <li id="showRegister">업체등록</li>
+                <li id="showEdit">업체수정</li>
+            </ul>
+        </div>
+        <div class="menuMainBox">
+
+        </div>
+    </div>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+</body>
+</html>

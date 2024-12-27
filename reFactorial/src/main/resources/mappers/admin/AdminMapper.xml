@@ -141,21 +141,23 @@
         <result property="image" column="prod_image_path"/>
         <result property="empId" column="emp_id"/>
         <result property="category" column="prod_category"/>
+        <result property="status" column="prod_status"/>
     </resultMap>
 
     <select id="getAllProducts" resultMap="ProductResultMap">
-        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
         FROM tbl_product
+
     </select>
 
     <select id="searchProducts" parameterType="string" resultMap="ProductResultMap">
-        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
         FROM tbl_product
         WHERE prod_name LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
     <select id="getProductById" parameterType="string" resultMap="ProductResultMap">
-        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
         FROM tbl_product
         WHERE prod_id = #{id}
     </select>
@@ -166,7 +168,8 @@
             prod_price = #{price},
             prod_description = #{description},
             prod_image_path = #{image},
-            prod_category = #{category}
+            prod_category = #{category},
+            prod_status = #{status}
         WHERE prod_id = #{id}
     </update>
 

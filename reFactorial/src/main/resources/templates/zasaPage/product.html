@@ -253,6 +253,29 @@
 
     carousel.innerHTML = '';
 
+    // "판매" 상태인 제품만 렌더링
+    products.filter(product => product.status === '판매').forEach((product, index) => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+
+      const angle = angleStep * index;
+
+      cardWrapper.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p class="price">${product.price}</p>
+            <p>${product.description}</p>
+        `;
+
+      cardWrapper.appendChild(card);
+      carousel.appendChild(cardWrapper);
+    });
+
     products.forEach((product, index) => {
       const cardWrapper = document.createElement('div');
       cardWrapper.className = 'card-wrapper';

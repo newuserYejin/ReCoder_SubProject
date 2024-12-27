@@ -89,6 +89,13 @@
                                 <option value="젤리">젤리</option>
                                 <option value="과자">과자</option>
                             </select>
+                            <label for="editProdStatus">상태:</label>
+                            <select id="editProdStatus" required>
+                                <option value="판매">판매</option>
+                                <option value="비판매">비판매</option>
+                                <option value="단종">단종</option>
+                                <option value="매진">매진</option>
+                            </select>
                             <button type="button" onclick="updateProduct()">수정하기</button>
                         </form>
                         <button id="backToList" onclick="goBackToList()">뒤로가기</button>

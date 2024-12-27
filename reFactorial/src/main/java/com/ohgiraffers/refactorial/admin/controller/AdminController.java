@@ -299,8 +299,10 @@ public class AdminController {
 
     @PostMapping("/updateProduct")
     @ResponseBody
-    public String updateProduct(@RequestBody ProductDTO productDTO) {
+    public String updateProduct(@RequestBody ProductDTO productDTO,HttpSession session) {
         System.out.println("수정 요청 데이터: " + productDTO);
+
+
         int result = adminService.updateProduct(productDTO);
 
         if (result > 0) {
@@ -308,6 +310,12 @@ public class AdminController {
         } else {
             return "fail";
         }
+    }
+
+
+    @GetMapping("factoryAddressBook")
+    public String adminFactoryAddressBook(){
+        return "/admin/admin_factoryAddressBook";
     }
 
 

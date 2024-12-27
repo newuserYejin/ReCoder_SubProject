@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("editProdPrice").value = product.price;
         document.getElementById("editProdImage").value = product.image;
         document.getElementById("editProdCategory").value = product.category;
+        document.getElementById("editProdStatus").value = product.status;
 
         // 제품 리스트와 검색창 숨기기
         document.getElementById("product-list").style.display = "none";
@@ -155,6 +156,7 @@ function updateProduct() {
         price: document.getElementById("editProdPrice").value,
         image: document.getElementById("editProdImage").value,
         category: document.getElementById("editProdCategory").value,
+        status: document.getElementById("editProdStatus").value,
     };
     console.log("수정 요청 데이터:", updatedProduct);
     fetch("/admin/updateProduct", {
@@ -181,6 +183,8 @@ function updateProduct() {
         })
         .catch((error) => console.error("Error updating product:", error));
 }
+
+
 function goBackToList() {
     // 수정 폼 숨기기
     document.getElementById("editProductForm").style.display = "none";
