@@ -253,7 +253,7 @@ const work_monthDiv = document.querySelector(".work_month")
 const today = new Date(); // 오늘 날짜
 const empJoinedDate = new Date(empJoined);
 
-annualLeaveDiv.textContent = (annualLeave-usedAnnualLeave) + "일";
+annualLeaveDiv.textContent = (annualLeave) + "일";
 
 // 유효한 Date 객체인지 확인
 if (isNaN(empJoinedDate)) {
