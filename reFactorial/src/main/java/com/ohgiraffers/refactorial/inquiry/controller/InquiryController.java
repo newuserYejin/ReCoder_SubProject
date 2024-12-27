@@ -17,6 +17,12 @@ public class InquiryController {
         this.inquiryService = inquiryService;
     }
 
+    // 문의 작성 페이지로 이동
+    @GetMapping("/sendInquiry")
+    public String showInquiryPage() {
+        return "inquiry/sendInquiry";
+    }
+
     // 1:1 문의 내역 페이지로 이동
     @GetMapping("/inquiryList")
     public String inquiry() {

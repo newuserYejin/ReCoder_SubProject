@@ -6,19 +6,18 @@
 <mapper namespace="com.ohgiraffers.refactorial.inquiry.model.dao.InquiryMapper">
     <resultMap id="InquiryResultMap" type="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
         <id property="iqrValue" column="iqr_value" />
-        <result property="iqrSubject" column="iqr_subject" />
-        <result property="iqrCategory" column="iqr_category" />
+        <result property="iqrTitle" column="iqr_title" />
         <result property="iqrDetails" column="iqr_details" />
         <result property="answerStatus" column="answer_status" />
         <result property="empId" column="emp_id" />
         <result property="answerDetail" column="answer_detail" />
+        <result property="iqrCreationDate" column="iqr_creationDate" />
     </resultMap>
 
     <!-- 1:1 문의 보내기-->
     <insert id="sendInquiry" parameterType="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
-        INSERT INTO tbl_inquiry ( iqr_value, iqr_subject, iqr_category, iqr_details, answer_status, emp_id, answer_detail )
-        VALUES ( #{iqrValue}, #{iqrSubject}, #{iqrCategory}, #{iqrDetails}, #{answerStatus}, #{empId}, #{answerDetail} );
-    </insert>
-
+        INSERT INTO tbl_inquiry (iqr_value, iqr_title, iqr_details ,emp_id, iqr_creationDate )
+        VALUES (#{iqrValue}, #{iqrTitle} ,#{iqrDetails}, #{empId}, now())
+        </insert>
 
 </mapper>

@@ -31,7 +31,7 @@
         </div>
 
         <div class="form-container">
-            <form id="sendInquiryForm" th:action="@{/user/inquiry}" method="post">
+            <form id="sendInquiryForm" th:action="@{/inquiry/sendInquiry}" method="post">
 
                 <div class="sendInquiry_topBox">
 
@@ -42,24 +42,8 @@
 
                     <!-- 제목 -->
                     <div class="form-group">
-                        <label for="iqrSubject">제목:</label>
-                        <input type="text" id="iqrSubject" name="iqrSubject" required>
-                    </div>
-
-                    <!-- 분류 -->
-                    <div class="form-group">
-                        <label for="iqrCategory">분류:</label>
-                        <select id="iqrCategory" name="iqrCategory" onchange="onChangeSelectOption()" required>
-                            <option value="">선택</option>
-                            <option value="1" th:selected="${iqrCategory == 1}">시스템 오류</option>
-                            <option value="2" th:selected="${iqrCategory == 2}">비밀번호 재설정</option>
-                            <option value="3" th:selected="${iqrCategory == 3}">기능 추가 요청</option>
-                            <option value="4" th:selected="${iqrCategory == 4}">문서 수정 요청</option>
-                            <option value="5" th:selected="${iqrCategory == 5}">회의실 예약</option>
-                            <option value="6" th:selected="${iqrCategory == 6}">기기 연결 문제</option>
-                            <option value="7" th:selected="${iqrCategory == 7}">근태 문제</option>
-                            <option value="8" th:selected="${iqrCategory == 8}">회식 일정</option>
-                        </select>
+                        <label for="iqrTitle">제목:</label>
+                        <input type="text" id="iqrTitle" name="iqrTitle" required>
                     </div>
 
                     <!-- 내용 -->
