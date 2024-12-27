@@ -39,7 +39,8 @@ public class BoardController {
 
     // 게시물 전체조회
     @GetMapping("list") // url로 이동
-    public String list(@RequestParam int categoryCode, Model model, HttpSession session) {
+    public String list(@RequestParam int categoryCode, Model model, HttpSession session,
+                       @RequestParam(value = "page", defaultValue = "1") int currentPage) {
 
         List<BoardDTO> postList = boardService.postList(categoryCode);      // 전체조회 기능
 
@@ -48,6 +49,51 @@ public class BoardController {
         model.addAttribute("postList", postList);    // 템플릿에 값 전달
         model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
+
+
+//        // 페이지네이션
+//        int limit = 14; // 한 페이지당 문서 수
+//        int totalDocuments = boardService.getRejectedDocumentsCount(); // 전체 문서 개수 가져오기
+//        int totalPages = totalDocuments > 0 ? (int) Math.ceil((double) totalDocuments / limit) : 1;
+//
+//        // 현재 페이지 범위 검증
+//        if (currentPage < 1) {
+//            currentPage = 1;
+//        }
+//        if (currentPage > totalPages) {
+//            currentPage = totalPages;
+//        }
+//
+//        int offset = (currentPage - 1) * limit; // offset 계산
+//
+//        // 게시물 내용 가져오기
+//        List<BoardDTO> BoardPage = boardService.BoardList(limit, offset);
+//
+//        // 문서 번호 설정
+//        for (int i = 0; i < BoardPage.size(); i++) {
+//            BoardPage.get(i).setRowNum(totalDocuments - offset - i);
+//        }
+//
+//        // 최신 글이 위로 정렬되도록 번호 설정
+//        int totalCount = BoardPage.size();
+//        for (int i = 0; i < BoardPage.size(); i++) {
+//            BoardPage.get(i).setRowNum(totalCount - i);
+//        }
+//
+//        // 이전/다음 페이지 설정
+//        int prevPage = currentPage > 1 ? currentPage - 1 : 1;
+//        int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+//
+//        // 모델에 데이터 추가
+//        model.addAttribute("BoardPage", BoardPage);
+//        model.addAttribute("currentPage", currentPage);
+//        model.addAttribute("totalPages", totalPages);
+//        model.addAttribute("prevPage", prevPage);
+//        model.addAttribute("nextPage", nextPage);
+
+
+
+
 
         return "/board/list";   // html 페이지로 이동
     }
