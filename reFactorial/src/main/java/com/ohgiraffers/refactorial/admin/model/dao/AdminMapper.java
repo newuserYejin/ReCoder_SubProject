@@ -37,4 +37,12 @@ public interface AdminMapper {
     int insertProduct(ProductDTO productDTO);
 
     String getMaxProductId();
+
+    List<ProductDTO> getAllProducts();
+
+    List<ProductDTO> searchProducts(String keyword);
+
+    ProductDTO getProductById(String id);
+
+    int updateProduct(ProductDTO productDTO);
 }

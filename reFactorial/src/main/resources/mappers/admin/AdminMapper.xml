@@ -133,4 +133,44 @@
     </select>
 
 
+    <resultMap id="ProductResultMap" type="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        <result property="id" column="prod_id"/>
+        <result property="name" column="prod_name"/>
+        <result property="price" column="prod_price"/>
+        <result property="description" column="prod_description"/>
+        <result property="image" column="prod_image_path"/>
+        <result property="empId" column="emp_id"/>
+        <result property="category" column="prod_category"/>
+    </resultMap>
+
+    <select id="getAllProducts" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        FROM tbl_product
+    </select>
+
+    <select id="searchProducts" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        FROM tbl_product
+        WHERE prod_name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="getProductById" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category
+        FROM tbl_product
+        WHERE prod_id = #{id}
+    </select>
+
+    <update id="updateProduct" parameterType="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        UPDATE tbl_product
+        SET prod_name = #{name},
+            prod_price = #{price},
+            prod_description = #{description},
+            prod_image_path = #{image},
+            prod_category = #{category}
+        WHERE prod_id = #{id}
+    </update>
+
+
+
+
 </mapper>

@@ -279,6 +279,36 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/products")
+    @ResponseBody
+    public List<ProductDTO> getAllProducts() {
+        return adminService.getAllProducts();
+    }
+
+    @GetMapping("/searchProduct")
+    @ResponseBody
+    public List<ProductDTO> searchProducts(@RequestParam String keyword) {
+        return adminService.searchProducts(keyword);
+    }
+
+    @GetMapping("/product/{id}")
+    @ResponseBody
+    public ProductDTO getProductById(@PathVariable String id) {
+        return adminService.getProductById(id);
+    }
+
+    @PostMapping("/updateProduct")
+    @ResponseBody
+    public String updateProduct(@RequestBody ProductDTO productDTO) {
+        System.out.println("수정 요청 데이터: " + productDTO);
+        int result = adminService.updateProduct(productDTO);
+
+        if (result > 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
 
 
 
