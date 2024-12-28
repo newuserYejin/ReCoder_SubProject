@@ -137,23 +137,22 @@
       </div>
 
       <!-- 첨부파일 -->
-      <div class="file-link" th:if="${fileUrls != null}">
-        <h3>첨부파일</h3>
-        <ul>
-          <li th:each="fileUrl : ${fileUrls}">
-            <a th:href="@{/files/download(fileName=${fileUrl})}" download th:text="${fileUrl}"></a>
-          </li>
-        </ul>
-      </div>
-    </div>
+        <div th:if="${attachmentFileList != null}">
+          <h3>첨부파일</h3>
+          <ul>
+            <li th:each="file : ${attachmentFileList}">
+              <!-- storeFileName을 경로에 사용 -->
+              <a th:href="@{/files/${file.storeFileName}}" th:text="${file.originFileName}"></a>
+            </li>
+          </ul>
+        </div>
 
     <!-- 뒤로가기 버튼 -->
     <div class="back-button">
       <button class="submit-btn" onclick="window.history.back()">뒤로가기</button>
     </div>
   </div>
-
- </section>
+</section>
 
 <!-- 모달창 -->
 <div id="confirmModal" class="modal">

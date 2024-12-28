@@ -4,13 +4,19 @@
     import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
     import com.ohgiraffers.refactorial.approval.model.dto.*;
     import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
+    import com.ohgiraffers.refactorial.fileUploade.model.dao.UploadFileMapper;
+    import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+    import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
     import org.springframework.ui.Model;
+    import org.springframework.web.multipart.MultipartFile;
 
 
+    import java.io.File;
+    import java.io.IOException;
     import java.math.BigDecimal;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
@@ -30,6 +36,9 @@
 
         @Autowired
         private UserMapper userMapper;
+
+        @Autowired
+        private UploadFileMapper uploadFileMapper;
 
         public List<EmployeeDTO> searchByName(String name) {
 
@@ -471,11 +480,8 @@
             }
 
 
-//
-//        public boolean isFirstApprover(String pmId, String currentEmpId) {
-//            String firstApprover = approvalMapper.findFirstApprover(pmId);
-//            return firstApprover != null && firstApprover.equals(currentEmpId);
-//        }
+
+
     }
 
 
