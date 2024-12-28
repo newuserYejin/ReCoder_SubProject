@@ -189,4 +189,32 @@
         SELECT MAX(fab_id) FROM tbl_factory
     </select>
 
+    <update id="updateFactory">
+        UPDATE tbl_factory
+        SET
+            fab_name = #{fabName},
+            fab_address = #{fabAddress},
+            fab_phone = #{fabPhone},
+            manager_name = #{managerName},
+            manager_phone = #{managerPhone},
+            fab_email = #{fabEmail},
+            fab_product = #{fabProduct},
+            fab_image = #{fabImage}
+        WHERE fab_id = #{fabId}
+    </update>
+
+    <select id="getAllFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory;
+    </select>
+
+    <select id="searchFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory
+        WHERE fab_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_address LIKE CONCAT('%', #{keyword}, '%')
+           OR manager_name LIKE CONCAT('%', #{keyword}, '%');
+    </select>
+
+    <select id="findFactoryById" parameterType="string" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory WHERE fab_id = #{id}
+    </select>
 </mapper>

@@ -67,43 +67,50 @@ public class MainController {
         // 공지사항 게시물 가져오기
         List<BoardDTO> boardList = boardService.postList(1);
 
-        model.addAttribute("boardList",boardList);
+        if (!boardList.isEmpty()){
+            model.addAttribute("boardList",boardList);
+        }
+
 
         // 투표 게시물 가져오기
         List<BoardDTO> votePostList = boardService.postList(4);
 
-        // 최근꺼 3개만 가져오기
-        List<BoardDTO> recently3List = new ArrayList<>();
+        if (!votePostList.isEmpty()){
+            // 최근꺼 3개만 가져오기
+            List<BoardDTO> recently3List = new ArrayList<>();
 
-        for (int i = 0; i <3 ;i++){
-            recently3List.add(votePostList.get(i));
+            for (int i = 0; i <3 ;i++){
+                recently3List.add(votePostList.get(i));
+            }
+
+            model.addAttribute("recently3List",recently3List);
         }
-
-        model.addAttribute("recently3List",recently3List);
 
         // 내가 받은 메일 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
 
         List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
-        
-        Map<String,Object> findSender = new HashMap<>();
 
-        SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
-        
-        for (MailDTO mail : receivedMails){
-            String name = memberService.getNameById(mail.getSenderEmpId());
+        if(!receivedMails.isEmpty()){
+            Map<String,Object> findSender = new HashMap<>();
 
-            String date = (smp.format(mail.getSentDate()));
+            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
 
-            Map<String, Object> mailWithDate = new HashMap<>();
-            mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
-            mailWithDate.put("date", date);  // 날짜 정보 추가
-            
-            findSender.put(name, mailWithDate);
+            for (MailDTO mail : receivedMails){
+                String name = memberService.getNameById(mail.getSenderEmpId());
+
+                String date = (smp.format(mail.getSentDate()));
+
+                Map<String, Object> mailWithDate = new HashMap<>();
+                mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
+                mailWithDate.put("date", date);  // 날짜 정보 추가
+
+                findSender.put(name, mailWithDate);
+            }
+
+            model.addAttribute("receivedMails", findSender);
         }
-
-        model.addAttribute("receivedMails", findSender);
 
         return "index";
     }

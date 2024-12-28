@@ -50,4 +50,12 @@ public interface AdminMapper {
     int insertFactory(FactoryDTO factoryDTO);
 
     String getMaxFactoryId();
+
+    int updateFactory(FactoryDTO factoryDTO);
+
+    List<FactoryDTO> getAllFactories();
+
+    List<FactoryDTO> searchFactories(String keyword);
+
+    FactoryDTO findFactoryById(String id);
 }
