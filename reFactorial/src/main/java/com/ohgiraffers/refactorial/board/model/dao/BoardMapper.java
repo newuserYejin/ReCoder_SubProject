@@ -2,7 +2,6 @@ package com.ohgiraffers.refactorial.board.model.dao;
 
 import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
 public interface BoardMapper {
 
     // 게시글 전체조회
-    List<BoardDTO> postList(int categoryCode);
+    List<BoardDTO> postList(int categoryCode, int limit, int offset);
 
     // 게시글 등록
     void boardPost(BoardDTO board);
@@ -50,4 +49,7 @@ public interface BoardMapper {
 
     // 투표 통계
     List<VoteItemDTO> getTotalVote(String postId);
+
+    // 게시글 카테고리별 카운트
+    int getBoardListCount(int categoryCode);
 }

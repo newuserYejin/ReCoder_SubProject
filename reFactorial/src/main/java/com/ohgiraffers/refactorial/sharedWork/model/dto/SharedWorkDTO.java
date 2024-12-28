@@ -18,5 +18,6 @@ public class SharedWorkDTO {
     private LocalDate deadLine;     // 마감기한
     private LocalDate workSchedule; // 일정날짜
     private int deptCode;            // 부서코드
+    private String workColor;        // 일정 색상
 
 }

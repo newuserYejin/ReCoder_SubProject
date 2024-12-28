@@ -39,14 +39,6 @@ public class SharedWorkController {
         int deptCode = user.getDeptCode();
         List<SharedWorkDTO> workList = sharedService.getAllSharedWork(deptCode);
 
-        // 부서별 색상 매핑
-        Map<Integer, String> departmentColors = Map.of(
-                1, "#FF5733", // 인사팀
-                2, "#33FF57", // 개발팀
-                3, "#FF33A1", // 마케팅팀
-                4, "#FFBD33", // 회계팀
-                5, "#3357FF"  // 영업팀
-        );
 
         // 풀캘린더 형식으로 변환
         return workList.stream()
@@ -56,7 +48,7 @@ public class SharedWorkController {
                         "start", work.getWorkSchedule().toString(),
                         "end", work.getDeadLine() != null ? work.getDeadLine().toString() : null,
                         "description", work.getWorkExplanation(),
-                        "color", departmentColors.get(deptCode)
+                        "color", work.getWorkColor()
                 ))
                 .toList();
     }
@@ -79,6 +71,8 @@ public class SharedWorkController {
         sharedWork.setWorkId(workID);
         sharedWork.setWorkTitle(String.valueOf(eventData.get("workTitle")));  // 업무제목
         sharedWork.setWorkExplanation(String.valueOf(eventData.get("workExplanation")));  // 업무설명
+        sharedWork.setDeptCode(user.getDeptCode());     // 유저의 dept 코드 전달
+        sharedWork.setWorkColor(String.valueOf(eventData.get("workColor")));    // 색상 전달
 
         // 날짜 포맷 검증 및 변환
         String workScheduleStr = (String) eventData.get("workSchedule");
