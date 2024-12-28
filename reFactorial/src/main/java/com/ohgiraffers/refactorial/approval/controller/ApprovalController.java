@@ -3,10 +3,13 @@ package com.ohgiraffers.refactorial.approval.controller;
 import com.ohgiraffers.refactorial.approval.model.dto.*;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.file.Path;
@@ -43,12 +47,15 @@ public class ApprovalController {
 
     private final ApprovalService approvalService;
     private final UserMapper userMapper; // UserMapper 주입
+    private final UploadFileService uploadService;
+
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService, UserMapper userMapper) {
+    public ApprovalController(ApprovalService approvalService, UserMapper userMapper, UploadFileService uploadService) {
 
         this.approvalService = approvalService;
         this.userMapper = userMapper;
+        this.uploadService = uploadService;
     }
 
 
@@ -177,8 +184,6 @@ public class ApprovalController {
     }
 
 
-
-
     @GetMapping("rejected")
     public String getRejectedDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
                                        Model model, HttpSession session) {
@@ -233,8 +238,6 @@ public class ApprovalController {
     }
 
 
-
-
     @GetMapping("searchEmployee")
     public String searchEmployeeController(@RequestParam("name") String name, Model model) {
         List<EmployeeDTO> employees;
@@ -284,9 +287,9 @@ public class ApprovalController {
 
     @PostMapping("/submitApproval")
     public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
-                                 @RequestParam("file") MultipartFile file,
+                                 @RequestParam(required = false) List<MultipartFile> fileList,
                                  Model model,
-                                 HttpSession session) {
+                                 HttpSession session) throws IOException {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -355,22 +358,13 @@ public class ApprovalController {
         List<String> referrerIds = approvalService.findEmpIdsByNames(referrers);
         approvalService.saveReferrers(pmId, referrerIds);
 
-        // 첨부파일 저장
-        if (!file.isEmpty()) {
-            try {
-                approvalService.saveApprovalFile(pmId, file.getOriginalFilename(),
-                        "C:/uploads/" + file.getOriginalFilename(), file.getSize(), file.getContentType());
-                file.transferTo(new File("C:/uploads/" + file.getOriginalFilename()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                model.addAttribute("errorMessage", "파일 업로드 실패");
-                return "/approvals/approvalPage";
-            }
+        // 첨부파일 저장 로직
+        if (fileList != null && !fileList.isEmpty()) {
+            uploadService.upLoadFile(fileList, pmId);
         }
 
         return "/approvals/approvalMain";
     }
-
 
 
     // 대기 중
@@ -520,7 +514,6 @@ public class ApprovalController {
         DocumentDTO document = approvalService.getDocumentById(pmId);
 
 
-
         if (document == null) {
             model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
             return "errorPage"; // 에러 페이지로 리디렉션
@@ -559,14 +552,6 @@ public class ApprovalController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 첨부파일 정보 처리
-        List<String> fileUrls = (document.getFileUrl() != null && !document.getFileUrl().isEmpty())
-                ? Arrays.asList(document.getFileUrl().split(",")).stream()
-                .map(fileName -> "/files/" + fileName)
-                .collect(Collectors.toList())
-                : new ArrayList<>();
-
-        document.setCategoryName(document.getCategoryName());
 
         if ("category3".equals(document.getCategory())) {
             // 휴가 유형 처리
@@ -579,6 +564,12 @@ public class ApprovalController {
             model.addAttribute("leaveDate", leaveDate); // 모델에 날짜 추가
         }
 
+        // 첨부파일 처리
+
+        List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(pmId);
+
+        // 첨부파일 데이터를 모델에 추가
+        model.addAttribute("attachmentFileList", uploadFileList);
 
 
         // 반려자인지 확인하고 반려 이유 가져오기
@@ -594,7 +585,7 @@ public class ApprovalController {
         model.addAttribute("midApprover", midApprover);
         model.addAttribute("finalApprover", finalApprover);
         model.addAttribute("referrerNames", referrerNames);
-        model.addAttribute("fileUrls", fileUrls);
+
         model.addAttribute("currentOrder", currentOrder);
         model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
         model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
@@ -632,7 +623,6 @@ public class ApprovalController {
 
                     // 연차/반차 처리 로직 추가
                     processLeaveIfApplicable(pmId, currentEmpId);
-
 
 
                     // 모든 승인자가 완료되었는지 확인
@@ -737,67 +727,68 @@ public class ApprovalController {
 
 
 
-
-
-    // 파일 다운로드 (파일 ID 기준)
-    @GetMapping("/downloadById")
-    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
-        try {
-            FileDTO file = approvalService.getFileById(fileId);
-
-            if (file == null || file.getFilePath() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Path filePath = Paths.get(file.getFilePath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(file.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
-                    .body(resource);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    // 파일 다운로드 (파일 이름으로 조회)
-    @GetMapping("/downloadByName")
-    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
-        try {
-            FileDTO file = approvalService.getFileByFileName(fileName);
-
-            if (file == null || file.getFilePath() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Path filePath = Paths.get(file.getFilePath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(file.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-                    .body(resource);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
 }
+
+
+//    // 파일 다운로드 (파일 ID 기준)
+//    @GetMapping("/downloadById")
+//    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
+//        try {
+//            FileDTO file = approvalService.getFileById(fileId);
+//
+//            if (file == null || file.getFilePath() == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            Path filePath = Paths.get(file.getFilePath()).normalize();
+//            Resource resource = new UrlResource(filePath.toUri());
+//
+//            if (!resource.exists()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
+//
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(file.getFileType()))
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+//                    .body(resource);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
+//
+//    // 파일 다운로드 (파일 이름으로 조회)
+//    @GetMapping("/downloadByName")
+//    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
+//        try {
+//            FileDTO file = approvalService.getFileByFileName(fileName);
+//
+//            if (file == null || file.getFilePath() == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            Path filePath = Paths.get(file.getFilePath()).normalize();
+//            Resource resource = new UrlResource(filePath.toUri());
+//
+//            if (!resource.exists()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(file.getFileType()))
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+//                    .body(resource);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
+//
+//}
 
 
 

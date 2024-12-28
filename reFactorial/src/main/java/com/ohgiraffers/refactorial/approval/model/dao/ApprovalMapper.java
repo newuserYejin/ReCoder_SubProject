@@ -137,4 +137,6 @@ public interface ApprovalMapper {
     Integer getApprovalOrderdozang(String pmId, String currentEmpId);
 
     String getRejectReasonByApprover(String pmId, String currentEmpId);
+
+    void saveFileInfo(Map<String, String> pmId);
 }
