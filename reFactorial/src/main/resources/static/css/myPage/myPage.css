@@ -144,6 +144,8 @@ body{
                             /*align-items: center;*/
                         }
 
+
+
                         input[class="modifyInfo"]:disabled{
                             background: none;
                             color: black;
@@ -199,6 +201,13 @@ body{
                             justify-content: center;
                         }
                     }
+                }
+
+                .emailError{
+                    color: #bf0603;
+                    font-size: 0.8em;
+                    display: none;
+                    margin-bottom: 10px;
                 }
 
                 .InfoLine:last-child{

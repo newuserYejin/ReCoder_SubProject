@@ -15,6 +15,8 @@ let randomStr = 'P';
 
 // 정보수정 꺼
 document.addEventListener("DOMContentLoaded", function () {
+    removeScript('/js/admin/addEmployee.js');
+
     menuMainBox.innerHTML = `
                         <div class="employeeListBox">
                             <div class="searchBox">
@@ -105,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                         menuMainBox.innerHTML = '';
                                         menuMainBox.appendChild(form);
+
+                                        addScript('/js/admin/addEmployee.js')
                                     })
 
                             })
@@ -156,6 +160,8 @@ registeEmp.addEventListener("click", () => {
 
             menuMainBox.innerHTML = '';
             menuMainBox.appendChild(form);
+
+            addScript('/js/admin/addEmployee.js');
         })
 
     selectedMenu.forEach(menu => {
@@ -179,6 +185,7 @@ let presentValue = ""; // 현재 입력 값
 
 // fetchData 함수는 전역에서 사용할 수 있도록 밖으로 이동
 const fetchData = (page = 1, searchEmpName) => {
+    removeScript('/js/admin/addEmployee.js')
     const selectedDay = document.getElementById('searchAttDate').value;
     const searchDept = document.getElementById('searchDept').value;
     const empAttTable = document.getElementById("empAttTable");
@@ -451,6 +458,7 @@ updateAtt.addEventListener("click", () => {
     updateAtt.classList.add("selected")
 });
 
+// 랜덤 사원 번호 생성하기
 function setRandomStr(deptCode){
 
     const value = deptCode.value;
@@ -483,4 +491,22 @@ function randomEmpId(){
     console.log(empIdValue, typeof empIdValue)
 
     empId.value = empIdValue
+}
+
+// 스크립트 추가 함수
+function addScript(src){
+    if (!document.querySelector(`script[src="${src}"]`)){
+        const script = document.createElement('script')
+        script.src = src
+        script.defer = true;
+        document.body.appendChild(script);
+    }
+}
+
+// 스크립트 제거 함수
+function removeScript(src){
+    const script = document.querySelector(`script[src="${src}"]`)
+    if(script){
+        script.remove();
+    }
 }
