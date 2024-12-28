@@ -32,7 +32,10 @@ public class ZasaPageController {
         return "zasaPage/product";
     }
 
-
+    @GetMapping("training")
+    public String trainingPage(){
+        return "zasaPage/training";
+    }
 
 
 }
