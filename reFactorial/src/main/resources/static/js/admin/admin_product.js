@@ -97,6 +97,27 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch((error) => console.error("Error searching products:", error));
     }
 
+    async function fetchProducts() {
+        try {
+            const response = await fetch('/admin/products');
+            if (!response.ok) {
+                throw new Error("제품 조회 실패: " + response.status);
+            }
+            const products = await response.json();
+            console.log("API 응답 데이터:", products);
+
+            if (!Array.isArray(products)) {
+                console.error("API 응답이 배열이 아닙니다.");
+                return;
+            }
+
+            renderProducts(products);
+        } catch (error) {
+            console.error("제품 조회 에러:", error);
+        }
+    }
+
+
     // 제품 카드 렌더링
     function renderProducts(products) {
         const productList = document.getElementById("product-list");

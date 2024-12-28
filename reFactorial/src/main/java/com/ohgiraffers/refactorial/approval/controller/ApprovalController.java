@@ -586,7 +586,6 @@ public class ApprovalController {
             model.addAttribute("attachmentFileList", uploadFileList);
         }
 
-        // 첨부파일 데이터를 모델에 추가
 
 
         // 반려자인지 확인하고 반려 이유 가져오기
