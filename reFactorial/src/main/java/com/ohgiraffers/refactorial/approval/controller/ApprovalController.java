@@ -287,11 +287,14 @@ public class ApprovalController {
 
     @PostMapping("/submitApproval")
     public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
-                                 @RequestParam(required = false) List<MultipartFile> fileList,
+                                 @RequestParam List<MultipartFile> fileList,
                                  Model model,
                                  HttpSession session) throws IOException {
 
+
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        System.out.println("fileList = " + fileList);
 
         if (user == null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
@@ -328,8 +331,24 @@ public class ApprovalController {
             }
         }
 
+        // 첨부파일 저장 로직 (있는지 판단)
+        approvalRequestDTO.setAttachment(0);
+
+        if (fileList != null && !fileList.isEmpty()) {
+            boolean hasValidFile = false;
+            for (MultipartFile file : fileList) {
+                if (!file.isEmpty()) {
+                    hasValidFile = true;
+                    break; // 적어도 하나의 유효한 파일이 있으면 중단
+                }
+            }
+            if (hasValidFile) {
+                approvalRequestDTO.setAttachment(1); // 유효한 파일이 있을 경우 처리
+            }
+        }
+
         // 결재문서 저장
-        String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
+        String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId, fileList);
 
         // **추가된 휴가 날짜 업데이트 로직**
         if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
@@ -358,10 +377,6 @@ public class ApprovalController {
         List<String> referrerIds = approvalService.findEmpIdsByNames(referrers);
         approvalService.saveReferrers(pmId, referrerIds);
 
-        // 첨부파일 저장 로직
-        if (fileList != null && !fileList.isEmpty()) {
-            uploadService.upLoadFile(fileList, pmId);
-        }
 
         return "/approvals/approvalMain";
     }
@@ -513,6 +528,7 @@ public class ApprovalController {
         // pmId에 해당하는 결재 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
 
+        System.out.println("상세페이지 document = " + document.getAttachment());
 
         if (document == null) {
             model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
@@ -565,11 +581,12 @@ public class ApprovalController {
         }
 
         // 첨부파일 처리
-
-        List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(pmId);
+        if (document.getAttachment() == 1){
+            List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(pmId);
+            model.addAttribute("attachmentFileList", uploadFileList);
+        }
 
         // 첨부파일 데이터를 모델에 추가
-        model.addAttribute("attachmentFileList", uploadFileList);
 
 
         // 반려자인지 확인하고 반려 이유 가져오기
