@@ -142,7 +142,7 @@
           <ul>
             <li th:each="file : ${attachmentFileList}">
               <!-- storeFileName을 경로에 사용 -->
-              <a th:href="@{/files/${file.storeFileName}}" th:text="${file.originFileName}"></a>
+              <a th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}"></a>
             </li>
           </ul>
         </div>
