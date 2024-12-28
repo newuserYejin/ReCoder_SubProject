@@ -202,8 +202,11 @@ public class MainController {
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
+    @Value("${naver.map.api-id}")
+    private String naverApiId;
+
     @Value("${kakao.map.api-key}")
-    private String kakaoApiKey;
+    private String naverApiKey;
 
     @GetMapping("/goldTicket")
     public String goldTicket(Model model){
@@ -213,6 +216,8 @@ public class MainController {
         List<TktReserveDTO> result = as.getTktReserve(selectedDay);
 
         model.addAttribute("goldTicket",result);
+        model.addAttribute("naverApiId",naverApiId);
+        model.addAttribute("naverApiKey",naverApiKey);
 
         return "goldTicket/goldTicket";
     }

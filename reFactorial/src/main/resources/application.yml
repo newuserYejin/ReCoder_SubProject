@@ -48,3 +48,8 @@ weather:
 kakao:
   map:
     api-key: 57200a2d0f0b7eda951931fe3d660290
+
+naver:
+  map:
+    api-id: y4qf742nsm
+    api-key : 6xBJl2pDG3FMjOkt75XUrto7DRNvBrn7x3VDLtOZ

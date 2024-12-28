@@ -10,7 +10,7 @@ section{
             justify-content: space-between;
             width: 100%;
             flex-direction: row;
-            padding: 10px 0;
+            padding: 0;
 
             div{
                 display: flex;
@@ -30,11 +30,13 @@ section{
             display: flex;
             flex-direction: column;
             align-items: end;
+            flex: 1;
 
             .menuMainBox{
                 width: 100%;
 
-                padding: 10px 0;
+                padding: 0;
+                padding-top: 10px;
                 box-sizing: border-box;
                 max-height: 69vh;
                 overflow-x: auto;
