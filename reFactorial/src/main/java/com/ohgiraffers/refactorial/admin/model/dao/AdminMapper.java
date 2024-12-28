@@ -58,4 +58,6 @@ public interface AdminMapper {
     List<FactoryDTO> searchFactories(String keyword);
 
     FactoryDTO findFactoryById(String id);
+
+    Integer getTotalCountTktReserve();
 }
