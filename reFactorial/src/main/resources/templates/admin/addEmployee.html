@@ -23,23 +23,24 @@
             <div class="inputInfo">
                 <div class="inputSet">
                     <label for="empName">이름 : </label>
-                    <input type="text" id="empName" name="empName" th:value="${ModifyUser != null ? ModifyUser.empName : ''}">
+                    <input oninput="validateName(event)" type="text" id="empName" name="empName" th:value="${ModifyUser != null ? ModifyUser.empName : ''}" required>
                 </div>
 
                 <div class="inputSet">
                     <label for="empNo">주민번호 : </label>
-                    <input type="text" id="empNo" name="empNo" th:value="${ModifyUser != null ? ModifyUser.empNo : ''}">
+                    <input type="text" id="empNo" name="empNo" maxlength="14" th:value="${ModifyUser != null ? ModifyUser.empNo : ''}" required>
                 </div>
 
                 <div class="inputSet">
                     <label for="empAddress">주소 : </label>
-                    <input type="text" id="empAddress" name="empAddress" th:value="${ModifyUser != null ? ModifyUser.empAddress : ''}">
+                    <input type="text" id="empAddress" name="empAddress" th:value="${ModifyUser != null ? ModifyUser.empAddress : ''}" required>
                 </div>
 
                 <div class="inputSet">
                     <label for="empEmail">이메일 : </label>
-                    <input type="text" id="empEmail" name="empEmail" th:value="${ModifyUser != null ? ModifyUser.empEmail : ''}">
+                    <input type="text" id="empEmail" name="empEmail" th:value="${ModifyUser != null ? ModifyUser.empEmail : ''}" required onblur="validateEmail(event)">
                 </div>
+                <div class="error">이메일 형식이 올바르지 않습니다.</div>
 
                 <div class="inputSet">
                     <label for="deptCode">부서 : </label>
@@ -68,7 +69,7 @@
                     </select>
                 </div>
 
-                <div class="inputSet">
+                <div class="inputSet empIdBox" >
                     <label for="empId">사원번호 : </label>
                     <input type="text" id="empId" name="empId" th:value="${ModifyUser != null ? ModifyUser.empId : ''}" readonly>
                     <button type="button" th:unless="${ModifyUser}" onclick="randomEmpId()">생성하기</button>
@@ -76,22 +77,22 @@
 
                 <div class="inputSet">
                     <label for="empJoined">입사일 : </label>
-                    <input type="date" id="empJoined" name="empJoined" th:value="${ModifyUser != null ? ModifyUser.empJoined : ''}">
+                    <input type="date" id="empJoined" name="empJoined" th:value="${ModifyUser != null ? ModifyUser.empJoined : ''}" required>
                 </div>
 
                 <div class="inputSet">
                     <label for="annualLeave">연차 : </label>
-                    <input type="text" id="annualLeave" name="annualLeave" th:value="${ModifyUser != null ? ModifyUser.annualLeave : ''}">
+                    <input type="text" id="annualLeave" name="annualLeave" th:value="${ModifyUser != null ? ModifyUser.annualLeave : ''}" required oninput="validateAnnualLeave(event)">
                 </div>
 
                 <div th:unless="${ModifyUser != null and ModifyUser.empId != LoginUserInfo.empId}" class="inputSet">
                     <label for="empPwd">비밀번호 : </label>
-                    <input type="text" id="empPwd" name="empPwd">
+                    <input type="text" id="empPwd" name="empPwd" readonly>
                 </div>
 
                 <div class="inputSet">
                     <label for="empPhone">연락처 : </label>
-                    <input type="text" id="empPhone" name="empPhone" th:value="${ModifyUser != null ? ModifyUser.empPhone : ''}">
+                    <input type="text" maxlength="11" id="empPhone" name="empPhone" th:value="${ModifyUser != null ? ModifyUser.empPhone : ''}" required oninput="formatPhoneNumber(event)">
                 </div>
 
                 <div class="inputSet">
@@ -108,76 +109,5 @@
         </form>
 
     </section>
-
-    <script>
-        const ModifyUser = '[[${ModifyUser}]]'
-
-        if (ModifyUser){
-        console.log("ModifyUser : " ,ModifyUser)
-
-        fetch("/admin/addEmployeeFragment")
-            .then(response => response.text())
-            .then(html => {
-                // HTML에서 form 부분만 추출
-                const form = new DOMParser().parseFromString(html, "text/html").querySelector('form');
-
-                // form의 action 속성 변경
-                form.action = "/user/updateEmployee";  // 원하는 action 주소로 변경
-
-                // input 요소의 value 설정
-                const empNameInput = form.querySelector('#empName'); // 'empName' ID로 input 찾기
-                if (empNameInput) {
-                empNameInput.value = ModifyUser.empName; // 동적으로 value 설정
-            }
-
-            const empNoInput = form.querySelector('#empNo'); // 'empName' ID로 input 찾기
-            if (empNoInput) {
-                empNoInput.value = ModifyUser.empNo; // 동적으로 value 설정
-            }
-
-            const empAddressInput = form.querySelector('#empAddress'); // 'empName' ID로 input 찾기
-            if (empAddressInput) {
-                empAddressInput.value = ModifyUser.empAddress; // 동적으로 value 설정
-            }
-
-            const empEmailInput = form.querySelector('#empEmail'); // 'empName' ID로 input 찾기
-            if (empEmailInput) {
-                empEmailInput.value = ModifyUser.empEmail; // 동적으로 value 설정
-            }
-            const empIdInput = form.querySelector('#empId'); // 'empName' ID로 input 찾기
-            if (empIdInput) {
-                empIdInput.value = ModifyUser.empId; // 동적으로 value 설정
-            }
-            const empJoinedInput = form.querySelector('#empJoined'); // 'empName' ID로 input 찾기
-            if (empJoinedInput) {
-                empJoinedInput.value = ModifyUser.empJoined; // 동적으로 value 설정
-            }
-            const annualLeaveInput = form.querySelector('#annualLeave'); // 'empName' ID로 input 찾기
-            if (annualLeaveInput) {
-                annualLeaveInput.value = ModifyUser.annualLeave; // 동적으로 value 설정
-            }
-            const empPwdInput = form.querySelector('#empPwd'); // 'empName' ID로 input 찾기
-            if (empPwdInput) {
-                empPwdInput.value = ModifyUser.empPwd; // 동적으로 value 설정
-            }
-            const deptCodeInput = form.querySelector('#deptCode'); // 'empName' ID로 input 찾기
-            if (deptCodeInput) {
-                deptCodeInput.value = ModifyUser.deptCode; // 동적으로 value 설정
-            }
-            const positionValueInput = form.querySelector('#positionValue'); // 'empName' ID로 input 찾기
-            if (positionValueInput) {
-                positionValueInput.value = ModifyUser.positionValue; // 동적으로 value 설정
-            }
-            const viewAuthInput = form.querySelector('#viewAuth'); // 'empName' ID로 input 찾기
-            if (viewAuthInput) {
-                viewAuthInput.value = ModifyUser.viewAuth; // 동적으로 value 설정
-            }
-
-            menuMainBox.innerHTML = '';
-            menuMainBox.appendChild(form);
-        })
-    }
-
-    </script>
 </body>
 </html>

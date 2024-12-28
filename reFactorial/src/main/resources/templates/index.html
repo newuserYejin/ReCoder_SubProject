@@ -36,7 +36,10 @@
     <!--                    <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>-->
     <!--                    <p id="todayAtt"></p>-->
                         <div class="profileImg">
-                            <img th:src="${LoginUserInfo != null ? ( LoginUserInfo.profile != ''? '/uploadImg/' + LoginUserInfo.profile : '/uploadImg/defaultImg.png'): '/uploadImg/defaultImg.png'}">
+                            <img th:src="${LoginUserInfo != null ?
+                                        ( LoginUserInfo.profile != null && LoginUserInfo.profile != '' && !LoginUserInfo.profile.isEmpty()
+                                        ? '/uploadImg/' + LoginUserInfo.profile : '/uploadImg/defaultImg.png')
+                                        : '/uploadImg/defaultImg.png'}">
     <!--                        <img src="../static/images/loopy.jpg">-->
                         </div>
                         <div class="profileInfo" th:if="${LoginUserInfo}">

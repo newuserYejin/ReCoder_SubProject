@@ -98,7 +98,7 @@ public class EmailConfirmService {
 
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        sendToEmail = "jin200126@gmail.com";
+//        sendToEmail = "jin200126@gmail.com";
 
 
         try {
