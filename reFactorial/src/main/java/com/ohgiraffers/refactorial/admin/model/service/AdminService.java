@@ -83,6 +83,10 @@ public class AdminService {
         return am.getTktReserve(selectedDay);
     }
 
+    public Integer getTotalCountTktReserve(){
+        return am.getTotalCountTktReserve();
+    }
+
     public TktReserveDTO getReserveById(String reserveId) {
         return am.getReserveById(reserveId);
     }

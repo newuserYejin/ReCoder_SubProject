@@ -121,6 +121,11 @@
             tkt_reserv_id = ${reserveId}
     </select>
 
+    <select id="getTotalCountTktReserve">
+        select count(*)
+        from tbl_tktreserv
+    </select>
+
     <insert id="insertProduct">
     INSERT INTO tbl_product
     (prod_id, prod_name, prod_description, emp_id, prod_price, prod_image_path, prod_category)

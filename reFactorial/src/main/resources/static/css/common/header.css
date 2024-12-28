@@ -94,6 +94,8 @@ header{
                     opacity: 1;
                     visibility: visible;
                     transform: translateY(0px);
+                    z-index: 10;
+                    border-radius: 10px;
                 }
             }
         }
