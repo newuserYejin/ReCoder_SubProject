@@ -12,21 +12,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/css/common/header.css}">
-    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
-    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{css/common/header.css}">
+    <link rel="stylesheet" th:href="@{css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{css/common/style.css}">
     <!--여기까지 공동 복사-->
 
-    <link rel="stylesheet" th:href="@{/css/goldTicket/goldTicket.css}">
-    <link rel="stylesheet" href="../../static/css/goldTicket/goldTicket.css">
+    <link rel="stylesheet" th:href="@{css/goldTicket/goldTicket.css}">
 </head>
 <body>
-    <header th:replace="~{/common/header::headerFragment}"></header>
+    <header th:replace="~{common/header::headerFragment}"></header>
     <section>
         <div class="mainContainer">
             <div class="bannerImg">
                 <div class="ticketImg">
-                    <div>12 / 77</div>
+                    <div class="ticketNum">
+                        <div th:text="|${totalCount} / 77|"></div>
+                    </div>
                 </div>
             </div>
             <div class="infoBox">
@@ -45,48 +46,12 @@
             </div>
         </div>
     </section>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
 
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y4qf742nsm"></script>
     <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y4qf742nsm&submodules=geocoder"></script>
 
-    <script>
-        const personList = document.querySelectorAll(".person");
-        const api_key = '[[${api_key}]]';
+    <script th:src="@{js/goldTicket/goldTicket.js}"></script>
 
-        personList.forEach(person =>{
-            person.addEventListener("click",(e)=>{
-                const addressInfo = e.currentTarget.dataset.address
-
-                console.log("addressInfo: ",addressInfo)
-
-                fetch(`https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURIComponent(addressInfo)}`,{
-                    method:'POST',
-                    headers :{
-                        "X-NCP-APIGW-API-KEY-ID" : api_key,
-                        "X-NCP-APIGW-API-KEY" : api_key,
-                    }
-                })
-
-            })
-        })
-
-    </script>
-
-    <script>
-        //지도를 삽입할 HTML 요소 또는 HTML 요소의 id를 지정합니다.
-        var mapDiv = document.getElementById('map'); // 'map'으로 선언해도 동일
-
-        //옵션 없이 지도 객체를 생성하면 서울 시청을 중심으로 하는 16 레벨의 지도가 생성됩니다.
-        var map = new naver.maps.Map('map', {
-            center: new naver.maps.LatLng(37.3595704, 127.105399),
-            zoom: 15
-        });
-
-        var marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(37.3595704, 127.105399),
-            map: map
-        });
-    </script>
 </body>
 </html>

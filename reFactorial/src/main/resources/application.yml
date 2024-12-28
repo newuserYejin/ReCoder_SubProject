@@ -45,6 +45,7 @@ server:
 weather:
   api-key: e7056fa76f6a6b7d8be7d23179c66858
 
-kakao:
+naver:
   map:
-    api-key: 57200a2d0f0b7eda951931fe3d660290
+    api-id: y4qf742nsm
+    api-key : 6xBJl2pDG3FMjOkt75XUrto7DRNvBrn7x3VDLtOZ

@@ -209,9 +209,6 @@ public class MainController {
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
-    @Value("${kakao.map.api-key}")
-    private String kakaoApiKey;
-
     @GetMapping("/goldTicket")
     public String goldTicket(Model model){
         
@@ -219,7 +216,10 @@ public class MainController {
 
         List<TktReserveDTO> result = as.getTktReserve(selectedDay);
 
+        int totalCount = as.getTotalCountTktReserve();
+
         model.addAttribute("goldTicket",result);
+        model.addAttribute("totalCount",totalCount);
 
         return "goldTicket/goldTicket";
     }
