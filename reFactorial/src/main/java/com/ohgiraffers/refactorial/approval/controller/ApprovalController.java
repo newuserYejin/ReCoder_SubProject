@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial.approval.controller;
 
 import com.ohgiraffers.refactorial.approval.model.dto.*;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
+import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -326,22 +328,22 @@ public class ApprovalController {
         // 결재문서 저장
         String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
 
-        // 휴가유형 처리 (휴가신청서일 경우만)
-        if ("category3".equals(approvalRequestDTO.getCategory())) {
-            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
-                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
+        // **추가된 휴가 날짜 업데이트 로직**
+        if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
+            if (approvalRequestDTO.getLeaveDate() != null) {
+                // 휴가 날짜 업데이트
+                approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
             } else {
-                model.addAttribute("errorMessage", "휴가유형을 선택해야 합니다.");
+                model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
                 return "/approvals/approvalPage";
             }
 
-            // LocalDate를 문자열로 변환
-            LocalDate leaveDate = approvalService.getLeaveDateForDocument(pmId);
-            if (leaveDate != null) {
-                String formattedLeaveDate = leaveDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                model.addAttribute("leaveDate", formattedLeaveDate);
+            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
+                // 휴가 유형 업데이트
+                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
             } else {
-                model.addAttribute("leaveDate", "휴가 날짜 정보 없음");
+                model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
+                return "/approvals/approvalPage";
             }
         }
 
@@ -366,10 +368,9 @@ public class ApprovalController {
             }
         }
 
-
-
         return "/approvals/approvalMain";
     }
+
 
 
     // 대기 중
@@ -632,6 +633,8 @@ public class ApprovalController {
                     // 연차/반차 처리 로직 추가
                     processLeaveIfApplicable(pmId, currentEmpId);
 
+
+
                     // 모든 승인자가 완료되었는지 확인
                     boolean allApproved = approvalService.isAllApproversApproved(pmId);
 
@@ -668,10 +671,13 @@ public class ApprovalController {
      * 연차/반차 처리 메서드
      */
     private void processLeaveIfApplicable(String pmId, String empId) {
+        System.out.println("Processing leave for pmId: " + pmId + ", empId: " + empId);
         DocumentDTO document = approvalService.getDocumentById(pmId);
+        System.out.println("Retrieved document: " + document);
 
         if (document != null) {
             String leaveType = document.getLeaveType(); // 연차/반차 여부 확인
+            LocalDate leaveDate = document.getLeaveDate(); // 휴가 날짜 가져오기
             BigDecimal deduction = BigDecimal.ZERO;
 
             if ("연차".equals(leaveType)) {
@@ -682,6 +688,17 @@ public class ApprovalController {
 
             if (deduction.compareTo(BigDecimal.ZERO) > 0) {
                 approvalService.updateEmployeeLeave(empId, deduction); // 연차/반차 업데이트 처리
+
+                // 근태 데이터 추가
+                AttendanceDTO attendanceDTO = new AttendanceDTO();
+                attendanceDTO.setAttDate(leaveDate);
+                attendanceDTO.setAttTime(LocalTime.of(9, 0)); // 기본 시간 설정 (예: 9:00 AM)
+                attendanceDTO.setAttStatus(leaveType); // 연차/반차
+                attendanceDTO.setEmpId(empId);
+
+                System.out.println("Inserting attendance record: " + attendanceDTO);
+                approvalService.insertAttendanceRecord(attendanceDTO);
+                System.out.println("Attendance record inserted successfully!");
             }
         }
     }

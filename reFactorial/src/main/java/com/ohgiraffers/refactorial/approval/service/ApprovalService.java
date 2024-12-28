@@ -3,9 +3,11 @@
     import com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper;
     import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
     import com.ohgiraffers.refactorial.approval.model.dto.*;
+    import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
+    import org.springframework.transaction.annotation.Transactional;
     import org.springframework.ui.Model;
 
 
@@ -16,6 +18,7 @@
     import java.util.stream.Collectors;
 
     @Service
+
     public class ApprovalService {
 
 
@@ -461,6 +464,11 @@
         public String getRejectReasonByApprover(String pmId, String currentEmpId) {
             return approvalMapper.getRejectReasonByApprover(pmId, currentEmpId);
         }
+
+            @Transactional
+            public void insertAttendanceRecord(AttendanceDTO attendanceDTO) {
+                approvalMapper.insertAttendance(attendanceDTO);
+            }
 
 
 //
