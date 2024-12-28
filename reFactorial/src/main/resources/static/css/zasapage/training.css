@@ -408,6 +408,8 @@ html, body {
     min-height: 70vh;
     padding: 2rem;
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.05)); /* 황금색 그라데이션 배경 */
+    position: relative; /* 추가 */
+    overflow: hidden; /* 추가 */
 }
 
 .golden-ticket {
@@ -424,6 +426,7 @@ html, body {
     position: relative;
     overflow: hidden;
     border: 3px solid rgba(255, 215, 0, 0.3); /* 황금색 테두리 */
+    z-index: 5;
 }
 
 .golden-ticket::before {
@@ -524,30 +527,31 @@ html, body {
     position: absolute;
     animation: float 3s ease-in-out infinite;
     font-size: 100px; /* 이모지 크기를 훨씬 크게 조정 */
-    z-index: 0;
+    z-index: 10;
     opacity: 0.7;
+
 }
 
 .candy-1 {
-    top: 10%;
+    top: -10%; /* 수정: 화면 위쪽으로 올라오도록 */
     left: 15%;
     transform: rotate(30deg);
 }
 
 .candy-2 {
-    top: 70%;
+    top: -5%;
     right: 20%;
     transform: rotate(-20deg);
 }
 
 .candy-3 {
-    top: 30%;
+    top: -15%;
     left: 5%;
     transform: rotate(45deg);
 }
 
 .candy-4 {
-    top: 50%;
+    top: -8%;
     right: 10%;
     transform: rotate(-45deg);
 }
