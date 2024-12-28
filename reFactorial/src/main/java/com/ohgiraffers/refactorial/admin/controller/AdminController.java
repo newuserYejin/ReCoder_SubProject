@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -322,7 +324,7 @@ public class AdminController {
 
     @PostMapping("/addFactory")
     @ResponseBody
-    public String addFactory(@ModelAttribute FactoryDTO factoryDTO, HttpSession session){
+    public String addFactory(@RequestBody FactoryDTO factoryDTO, HttpSession session){
         System.out.println("FactoryDTO Data: " + factoryDTO);
         System.out.println("Image URL: " + factoryDTO.getFabImage());
 
@@ -345,5 +347,53 @@ public class AdminController {
         return result > 0 ? "success" : "fail";
 
     }
+
+    @PatchMapping("/updateFactory")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> updateFactory(@RequestBody FactoryDTO factoryDTO, HttpSession session) {
+        System.out.println("수정 요청 데이터: " + factoryDTO);
+
+        Map<String, String> response = new HashMap<>();
+
+        // 세션에서 로그인 사용자 정보 확인
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        if (user == null) {
+            response.put("message", "로그인 정보가 없습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); // HTTP 401 반환
+        }
+
+        // 사용자 ID 설정
+        factoryDTO.setEmpId(user.getEmpId());
+
+        // 업데이트 처리
+        int result = adminService.updateFactory(factoryDTO);
+        if (result > 0) {
+            response.put("message", "수정 성공!");
+            return ResponseEntity.ok(response); // HTTP 200 반환
+        } else {
+            response.put("message", "수정 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500 반환
+        }
+    }
+
+
+    @GetMapping("/factories")
+    @ResponseBody
+    public List<FactoryDTO> getAllFactories() {
+        return adminService.getAllFactories(); // 서비스에서 전체 조회 구현
+    }
+
+    @GetMapping("/searchFactory")
+    @ResponseBody
+    public List<FactoryDTO> searchFactories(@RequestParam String keyword) {
+        return adminService.searchFactories(keyword); // 서비스에서 검색 구현
+    }
+
+    @GetMapping("/factory/{id}")
+    @ResponseBody
+    public FactoryDTO getFactoryById(@PathVariable String id) {
+        return adminService.getFactoryById(id);
+    }
+
 
 }

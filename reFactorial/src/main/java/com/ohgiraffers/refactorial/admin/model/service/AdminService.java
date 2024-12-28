@@ -137,4 +137,22 @@ public class AdminService {
         return String.format("FAB%03d", newIdNum);
     }
 
+
+    public int updateFactory(FactoryDTO factoryDTO) {
+        return adminMapper.updateFactory(factoryDTO);
+    }
+
+
+    public List<FactoryDTO> getAllFactories() {
+        return adminMapper.getAllFactories();
+    }
+
+    public List<FactoryDTO> searchFactories(String keyword) {
+        return adminMapper.searchFactories(keyword);
+    }
+
+
+    public FactoryDTO getFactoryById(String id) {
+        return adminMapper.findFactoryById(id);
+    }
 }

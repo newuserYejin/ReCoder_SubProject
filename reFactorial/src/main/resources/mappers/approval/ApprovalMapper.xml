@@ -194,6 +194,7 @@
             pm.pm_attachment AS attachment,
             emp.emp_name AS creatorName, -- 작성자 이름
             pm.leave_type AS leaveType,
+            pm.leave_date AS leaveDate, -- 휴가 날짜 추가
             GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers, -- 승인자 목록 (순서 보장)
             GROUP_CONCAT(DISTINCT pr.emp_id) AS referrers, -- 참조자 목록
             pm.pm_content AS content,
@@ -206,6 +207,7 @@
         WHERE pm.pm_id = #{pmId}
         GROUP BY pm.pm_id;
     </select>
+
 
 
 
@@ -528,5 +530,11 @@
           AND emp_id = #{currentEmpId}
           AND reason IS NOT NULL;
     </select>
+
+    <insert id="insertAttendance" parameterType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+            INSERT INTO tbl_attendance (att_date, att_time, att_status, emp_id)
+        VALUES (#{attDate}, #{attTime}, #{attStatus}, #{empId})
+    </insert>
+
 
 </mapper>
