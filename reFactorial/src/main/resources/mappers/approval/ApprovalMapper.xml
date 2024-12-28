@@ -537,4 +537,9 @@
     </insert>
 
 
+    <insert id="saveFileInfo" parameterType="map">
+        INSERT INTO tbl_approval_files (pm_id, file_name, file_path)
+        VALUES (#{pmId}, #{fileName}, #{filePath})
+    </insert>
+
 </mapper>

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UploadFileService {
@@ -17,13 +18,13 @@ public class UploadFileService {
     private final UploadFileMapper uploadMapper;
 
     @Autowired
-    public UploadFileService(UploadFileMapper uploadMapper){
+    public UploadFileService(UploadFileMapper uploadMapper) {
         this.uploadMapper = uploadMapper;
     }
 
     public void upLoadFile(List<MultipartFile> FileList, String mappingId) throws IOException {
 
-        for (MultipartFile file : FileList ) {
+        for (MultipartFile file : FileList) {
             String originFileName = file.getOriginalFilename();
             LocalDateTime uploadedAt = LocalDateTime.now();
 
@@ -53,19 +54,19 @@ public class UploadFileService {
 
             String filePath;
 
-            if (fileExtension.equals(".jpg")||fileExtension.equals(".png")||fileExtension.equals(".svg")){
+            if (fileExtension.equals(".jpg") || fileExtension.equals(".png") || fileExtension.equals(".svg")) {
                 filePath = projectPath + "/src/main/resources/static/images/uploadImg/" + storeFileName;
-            } else{
+            } else {
                 filePath = projectPath + "/src/main/resources/static/files/" + storeFileName;
             }
 
             // 파일 저장경로에 저장
             file.transferTo(new File(filePath));
-            
+
             List<UploadFileDTO> existList = uploadMapper.findFileByMappingId(mappingId);
             System.out.println("existList = " + existList);
-            
-            if (existList != null){
+
+            if (existList != null) {
                 uploadMapper.deleteByMappingId(mappingId);
                 System.out.println("삭제함");
             }
@@ -88,4 +89,6 @@ public class UploadFileService {
     public UploadFileDTO findFileByFileId(String fileId) {
         return uploadMapper.findFileByFileId(fileId);
     }
+
+
 }
