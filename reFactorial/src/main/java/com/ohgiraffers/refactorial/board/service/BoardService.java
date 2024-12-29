@@ -23,9 +23,9 @@ public class BoardService {
     }
 
     // 게시글 카테고리별 목록 조회
-    public List<BoardDTO> postList(int categoryCode, int limit, int offset) {
+    public List<BoardDTO> postList(int categoryCode, int limit, int offset, String searchContents) {
 
-        return boardMapper.postList(categoryCode, limit, offset);
+        return boardMapper.postList(categoryCode, limit, offset, searchContents);
     }
 
     // 게시글 등록
@@ -105,4 +105,30 @@ public class BoardService {
         return boardMapper.getBoardListCount(categoryCode);
     }
 
+    // 댓글 좋아요 조회
+    public void commentLikes(String postId) {
+
+        boardMapper.commentLikes(postId);
+    }
+
+
+    public void commentLikesInsert(CommentLikesDTO commentLikes) {
+
+        boardMapper.commentLikesInsert(commentLikes);
+    }
+
+    public int commentLikesCount(CommentDTO commentDTO) {
+        return boardMapper.commentLikesCount(commentDTO);
+    }
+
+    public int isMyLike(CommentDTO commentDTO) {
+
+        return boardMapper.isMyLike(commentDTO);
+
+    }
+
+    // 좋아요 삭제
+    public void commentLikesDelete(CommentLikesDTO commentLikes) {
+        boardMapper.commentLikesDelete(commentLikes);
+    }
 }
