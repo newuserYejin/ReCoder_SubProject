@@ -532,26 +532,30 @@ html, body {
 
 }
 
+/*2번쨰캔디*/
 .candy-1 {
-    top: -10%; /* 수정: 화면 위쪽으로 올라오도록 */
+    top: 10%;
     left: 15%;
     transform: rotate(30deg);
 }
 
+/*3번쨰캔디 */
 .candy-2 {
-    top: -5%;
-    right: 20%;
+    top: 41%;
+    right: 5%;
     transform: rotate(-20deg);
 }
 
+/*1번째캔디*/
 .candy-3 {
-    top: -15%;
-    left: 5%;
+    top: 25%;
+    left: 2%;
     transform: rotate(45deg);
 }
 
+/*4번쨰캔디*/
 .candy-4 {
-    top: -8%;
+    top: 60%;
     right: 10%;
     transform: rotate(-45deg);
 }
