@@ -481,8 +481,13 @@
             }
 
 
+        public int countInProgressDocuments(String empId) {
+            return approvalMapper.countInProgressDocuments(empId);
+        }
 
-
+        public int countRejectedDocuments(String empId) {
+            return approvalMapper.countRejectedDocuments(empId);
+        }
     }
 
 

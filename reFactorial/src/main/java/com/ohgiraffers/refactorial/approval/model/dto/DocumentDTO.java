@@ -29,6 +29,12 @@ public class DocumentDTO {
         private String leaveType; // 휴가 유형 (연차, 반차)
         private LocalDate leaveDate; // 휴가 날짜
 
+        private String currentApprover;    // 현재 결재자 (이름 + 직책)
+        private String approverLabel;      // 결재자 라벨 (현재 결재자/반려자/최종 승인)
+        private int approvalOrder;         // 현재 결재 순서
+        private int totalApprovers;        // 전체 결재자 수
+        private String docStatus;          // 문서 상태
+
 
         // categoryName 필드의 getter 정의
         public String getCategoryName() {

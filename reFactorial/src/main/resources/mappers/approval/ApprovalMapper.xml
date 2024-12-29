@@ -117,19 +117,18 @@
         pm.pm_create AS createDate,
         pm.pm_category AS category,
         a.pm_status AS status,
-        pm.pm_attachment AS attachment,
-        emp.emp_name AS creatorName,
-        pm.pm_referrer AS referrers
-        FROM
-        tbl_pm pm
-        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id <!-- 상태 조인 -->
-        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-        WHERE EXISTS (
-        SELECT 1
-        FROM tbl_pm_referrer pr
-        WHERE pr.pm_id = pm.pm_id
-        AND pr.emp_id = #{empId}
-        )
+        CONCAT(creator.emp_name, ' ', pos.position_name) AS creatorName,
+        CASE
+        WHEN a.pm_status = '반려' THEN '반려'
+        WHEN a.pm_status = '완료' THEN '완료'
+        ELSE '진행중'
+        END AS docStatus
+        FROM tbl_pm pm
+        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
+        LEFT JOIN employee creator ON pm.emp_id = creator.emp_id
+        LEFT JOIN tbl_position pos ON creator.position_value = pos.position_value
+        JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id
+        WHERE pr.emp_id = #{empId}
         ORDER BY pm.pm_create DESC
         LIMIT #{limit} OFFSET #{offset} <!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
     </select>
@@ -291,7 +290,7 @@
             pm.pm_title AS title,
             pm.pm_create AS createDate,
             pm.pm_category AS category,
-            ap.pm_status AS status,
+            MAX(ap.pm_status) AS status,
             emp.emp_name AS creatorName
         FROM
             tbl_pm pm
@@ -479,6 +478,7 @@
             INSERT INTO tbl_attendance (att_date, att_time, att_status, emp_id)
         VALUES (#{attDate}, #{attTime}, #{attStatus}, #{empId})
     </insert>
+
 
 
 </mapper>

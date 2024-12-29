@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
+import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
@@ -36,6 +37,8 @@ public class MainController {
     private final AttendanceService attendanceService;
     private final BoardService boardService;
     private final AdminService as;
+    @Autowired
+    private ApprovalService approvalService;
 
     @Autowired
     public MainController(MemberService memberService,
@@ -132,7 +135,30 @@ public class MainController {
     }
 
     @GetMapping("/user/approvalMain")
-    public String approvalMainController(){
+    public String approvalMainController(Model model,HttpSession session){
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
+        }
+
+        String empId = user.getEmpId();
+
+        // 상태별 문서 건수 조회
+        model.addAttribute("waitingCount", approvalService.getWaitingCount(empId));
+        model.addAttribute("inProgressCount", approvalService.countInProgressDocuments(empId));
+        model.addAttribute("completedCount", approvalService.getCompletedDocumentsCount(empId));
+        model.addAttribute("rejectedCount", approvalService.countRejectedDocuments(empId));
+
+
+        // 각 탭에 표시될 문서 목록 조회 (최근 5건씩만)
+        model.addAttribute("draftDocuments", approvalService.getMyDocuments(empId,5,0));
+        model.addAttribute("approveDocuments", approvalService.getWaitingDocuments(empId, 5, 0));
+        model.addAttribute("referenceDocuments", approvalService.getReferenceDocuments(empId, 5, 0));
+
+
         return "/approvals/approvalMain";
     }
 
