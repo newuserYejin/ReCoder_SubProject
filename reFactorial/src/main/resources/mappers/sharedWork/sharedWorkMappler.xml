@@ -11,6 +11,7 @@
         <result property="deadLine" column="deadline"/>
         <result property="workSchedule" column="work_schedule"/>
         <result property="deptCode" column="dept_code"/>
+        <result property="workColor" column="work_color"/>
     </resultMap>
 
 
@@ -23,7 +24,8 @@
         work_explanation,
         deadline,
         work_schedule,
-        dept_code
+        dept_code,
+        work_color
         )
         VALUES
         (
@@ -32,7 +34,9 @@
         #{workExplanation},
         #{deadLine},
         #{workSchedule},
-        #{deptCode})
+        #{deptCode},
+        #{workColor}
+        )
     </insert>
 
     <!-- 모든 업무 조회 -->
@@ -66,7 +70,8 @@
         work_explanation = #{workExplanation},
         work_schedule = #{workSchedule},
         deadline = #{deadLine},
-        dept_code = #{deptCode}
+        dept_code = #{deptCode},
+        work_color = #{workColor}
         WHERE work_id = #{workId}
     </update>
 

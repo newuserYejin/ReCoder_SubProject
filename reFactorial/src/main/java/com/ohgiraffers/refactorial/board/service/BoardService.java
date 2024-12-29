@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.board.service;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
 import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,10 @@ public class BoardService {
         this.boardMapper = boardMapper;
     }
 
-    // 게시글 전체조회
-    public List<BoardDTO> postList(int categoryCode) {
+    // 게시글 카테고리별 목록 조회
+    public List<BoardDTO> postList(int categoryCode, int limit, int offset) {
 
-        return boardMapper.postList(categoryCode);
+        return boardMapper.postList(categoryCode, limit, offset);
     }
 
     // 게시글 등록
@@ -98,11 +99,10 @@ public class BoardService {
         return boardMapper.voteComplete(postId, empId);
     }
 
+    // 게시물 카테고리별 전체 카운트
+    public int getBoardListCount(int categoryCode) {
 
-    // 페이지네이션 하는중
-//    public int getRejectedDocumentsCount() {
-//    }
-//
-//    public List<BoardDTO> BoardList(int limit, int offset) {
-//    }
+        return boardMapper.getBoardListCount(categoryCode);
+    }
+
 }
