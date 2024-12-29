@@ -65,7 +65,7 @@ public class MainController {
     @GetMapping("/user")
     public String mainControll(Model model,HttpSession session){
         // 공지사항 게시물 가져오기
-        List<BoardDTO> boardList = boardService.postList(1, 10, 0);
+        List<BoardDTO> boardList = boardService.postList(1, 10, 0, null);
 
         if (!boardList.isEmpty()){
             model.addAttribute("boardList",boardList);
@@ -73,7 +73,7 @@ public class MainController {
 
 
         // 투표 게시물 가져오기
-        List<BoardDTO> votePostList = boardService.postList(4, 10, 0);
+        List<BoardDTO> votePostList = boardService.postList(4, 10, 0, null);
 
         if (!votePostList.isEmpty()){
             // 최근꺼 3개만 가져오기
@@ -160,7 +160,7 @@ public class MainController {
         Map<String,Object> attendanceChart = attendanceService.getAttendanceGroupBy(today);
 
         // 최근 이벤트 게시물
-        List<BoardDTO> eventList = boardService.postList(5, 10, 0);
+        List<BoardDTO> eventList = boardService.postList(5, 10, 0, null);
 
         if (eventList != null && !eventList.isEmpty()){
             model.addAttribute("recentlyEvent",eventList.get(0));

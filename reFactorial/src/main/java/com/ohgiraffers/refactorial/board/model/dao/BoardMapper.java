@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardMapper {
 
     // 게시글 전체조회
-    List<BoardDTO> postList(int categoryCode, int limit, int offset);
+    List<BoardDTO> postList(int categoryCode, int limit, int offset, String searchContents);
 
     // 게시글 등록
     void boardPost(BoardDTO board);

@@ -1,25 +1,19 @@
 package com.ohgiraffers.refactorial.board.controller;
 
-import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
-import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.board.model.dto.*;
 import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
 import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
-import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +34,10 @@ public class BoardController {
     // 게시물 전체조회
     @GetMapping("list") // url로 이동
     public String list(@RequestParam int categoryCode, Model model, HttpSession session,
-                       @RequestParam(value = "page", defaultValue = "1") int currentPage) {
+                       @RequestParam(value = "page", defaultValue = "1") int currentPage,
+                       @RequestParam(required = false) String searchContents) {
 
-        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
+//        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");   // 로그인한 유저 정보를 가져옴
 
         // 페이지네이션
         int limit = 10; // 한 페이지당 문서 수
@@ -60,7 +55,7 @@ public class BoardController {
         int offset = (currentPage - 1) * limit; // offset 계산
 
         // 게시물 목록 가져오기
-        List<BoardDTO> postList = boardService.postList(categoryCode, limit, offset);
+        List<BoardDTO> postList = boardService.postList(categoryCode, limit, offset, searchContents);
 
         // 문서 번호 설정
         for (int i = 0; i < postList.size(); i++) {
@@ -84,22 +79,34 @@ public class BoardController {
 
 
 
+
+
+
         return "/board/list";   // html 페이지로 이동
     }
 
-    // 게시물 등록 페이지로 이동
+    // 게시물 등록 / 수정 페이지로 이동
     @GetMapping("freeBoardRegist")
-    public String freeBoardRegist(@RequestParam int categoryCode, Model model) {
+    public String freeBoardRegist(@RequestParam int categoryCode,
+                                  @RequestParam String postId,
+                                  @RequestParam
+                                  Model model) {
+
+        BoardDTO postDetail = boardService.postDetail(postId);              // postDetail(postID(PK))로 제목,내용을
+                                                                            // 수정할 때 띄워주기 위해
+        List<VoteItemDTO> voteItemList = boardService.itemView(postId);     // 항목리스트
 
         model.addAttribute("categoryCode", categoryCode);
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
+        model.addAttribute("postDetail", postDetail);           // 상세페이지 전달
+        model.addAttribute("voteItemList", voteItemList);
 
 
         return "/board/freeBoardRegist";
     }
 
 
-    // 게시물 등록
+    // 게시물 등록 / 수정
     @PostMapping("freeBoardRegist")
     public String boardPost(@RequestParam String title,
                             @RequestParam String content,
@@ -110,20 +117,28 @@ public class BoardController {
                             @RequestParam(required = false) String option4,
                             @RequestParam(required = false) String option5,
                             @RequestParam(required = false) List<MultipartFile> postFileList,
+                            @RequestParam(required = false) String postId,
                             Model model, HttpSession session) throws IOException {
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+
         String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
+
 
         // 게시물의 정보
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
-        board.setPostId(boardId);               // 게시물 번호
+        if (postId != null) {                   // postId가 없으면 boardId 생성 (등록)
+            board.setPostId(postId);           // postId가 있으면 postId 전달 (수정)
+        } else {
+            board.setPostId(boardId);
+        }
         board.setPostTitle(title);              // 게시물 제목
         board.setPostContent(content);          // 게시물 내용
         board.setPostCreationDate(LocalDateTime.now()); // 게시물 등록 시간
         board.setEmpId(user.getEmpId());        // 작성자 사원번호
         board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
         board.setCategoryCode(categoryCode);    // 게시물 카테고리 코드
+
 
         // 카테고리가 4(투표게시판)일 때
         if (categoryCode == 4) {
@@ -145,8 +160,6 @@ public class BoardController {
             if (option5 != null && !option5.isEmpty()) {
                 options.add(option5);
             }
-
-//            System.out.println(options); // 값을 받은걸 리스트 형태로 출력
 
             // 반복문돌려서 1개씩 만들기 (게시물 ID, 항목 이름)
             for (String option : options) {
@@ -173,6 +186,8 @@ public class BoardController {
         }
 
         boardService.post(board);   // 게시물 등록 기능
+
+        model.addAttribute("postId", postId);
 
         return "redirect:/board/list?categoryCode=" + categoryCode; // 내 API를 호출
     }
@@ -281,23 +296,6 @@ public class BoardController {
         return "redirect:/board/postDetail?postId=" + postId + "&categoryCode=" + categoryCode;    // redirect 를 사용하는 이유 - postDetail에 있는 데이터 사용을 위해!
     }
 
-    // 투표 결과 조회(12/22)
-//    @GetMapping("/voteResult")
-//    public String getVoteResults(@RequestParam("postId") String postId, Model model, HttpSession session) {
-//
-//        // 로그인한 유저 정보를 가져옴
-//        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-//        // 투표 결과 가져오기
-//        List<VoteResultDTO> voteResults = boardService.getVoteResults(postId);
-//        List<VoteItemDTO> userVote = boardService.getUserVote(postId, user.getEmpId());
-//
-//        model.addAttribute("voteResults", voteResults);
-//        model.addAttribute("userVote", userVote);
-//
-//        return "voteResultPage";
-//    }
-
-
     // 게시물 삭제
     @GetMapping("postDelete")
     public String deletePost() {
@@ -311,29 +309,6 @@ public class BoardController {
         boardService.postDelete(postId);
 
         return "redirect:/board/list?categoryCode=" + categoryCode;
-    }
-
-    // 게시물 수정
-    @GetMapping("postUpdate")
-    public String postUpdate(@RequestParam String postId, Model model) {
-
-        BoardDTO postDetail = boardService.postDetail(postId);
-
-        model.addAttribute("modify", postDetail);
-
-        return "/board/postUpdate";
-    }
-    @PostMapping("postUpdate")
-    public String updatePost(@ModelAttribute BoardDTO board) {
-
-        board.setPostModificationDate(LocalDateTime.now()); // 게시물 수정 시간
-        boardService.updatePost(board);
-
-
-
-//        return "redirect:/board/postDetail?postId=" + board.getPostId();    // 상세페이지 머무르기
-        return "redirect:/board/list?categoryCode=" + board.getCategoryCode();  // 게시판 이동
-
     }
 
     // 댓글 등록

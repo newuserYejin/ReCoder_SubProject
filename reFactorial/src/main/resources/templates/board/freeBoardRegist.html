@@ -40,7 +40,7 @@
                     <!-- 제목 -->
                     <div class="form-group">
                         <label for="title">제목:</label>
-                        <input type="text" id="title" name="title" required/>
+                        <input type="text" id="title" name="title" th:value="${postDetail.postTitle}" required/>
                     </div>
 
                     <!-- 분류 -->
@@ -59,13 +59,13 @@
                     <!-- 첨부 파일 -->
                     <div class="form-group postFileBox">
                         <label for="title">첨부파일:</label>
-                        <input type="file" id="postFileList" name="postFileList" multiple required>
+                        <input type="file" id="postFileList" name="postFileList" multiple>
                     </div>
 
                     <!-- 내용 -->
                     <div class="form-group content">
                         <label for="content">내용:</label>
-                        <textarea id="content" name="content" required></textarea>
+                        <textarea id="content" name="content" th:text="${postDetail.postContent}" required></textarea>
                     </div>
                 </div>
 
@@ -260,7 +260,6 @@
         const postFileBox = document.querySelector(".postFileBox");
         const freeBoardForm = document.querySelector('#freeBoardForm');
 
-        debugger;
 
         // 카테고리 코드가 4일 경우 투표항목 노출
         if(categoryCode === 4){

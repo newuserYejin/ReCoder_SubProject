@@ -23,9 +23,9 @@ public class BoardService {
     }
 
     // 게시글 카테고리별 목록 조회
-    public List<BoardDTO> postList(int categoryCode, int limit, int offset) {
+    public List<BoardDTO> postList(int categoryCode, int limit, int offset, String searchContents) {
 
-        return boardMapper.postList(categoryCode, limit, offset);
+        return boardMapper.postList(categoryCode, limit, offset, searchContents);
     }
 
     // 게시글 등록

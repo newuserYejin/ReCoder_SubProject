@@ -23,7 +23,7 @@
         <div class="sidebar">
             <div class="sidebar-title">업무공유</div>
             <ul>
-                <li onclick="location.href='sharedWork/allWork'">전체업무</li>
+                <li onclick="location.href='/user/allWork'">전체업무</li>
                 <li>업무공유</li>
             </ul>
         </div>
@@ -98,7 +98,6 @@
             // 일정 렌더링 시 색상 적용
             eventDidMount: function(info) {
                 if (info.event.extendedProps.color) {
-                    debugger
                     info.el.style.backgroundColor = info.event.extendedProps.color;
                 }
             },
@@ -130,8 +129,6 @@
                 eventEndDateInput.value = event.endStr ? event.endStr.split('T')[0] : event.startStr;
                 eventColorSelect.value = event.borderColor; // 색상 적용
 
-                debugger
-
                 // 수정
                 saveEventBtn.onclick = function() {
                     // 이벤트 업데이트를 위한 임시 객체 생성
@@ -149,7 +146,6 @@
 
 
 
-                    debugger
                     if (eventEndDateInput.value < eventStartDateInput.value) {
                         alert('종료 날짜는 시작 날짜보다 앞설 수 없습니다.');
                         return;
