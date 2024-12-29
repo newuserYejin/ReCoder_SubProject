@@ -36,12 +36,12 @@ public class MailController {
         return "/mail/sendMail";
     }
 
-    // 메일 보내기
     @PostMapping("/sendMail")
     public String sendMail(@ModelAttribute MailDTO mailDTO,
-                           @RequestParam("mailFiles") List<MultipartFile> mailFiles,
+                           @RequestParam("mailFiles") List<MultipartFile> mailFileList,
                            HttpSession session,
                            Model model) throws IOException {
+
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
@@ -54,19 +54,19 @@ public class MailController {
             return "mail/sendMail";
         }
 
-        // 첨부 파일이 있는 경우 처리
-        if (!mailFiles.isEmpty()) {
-            mailDTO.setMailfile(mailFiles);
-            mailDTO.setAttachment(1); // 첨부 파일 있음 표시
-            uploadService.upLoadFile(mailFiles, mailDTO.getEmailId());
-        } else {
-            mailDTO.setAttachment(0); // 첨부 파일 없음 표시
+        // 메일 ID 생성 및 설정
+        String emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+        mailDTO.setEmailId(emId); // 이메일 ID 설정
+
+        try {
+            // 메일 전송
+            mailService.sendMail(mailDTO, mailFileList);  // 메일 전송과 수신자 정보 저장
+        } catch (Exception e) {
+            model.addAttribute("error", "메일 전송 중 오류가 발생했습니다.");
+            return "mail/sendMail";
         }
 
-        // 메일 전송
-        mailService.sendMail(mailDTO, mailFiles);
-
-        return "redirect:/mail/sendMail";
+        return "redirect:/mail/sendMail";  // 메일 전송 후 리다이렉트
     }
 
     //내가 보낸 메일 읽기

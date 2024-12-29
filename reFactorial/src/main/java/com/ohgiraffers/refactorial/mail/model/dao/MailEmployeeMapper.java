@@ -7,8 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface MailEmployeeMapper {
-
-    List<MailEmployeeDTO> searchMailEmployeesByName(String searchReceiverInput);
+    List<MailEmployeeDTO> searchMailEmployees(String searchReceiverInput);
 
     List<MailEmployeeDTO> getAllMailEmployees();
 }

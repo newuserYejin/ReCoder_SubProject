@@ -16,6 +16,28 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <link rel="stylesheet" th:href="@{/css/inquiry/inquiryList.css}">
 
+    <style>
+        .pagination {
+            display: flex; /* 플렉스 레이아웃 사용 */
+            justify-content: center; /* 페이지네이션 버튼을 가로로 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            margin-top: 20px; /* 상단 여백 추가 */
+        }
+
+        .pagination button {
+            padding: 5px 10px; /* 버튼 내부 여백 */
+            margin: 0 5px; /* 버튼 간 간격 */
+            background-color: #f0f0f0; /* 버튼 배경색 */
+            border: 1px solid #ccc; /* 버튼 테두리 색상 */
+            border-radius: 5px; /* 둥근 모서리 */
+            cursor: pointer; /* 마우스 커서 설정 */
+        }
+
+        .pagination button:hover {
+            background-color: #ddd; /* 마우스 오버 시 배경색 변경 */
+        }
+    </style>
+
 </head>
 <body>
 <header th:replace="~{/common/header::headerFragment}"></header>
@@ -49,14 +71,18 @@
                 <div th:each="sentInquiry : ${sentInquiries}">
                     <div class="table-row">
                         <!-- 제목, 클릭 시 inquiryDetail 로 이동 -->
-                        <div class="table-cell" th:text="${sentInquiry.iqrDetails}">
+                        <div class="table-cell">
                             <a th:href="@{'/inquiry/detail'(iqrValue=${sentInquiry.iqrValue})}" th:text="${sentInquiry.iqrTitle}"></a>
                         </div>
                         <!-- 작성일 -->
                         <div class="table-cell" th:text="${sentInquiry.iqrCreationDate}"></div>
                         <!-- 상태 -->
-                        <div class="table-cell" th:text="${sentInquiry.answerStatus}"></div>
+                        <div class="table-cell">
+                            <span th:if="${sentInquiry.answerStatus == false}">답변대기중</span>
+                            <span th:if="${sentInquiry.answerStatus == true}">답변완료</span>
+                        </div>
                     </div>
+
                 </div>
             </div>
     </div>

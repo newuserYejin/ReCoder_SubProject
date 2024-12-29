@@ -1,8 +1,10 @@
 package com.ohgiraffers.refactorial.inquiry.model.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,7 @@ public class InquiryDTO {
     private LocalDateTime iqrCreationDate; // 문의 생성 날짜 및 시간
     private String empId;         // 문의자 사원번호
     private String answerDetail;   // 답변 내용 (NULL 허용)
+    private int attachment;
+
+    private List<MultipartFile> inquiryFile;
 }

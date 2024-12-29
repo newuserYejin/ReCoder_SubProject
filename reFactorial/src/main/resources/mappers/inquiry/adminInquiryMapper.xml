@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.inquiry.model.dao.AdminInquiryMapper">
+    <resultMap id="AdminInquiryResultMap" type="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
+        <id property="iqrValue" column="iqr_value" />
+        <result property="iqrTitle" column="iqr_title" />
+        <result property="iqrDetails" column="iqr_details" />
+        <result property="answerStatus" column="answer_status" />
+        <result property="empId" column="emp_id" />
+        <result property="answerDetail" column="answer_detail" />
+        <result property="iqrCreationDate" column="iqr_creationDate" />
+        <result property="attachment" column="attachment"/>
+    </resultMap>
+
+    <select id="getAllInquiries" resultMap="AdminInquiryResultMap">
+        SELECT * FROM tbl_inquiry
+    </select>
+
+    <select id="adminInquiryDetail" resultMap="AdminInquiryResultMap">
+        SELECT *
+        FROM tbl_inquiry
+        WHERE iqr_value = #{iqrValue}
+    </select>
+
+    <update id="updateAnswer">
+        UPDATE tbl_inquiry
+        SET answer_status = 1, answer_detail = #{answerDetail}
+        WHERE iqr_value = #{iqrValue}
+    </update>
+
+</mapper>

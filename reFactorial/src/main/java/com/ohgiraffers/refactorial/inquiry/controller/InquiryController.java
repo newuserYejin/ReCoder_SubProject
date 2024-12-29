@@ -1,25 +1,35 @@
 package com.ohgiraffers.refactorial.inquiry.controller;
 
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO;
 import com.ohgiraffers.refactorial.inquiry.service.InquiryService;
+import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/inquiry")
 public class InquiryController {
 
     private InquiryService inquiryService;
+    private UploadFileService uploadService;
 
     @Autowired
-    public InquiryController(InquiryService inquiryService) {
+    public InquiryController(InquiryService inquiryService, UploadFileService uploadService) {
+        this.uploadService = uploadService;
         this.inquiryService = inquiryService;
     }
 
@@ -40,9 +50,24 @@ public class InquiryController {
         String senderEmpId = loginUser.getEmpId();
         List<InquiryDTO> sentInquiries = inquiryService.sentInquiries(senderEmpId);
 
-        System.out.println("Sent Inquiries: " + sentInquiries);
+
 
         model.addAttribute("sentInquiries", sentInquiries);
         return "/inquiry/inquiryList";
+    }
+
+    // 문의 상세 조회
+    @GetMapping("/detail")
+    public String inquiryDetail(@RequestParam("iqrValue") String iqrValue, Model model) {
+        InquiryDTO inquiryDetail = inquiryService.getInquiryDetail(iqrValue);
+
+        if(inquiryDetail.getAttachment() == 1 ){
+            List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(iqrValue);
+            if(!uploadFileList.isEmpty()){
+                model.addAttribute("attachmentFileList",uploadFileList);
+            }
+        }
+        model.addAttribute("inquiryDetail", inquiryDetail);
+        return "inquiry/inquiryDetail";
     }
 }

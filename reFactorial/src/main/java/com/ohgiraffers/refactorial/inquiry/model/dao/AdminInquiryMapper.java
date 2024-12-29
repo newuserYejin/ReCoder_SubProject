@@ -6,12 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface InquiryMapper {
+public interface AdminInquiryMapper {
 
+    List<InquiryDTO> getAllInquiries();
 
-    void sendInquiry(InquiryDTO inquiryDTO);
+    InquiryDTO adminInquiryDetail(String iqrValue);
 
-    List<InquiryDTO> sentInquiries(String senderEmpId);
-
-    InquiryDTO selectInquiryDetail(String iqrValue);
+    int updateAnswer(String iqrValue, String answerDetail);
 }

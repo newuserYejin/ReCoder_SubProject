@@ -6,7 +6,7 @@
 <mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailEmployeeMapper">
 
     <!-- 회원 이름으로 검색 -->
-    <select id="searchMailEmployeesByName" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
+    <select id="searchMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
         SELECT
         e.emp_id,
         e.emp_name,
@@ -31,7 +31,6 @@
         tbl_position p ON e.position_value = p.position_value
         WHERE
         e.emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
-        ORDER BY d.dept_name DESC;
     </select>
 
     <!-- 전체직원조회  -->
@@ -58,8 +57,6 @@
         tbl_dept d ON e.dept_code = d.dept_code
         JOIN
         tbl_position p ON e.position_value = p.position_value
-        ORDER BY d.dept_name DESC;
     </select>
-
 
 </mapper>

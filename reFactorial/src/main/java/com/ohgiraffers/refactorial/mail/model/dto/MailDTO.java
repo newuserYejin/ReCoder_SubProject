@@ -27,6 +27,7 @@ public class MailDTO {
     private String positionName;    // 직책명
 
     private List<MultipartFile> mailfile;
+    private List<String> mailfileNames;  // 파일명만 저장하는 리스트
 
 }
 

@@ -20,12 +20,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -115,19 +116,36 @@ public class MainController {
     }
 
     @PostMapping("/inquiry/sendInquiry")
-    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO, HttpSession session) {
+    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO,
+                              @RequestParam("inquiryFiles") List<MultipartFile> inquiryFileList,
+                              HttpSession session,
+                              Model model) throws IOException {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-        // 유저의 empId를 InquiryDTO 에 설정
+        // 유저의 empId를 InquiryDTO에 설정
         String senderEmpId = loginUser.getEmpId();
         inquiryDTO.setEmpId(senderEmpId);
 
-        // InquiryDTO 를 서비스로 전달하여 데이터 저장
-        inquiryService.sendInquiry(inquiryDTO);
+        Set<String> generatedIds = new HashSet<>();
+        String IQRid;
+        do {
+            IQRid = "IQR" + String.format("%05d", (int) (Math.random() * 100000));
+        } while (!generatedIds.add(IQRid));
 
-        return "redirect:/inquiry/sendInquiry";  // 폼 제출 후 다시 같은 페이지로 리다이렉트
+        inquiryDTO.setIqrValue(IQRid);
+
+        try {
+            // 메일 전송과 수신자 정보 저장
+            inquiryService.sendInquiry(inquiryDTO, inquiryFileList);
+        } catch (Exception e) {
+            model.addAttribute("error", "메일 전송 중 오류가 발생했습니다.");
+            return "inquiry/sendInquiry";
+        }
+
+        return "redirect:/inquiry/inquiryList";  // 폼 제출 후 다시 같은 페이지로 리다이렉트
     }
+
 
     @GetMapping("/user/approvalMain")
     public String approvalMainController(){
