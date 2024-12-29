@@ -88,7 +88,7 @@
                 <form action="/board/vote" method="post" th:if="${currentCategory == 4}" class="voteForm">
                     <div>
                         <div th:each="vote : ${voteView}" class="vote-item">
-                            <div th:text="${vote.itemId}"></div>
+<!--                            <div th:text="${vote.itemId}"></div>-->
                             <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}" th:checked="${vote.isOwnVoted}" th:disabled="${vote.isOwnVoted}" />
                             <label th:for="${vote.itemTitle}" th:text="${vote.itemTitle}"></label>
                             <div th:text="${vote.totalCount}"></div>

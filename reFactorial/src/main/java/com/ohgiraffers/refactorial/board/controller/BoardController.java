@@ -88,19 +88,22 @@ public class BoardController {
     // 게시물 등록 / 수정 페이지로 이동
     @GetMapping("freeBoardRegist")
     public String freeBoardRegist(@RequestParam int categoryCode,
-                                  @RequestParam String postId,
-                                  @RequestParam
+                                  @RequestParam(required = false) String postId,
                                   Model model) {
 
-        BoardDTO postDetail = boardService.postDetail(postId);              // postDetail(postID(PK))로 제목,내용을
-                                                                            // 수정할 때 띄워주기 위해
         List<VoteItemDTO> voteItemList = boardService.itemView(postId);     // 항목리스트
 
         model.addAttribute("categoryCode", categoryCode);
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
-        model.addAttribute("postDetail", postDetail);           // 상세페이지 전달
         model.addAttribute("voteItemList", voteItemList);
 
+        //postId가 있으면 "수정" / 없으면 "등록"
+        if (postId != null) {
+            // postId로 조회
+            BoardDTO postDetail = boardService.postDetail(postId);              // postDetail(postID(PK))로 DTO가져옴
+            model.addAttribute("postDetail", postDetail);           // 상세페이지 전달
+
+        }
 
         return "/board/freeBoardRegist";
     }
@@ -268,7 +271,7 @@ public class BoardController {
 
     // 투표 결과를 DB에 저장
     @PostMapping("vote")
-    public String voteResult(@RequestParam List<Integer> voteIdList,
+    public String voteResult(@RequestParam(required = false) List<Integer> voteIdList,
                              @RequestParam int categoryCode,
                              @RequestParam String postId,
                              HttpSession session,
@@ -279,11 +282,18 @@ public class BoardController {
         List<VoteResultDTO> voteItemList = new ArrayList<>();   // 항목 1개씩 담음
 
         // 반복문을 돌려 항목을 리스트에 저장
-        for(int i = 0; i < voteIdList.size(); i++){
-            voteItemList.add(new VoteResultDTO(null, user.getEmpId(), voteIdList.get(i), postId));
+        if (voteIdList != null) {
+
+            for (int i = 0; i < voteIdList.size(); i++) {
+                voteItemList.add(new VoteResultDTO(null, user.getEmpId(), voteIdList.get(i), postId));
+            }
+
         }
 
-        boardService.voteResult(voteItemList);    // 투표결과 DB 저장
+        // 항목을 선택하지 않고 투표했을 시 새로고침
+        if (voteItemList.size() > 0) {
+            boardService.voteResult(voteItemList);
+        }
 
 //        List<VoteResultDTO> voteSelectResult = boardService.getVoteResults(postId);    // 투표결과 List 형태로 가져옴
 
