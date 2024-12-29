@@ -29,7 +29,7 @@ public class BoardDTO {
 
     private List<VoteItemDTO> voteItems;         // 투표 항목
 
-    private List<MultipartFile> postfile;
+    private List<MultipartFile> postfile;        // 문서
 
     public void setRowNum(int i) {
     }

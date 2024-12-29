@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardMapper {
 
     // 게시글 전체조회
-    List<BoardDTO> postList(int categoryCode, int limit, int offset);
+    List<BoardDTO> postList(int categoryCode, int limit, int offset, String searchContents);
 
     // 게시글 등록
     void boardPost(BoardDTO board);
@@ -47,9 +47,22 @@ public interface BoardMapper {
     // 투표 결과조회 (사용자)
     List<VoteResultDTO> voteComplete(String postId, String empId);
 
-    // 투표 통계
-    List<VoteItemDTO> getTotalVote(String postId);
 
     // 게시글 카테고리별 카운트
     int getBoardListCount(int categoryCode);
+
+    // 댓글 좋아요 조회
+    void commentLikes(String postId);
+
+    // 댓글 좋아요 삽입
+    void commentLikesInsert(CommentLikesDTO commentLikes);
+
+    // 댓글 좋아요 카운트 조회
+    int commentLikesCount(CommentDTO commentDTO);
+
+    // 본인 투표 여부
+    int isMyLike(CommentDTO commentDTO);
+
+    // 투표 삭제
+    void commentLikesDelete(CommentLikesDTO commentLikes);
 }
