@@ -207,7 +207,34 @@ public class BoardController {
         // 게시물 상세
         BoardDTO postDetail = boardService.postDetail(postId);
         // 댓글 리스트 가져옴
-        List<CommentDTO> comment = boardService.commentView(postId);
+        List<CommentDTO> commentList = boardService.commentView(postId);
+
+        // 좋아요 카운트
+        for (int i = 0; i < commentList.size(); i++) {
+
+            CommentDTO commentDTO = commentList.get(i);
+            commentDTO.setLoginUserEmpId(user.getEmpId());
+            int commentLikesCount = boardService.commentLikesCount(commentDTO);
+
+            // DTO 에서 좋아요 갯수를 카운트함
+            commentDTO.setLikeCount(commentLikesCount);
+
+            // 본인 투표여부
+            int isMyLike = boardService.isMyLike(commentDTO);
+
+            // 만약 좋아요를 눌렀으면 true, 아니면 false
+            if (isMyLike > 0) {
+                commentDTO.setMyLike(true);
+            } else {
+                commentDTO.setMyLike(false);
+            }
+
+        }
+
+
+
+
+
         // 항목 리스트 가져옴
         List<VoteItemDTO> voteItemList = boardService.itemView(postId);
         // 투표한사람이면 보여주는 항목리스트
@@ -255,7 +282,7 @@ public class BoardController {
         }
 
         model.addAttribute("postDetail", postDetail);   // 상세페이지
-        model.addAttribute("commentView", comment);     // 댓글 조회
+        model.addAttribute("commentView", commentList);     // 댓글 조회
         model.addAttribute("user", user);   // user정보 postDetail에 전달(게시물 수정,삭제 권한)
         model.addAttribute("voteView", voteItemList);   // 항목 리스트
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
@@ -356,7 +383,53 @@ public class BoardController {
 
         // 화면에 댓글 리스트 형태로 가져옴
         return boardService.commentView(postId);
-
     }
+
+    //  좋아요 조회
+    @PostMapping("commentLikes")
+    public String commentLikes(@RequestParam String postId,
+                               @RequestParam int categoryCode,
+                               HttpSession session,
+                               Model model) {
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+
+
+        boardService.commentLikes(postId);
+
+        model.addAttribute("like", postId);
+
+
+        return "redirect:/board/postDetail?categoryCode=" + categoryCode + "&postId=" + postId;
+    }
+
+    // 좋아요 등록
+    @PostMapping("commentLikesInsert")
+    public String commentLikesInsert(@RequestParam int commentId,
+                                     @RequestParam String postId,
+                                     @RequestParam int categoryCode,
+                                     @RequestParam boolean isMyLike,
+                                     HttpSession session) {
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");     // 로그인한 유저의 정보를 가져옴
+
+        String userEmpId = user.getEmpId();
+
+        CommentLikesDTO commentLikes = new CommentLikesDTO();
+
+        commentLikes.setCommentId(commentId);
+        commentLikes.setEmpId(userEmpId);
+
+        // 좋아요 했을 때 isMyLike가 트루면 등록 아니면 삭제
+        if (isMyLike) {
+            boardService.commentLikesDelete(commentLikes);
+        } else {
+            boardService.commentLikesInsert(commentLikes);
+        }
+
+
+        return "redirect:/board/postDetail?categoryCode=" + categoryCode + "&postId=" + postId;
+    }
+
 
 }

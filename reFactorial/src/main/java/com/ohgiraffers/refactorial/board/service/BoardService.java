@@ -105,4 +105,30 @@ public class BoardService {
         return boardMapper.getBoardListCount(categoryCode);
     }
 
+    // 댓글 좋아요 조회
+    public void commentLikes(String postId) {
+
+        boardMapper.commentLikes(postId);
+    }
+
+
+    public void commentLikesInsert(CommentLikesDTO commentLikes) {
+
+        boardMapper.commentLikesInsert(commentLikes);
+    }
+
+    public int commentLikesCount(CommentDTO commentDTO) {
+        return boardMapper.commentLikesCount(commentDTO);
+    }
+
+    public int isMyLike(CommentDTO commentDTO) {
+
+        return boardMapper.isMyLike(commentDTO);
+
+    }
+
+    // 좋아요 삭제
+    public void commentLikesDelete(CommentLikesDTO commentLikes) {
+        boardMapper.commentLikesDelete(commentLikes);
+    }
 }

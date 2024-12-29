@@ -211,6 +211,51 @@
         where comment_id = #{commentId}
     </delete>
 
+    <!-- 댓글 좋아요 삽입 -->
+    <insert id="commentLikesInsert" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentLikesDTO">
+        insert into tbl_comment_likes
+        (
+        comment_id,
+        emp_id
+        )
+        values
+        (
+        #{commentId},
+        #{empId}
+        )
+    </insert>
+
+    <!-- 댓글 좋아요 삭제 -->
+    <delete id="commentLikesDelete" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentLikesDTO">
+        delete from tbl_comment_likes
+        where
+        comment_id = #{commentId}
+        and
+        emp_id = #{empId}
+    </delete>
+
+    <!-- 댓글 갯수 조회 -->
+    <select id="commentLikesCount" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO" resultType="int">
+        select
+            count(*)
+        from
+            tbl_comment_likes
+        where
+            comment_id = #{commentId}
+    </select>
+
+    <!-- 댓글 본인투표 여부 -->
+    <select id="isMyLike" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO" resultType="int">
+        select
+        count(*)
+        from
+        tbl_comment_likes
+        where
+        comment_id = #{commentId}
+        and
+        emp_id = #{empId}
+    </select>
+
     <!-- 투표한 사람에게 보여주는 항목 -->
     <select id="voteComplete" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
         select
@@ -221,20 +266,6 @@
             post_id = #{postId}
             and emp_id = #{empId}
     </select>
-
-    <!-- 사용자가 특정 게시물에서 투표한 항목을 조회 (12/22) -->
-<!--    <select id="getUserVote" resultType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">-->
-<!--        SELECT-->
-<!--        vi.item_id AS itemId,        &lt;!&ndash; VoteItemDTO의 itemId &ndash;&gt;-->
-<!--        vi.item_title AS itemTitle  &lt;!&ndash; VoteItemDTO의 itemTitle &ndash;&gt;-->
-<!--        FROM-->
-<!--        tbl_vote_result vr-->
-<!--        JOIN-->
-<!--        tbl_vote_item vi ON vr.item_id = vi.item_id-->
-<!--        WHERE-->
-<!--        vr.post_id = #{postId}      &lt;!&ndash; 매개변수 postId &ndash;&gt;-->
-<!--        AND vr.emp_id = #{empId}    &lt;!&ndash; 매개변수 empId &ndash;&gt;-->
-<!--    </select>-->
 
 
 </mapper>
