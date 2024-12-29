@@ -176,7 +176,7 @@ public class MainController {
         return "admin/admin_main";
     };
 
-    @GetMapping("3user/myPage")
+    @GetMapping("user/myPage")
     public String myPage(HttpSession session, Model model){
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
