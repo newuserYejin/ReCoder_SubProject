@@ -6,16 +6,57 @@
 <mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailEmployeeMapper">
 
     <!-- 회원 이름으로 검색 -->
-    <select id="searchMailEmployeesByName" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
-        SELECT emp_id, emp_name, emp_no, emp_address, emp_email, emp_joined, annual_leave, emp_pwd, profile, emp_phone, dept_code, position_value, view_auth
-        FROM employee
-        WHERE emp_name LIKE CONCAT('%' , #{searchReceiverInput}, '%')
+    <select id="searchMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
+        SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        FROM
+        employee e
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
+        WHERE
+        e.emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
     </select>
 
-    <!-- 모든 직원 조회 -->
+    <!-- 전체직원조회  -->
     <select id="getAllMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
-        SELECT emp_id, emp_name, emp_no, emp_address, emp_email, emp_joined, annual_leave, emp_pwd, profile, emp_phone, dept_code, position_value, view_auth
-        FROM employee
+        SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        FROM
+        employee e
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
     </select>
 
 </mapper>

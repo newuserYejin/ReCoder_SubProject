@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.inquiry.model.dao.InquiryMapper">
+    <resultMap id="InquiryResultMap" type="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
+        <id property="iqrValue" column="iqr_value" />
+        <result property="iqrTitle" column="iqr_title" />
+        <result property="iqrDetails" column="iqr_details" />
+        <result property="answerStatus" column="answer_status" />
+        <result property="empId" column="emp_id" />
+        <result property="answerDetail" column="answer_detail" />
+        <result property="iqrCreationDate" column="iqr_creationDate" />
+        <result property="attachment" column="attachment"/>
+    </resultMap>
+
+    <!-- 1:1 문의 보내기-->
+    <insert id="sendInquiry" parameterType="com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO">
+        INSERT INTO tbl_inquiry (iqr_value, iqr_title, iqr_details ,emp_id, iqr_creationDate , attachment )
+        VALUES (#{iqrValue}, #{iqrTitle} ,#{iqrDetails}, #{empId}, now() , ${attachment})
+    </insert>
+
+    <!-- 1:1 문의내역 -->
+    <select id="sentInquiries" resultMap="InquiryResultMap">
+        SELECT *
+        FROM tbl_inquiry
+        WHERE emp_id = #{empId}
+    </select>
+
+    <select id="selectInquiryDetail" resultMap="InquiryResultMap">
+        SELECT *
+        FROM tbl_inquiry
+        WHERE iqr_value = #{iqrValue}  <!-- 변경: emp_id 대신 iqr_value 사용 -->
+    </select>
+
+</mapper>

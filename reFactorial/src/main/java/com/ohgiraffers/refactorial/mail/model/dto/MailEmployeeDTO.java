@@ -24,4 +24,8 @@ public class MailEmployeeDTO {
         private int deptCode;             // dept_code
         private int positionValue;        // position_value
         private String viewAuth;          // view_auth
+
+        // 새로 추가된 필드
+        private String deptName;          // 부서명
+        private String positionName;      // 직책명
 }

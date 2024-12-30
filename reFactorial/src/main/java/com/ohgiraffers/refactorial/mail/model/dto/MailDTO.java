@@ -1,6 +1,7 @@
 package com.ohgiraffers.refactorial.mail.model.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,13 @@ public class MailDTO {
     private String senderEmpId;        // 발신자 사원번호
     private String receiverEmpId;
     private List<String> receiverEmpIds; // 수신자 목록 (새로 추가된 필드)
+    private int attachment;
+
+    private String deptName;        // 부서명
+    private String positionName;    // 직책명
+
+    private List<MultipartFile> mailfile;
+    private List<String> mailfileNames;  // 파일명만 저장하는 리스트
 
 }
 
