@@ -162,7 +162,7 @@ public class MainController {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-        // 유저의 empId를 InquiryDTO에 설정
+        // 유저의 empId를 InquiryDTO 에 설정
         String senderEmpId = loginUser.getEmpId();
         inquiryDTO.setEmpId(senderEmpId);
 
@@ -304,6 +304,4 @@ public class MainController {
 
         return "goldTicket/goldTicket";
     }
-
 }
-

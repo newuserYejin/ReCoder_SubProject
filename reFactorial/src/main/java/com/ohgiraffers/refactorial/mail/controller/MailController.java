@@ -146,6 +146,10 @@ public class MailController {
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
+        // 메일 ID 생성 및 설정
+        String emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+        mailDTO.setEmailId(emId); // 이메일 ID 설정
+
         // 발신자 정보 설정 (로그인한 사용자)
         mailDTO.setSenderEmpId(loginUser.getEmpId());
 

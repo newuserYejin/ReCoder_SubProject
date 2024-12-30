@@ -86,9 +86,11 @@
                     <div class="modal-body">
                         <label for="searchReceiverInput">회원</label>
                         <input type="text" id="searchReceiverInput" name="searchReceiverInput" oninput="searchReceiver()"/>
+                        <div class="scrollable-table">
                         <table id="employeeList">
                             <!-- 직원 목록이 여기에 로드됩니다. -->
                         </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="confirmSelection()">선택</button>
