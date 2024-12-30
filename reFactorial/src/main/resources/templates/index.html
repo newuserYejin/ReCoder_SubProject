@@ -111,7 +111,8 @@
                     <div class="voteTitleBox">
                         <div class="voteTitle">투표</div>
                     </div>
-                    <div  th:each="post, postStat : ${recently3List}"  th:data-num="${postStat.index}" class="voteContentBoxBox">
+                    <div class="voteNone" th:unless="${recently3List} != null">아직 투표가 없습니다.</div>
+                    <div th:if="${recently3List}" th:each="post, postStat : ${recently3List}"  th:data-num="${postStat.index}" class="voteContentBoxBox">
                         <div class="voteContentBox">
                             <div class="prevBtn" th:id="|prevBtn_${postStat.index}|">
                                 <img src="/images/angle-left-solid.svg" alt="왼쪽 이동">
@@ -143,7 +144,7 @@
                             </div>
 
                            <div class="DataBody">
-                               <div class="MainData" th:unless="${boardList} != null">없음</div>
+                               <div class="MainData noPost" th:unless="${boardList} != null">없음</div>
                                <div th:onclick="|location.href='@{/board/postDetail(postId=${board.postId}, categoryCode=${1})}'|" class="MainData" th:if="${boardList} != null" th:each="board, boardStat : ${boardList}">
                                    <div th:text="${boardStat.count}"></div>
                                    <div class="postEmpName" th:text="${board.empName}"></div>
@@ -194,6 +195,9 @@
                 fixedWeekCount: false,
                 electMirror: false,
                 events:function (info,addEvent){
+                    console.log("info : ",info)
+                    console.log("calender : ",calendar)
+
                     fetch(`/user/getAllCheckEvent?start=${info.startStr}`,{
                         method:"GET"
                     }).then(response => response.json())
