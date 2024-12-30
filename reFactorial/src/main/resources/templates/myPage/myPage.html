@@ -121,7 +121,7 @@
                         </div>
                         <div>
                             <p>남은 연차</p>
-                            <div class="circle annualLeave">03일</div>
+                            <div class="circle annualLeave" th:text="${LoginUserInfo != null? LoginUserInfo.annualLeave : 0} + '일'">03일</div>
                         </div>
                         <div>
                             <p>근속 개월</p>

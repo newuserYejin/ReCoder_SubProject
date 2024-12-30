@@ -246,13 +246,13 @@ profileImgInput.addEventListener('change',function (e){
 
 // 연차 관련 박스 내용 바꾸기
 
-const annualLeaveDiv = document.querySelector('.annualLeave')
-const work_monthDiv = document.querySelector(".work_month")
-
-const today = new Date(); // 오늘 날짜
-const empJoinedDate = new Date(empJoined);
-
-annualLeaveDiv.textContent = (annualLeave) + "일";
+// const annualLeaveDiv = document.querySelector('.annualLeave')
+// const work_monthDiv = document.querySelector(".work_month")
+//
+// const today = new Date(); // 오늘 날짜
+// const empJoinedDate = new Date(empJoined);
+//
+// annualLeaveDiv.textContent = (annualLeave) + "일";
 
 // 유효한 Date 객체인지 확인
 if (isNaN(empJoinedDate)) {
