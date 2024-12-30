@@ -55,7 +55,14 @@ html, body {
     font-weight: 1000; /* 마우스 오버 시 굵기 */
 }
 
+.modal-body {
+    padding: 15px; /* 여백 설정 */
+}
 
+.scrollable-table {
+    max-height: 200px; /* 원하는 최대 높이 설정 */
+    overflow-y: auto;  /* 세로 스크롤바 활성화 */
+}
 
 .modal{
     display: none; /* 기본적으로 숨김 */

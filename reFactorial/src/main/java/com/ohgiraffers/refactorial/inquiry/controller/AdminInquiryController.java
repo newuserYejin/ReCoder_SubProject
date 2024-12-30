@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class AdminInquiryController {
     }
 
     // 모든 문의 불러오기
-    @GetMapping("/inquiry/adminInquiryList")
+    @GetMapping("/admin/adminInquiryList")
     public String getAllInquiries(Model model) {
         List<InquiryDTO> getAllInquiries = adminInquiryService.getAllInquiries();
         model.addAttribute("getAllInquiries", getAllInquiries);
@@ -33,8 +34,8 @@ public class AdminInquiryController {
     }
 
     // 문의 상세 조회
-    @GetMapping("/inquiry/adminInquiryDetail")
-    public String adminInquiryDetail(@RequestParam("iqrValue") String iqrValue, Model model) {
+    @GetMapping("/admin/adminInquiryDetail")
+    public String adminInquiryDetail( @RequestParam("iqrValue") String iqrValue, Model model) {
         InquiryDTO adminInquiries = adminInquiryService.adminInquiryDetail(iqrValue);
 
         if (adminInquiries.getAttachment() == 1) {
@@ -49,14 +50,31 @@ public class AdminInquiryController {
     }
 
     // 답변 등록
-    @PostMapping("/inquiry/adminInquiryAnswer")
-    @ResponseBody
-    public String answerInquiry(@RequestParam("iqrValue") String iqrValue, @RequestParam("answerDetail") String answerDetail) {
-        System.out.println("iqrValue: " + iqrValue);
-        System.out.println("answerDetail: " + answerDetail);
+//    @PostMapping("/admin/adminInquiryAnswer")
+//    @ResponseBody
+//    public String answerInquiry(@RequestParam("iqrValue") String iqrValue, @RequestParam("answerDetail") String answerDetail) {
+//        System.out.println("iqrValue: " + iqrValue);
+//        System.out.println("answerDetail: " + answerDetail);
+//
+//        boolean success = adminInquiryService.answerInquiry(iqrValue, answerDetail);
+//        System.out.println("답변 등록 성공 여부: " + success); // 추가 로그
+//        return success ? "success" : "fail";
+//    }
+
+    @PostMapping("/admin/adminInquiryAnswer")
+    public ModelAndView answerInquiry(
+            @RequestParam("iqrValue") String iqrValue,
+            @RequestParam("answerDetail") String answerDetail) {
 
         boolean success = adminInquiryService.answerInquiry(iqrValue, answerDetail);
-        System.out.println("답변 등록 성공 여부: " + success); // 추가 로그
-        return success ? "success" : "fail";
+
+        if (success) {
+            return new ModelAndView("redirect:/admin/adminInquiryDetail?iqrValue=" + iqrValue);
+        } else {
+            ModelAndView mav = new ModelAndView("inquiry/adminInquiryDetail");
+            mav.addObject("error", "답변 등록에 실패했습니다.");
+            return mav;
+        }
     }
+
 }

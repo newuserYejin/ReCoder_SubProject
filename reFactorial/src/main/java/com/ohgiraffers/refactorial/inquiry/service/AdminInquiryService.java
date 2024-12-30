@@ -30,7 +30,6 @@ public class AdminInquiryService {
     // 문의 답변 처리
     public boolean answerInquiry(String iqrValue, String answerDetail) {
         int rowsAffected = adminInquiryMapperr.updateAnswer(iqrValue, answerDetail);
-        System.out.println("Rows Affected: " + rowsAffected); // 로그 추가
         return rowsAffected > 0;
     }
 }

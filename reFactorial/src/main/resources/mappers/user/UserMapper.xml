@@ -123,6 +123,7 @@
         ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
     </select>
 
+<<<<<<< HEAD
 
     <select id="findUserById" parameterType="string" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
         SELECT
@@ -149,4 +150,35 @@
         </choose>
         WHERE emp_id = #{empId}
     </update>
+=======
+    <insert id="addCheckEvent" parameterType="map">
+        INSERT INTO tbl_presence
+        (prs_date, emp_id)
+        values
+        (#{today},#{empId})
+    </insert>
+
+    <select id="getCheckEvent" parameterType="map">
+        select
+            count(*)
+        from
+            tbl_presence
+        where
+            prs_date = #{today}
+        AND
+            emp_id = #{empId}
+    </select>
+
+    <select id="getAllCheckEvent" parameterType="map">
+        select
+            prs_date
+        from
+            tbl_presence
+        where
+            prs_date between #{start} and #{end}
+        and
+            emp_id = #{empId}
+    </select>
+
+>>>>>>> 58474a1bf0d1a93846dc2a70d6238a26f9876c68
 </mapper>

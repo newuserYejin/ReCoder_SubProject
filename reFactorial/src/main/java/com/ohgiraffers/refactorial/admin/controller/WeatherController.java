@@ -12,7 +12,6 @@ public class WeatherController {
 
     @GetMapping("/api/weather-key")
     public String getWeatherApiKey() {
-        System.out.println("weatherAPIKey = " + weatherAPIKey);
         return weatherAPIKey;
     }
 }

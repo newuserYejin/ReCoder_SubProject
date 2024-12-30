@@ -29,7 +29,15 @@ public interface UserMapper {
 
     List<Map<String, Object>> getHiredDateGroupBy();
 
+
     LoginUserDTO findUserById(String empId);
 
     void updateUserLeave(String empId, BigDecimal deduction, String leaveType);
+
+    int addCheckEvent(Map<String, Object> sendData);
+
+    int getCheckEvent(Map<String, Object> sendData);
+
+    List<String> getAllCheckEvent(Map<String, Object> sendData);
+
 }

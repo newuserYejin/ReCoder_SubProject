@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,5 +110,30 @@ public class MemberService {
         }
 
         return result;
+    }
+
+    public int addCheckEvent(LocalDate today, String empId) {
+        Map<String,Object> sendData = new HashMap<>();
+        sendData.put("today",today);
+        sendData.put("empId",empId);
+
+        return userMapper.addCheckEvent(sendData);
+    }
+
+    public int getCheckEvent(LocalDate today, String empId) {
+        Map<String,Object> sendData = new HashMap<>();
+        sendData.put("today",today);
+        sendData.put("empId",empId);
+
+        return userMapper.getCheckEvent(sendData);
+    }
+
+    public List<String> getAllCheckEvent(LocalDate start, LocalDate end, String empId) {
+        Map<String,Object> sendData = new HashMap<>();
+        sendData.put("start",start);
+        sendData.put("end",end);
+        sendData.put("empId",empId);
+
+        return userMapper.getAllCheckEvent(sendData);
     }
 }
