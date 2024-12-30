@@ -160,13 +160,13 @@
         pm.pm_referrer AS referrers
         FROM
         tbl_pm pm
-        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id <!-- 상태 조인 -->
+        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
         WHERE
-        pm.emp_id = #{empId} <!-- 작성자(emp_id)로 필터링 -->
+        pm.emp_id = #{empId}
         ORDER BY
         pm.pm_create DESC
-        LIMIT #{limit} OFFSET #{offset} <!-- LIMIT과 OFFSET을 사용하여 페이지네이션 처리 -->
+        LIMIT #{limit} OFFSET #{offset}
 
     </select>
 
@@ -312,31 +312,35 @@
     <!-- 완료된 문서 조회 -->
     <select id="getCompletedDocuments" parameterType="map" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
-            pm.pm_id AS pmId,
-            pm.pm_title AS title,
-            pm.pm_create AS createDate,
-            pm.pm_category AS category,
-            MAX(ap.pm_status) AS status,
-            emp.emp_name AS creatorName,  -- 작성자 이름
-            GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers -- 승인자 정보
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        MAX(ap.pm_status) AS status,
+        emp.emp_name AS creatorName,
+        GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers
         FROM
-            tbl_pm pm
-                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id -- 작성자 정보
-                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id -- 승인자 정보
+        tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
         WHERE
-            ap.pm_status = '완료'
+        ap.pm_status = '완료'
+        AND ap.emp_id = #{empId}  <!-- 추가된 조건 -->
         GROUP BY
-            pm.pm_id
+        pm.pm_id
         ORDER BY
-            pm.pm_create DESC
-            LIMIT #{limit} OFFSET #{offset};
+        pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <!-- 완료된 문서 개수 조회 -->
     <select id="getCompletedDocumentsCount" parameterType="string" resultType="int">
-        SELECT COUNT(*)
-        FROM tbl_approval
-        WHERE pm_status = '완료' AND emp_id = #{empId}
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status = '완료'
+          AND ap.emp_id = #{empId}
     </select>
 
 
@@ -351,8 +355,8 @@
             emp.emp_name AS creatorName
         FROM
             tbl_pm pm
+                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
-                LEFT JOIN employee emp ON ap.emp_id = emp.emp_id
         WHERE
             ap.pm_status IN ('승인', '진행 중')
           AND ap.emp_id = #{empId}
@@ -366,9 +370,11 @@
 
     <!-- 진행 중 문서 개수 가져오기 -->
     <select id="countInProgressDocuments" resultType="int">
-        SELECT COUNT(*)
-        FROM tbl_approval
-        WHERE pm_status = '진행 중' AND emp_id = #{empId}
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status IN ('승인', '진행 중')
+          AND ap.emp_id = #{empId}
     </select>
 
 
@@ -393,9 +399,12 @@
 
     <!-- 반려된 문서 개수 가져오기 -->
     <select id="countRejectedDocuments" resultType="int">
-        SELECT COUNT(*)
-        FROM tbl_approval
-        WHERE pm_status = '반려' AND emp_id = #{empId}
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status = '반려'
+          AND ap.emp_id = #{empId}
     </select>
 
     <!-- 휴가 유형 가져오기 -->
