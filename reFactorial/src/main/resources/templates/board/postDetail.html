@@ -200,7 +200,6 @@
 <script>
     const voteView = '[[${voteView}]]'
 
-    console.log("voteView: ",voteView)
 
 
 </script>
@@ -211,7 +210,6 @@
     const noAttachment = document.querySelector(".noAttachment");
 
     if (attachmentFileList){
-        console.log("attachmentFileList: ",attachmentFileList)
         noAttachment.style.display = 'none'
     } else {
         noAttachment.style.display = "block";
@@ -233,8 +231,6 @@
             confirmDeleteBtn.setAttribute('data-comment-id', commentId);
             confirmDeleteBtn.setAttribute('data-post-id', postId);
 
-            console.log('모달에 설정된 commentId:', commentId);
-            console.log('모달에 설정된 postId:', postId);
         }
     });
 
@@ -245,13 +241,11 @@
         const commentId = confirmDeleteBtn.getAttribute('data-comment-id');
         const postId = confirmDeleteBtn.getAttribute('data-post-id');
 
-        console.log("삭제 요청: commentId:", commentId, "postId:", postId);
 
         // 서버로 삭제 요청
         fetch(`http://localhost:8080/board/commentDelete?commentId=${commentId}&postId=${postId}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log("삭제 후 데이터:", data);
 
                 const commentListArea = document.querySelector('#comment-list');
                 let commentList = '';
