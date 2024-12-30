@@ -19,37 +19,37 @@
         </foreach>
     </insert>
 
-<!--    <insert id="insertReferrer" parameterType="map">-->
-<!--        INSERT INTO tbl_pm_referrer (pm_id, emp_id)-->
-<!--        VALUES (#{pmId}, #{empId})-->
-<!--    </insert>-->
+    <!--    <insert id="insertReferrer" parameterType="map">-->
+    <!--        INSERT INTO tbl_pm_referrer (pm_id, emp_id)-->
+    <!--        VALUES (#{pmId}, #{empId})-->
+    <!--    </insert>-->
 
 
-<!--    <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">-->
-<!--        SELECT-->
-<!--            pm.pm_id AS pmId,-->
-<!--            pm.pm_title AS title,-->
-<!--            pm.pm_create AS createDate,-->
-<!--            pm.pm_category AS category,-->
-<!--            CASE-->
-<!--                WHEN ap.approval_order = (-->
-<!--                    SELECT MAX(approval_order)-->
-<!--                    FROM tbl_approval-->
-<!--                    WHERE pm_id = pm.pm_id-->
-<!--                ) THEN '진행 중'-->
-<!--                ELSE ap.pm_status-->
-<!--                END AS status,-->
-<!--            pm.pm_attachment AS attachment,-->
-<!--            pm.emp_id AS creator,-->
-<!--            JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers,-->
-<!--            GROUP_CONCAT(DISTINCT ap.emp_id ORDER BY ap.approval_order) AS approvers,-->
-<!--            pm.pm_content AS content-->
-<!--        FROM-->
-<!--            tbl_pm pm-->
-<!--                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id-->
-<!--        GROUP BY-->
-<!--            pm.pm_id;-->
-<!--    </select>-->
+    <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            CASE
+                WHEN ap.approval_order = (
+                    SELECT MAX(approval_order)
+                    FROM tbl_approval
+                    WHERE pm_id = pm.pm_id
+                ) THEN '진행 중'
+                ELSE ap.pm_status
+                END AS status,
+            pm.pm_attachment AS attachment,
+            pm.emp_id AS creator,
+            JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers,
+            GROUP_CONCAT(DISTINCT ap.emp_id ORDER BY ap.approval_order) AS approvers,
+            pm.pm_content AS content
+        FROM
+            tbl_pm pm
+                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        GROUP BY
+            pm.pm_id;
+    </select>
 
     <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
@@ -117,18 +117,19 @@
         pm.pm_create AS createDate,
         pm.pm_category AS category,
         a.pm_status AS status,
-        CONCAT(creator.emp_name, ' ', pos.position_name) AS creatorName,
-        CASE
-        WHEN a.pm_status = '반려' THEN '반려'
-        WHEN a.pm_status = '완료' THEN '완료'
-        ELSE '진행 중'
-        END AS docStatus
-        FROM tbl_pm pm
-        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
-        LEFT JOIN employee creator ON pm.emp_id = creator.emp_id
-        LEFT JOIN tbl_position pos ON creator.position_value = pos.position_value
-        JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id
-        WHERE pr.emp_id = #{empId}
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers
+        FROM
+        tbl_pm pm
+        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id <!-- 상태 조인 -->
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+        SELECT 1
+        FROM tbl_pm_referrer pr
+        WHERE pr.pm_id = pm.pm_id
+        AND pr.emp_id = #{empId}
+        )
         ORDER BY pm.pm_create DESC
         LIMIT #{limit} OFFSET #{offset} <!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
     </select>
@@ -178,10 +179,10 @@
 
 
 
-<!--    <insert id="insertApprovalFile" parameterType="map">-->
-<!--        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type, uploaded_at)-->
-<!--        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, NOW())-->
-<!--    </insert>-->
+    <!--    <insert id="insertApprovalFile" parameterType="map">-->
+    <!--        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type, uploaded_at)-->
+    <!--        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, NOW())-->
+    <!--    </insert>-->
 
     <select id="getDocumentById" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
@@ -206,6 +207,62 @@
         WHERE pm.pm_id = #{pmId}
         GROUP BY pm.pm_id;
     </select>
+
+
+
+
+
+    <!-- PM ID로 파일 조회 -->
+    <!--    <select id="findFilesByPmId" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">-->
+    <!--        SELECT file_id AS fileId,-->
+    <!--               pm_id AS pmId,-->
+    <!--               file_name AS fileName,-->
+    <!--               file_path AS filePath,-->
+    <!--               file_size AS fileSize,-->
+    <!--               file_type AS fileType,-->
+    <!--               uploaded_at AS uploadedAt-->
+    <!--        FROM tbl_approval_files-->
+    <!--        WHERE pm_id = #{pmId}-->
+    <!--    </select>-->
+
+    <!-- 파일 추가 -->
+    <!--    <insert id="insertFile" parameterType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">-->
+    <!--        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type)-->
+    <!--        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType})-->
+    <!--    </insert>-->
+
+    <!-- 파일 삭제 -->
+    <!--    <delete id="deleteFileByFileId" parameterType="int">-->
+    <!--        DELETE FROM tbl_approval_files-->
+    <!--        WHERE file_id = #{fileId}-->
+    <!--    </delete>-->
+
+    <!-- 파일 ID로 파일 조회 -->
+    <!--    <select id="findFileByFileId" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">-->
+    <!--        SELECT file_id AS fileId,-->
+    <!--               pm_id AS pmId,-->
+    <!--               file_name AS fileName,-->
+    <!--               file_path AS filePath,-->
+    <!--               file_size AS fileSize,-->
+    <!--               file_type AS fileType,-->
+    <!--               uploaded_at AS uploadedAt-->
+    <!--        FROM tbl_approval_files-->
+    <!--        WHERE file_id = #{fileId}-->
+    <!--    </select>-->
+
+
+    <!--    <select id="findFileByFileName" resultType="com.ohgiraffers.refactorial.approval.model.dto.FileDTO">-->
+    <!--        SELECT file_id AS fileId,-->
+    <!--               pm_id AS pmId,-->
+    <!--               file_name AS fileName,-->
+    <!--               file_path AS filePath,-->
+    <!--               file_size AS fileSize,-->
+    <!--               file_type AS fileType,-->
+    <!--               uploaded_at AS uploadedAt-->
+    <!--        FROM tbl_approval_files-->
+    <!--        WHERE file_name = #{fileName}-->
+    <!--    </select>-->
+
 
 
     <select id="getApproversStatus" resultType="string">
@@ -418,7 +475,7 @@
 
 
 
-<!-- 모든 승인 상태를 완료로 업데이트-->
+    <!-- 모든 승인 상태를 완료로 업데이트-->
     <update id="updateAllApprovalsToCompleted">
         UPDATE tbl_approval
         SET pm_status = #{status}
@@ -433,19 +490,14 @@
     </select>
 
     <select id="allApprovalsCompleted" parameterType="String" resultType="boolean">
-        SELECT
-            CASE
-                WHEN COUNT(*) = SUM(CASE WHEN pm_status = '승인' THEN 1 ELSE 0 END)
-                    THEN true
-                ELSE false
-                END
+        SELECT COUNT(*) = 0
         FROM tbl_approval
-        WHERE pm_id = #{pmId}
+        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
     </select>
 
     <update id="updateDocumentStatus" parameterType="map">
         UPDATE tbl_approval
-        SET pm_status = '완료'
+        SET pm_status = #{status}
         WHERE pm_id = #{pmId};
     </update>
 
@@ -480,7 +532,7 @@
     </select>
 
     <insert id="insertAttendance" parameterType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
-            INSERT INTO tbl_attendance (att_date, att_time, att_status, emp_id)
+        INSERT INTO tbl_attendance (att_date, att_time, att_status, emp_id)
         VALUES (#{attDate}, #{attTime}, #{attStatus}, #{empId})
     </insert>
 
