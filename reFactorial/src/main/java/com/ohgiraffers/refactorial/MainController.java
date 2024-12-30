@@ -100,7 +100,7 @@ public class MainController {
             // 최근꺼 3개만 가져오기
             List<BoardDTO> recently3List = new ArrayList<>();
 
-            for (int i = 0; i <3 ;i++){
+            for (int i = 0; i <votePostList.size() ;i++){
                 recently3List.add(votePostList.get(i));
             }
 

@@ -371,6 +371,12 @@ section{
                     }
                 }
 
+                .voteNone{
+                    font-size: 1.1em;
+                    text-align: center;
+                    margin-top: 10%;
+                }
+
                 .voteContentBoxBox{
                     flex-direction: column;
                     justify-content: space-between;
@@ -556,6 +562,10 @@ section{
                                 .postDate{
                                     width: 25%;
                                 }
+                            }
+
+                            .noPost{
+                                text-align: center;
                             }
 
                             .MainData:last-child{
