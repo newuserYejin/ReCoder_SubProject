@@ -284,8 +284,6 @@ public class MainController {
 
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
-<<<<<<< HEAD
-=======
 
     @GetMapping("/goldTicket")
     public String goldTicket(Model model){
@@ -301,6 +299,4 @@ public class MainController {
 
         return "goldTicket/goldTicket";
     }
-
->>>>>>> 8749f131edc2075de02d13ad989cc4711fce7ede
 }
