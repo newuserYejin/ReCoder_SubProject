@@ -123,7 +123,7 @@
         ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
     </select>
 
-<<<<<<< HEAD
+
 
     <select id="findUserById" parameterType="string" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
         SELECT
@@ -150,7 +150,7 @@
         </choose>
         WHERE emp_id = #{empId}
     </update>
-=======
+
     <insert id="addCheckEvent" parameterType="map">
         INSERT INTO tbl_presence
         (prs_date, emp_id)
@@ -180,5 +180,5 @@
             emp_id = #{empId}
     </select>
 
->>>>>>> 58474a1bf0d1a93846dc2a70d6238a26f9876c68
+
 </mapper>
