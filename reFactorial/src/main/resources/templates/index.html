@@ -100,7 +100,12 @@
 
             <!-- 출석체크 이벤트, 투표 요약, 게시판 -->
             <div class="main_footerBox">
-            <div class="checkEvent">출석체크</div>
+            <div class="checkEvent">
+                <div class="checkEventTitleBox">
+                    <div class="checkEventTitle">출석체크</div>
+                </div>
+                <div id='checkCalendar'></div>
+            </div>
             <div class="voteBoardSummary">
                 <div class="voteSummary">
                     <div class="voteTitleBox">
@@ -156,9 +161,80 @@
 
     </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
-        const message = `[[${message}]]`
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('checkCalendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+                headerToolbar: { // 헤더에 표시할 툴 바
+                    left: 'title',
+                    right: 'customBtn today prev next'
+                },
+                titleFormat: function(date) {
+                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
+                },
+                customButtons:{
+                    customBtn :{
+                        text: "출석체크 하기",
+                        id : "checkBtn",
+                        click : function (){
+                            fetch("/user/addCheckEvent",{
+                                method:'GET'
+                            }).then( () =>{
+                                calendar.refetchEvents();
+                                setEventBtn();
+                            } )
+                        },
+                    }
+                },
+                selectable: true, // 날짜 선택 여부 설정
+                locale: 'ko', // 한국어 설정
+                fixedWeekCount: false,
+                electMirror: false,
+                events:function (info,addEvent){
+                    fetch(`/user/getAllCheckEvent?start=${info.startStr}`,{
+                        method:"GET"
+                    }).then(response => response.json())
+                        .then(data=>{
+                            console.log("출석체크 이벤트 data : ",data)
+
+                            if (data.length > 0){
+                                const events = data.map(data =>({
+                                    title: "출석",
+                                    start: data,
+                                    allDay:true
+                                }))
+
+                                addEvent(events)
+                                setEventBtn();
+                            }
+
+                        })
+                }
+            });
+
+            calendar.render();
+        });
+
+        function setEventBtn(){
+            fetch("/user/getCheckEvent",{
+                method:'GET'
+            }).then(response => response.json())
+                .then(data =>{
+                    if (data.result > 0){
+                        document.querySelector('.fc-customBtn-button').style.display = 'none';
+                    }else {
+                        document.querySelector('.fc-customBtn-button').style.display = 'inline-block';
+                    }
+                })
+        }
+
+    </script>
+
+    <script>
+        const message = `[[${message}]]''`
 
         const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
         const profileUrl = '[[${LoginUserInfo.profile}]]';

@@ -84,27 +84,27 @@ html, body {
 /* 메인 컨텐츠 영역 크기 조정 */
 .main-content {
     flex: 1;
-    height: 100%;
     padding: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    max-height: calc(100vh - 235px);  /* ⭐ 오른쪽숫자가 커질수록 메인컨텐츠 하단부분이 위로올라감*/
+    /*max-height: calc(100vh - 235px);  !* ⭐ 오른쪽숫자가 커질수록 메인컨텐츠 하단부분이 위로올라감*!*/
 }
 
 .quiz-card {
     background: linear-gradient(to bottom right, rgb(254, 243, 199), rgb(253, 230, 138));
     border-radius: 1.5rem;
     padding: 2rem;
-    max-width: 80%; /* 이 부분을 수정 */
+    max-width: 100%; /* 이 부분을 수정 */
     width: 900px;
-    min-height: 70vh; /* 이 부분을 추가 */
+    max-height: 73vh;
+    min-height: 50vh; /* 이 부분을 추가 */
     position: relative;
     box-shadow: 0 0 30px 10px rgba(218,165,32,0.2);
     border: 2px solid rgba(253, 230, 138, 0.5);
     overflow: hidden;
-    margin: 2rem auto; /* 이 부분을 추가 */
-
+    margin: 0 auto; /* 이 부분을 추가 */
+    box-sizing: border-box;
 }
 
 /* 프로그레스 바 */

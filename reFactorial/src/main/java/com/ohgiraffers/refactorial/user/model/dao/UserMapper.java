@@ -27,4 +27,10 @@ public interface UserMapper {
     String getNameById(String empId);
 
     List<Map<String, Object>> getHiredDateGroupBy();
+
+    int addCheckEvent(Map<String, Object> sendData);
+
+    int getCheckEvent(Map<String, Object> sendData);
+
+    List<String> getAllCheckEvent(Map<String, Object> sendData);
 }

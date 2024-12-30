@@ -314,6 +314,28 @@ section{
         .checkEvent{
             width: 38%;
             height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+
+            .checkEventTitleBox{
+                display: flex;
+                justify-content: space-between;
+                color: rgba(0,0,0,0.8);
+
+                display: none;
+
+                .checkEventTitle{
+                    font-size: 1.5em;
+                    padding: 0 10px;
+                    border-bottom: solid 4px #5C1915;
+                }
+            }
+
+            #checkCalendar{
+                width: 100%;
+                height: 100%;
+            }
+
         }
 
         .voteBoardSummary{
@@ -545,4 +567,22 @@ section{
             }
         }
     }
+}
+
+.fc {
+    font-size: 0.7em;
+}
+
+.fc .fc-toolbar.fc-header-toolbar{
+    margin-bottom: 10px;
+}
+
+
+.fc .fc-view-harness{
+    width: 100%;
+    height: 100%;
+}
+
+.fc table{
+    font-size: 1.1em;
 }
