@@ -102,7 +102,6 @@ public class BoardController {
             // postId로 조회
             BoardDTO postDetail = boardService.postDetail(postId);              // postDetail(postID(PK))로 DTO가져옴
             model.addAttribute("postDetail", postDetail);           // 상세페이지 전달
-
         }
 
         return "/board/freeBoardRegist";
@@ -127,10 +126,11 @@ public class BoardController {
 
         String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
 
+        System.out.println("boardId = " + boardId);
 
         // 게시물의 정보
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
-        if (postId != null) {                   // postId가 없으면 boardId 생성 (등록)
+        if (!postId.equals("")) {                   // postId가 없으면 boardId 생성 (등록)
             board.setPostId(postId);           // postId가 있으면 postId 전달 (수정)
         } else {
             board.setPostId(boardId);
@@ -187,6 +187,8 @@ public class BoardController {
                 uploadService.upLoadFile(postFileList,boardId);
             }
         }
+
+        System.out.println("board = " + board);
 
         boardService.post(board);   // 게시물 등록 기능
 

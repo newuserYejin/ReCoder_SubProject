@@ -28,6 +28,7 @@
         <div th:replace="~{/board/sidebar::sidebarFragment}"></div>
 
         <div class="form-container">
+
             <form id="freeBoardForm" action="/board/freeBoardRegist" method="post" enctype="multipart/form-data">
 
                 <input type="hidden" name="postId" th:value="${postDetail != null} ? ${postDetail.postId} : ''">
