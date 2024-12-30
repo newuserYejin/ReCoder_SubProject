@@ -47,10 +47,9 @@ public class InquiryController {
         String senderEmpId = loginUser.getEmpId();
         List<InquiryDTO> sentInquiries = inquiryService.sentInquiries(senderEmpId);
 
-
-
         model.addAttribute("sentInquiries", sentInquiries);
-        return "/inquiry/inquiryList";
+
+        return "inquiry/inquiryList";
     }
 
     // 문의 상세 조회

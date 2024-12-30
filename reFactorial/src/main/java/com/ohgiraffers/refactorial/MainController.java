@@ -282,7 +282,7 @@ public class MainController {
         receivedMails.removeIf(mail -> mail.getSenderEmpId().equals(receiverEmpId));
         model.addAttribute("receivedMails", receivedMails);
 
-        return "/mail/mailMain"; // 전체 메일 페이지로 리턴
+        return "mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
     @GetMapping("/goldTicket")
