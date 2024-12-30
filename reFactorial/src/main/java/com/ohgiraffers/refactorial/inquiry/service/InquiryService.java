@@ -42,4 +42,8 @@ public class InquiryService {
     public InquiryDTO getInquiryDetail(String iqrValue) {
         return inquiryMapper.selectInquiryDetail(iqrValue);
     }
+
+    public void deleteInquiry(String iqrValue) {
+        inquiryDAO.deleteInquiry(iqrValue);
+    }
 }

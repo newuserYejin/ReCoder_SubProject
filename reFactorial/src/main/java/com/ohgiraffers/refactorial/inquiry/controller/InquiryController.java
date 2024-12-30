@@ -70,4 +70,10 @@ public class InquiryController {
         model.addAttribute("inquiryDetail", inquiryDetail);
         return "inquiry/inquiryDetail";
     }
+
+    @GetMapping("/inquiry/deleteInquiry")
+    public String deleteInquiry(@RequestParam("iqrValue") String iqrValue) {
+        inquiryService.deleteInquiry(iqrValue);
+        return "redirect:/inquiry/inquiryList"; // 삭제 후 문의 목록 페이지로 리다이렉트
+    }
 }
