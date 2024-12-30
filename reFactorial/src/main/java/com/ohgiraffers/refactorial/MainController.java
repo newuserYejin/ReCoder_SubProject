@@ -225,3 +225,4 @@ public class MainController {
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 }
+
