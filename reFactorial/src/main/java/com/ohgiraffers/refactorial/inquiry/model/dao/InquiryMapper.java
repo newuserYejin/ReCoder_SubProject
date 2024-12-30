@@ -14,4 +14,7 @@ public interface InquiryMapper {
     List<InquiryDTO> sentInquiries(String senderEmpId);
 
     InquiryDTO selectInquiryDetail(String iqrValue);
+
+    // 문의 삭제 메소드 추가
+    void deleteInquiry(String iqrValue);
 }

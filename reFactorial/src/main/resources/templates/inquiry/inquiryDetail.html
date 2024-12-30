@@ -31,7 +31,7 @@
 
         <div class="main-content">
             <div class="top-bar">
-                <button type="button" th:onclick="|location.href='@{/inquiry/deleteInquiry}'|">
+                <button type="button" th:onclick="|location.href='@{/inquiry/deleteInquiry(iqrValue=${inquiryDetail.iqrValue})}'|">
                     삭제하기
                 </button>
             </div>

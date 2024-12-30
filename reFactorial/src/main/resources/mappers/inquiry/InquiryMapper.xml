@@ -28,10 +28,17 @@
         WHERE emp_id = #{empId}
     </select>
 
+    <!--  문의 세부 사항  -->
     <select id="selectInquiryDetail" resultMap="InquiryResultMap">
         SELECT *
         FROM tbl_inquiry
         WHERE iqr_value = #{iqrValue}
     </select>
+
+    <!-- 사용자전용 문의 삭제 쿼리 추가 -->
+    <delete id="deleteInquiry" parameterType="string">
+        DELETE FROM tbl_inquiry
+        WHERE iqr_value = #{iqrValue}
+    </delete>
 
 </mapper>

@@ -33,11 +33,20 @@ public class AdminInquiryController {
         return "inquiry/adminInquiryList";
     }
 
+    // 미답변 문의 가져오기
     @GetMapping("/admin/adminInquiryNoAnswerList")
     public String getAllNoAnswerInquires(Model model) {
         List<InquiryDTO> getAllNoAnswerInquires = adminInquiryService.getAllNoAnswerInquires();
         model.addAttribute("getAllNoAnswerInquires", getAllNoAnswerInquires);
         return "inquiry/adminInquiryNoAnswerList";
+    }
+
+    // 답변 문의 가져오기
+    @GetMapping("/admin/adminInquiryAnswerList")
+    public String getAllAnswerInquires(Model model) {
+        List<InquiryDTO> getAllAnswerList = adminInquiryService.getAllAnswerList();
+        model.addAttribute("getAllAnswerList",getAllAnswerList);
+        return "inquiry/adminInquiryAnswerList";
     }
 
     // 문의 상세 조회

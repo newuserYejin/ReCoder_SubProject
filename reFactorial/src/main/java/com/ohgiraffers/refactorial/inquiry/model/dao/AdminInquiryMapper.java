@@ -12,6 +12,8 @@ public interface AdminInquiryMapper {
 
     List<InquiryDTO> getAllNoAnswerInquires();
 
+    List<InquiryDTO> getAllAnswerList();
+
     InquiryDTO adminInquiryDetail(String iqrValue);
 
     int updateAnswer(String iqrValue, String answerDetail);

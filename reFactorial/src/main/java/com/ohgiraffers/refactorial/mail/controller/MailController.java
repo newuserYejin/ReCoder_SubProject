@@ -33,7 +33,7 @@ public class MailController {
     @GetMapping("/sendMail")
     public String showSendMailPage() {
 
-        return "/mail/sendMail";
+        return "mail/sendMail";
     }
 
     @PostMapping("/sendMail")
@@ -82,7 +82,7 @@ public class MailController {
         // Model sentMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("sentMails", sentMails);
 
-        return "/mail/sentMails";
+        return "mail/sentMails";
     }
 
     //내가 받은 메일 읽기
@@ -97,7 +97,7 @@ public class MailController {
         // Model receivedMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("receivedMails", receivedMails);
 
-        return "/mail/receivedMails";
+        return "mail/receivedMails";
     }
 
     // 메일 상세 페이지
@@ -116,7 +116,7 @@ public class MailController {
 
         model.addAttribute("mailDetail", mailDetail);
         model.addAttribute("mailReceiver", mailReceiver);
-        return "/mail/mailDetail";
+        return "mail/mailDetail";
     }
 
     // 메일 휴지통 페이지
@@ -124,7 +124,7 @@ public class MailController {
     public String mailDetailBin(@RequestParam("emailId") String emailId, Model model) {
         MailDTO mailDetailBin = mailService.getMailDetailBin(emailId);
         model.addAttribute("mailDetailBin", mailDetailBin);
-        return "/mail/mailDetailBin";
+        return "mail/mailDetailBin";
     }
 
     // 답신 페이지로 이동
@@ -137,7 +137,7 @@ public class MailController {
         }
 
         model.addAttribute("originalMail", originalMail);
-        return "/mail/replyMail"; // 템플릿 경로 확인
+        return "mail/replyMail"; // 템플릿 경로 확인
     }
 
     // 메일 답신
@@ -174,7 +174,7 @@ public class MailController {
         List<MailDTO> sentMailsBin = mailService.getSentMailsBin(senderEmpId);
         model.addAttribute("sentMailsBin", sentMailsBin);
 
-        return "/mail/mailBin";
+        return "mail/mailBin";
     }
 
     // 휴지통으로 보내기
