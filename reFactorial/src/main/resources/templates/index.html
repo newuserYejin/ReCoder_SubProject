@@ -101,9 +101,6 @@
             <!-- 출석체크 이벤트, 투표 요약, 게시판 -->
             <div class="main_footerBox">
             <div class="checkEvent">
-                <div class="checkEventTitleBox">
-                    <div class="checkEventTitle">출석체크</div>
-                </div>
                 <div id='checkCalendar'></div>
             </div>
             <div class="voteBoardSummary">
@@ -174,7 +171,7 @@
                     right: 'customBtn today prev next'
                 },
                 titleFormat: function(date) {
-                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월';
+                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월' + "(출석체크 이벤트)";
                 },
                 customButtons:{
                     customBtn :{
@@ -195,10 +192,8 @@
                 fixedWeekCount: false,
                 electMirror: false,
                 events:function (info,addEvent){
-                    console.log("info : ",info)
-                    console.log("calender : ",calendar)
 
-                    fetch(`/user/getAllCheckEvent?start=${info.startStr}`,{
+                    fetch(`/user/getAllCheckEvent?start=${info.startStr}&end=${info.endStr}`,{
                         method:"GET"
                     }).then(response => response.json())
                         .then(data=>{
@@ -206,9 +201,11 @@
 
                             if (data.length > 0){
                                 const events = data.map(data =>({
-                                    title: "출석",
+                                    title: "🍫",
+                                    color : "#ffffff",
                                     start: data,
-                                    allDay:true
+                                    allDay:true,
+                                    background: "none",
                                 }))
 
                                 addEvent(events)
