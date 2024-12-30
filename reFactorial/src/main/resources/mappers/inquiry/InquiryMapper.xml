@@ -24,14 +24,14 @@
     <!-- 1:1 문의내역 -->
     <select id="sentInquiries" resultMap="InquiryResultMap">
         SELECT *
-        FROM tbl_inquiry
+        FROM tbl_inquiry JOIN tbl_inquiry i ON e.emp_id = i.emp_id
         WHERE emp_id = #{empId}
     </select>
 
     <!--  문의 세부 사항  -->
     <select id="selectInquiryDetail" resultMap="InquiryResultMap">
         SELECT *
-        FROM tbl_inquiry
+        FROM tbl_inquiry JOIN tbl_inquiry i ON e.emp_id = i.emp_id
         WHERE iqr_value = #{iqrValue}
     </select>
 

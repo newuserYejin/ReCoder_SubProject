@@ -1,4 +1,5 @@
 package com.ohgiraffers.refactorial.mail.controller;
+import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO;
 import com.ohgiraffers.refactorial.mail.service.MailEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;

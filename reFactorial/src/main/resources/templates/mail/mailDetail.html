@@ -44,7 +44,7 @@
                     <h2 th:text="${mailDetail.emailTitle}"></h2> <!-- 이메일 제목 -->
 
                     <div class="mail-meta">
-                        <span>보낸사람: <span th:text="${mailDetail.senderEmpId}"></span></span>
+                        <span>보낸사람: <span th:text="${mailDetail.empName}"></span></span>
                         <span>보낸 날짜: <span th:text="${#dates.format(mailDetail.sentDate, 'yyyy-MM-dd HH:mm')}"></span></span>
                     </div>
                 </div>

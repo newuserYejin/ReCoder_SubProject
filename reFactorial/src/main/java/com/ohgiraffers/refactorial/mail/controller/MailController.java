@@ -3,6 +3,7 @@ package com.ohgiraffers.refactorial.mail.controller;
 import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
 import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
+import com.ohgiraffers.refactorial.mail.service.MailEmployeeService;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
@@ -22,11 +23,13 @@ public class MailController {
 
     private MailService mailService;
     private UploadFileService uploadService;
+    private MailEmployeeService mailEmployeeService;
 
     @Autowired
-    public MailController(MailService mailService, UploadFileService uploadService) {
+    public MailController(MailService mailService, UploadFileService uploadService , MailEmployeeService mailEmployeeService) {
         this.uploadService = uploadService;
         this.mailService = mailService;
+        this.mailEmployeeService = mailEmployeeService;
     }
 
     // 메일 쓰기 페이지로 이동
@@ -77,7 +80,7 @@ public class MailController {
         String senderEmpId = loginUser.getEmpId();
 
         // 보낸 메일 목록을 모델에 추가
-        List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
+        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpId);
 
         // Model sentMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("sentMails", sentMails);
@@ -92,7 +95,7 @@ public class MailController {
         String receiverEmpIds = loginUser.getEmpId();
 
         // 내가 받은 메일 목록을 모델에 추가
-        List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpIds);
+        List<MailDTO> receivedMails = mailEmployeeService.getReceivedMails(receiverEmpIds);
 
         // Model receivedMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("receivedMails", receivedMails);

@@ -13,6 +13,7 @@ import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO;
 import com.ohgiraffers.refactorial.inquiry.service.InquiryService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
+import com.ohgiraffers.refactorial.mail.service.MailEmployeeService;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
@@ -49,6 +50,7 @@ public class MainController {
     private final BoardService boardService;
     private final InquiryService inquiryService;
     private final AdminService as;
+    private final MailEmployeeService mailEmployeeService;
     
     @Autowired
     private ApprovalService approvalService;
@@ -61,7 +63,8 @@ public class MainController {
                           AttendanceService attendanceService,
                           BoardService boardService,
                           InquiryService inquiryService,
-                          AdminService as
+                          AdminService as,
+                          MailEmployeeService mailEmployeeService
 
                         ){
         this.memberService = memberService;
@@ -71,6 +74,7 @@ public class MainController {
         this.boardService = boardService;
         this.inquiryService = inquiryService;
         this.as = as;
+        this.mailEmployeeService = mailEmployeeService;
 
     }
 
@@ -267,22 +271,21 @@ public class MainController {
     }
 
     @GetMapping("/user/mail")
-    public String mailPage(Model model , HttpSession session){
+    public String mailPage(Model model, HttpSession session) {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String senderEmpId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
         String receiverEmpId = loginUser.getEmpId(); // 받은 사람의 empId로 설정
 
-        // 내가 보낸 메일만 가져오기
-        List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
+        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpId);
         model.addAttribute("sentMails", sentMails);
 
-        // 내가 받은 메일만 가져오기, 내가 보낸 메일은 제외
-        List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpId);
         // 자신에게 보낸 메일을 제외한 받은 메일만 모델에 추가
+
+        List<MailDTO> receivedMails = mailEmployeeService.getReceivedMails(receiverEmpId);
         receivedMails.removeIf(mail -> mail.getSenderEmpId().equals(receiverEmpId));
         model.addAttribute("receivedMails", receivedMails);
 
-        return "mail/mailMain"; // 전체 메일 페이지로 리턴
+        return "mail/mailMain";
     }
 
     @GetMapping("/goldTicket")
