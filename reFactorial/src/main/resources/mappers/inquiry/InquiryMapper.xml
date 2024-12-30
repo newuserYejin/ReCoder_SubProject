@@ -31,7 +31,7 @@
     <select id="selectInquiryDetail" resultMap="InquiryResultMap">
         SELECT *
         FROM tbl_inquiry
-        WHERE iqr_value = #{iqrValue}  <!-- 변경: emp_id 대신 iqr_value 사용 -->
+        WHERE iqr_value = #{iqrValue}
     </select>
 
 </mapper>
