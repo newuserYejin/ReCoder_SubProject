@@ -7,12 +7,15 @@ import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +46,10 @@ public class UserController {
             message = "중복된 회원이 존재합니다.";
         } else if (result == 0){        // insert 구문이 실행되다가 실패
             message = "서번 내부에서 오류가 발생했습니다.";
-            mv.setViewName("/admin/admin_employee");
+            mv.setViewName("admin/admin_employee");
         } else if (result >= 1) {
             message = "회원 가입이 완료되었습니다.";
-            mv.setViewName("/admin/admin_employee");
+            mv.setViewName("admin/admin_employee");
         }
 
         mv.addObject("message", message);
@@ -90,10 +93,10 @@ public class UserController {
         if (result > 0){
             msg = "비밀번호 변경 성공";
             session.invalidate();
-            mv.setViewName("/auth/login");
+            mv.setViewName("auth/login");
         } else {
             msg = "비밀번호 변경 실패";
-            mv.setViewName("/myPage/myPage");
+            mv.setViewName("myPage/myPage");
         }
 
         mv.addObject("msg",msg);
@@ -149,5 +152,64 @@ public class UserController {
         result.put("empName",empName);
 
         return result;
+    }
+
+
+    @GetMapping("addCheckEvent")
+    @ResponseBody
+    public void addCheckEvent(HttpSession session){
+        LocalDate today = LocalDate.now();
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
+
+        System.out.println("today user= " + today + ", " + user.getEmpId());
+
+        int result = memberService.addCheckEvent(today,empId);
+        
+        if (result>0){
+            System.out.println("출석체크 완료");
+        } else {
+            System.out.println("출석체크 중 문제 발생");
+        }
+    }
+
+    @GetMapping("getCheckEvent")
+    @ResponseBody
+    public Map<String,Object> getCheckEvent(HttpSession session){
+        LocalDate today = LocalDate.now();
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
+
+        int searchResult = memberService.getCheckEvent(today,empId);
+
+        Map<String , Object> returnResult = new HashMap<>();
+
+        if (searchResult > 0){
+            System.out.println("출석체크가 이미 되었습니다");
+        } else {
+            System.out.println("아직 출석체크 안함");
+        }
+
+        returnResult.put("result", searchResult);
+
+        return returnResult;
+    }
+
+
+    @GetMapping("getAllCheckEvent")
+    @ResponseBody
+    public List<String> getAllCheckEvent(@RequestParam String start, @RequestParam String end, HttpSession session){
+        System.out.println("start = " + start);
+
+        LocalDate startDate = LocalDate.parse(start.substring(0,10));
+        LocalDate endDate = LocalDate.parse(end.substring(0,10));
+//        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); // 해당 달의 마지막 날 구하기
+
+        System.out.println("startDate = " + startDate + ", " +endDate);
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
+
+        return memberService.getAllCheckEvent(startDate,endDate,empId);
     }
 }

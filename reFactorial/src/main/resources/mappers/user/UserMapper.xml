@@ -119,7 +119,37 @@
             employee
         WHERE
             emp_joined >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
-        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m');
+        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m')
+        ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
+    </select>
+
+    <insert id="addCheckEvent" parameterType="map">
+        INSERT INTO tbl_presence
+        (prs_date, emp_id)
+        values
+        (#{today},#{empId})
+    </insert>
+
+    <select id="getCheckEvent" parameterType="map">
+        select
+            count(*)
+        from
+            tbl_presence
+        where
+            prs_date = #{today}
+        AND
+            emp_id = #{empId}
+    </select>
+
+    <select id="getAllCheckEvent" parameterType="map">
+        select
+            prs_date
+        from
+            tbl_presence
+        where
+            prs_date between #{start} and #{end}
+        and
+            emp_id = #{empId}
     </select>
 
 </mapper>

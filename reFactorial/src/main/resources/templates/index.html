@@ -19,9 +19,6 @@
 
     <link rel="stylesheet" th:href="@{/css/mainPage/mainPage.css}">
 
-    <link rel="stylesheet" href="../static/css/common/style.css">
-    <link rel="stylesheet" href="../static/css/mainPage/mainPage.css">
-
 </head>
 <body>
 
@@ -39,7 +36,10 @@
     <!--                    <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>-->
     <!--                    <p id="todayAtt"></p>-->
                         <div class="profileImg">
-                            <img th:src="${LoginUserInfo != null ? ( LoginUserInfo.profile != ''? '/uploadImg/' + LoginUserInfo.profile : '/uploadImg/defaultImg.png'): '/uploadImg/defaultImg.png'}">
+                            <img th:src="${LoginUserInfo != null ?
+                                        ( LoginUserInfo.profile != null && LoginUserInfo.profile != '' && !LoginUserInfo.profile.isEmpty()
+                                        ? '/uploadImg/' + LoginUserInfo.profile : '/uploadImg/defaultImg.png')
+                                        : '/uploadImg/defaultImg.png'}">
     <!--                        <img src="../static/images/loopy.jpg">-->
                         </div>
                         <div class="profileInfo" th:if="${LoginUserInfo}">
@@ -72,12 +72,16 @@
                 </div>
 
                 <div class="companyMailBox">
-                    <div class="mailBoxTitle">사내 메일</div>
+                    <div class="mailBoxTitleBox">
+                        <div class="mailBoxTitle">사내 메일</div>
+                        <div onclick="location.href='mail/receivedMails'">+ 더보기</div>
+                    </div>
+
                     <div class="mailContent">
                         <div class="noMailMsg" th:if="!${receivedMails}">받은 메일이 없습니다.</div>
 
                         <div class="mailTh" th:if="${receivedMails}">
-                            <div class="mailNum"></div>
+                            <div class="mailNum">번호</div>
                             <div class="sender">보낸사람</div>
                             <div class="mailTitle">제목</div>
                             <div class="mailDate">수신일</div>
@@ -96,30 +100,53 @@
 
             <!-- 출석체크 이벤트, 투표 요약, 게시판 -->
             <div class="main_footerBox">
-            <div class="checkEvent">출석체크</div>
+            <div class="checkEvent">
+                <div id='checkCalendar'></div>
+            </div>
             <div class="voteBoardSummary">
-                <div class="voteSummary">투표 요약</div>
+                <div class="voteSummary">
+                    <div class="voteTitleBox">
+                        <div class="voteTitle">투표</div>
+                    </div>
+                    <div class="voteNone" th:unless="${recently3List} != null">아직 투표가 없습니다.</div>
+                    <div th:if="${recently3List}" th:each="post, postStat : ${recently3List}"  th:data-num="${postStat.index}" class="voteContentBoxBox">
+                        <div class="voteContentBox">
+                            <div class="prevBtn" th:id="|prevBtn_${postStat.index}|">
+                                <img src="/images/angle-left-solid.svg" alt="왼쪽 이동">
+                            </div>
+                            <div class="voteContent">
+                                <div class="voteContentGle" th:text="${post.postContent}"></div>
+                            </div>
+                            <div class="nextBtn" th:id="|nextBtn_${postStat.index}|">
+                                <img src="/images/angle-right-solid.svg" alt="왼쪽 이동">
+                            </div>
+                        </div>
+                        <button class="moveVote" th:onclick="|location.href = '@{/board/postDetail(postId=${post.postId}, categoryCode=4)}'|">투표하러 가기</button>
+                    </div>
+                </div>
                 <div class="boardSummary">
                     <div class="totalBox">
                         <div class="boardTitleBox">
-                            <div class="boardTitle">공지사항 게시물</div>
-                            <div onclick="location.href='/board/list?categoryCode=1'">+ 더보기</div>
+                            <div class="boardTitle">게시물</div>
+                            <div onclick="location.href='board/list?categoryCode=1'">+ 더보기</div>
                         </div>
 
                         <div class="boardDataBox">
                             <!-- 테이블 헤더 -->
                             <div class="DataHeader">
-                                <div>게시글 번호</div>
+                                <div>번호</div>
+                                <div class="postEmpName">작성자</div>
                                 <div class="postTitle">제목</div>
-                                <div>작성일</div>
+                                <div class="postDate">작성일</div>
                             </div>
 
                            <div class="DataBody">
-                               <div class="MainData" th:unless="${boardList} != null">없음</div>
+                               <div class="MainData noPost" th:unless="${boardList} != null">없음</div>
                                <div th:onclick="|location.href='@{/board/postDetail(postId=${board.postId}, categoryCode=${1})}'|" class="MainData" th:if="${boardList} != null" th:each="board, boardStat : ${boardList}">
                                    <div th:text="${boardStat.count}"></div>
-                                   <div th:text="${board.postTitle}"></div>
-                                   <div th:text="${#temporals.format(board.postCreationDate, 'yyyy-MM-dd')}"></div>
+                                   <div class="postEmpName" th:text="${board.empName}"></div>
+                                   <div class="postTitle" th:text="${board.postTitle}"></div>
+                                   <div class="postDate" th:text="${#temporals.format(board.postCreationDate, 'yyyy-MM-dd')}"></div>
                                </div>
                            </div>
 
@@ -132,17 +159,88 @@
 
     </section>
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
-        const message = `[[${message}]]`
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('checkCalendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+                headerToolbar: { // 헤더에 표시할 툴 바
+                    left: 'title',
+                    right: 'customBtn today prev next'
+                },
+                titleFormat: function(date) {
+                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월' + "(출석체크 이벤트)";
+                },
+                customButtons:{
+                    customBtn :{
+                        text: "출석체크 하기",
+                        id : "checkBtn",
+                        click : function (){
+                            fetch("/user/addCheckEvent",{
+                                method:'GET'
+                            }).then( () =>{
+                                calendar.refetchEvents();
+                                setEventBtn();
+                            } )
+                        },
+                    }
+                },
+                selectable: true, // 날짜 선택 여부 설정
+                locale: 'ko', // 한국어 설정
+                fixedWeekCount: false,
+                electMirror: false,
+                events:function (info,addEvent){
+
+                    fetch(`/user/getAllCheckEvent?start=${info.startStr}&end=${info.endStr}`,{
+                        method:"GET"
+                    }).then(response => response.json())
+                        .then(data=>{
+                            console.log("출석체크 이벤트 data : ",data)
+
+                            if (data.length > 0){
+                                const events = data.map(data =>({
+                                    title: "🍫",
+                                    color : "#ffffff",
+                                    start: data,
+                                    allDay:true,
+                                    background: "none",
+                                }))
+
+                                addEvent(events)
+                                setEventBtn();
+                            }
+
+                        })
+                }
+            });
+
+            calendar.render();
+        });
+
+        function setEventBtn(){
+            fetch("/user/getCheckEvent",{
+                method:'GET'
+            }).then(response => response.json())
+                .then(data =>{
+                    if (data.result > 0){
+                        document.querySelector('.fc-customBtn-button').style.display = 'none';
+                    }else {
+                        document.querySelector('.fc-customBtn-button').style.display = 'inline-block';
+                    }
+                })
+        }
+
+    </script>
+
+    <script>
+        const message = `[[${message}]]''`
 
         const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
         const profileUrl = '[[${LoginUserInfo.profile}]]';
-        const receivedMails = '[[${receivedMails}]]'
 
-        if (receivedMails){
-            console.log(receivedMails)
-        }
+        const recently3List = '[[${recently3List}]]';
     </script>
 
     <script th:src="@{/js/mainPage/mainPage.js}"></script>

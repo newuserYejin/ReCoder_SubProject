@@ -1,5 +1,8 @@
 package com.ohgiraffers.refactorial;
 
+import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
+import com.ohgiraffers.refactorial.admin.model.service.AdminService;
+import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
 import com.ohgiraffers.refactorial.board.model.dto.CommentDTO;
@@ -15,6 +18,7 @@ import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +30,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+
 import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Controller
 public class MainController {
@@ -37,6 +48,11 @@ public class MainController {
     private final AttendanceService attendanceService;
     private final BoardService boardService;
     private final InquiryService inquiryService;
+    private final AdminService as;
+    
+    @Autowired
+    private ApprovalService approvalService;
+
 
     @Autowired
     public MainController(MemberService memberService,
@@ -44,7 +60,9 @@ public class MainController {
                           MailService mailService,
                           AttendanceService attendanceService,
                           BoardService boardService,
-                          InquiryService inquiryService
+                          InquiryService inquiryService,
+                          AdminService as
+
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
@@ -52,6 +70,8 @@ public class MainController {
         this.attendanceService = attendanceService;
         this.boardService = boardService;
         this.inquiryService = inquiryService;
+        this.as = as;
+
     }
 
 
@@ -65,36 +85,53 @@ public class MainController {
     
     @GetMapping("/user")
     public String mainControll(Model model,HttpSession session){
-        List<BoardDTO> boardList = boardService.postList(1);
+        // 공지사항 게시물 가져오기
+        List<BoardDTO> boardList = boardService.postList(1, 10, 0, null);
 
-        model.addAttribute("boardList",boardList);
+        if (!boardList.isEmpty()){
+            model.addAttribute("boardList",boardList);
+        }
 
+
+        // 투표 게시물 가져오기
+        List<BoardDTO> votePostList = boardService.postList(4, 10, 0, null);
+
+        if (!votePostList.isEmpty()){
+            // 최근꺼 3개만 가져오기
+            List<BoardDTO> recently3List = new ArrayList<>();
+
+            for (int i = 0; i <votePostList.size() ;i++){
+                recently3List.add(votePostList.get(i));
+            }
+
+            model.addAttribute("recently3List",recently3List);
+        }
+
+        // 내가 받은 메일 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
         String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
 
-        // 내가 받은 메일만 가져오기, 내가 보낸 메일은 제외
         List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
-        
-        Map<String,Object> findSender = new HashMap<>();
 
-        SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
-        
-        for (MailDTO mail : receivedMails){
-            String name = memberService.getNameById(mail.getSenderEmpId());
+        if(!receivedMails.isEmpty()){
+            Map<String,Object> findSender = new HashMap<>();
 
-            String date = (smp.format(mail.getSentDate()));
+            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
 
-            Map<String, Object> mailWithDate = new HashMap<>();
-            mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
-            mailWithDate.put("date", date);  // 날짜 정보 추가
-            
-            findSender.put(name, mailWithDate);
+            for (MailDTO mail : receivedMails){
+                String name = memberService.getNameById(mail.getSenderEmpId());
+
+                String date = (smp.format(mail.getSentDate()));
+
+                Map<String, Object> mailWithDate = new HashMap<>();
+                mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
+                mailWithDate.put("date", date);  // 날짜 정보 추가
+
+                findSender.put(name, mailWithDate);
+            }
+
+            model.addAttribute("receivedMails", findSender);
         }
-
-        System.out.println("findSender = " + findSender);
-        
-        // 자신에게 보낸 메일을 제외한 받은 메일만 모델에 추가
-        model.addAttribute("receivedMails", findSender);
 
         return "index";
     }
@@ -107,7 +144,7 @@ public class MainController {
 
         model.addAttribute("cabinets",allCabinets);
 
-        return "/booking/booking";
+        return "booking/booking";
     }
 
     @GetMapping("/user/inquiry")
@@ -148,7 +185,30 @@ public class MainController {
 
 
     @GetMapping("/user/approvalMain")
-    public String approvalMainController(){
+    public String approvalMainController(Model model,HttpSession session){
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
+        }
+
+        String empId = user.getEmpId();
+
+        // 상태별 문서 건수 조회
+        model.addAttribute("waitingCount", approvalService.getWaitingCount(empId));
+        model.addAttribute("inProgressCount", approvalService.countInProgressDocuments(empId));
+        model.addAttribute("completedCount", approvalService.getCompletedDocumentsCount(empId));
+        model.addAttribute("rejectedCount", approvalService.countRejectedDocuments(empId));
+
+
+        // 각 탭에 표시될 문서 목록 조회 (최근 5건씩만)
+        model.addAttribute("draftDocuments", approvalService.getMyDocuments(empId,5,0));
+        model.addAttribute("approveDocuments", approvalService.getWaitingDocuments(empId, 5, 0));
+        model.addAttribute("referenceDocuments", approvalService.getReferenceDocuments(empId, 5, 0));
+
+
         return "/approvals/approvalMain";
     }
 
@@ -176,7 +236,7 @@ public class MainController {
         Map<String,Object> attendanceChart = attendanceService.getAttendanceGroupBy(today);
 
         // 최근 이벤트 게시물
-        List<BoardDTO> eventList = boardService.postList(5);
+        List<BoardDTO> eventList = boardService.postList(5, 10, 0, null);
 
         if (eventList != null && !eventList.isEmpty()){
             model.addAttribute("recentlyEvent",eventList.get(0));
@@ -224,4 +284,23 @@ public class MainController {
 
         return "/mail/mailMain"; // 전체 메일 페이지로 리턴
     }
+<<<<<<< HEAD
+=======
+
+    @GetMapping("/goldTicket")
+    public String goldTicket(Model model){
+        
+        String selectedDay = null;
+
+        List<TktReserveDTO> result = as.getTktReserve(selectedDay);
+
+        int totalCount = as.getTotalCountTktReserve();
+
+        model.addAttribute("goldTicket",result);
+        model.addAttribute("totalCount",totalCount);
+
+        return "goldTicket/goldTicket";
+    }
+
+>>>>>>> 8749f131edc2075de02d13ad989cc4711fce7ede
 }

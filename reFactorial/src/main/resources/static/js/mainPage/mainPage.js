@@ -88,8 +88,63 @@ function redirectBasedOnAuth() {
     // LoginUserInfo.viewAuth 값을 서버에서 미리 렌더링하여 가져옵니다.
      // 기본값은 'USER'로 설정
     if (viewAuth === 'ADMIN') {
-        location.href = '/admin/main';
+        location.href = 'admin/main';
     } else {
-        location.href = '/user/myPage';
+        location.href = 'user/myPage';
     }
 }
+
+
+let voteContent = 0;
+
+const prevBtn = document.querySelector("#prevBtn")
+const nextBtn = document.querySelector("#nextBtn")
+const voteContentBoxBox = document.querySelectorAll(".voteContentBoxBox");
+
+function updateVisibility() {
+    // 모든 div를 숨기고
+    voteContentBoxBox.forEach(div => {
+        if (parseInt(div.getAttribute("data-num")) === voteContent) {
+            div.style.display = "flex"; // voteContent와 일치하면 보이기
+        } else {
+            div.style.display = "none"; // 아니면 숨기기
+        }
+    });
+}
+
+updateVisibility();
+
+voteContentBoxBox.forEach((box, index) => {
+    const prevBtn = document.getElementById(`prevBtn_${index}`);
+    const nextBtn = document.getElementById(`nextBtn_${index}`);
+
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            if (voteContent > 0) {
+                voteContent--; // voteContent 감소
+                updateVisibility();
+            }
+            // 처음에 왔을 때, 이전 버튼 비활성화
+            if (voteContent === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            if (voteContent < voteContentBoxBox.length - 1) {
+                voteContent++; // voteContent 증가
+                updateVisibility();
+            }
+            // 마지막에 왔을 때, 다음 버튼 비활성화
+            if (voteContent === voteContentBoxBox.length - 1) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+            }
+        });
+    }
+});

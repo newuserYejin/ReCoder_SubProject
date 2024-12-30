@@ -3,12 +3,17 @@
     import com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper;
     import com.ohgiraffers.refactorial.approval.model.dao.EmployeeMapper;
     import com.ohgiraffers.refactorial.approval.model.dto.*;
+    import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
+    import com.ohgiraffers.refactorial.fileUploade.model.dao.UploadFileMapper;
+    import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
-    import org.springframework.ui.Model;
+    import org.springframework.transaction.annotation.Transactional;
+    import org.springframework.web.multipart.MultipartFile;
 
 
+    import java.io.IOException;
     import java.math.BigDecimal;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
@@ -16,6 +21,7 @@
     import java.util.stream.Collectors;
 
     @Service
+
     public class ApprovalService {
 
 
@@ -27,6 +33,12 @@
 
         @Autowired
         private UserMapper userMapper;
+
+        @Autowired
+        private UploadFileMapper uploadFileMapper;
+
+        @Autowired
+        private UploadFileService uploadService;
 
         public List<EmployeeDTO> searchByName(String name) {
 
@@ -46,14 +58,12 @@
         }
 
 
-        public String saveApproval(ApprovalRequestDTO approvalRequestDTO, String creatorId) {
+        public String saveApproval(ApprovalRequestDTO approvalRequestDTO, String creatorId, List<MultipartFile> fileList) throws IOException {
 
             Map<String, Object> params = new HashMap<>();
 
             //5자리 랜덤 문자열 생성
             String pmId = "PM" + String.format("%05d", (int) (Math.random() * 100000));
-
-
 
             params.put("pmId", pmId);
             params.put("title", approvalRequestDTO.getTitle());
@@ -62,6 +72,12 @@
             params.put("attachment", approvalRequestDTO.getAttachment());
             params.put("creatorId", creatorId); // 작성자 ID 추가
             params.put("content", approvalRequestDTO.getContent()); // 추가된 내용
+
+            // 첨부파일 저장 로직
+            if (approvalRequestDTO.getAttachment() == 1){
+                System.out.println("파일 저장");
+                uploadService.upLoadFile(fileList, pmId);
+            }
 
             approvalMapper.insertPm(params); // 매퍼 호출
             return String.valueOf(params.get("pmId")); // 생성된 pmId 반환
@@ -97,9 +113,6 @@
                 approvalMapper.saveReferrers(params);
             }
         }
-
-
-
 
         public List<DocumentDTO> getWaitingDocuments(String empId, int limit, int offset) {
             if (empId == null || empId.isEmpty()) {
@@ -462,12 +475,19 @@
             return approvalMapper.getRejectReasonByApprover(pmId, currentEmpId);
         }
 
+            @Transactional
+            public void insertAttendanceRecord(AttendanceDTO attendanceDTO) {
+                approvalMapper.insertAttendance(attendanceDTO);
+            }
 
-//
-//        public boolean isFirstApprover(String pmId, String currentEmpId) {
-//            String firstApprover = approvalMapper.findFirstApprover(pmId);
-//            return firstApprover != null && firstApprover.equals(currentEmpId);
-//        }
+
+        public int countInProgressDocuments(String empId) {
+            return approvalMapper.countInProgressDocuments(empId);
+        }
+
+        public int countRejectedDocuments(String empId) {
+            return approvalMapper.countRejectedDocuments(empId);
+        }
     }
 
 

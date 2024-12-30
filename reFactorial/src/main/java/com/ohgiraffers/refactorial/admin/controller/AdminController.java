@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
@@ -15,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -111,7 +114,7 @@ public class AdminController {
 
         model.addAttribute("ModifyUser", user);
 
-        return "/admin/addEmployee";
+        return "admin/addEmployee";
     }
 
     @GetMapping("getByDateAtt")
@@ -165,7 +168,7 @@ public class AdminController {
 
     // 예약자 관리 페이지
     @GetMapping("tktreserve")
-    public String adminTktreserve(){ return "/admin/admin_tktreserve"; }
+    public String adminTktreserve(){ return "admin/admin_tktreserve"; }
 
     @GetMapping("getTktReserve")
     @ResponseBody
@@ -279,7 +282,118 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/products")
+    @ResponseBody
+    public List<ProductDTO> getAllProducts() {
+        return adminService.getAllProducts();
+    }
 
+    @GetMapping("/searchProduct")
+    @ResponseBody
+    public List<ProductDTO> searchProducts(@RequestParam String keyword) {
+        return adminService.searchProducts(keyword);
+    }
+
+    @GetMapping("/product/{id}")
+    @ResponseBody
+    public ProductDTO getProductById(@PathVariable String id) {
+        return adminService.getProductById(id);
+    }
+
+    @PostMapping("/updateProduct")
+    @ResponseBody
+    public String updateProduct(@RequestBody ProductDTO productDTO,HttpSession session) {
+        System.out.println("수정 요청 데이터: " + productDTO);
+
+
+        int result = adminService.updateProduct(productDTO);
+
+        if (result > 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+
+    @GetMapping("factoryAddressBook")
+    public String adminFactoryAddressBook(){
+        return "/admin/admin_factoryAddressBook";
+    }
+
+
+    @PostMapping("/addFactory")
+    @ResponseBody
+    public String addFactory(@RequestBody FactoryDTO factoryDTO, HttpSession session){
+        System.out.println("FactoryDTO Data: " + factoryDTO);
+        System.out.println("Image URL: " + factoryDTO.getFabImage());
+
+        // 로그인된 사용자 가져오기
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (user == null) {
+            return "로그인 정보가 없습니다.";
+        }
+
+        // 로그인된 사용자의 empId 설정
+        factoryDTO.setEmpId(user.getEmpId());
+
+        // ID 자동 생성
+        String newFactoryId = adminService.generateFactoryId();
+        factoryDTO.setFabId(newFactoryId);
+
+        // 등록 처리
+        int result = adminService.addFactory(factoryDTO);
+        return result > 0 ? "success" : "fail";
+
+    }
+
+    @PatchMapping("/updateFactory")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> updateFactory(@RequestBody FactoryDTO factoryDTO, HttpSession session) {
+        System.out.println("수정 요청 데이터: " + factoryDTO);
+
+        Map<String, String> response = new HashMap<>();
+
+        // 세션에서 로그인 사용자 정보 확인
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        if (user == null) {
+            response.put("message", "로그인 정보가 없습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); // HTTP 401 반환
+        }
+
+        // 사용자 ID 설정
+        factoryDTO.setEmpId(user.getEmpId());
+
+        // 업데이트 처리
+        int result = adminService.updateFactory(factoryDTO);
+        if (result > 0) {
+            response.put("message", "수정 성공!");
+            return ResponseEntity.ok(response); // HTTP 200 반환
+        } else {
+            response.put("message", "수정 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500 반환
+        }
+    }
+
+
+    @GetMapping("/factories")
+    @ResponseBody
+    public List<FactoryDTO> getAllFactories() {
+        return adminService.getAllFactories(); // 서비스에서 전체 조회 구현
+    }
+
+    @GetMapping("/searchFactory")
+    @ResponseBody
+    public List<FactoryDTO> searchFactories(@RequestParam String keyword) {
+        return adminService.searchFactories(keyword); // 서비스에서 검색 구현
+    }
+
+    @GetMapping("/factory/{id}")
+    @ResponseBody
+    public FactoryDTO getFactoryById(@PathVariable String id) {
+        return adminService.getFactoryById(id);
+    }
 
 
 }

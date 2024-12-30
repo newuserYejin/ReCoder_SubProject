@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.board.service;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.board.model.dao.BoardMapper;
 import com.ohgiraffers.refactorial.board.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,10 @@ public class BoardService {
         this.boardMapper = boardMapper;
     }
 
-    // 게시글 전체조회
-    public List<BoardDTO> postList(int categoryCode) {
+    // 게시글 카테고리별 목록 조회
+    public List<BoardDTO> postList(int categoryCode, int limit, int offset, String searchContents) {
 
-        return boardMapper.postList(categoryCode);
+        return boardMapper.postList(categoryCode, limit, offset, searchContents);
     }
 
     // 게시글 등록
@@ -98,11 +99,36 @@ public class BoardService {
         return boardMapper.voteComplete(postId, empId);
     }
 
+    // 게시물 카테고리별 전체 카운트
+    public int getBoardListCount(int categoryCode) {
 
-//    // 투표 결과(12/22)
-//    public List<VoteItemDTO> getUserVote(String postId, String empId) {
-//        return boardMapper.getUserVote(postId, empId);
-//    }
+        return boardMapper.getBoardListCount(categoryCode);
+    }
+
+    // 댓글 좋아요 조회
+    public void commentLikes(String postId) {
+
+        boardMapper.commentLikes(postId);
+    }
 
 
+    public void commentLikesInsert(CommentLikesDTO commentLikes) {
+
+        boardMapper.commentLikesInsert(commentLikes);
+    }
+
+    public int commentLikesCount(CommentDTO commentDTO) {
+        return boardMapper.commentLikesCount(commentDTO);
+    }
+
+    public int isMyLike(CommentDTO commentDTO) {
+
+        return boardMapper.isMyLike(commentDTO);
+
+    }
+
+    // 좋아요 삭제
+    public void commentLikesDelete(CommentLikesDTO commentLikes) {
+        boardMapper.commentLikesDelete(commentLikes);
+    }
 }

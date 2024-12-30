@@ -23,7 +23,7 @@
         <div class="sidebar">
             <div class="sidebar-title">업무공유</div>
             <ul>
-                <li onclick="location.href='sharedWork/allWork'">전체업무</li>
+                <li onclick="location.href='/user/allWork'">전체업무</li>
                 <li>업무공유</li>
             </ul>
         </div>
@@ -46,6 +46,17 @@
                 <label for="eventEndDate">종료 날짜</label>
                 <input type="date" id="eventEndDate">
 
+                <label for="eventColor">색상 선택:</label>
+                <select id="eventColor">
+                    <option value="#FF5733" style="color: #FF5733;">주황색</option>
+                    <option value="#33FF57" style="color: #33FF57;">초록색</option>
+                    <option value="#FF33A1" style="color: #FF33A1;">핑크색</option>
+                    <option value="#FFBD33" style="color: #FFBD33;">노란색</option>
+                    <option value="#3357FF" style="color: #3357FF;">파란색</option>
+                    <option value="#8E44AD" style="color: #8E44AD;">보라색</option>
+                    <option value="#3498DB" style="color: #3498DB;">하늘색</option>
+                </select>
+                <br><br>
                 <button id="saveEventBtn">저장</button>
                 <button id="deleteEventBtn">삭제</button>
                 <button id="closeModalBtn">닫기</button>
@@ -60,7 +71,9 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
 <script>
+    // 이벤트에 대한 행동 추가
     document.addEventListener('DOMContentLoaded', function() {
+        // html 요소 불러오는 곳
         var calendarEl = document.getElementById('calendar');
         var modal = document.getElementById('modal');
         var modalOverlay = document.getElementById('modal-overlay');
@@ -71,24 +84,8 @@
         var eventDescriptionInput = document.getElementById('eventDescription');
         var eventStartDateInput = document.getElementById('eventStartDate');
         var eventEndDateInput = document.getElementById('eventEndDate');
+        var eventColorSelect = document.getElementById('eventColor');
 
-
-        // 부서별 색상 설정 (dept_code와 매핑)
-        var departmentColors = {
-            1: '#FF5733', // 인사팀 (주황색)
-            2: '#33FF57', // 개발팀 (초록색)
-            3: '#FF33A1', // 마케팅팀 (핑크색)
-            4: '#FFBD33', // 회계팀 (노란색)
-            5: '#3357FF'  // 영업팀 (파란색)
-        };
-
-        var departmentNames = {
-            1: "인사팀",
-            2: "개발팀",
-            3: "마케팅팀",
-            4: "회계팀",
-            5: "영업팀"
-        };
 
         // 캘린더 설정
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -97,6 +94,13 @@
             fixedWeekCount: false,
             displayEventTime: false,
             events: '/event',
+
+            // 일정 렌더링 시 색상 적용
+            eventDidMount: function(info) {
+                if (info.event.extendedProps.color) {
+                    info.el.style.backgroundColor = info.event.extendedProps.color;
+                }
+            },
 
             // 날짜 클릭 시 일정 추가 모달
             dateClick: function(info) {
@@ -108,9 +112,6 @@
                 // 클릭한 날짜를 시작 날짜로 설정
                 eventStartDateInput.value = info.dateStr;  // 클릭한 날짜를 시작 날짜 필드에 적용
                 eventEndDateInput.value = info.dateStr;    // 종료 날짜도 시작 날짜와 동일하게 설정 (기본값 설정)
-
-                // 부서 기본값 설정 (기본적으로 인사팀(1번))
-                var departmentCode = 1;
 
                 saveEventBtn.onclick = saveEvent;
 
@@ -126,19 +127,24 @@
                 eventDescriptionInput.value = event.extendedProps.description;
                 eventStartDateInput.value = event.startStr;
                 eventEndDateInput.value = event.endStr ? event.endStr.split('T')[0] : event.startStr;
+                eventColorSelect.value = event.borderColor; // 색상 적용
 
-                // 부서 코드에서 색상 자동 적용
-                var departmentCode = event.extendedProps.departmentCode;
-
-                console.log(departmentCode)
-
-
+                // 수정
                 saveEventBtn.onclick = function() {
-                    event.setProp('title', eventTitleInput.value);
-                    event.setExtendedProp('description', eventDescriptionInput.value);
-                    event.setStart(eventStartDateInput.value);
-                    event.setEnd(eventEndDateInput.value || null);
-                    event.setExtendedProp('departmentCode', departmentCode);
+                    // 이벤트 업데이트를 위한 임시 객체 생성
+                    const updatedProps = {
+                        title: eventTitleInput.value,
+                        start: eventStartDateInput.value,
+                        end: eventEndDateInput.value || null,
+                        backgroundColor: eventColorSelect.value,
+                        borderColor: eventColorSelect.value,
+                        extendedProps: {
+                            description: eventDescriptionInput.value,
+                            color: eventColorSelect.value
+                        }
+                    };
+
+
 
                     if (eventEndDateInput.value < eventStartDateInput.value) {
                         alert('종료 날짜는 시작 날짜보다 앞설 수 없습니다.');
@@ -150,7 +156,8 @@
                         workTitle: eventTitleInput.value,  // 수정된 제목
                         workExplanation: eventDescriptionInput.value,  // 수정된 설명
                         workSchedule: eventStartDateInput.value,  // 수정된 시작 날짜
-                        deadLine: eventEndDateInput.value  // 수정된 종료 날짜
+                        deadLine: eventEndDateInput.value,  // 수정된 종료 날짜
+                        workColor: eventColorSelect.value   // 색상
                     };
 
 
@@ -165,6 +172,10 @@
                             .then(response => {
                                 if (response.ok) {
                                     alert('일정이 수정되었습니다.');
+                                    // 기존 이벤트 제거
+                                    event.remove();
+                                    // 새로운 이벤트 추가
+                                    calendar.addEvent(updatedProps);
                                     closeModal();
                                 } else {
                                     alert('수정 실패');
@@ -225,21 +236,19 @@
         closeModalBtn.onclick = closeModal;
         modalOverlay.onclick = closeModal;
 
-        // 저장 일정 처리 함수
+        // 날짜를 눌렀을 때 등록
         function saveEvent() {
             var eventTitle = eventTitleInput.value;
             var eventDescription = eventDescriptionInput.value;
             var eventStartDate = eventStartDateInput.value;
             var eventEndDate = eventEndDateInput.value;
+            var eventColor = eventColorSelect.value; // 색상 선택 값
+
 
             if (eventEndDate < eventStartDate) {
                 alert('종료 날짜는 시작 날짜보다 앞설 수 없습니다.');
                 return;
             }
-
-            // 부서 코드 (1번으로 기본 설정)
-            var departmentCode = 1;
-            var eventColor = departmentColors[departmentCode];
 
             if (eventTitle && eventDescription && eventStartDate && eventEndDate) {
                 // JSON 형태로 데이터 준비
@@ -248,7 +257,7 @@
                     workExplanation: eventDescription,
                     workSchedule: eventStartDate,
                     deadLine: eventEndDate,
-                    deptCode: departmentCode
+                    workColor: eventColor // 선택한 색상 추가
                 };
 
                 // 데이터 들어왔나 확인
