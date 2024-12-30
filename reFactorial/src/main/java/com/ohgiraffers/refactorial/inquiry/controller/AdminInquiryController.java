@@ -33,6 +33,13 @@ public class AdminInquiryController {
         return "inquiry/adminInquiryList";
     }
 
+    @GetMapping("/admin/adminInquiryNoAnswerList")
+    public String getAllNoAnswerInquires(Model model) {
+        List<InquiryDTO> getAllNoAnswerInquires = adminInquiryService.getAllNoAnswerInquires();
+        model.addAttribute("getAllNoAnswerInquires", getAllNoAnswerInquires);
+        return "inquiry/adminInquiryNoAnswerList";
+    }
+
     // 문의 상세 조회
     @GetMapping("/admin/adminInquiryDetail")
     public String adminInquiryDetail( @RequestParam("iqrValue") String iqrValue, Model model) {
@@ -76,5 +83,7 @@ public class AdminInquiryController {
             return mav;
         }
     }
+
+    // 미답변 문의
 
 }

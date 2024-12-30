@@ -22,6 +22,11 @@ public class AdminInquiryService {
         return adminInquiryMapperr.getAllInquiries();
     }
 
+    // 모든 미답변 문의 가져오기
+    public List<InquiryDTO> getAllNoAnswerInquires(){
+        return adminInquiryMapperr.getAllNoAnswerInquires();
+    }
+
     // 특정 문의 상세 조회
     public InquiryDTO adminInquiryDetail(String iqrValue) {
         return adminInquiryMapperr.adminInquiryDetail(iqrValue);

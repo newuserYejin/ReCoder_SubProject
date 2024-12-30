@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>adminInquiryList</title>
+
+    <!-- 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+    <!-- 여기 까지 -->
+
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+
+</head>
+<body>
+<header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
+<section>
+
+    <div class="leftBox">
+        <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+    </div>
+
+    <div class="rightBox">
+        <div class="sideMenu">
+            <div class="sideTitle">1:1 문의</div>
+
+            <ul class="sideMenuUl">
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">전체 조회</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryNoAnswerList}'|">미답변</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">답변완료</li>
+            </ul>
+        </div>
+
+        <!-- Table -->
+        <div class="table-header">
+            <div class="table-cell">제목</div>
+            <div class="table-cell">작성일</div>
+            <div class="table-cell">문의자</div>
+            <div class="table-cell">상태</div>
+        </div>
+
+        <!-- Table body -->
+        <div th:each="inquiry : ${getAllNoAnswerInquires}">
+            <div class="table-row">
+                <!-- 제목, 클릭 시 inquiryDetail 로 이동 -->
+                <div class="table-cell">
+                    <a th:href="@{'/admin/adminInquiryDetail'(iqrValue=${inquiry.iqrValue})}" th:text="${inquiry.iqrTitle}"></a>
+                </div>
+                <!-- 작성일 -->
+                <div class="table-cell" th:text="${inquiry.iqrCreationDate}"></div>
+                <!-- 문의자-->
+                <div class="table-cell" th:text="${inquiry.empId}"></div>
+                <!-- 상태 -->
+                <div class="table-cell">
+                    <span th:if="${inquiry.answerStatus == false}">답변대기중</span>
+                    <span th:if="${inquiry.answerStatus == true}">답변완료</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+
+</body>
+</html>

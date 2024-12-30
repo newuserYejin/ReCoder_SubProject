@@ -26,7 +26,16 @@
         <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
     </div>
 
-    <h1>문의 상세</h1>
+    <div class="rightBox">
+        <div class="sideMenu">
+            <div class="sideTitle">1:1 문의</div>
+
+            <ul class="sideMenuUl">
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">전체 조회</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryNoAnswerList}'|">미답변</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">답변완료</li>
+            </ul>
+        </div>
 
     <table>
         <tr>
