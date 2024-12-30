@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.admin.model.service;
 
+import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dao.AdminMapper;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
@@ -82,6 +83,10 @@ public class AdminService {
         return am.getTktReserve(selectedDay);
     }
 
+    public Integer getTotalCountTktReserve(){
+        return am.getTotalCountTktReserve();
+    }
+
     public TktReserveDTO getReserveById(String reserveId) {
         return am.getReserveById(reserveId);
     }
@@ -104,4 +109,54 @@ public class AdminService {
 
         // 새로운 ID를 "PD" 접두사와 3자리 숫자로 조합
         return String.format("PD%03d", newIdNum);}
+
+
+
+    public List<ProductDTO> getAllProducts() {
+        return adminMapper.getAllProducts();
+    }
+
+    public List<ProductDTO> searchProducts(String keyword) {
+        return adminMapper.searchProducts(keyword);
+    }
+
+    public ProductDTO getProductById(String id) {
+        return adminMapper.getProductById(id);
+    }
+
+    public int updateProduct(ProductDTO productDTO) {
+        return adminMapper.updateProduct(productDTO);
+    }
+
+    public int addFactory(FactoryDTO factoryDTO) {
+        return adminMapper.insertFactory(factoryDTO);
+    }
+
+    public String generateFactoryId() {
+        String maxId = adminMapper.getMaxFactoryId();
+        if (maxId == null || maxId.isEmpty()) {
+            return "FAB001";
+        }
+        int newIdNum = Integer.parseInt(maxId.substring(3)) + 1;
+        return String.format("FAB%03d", newIdNum);
+    }
+
+
+    public int updateFactory(FactoryDTO factoryDTO) {
+        return adminMapper.updateFactory(factoryDTO);
+    }
+
+
+    public List<FactoryDTO> getAllFactories() {
+        return adminMapper.getAllFactories();
+    }
+
+    public List<FactoryDTO> searchFactories(String keyword) {
+        return adminMapper.searchFactories(keyword);
+    }
+
+
+    public FactoryDTO getFactoryById(String id) {
+        return adminMapper.findFactoryById(id);
+    }
 }

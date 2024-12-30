@@ -3,6 +3,7 @@ package com.ohgiraffers.refactorial.approval.model.dao;
 import com.ohgiraffers.refactorial.approval.model.dto.ApprovalDetailDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.model.dto.FileDTO;
+import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,6 +15,10 @@ import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
+
+    void insertAttendance(AttendanceDTO attendanceDTO);
+
+
     void insertPm(Map<String, Object> params);
 
     
@@ -132,4 +137,6 @@ public interface ApprovalMapper {
     Integer getApprovalOrderdozang(String pmId, String currentEmpId);
 
     String getRejectReasonByApprover(String pmId, String currentEmpId);
+
+    void saveFileInfo(Map<String, String> pmId);
 }

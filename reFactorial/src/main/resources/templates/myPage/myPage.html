@@ -80,15 +80,16 @@
                         <div class="InfoLine">
                             <div>
                                 <p>이메일 :</p>
-                                <input id="email" class="modifyInfo" th:value="${LoginUserInfo != null? LoginUserInfo.empEmail : null}" disabled>
+                                <input id="email" class="modifyInfo" th:value="${LoginUserInfo != null? LoginUserInfo.empEmail : null}" disabled onblur="validateEmail(event)">
 <!--                                <input id="email" class="modifyInfo" value="010-1111-1111" disabled>-->
                             </div>
                             <div>
                                 <p>전화번호 :</p>
-                                <input id="phone" class="modifyInfo" th:value="${LoginUserInfo != null? LoginUserInfo.empPhone : null}" disabled>
+                                <input id="phone" maxlength="11" class="modifyInfo" disabled  oninput="formatPhoneNumberInput(event)">
 <!--                                <input id="phone" class="modifyInfo" value="010-1111-1111" disabled>-->
                             </div>
                         </div>
+                        <div id="emailError" class="emailError">이메일 형식이 올바르지 않습니다.</div>
                         <div class="InfoLine">
                             <div>
                                 <p>주소 :</p>
@@ -149,13 +150,13 @@
                 <form action="changePW" method="post" id="changePWForm">
                     <div class="modal-body">
                         <label for="presentPW">현재 비밀번호</label>
-                        <input type="text" id="presentPW" name="presentPW">
+                        <input type="password" id="presentPW" name="presentPW">
                         <p>현재 비밀번호와 일치하지 않습니다.</p>
                         <label for="changePW">변경 비밀번호</label>
-                        <input type="text" id="changePW" name="changePW">
+                        <input type="password" id="changePW" name="changePW">
                         <p>비밀번호가 일치하지 않습니다.</p>
                         <label for="comparePW">비밀번호 확인</label>
-                        <input type="text" id="comparePW" name="comparePW">
+                        <input type="password" id="comparePW" name="comparePW">
                         <p>비밀번호가 일치하지 않습니다.</p>
                     </div>
                     <div class="modal-footer">
@@ -190,6 +191,7 @@
     <script>
         // js에서 사용중 삭제 불가
         const profileImgUrl = '[[${LoginUserInfo.profile}]]';
+        const empPhone = '[[${LoginUserInfo.empPhone}]]';
 
         console.log(profileImgUrl)
     </script>

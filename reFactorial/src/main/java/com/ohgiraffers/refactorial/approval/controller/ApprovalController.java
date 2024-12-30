@@ -2,10 +2,14 @@ package com.ohgiraffers.refactorial.approval.controller;
 
 import com.ohgiraffers.refactorial.approval.model.dto.*;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
+import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO;
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.file.Path;
@@ -28,6 +33,7 @@ import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +47,15 @@ public class ApprovalController {
 
     private final ApprovalService approvalService;
     private final UserMapper userMapper; // UserMapper 주입
+    private final UploadFileService uploadService;
+
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService, UserMapper userMapper) {
+    public ApprovalController(ApprovalService approvalService, UserMapper userMapper, UploadFileService uploadService) {
 
         this.approvalService = approvalService;
         this.userMapper = userMapper;
+        this.uploadService = uploadService;
     }
 
 
@@ -175,8 +184,6 @@ public class ApprovalController {
     }
 
 
-
-
     @GetMapping("rejected")
     public String getRejectedDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
                                        Model model, HttpSession session) {
@@ -231,8 +238,6 @@ public class ApprovalController {
     }
 
 
-
-
     @GetMapping("searchEmployee")
     public String searchEmployeeController(@RequestParam("name") String name, Model model) {
         List<EmployeeDTO> employees;
@@ -282,11 +287,14 @@ public class ApprovalController {
 
     @PostMapping("/submitApproval")
     public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
-                                 @RequestParam("file") MultipartFile file,
+                                 @RequestParam List<MultipartFile> fileList,
                                  Model model,
-                                 HttpSession session) {
+                                 HttpSession session) throws IOException {
+
 
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        System.out.println("fileList = " + fileList);
 
         if (user == null) {
             model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
@@ -323,25 +331,41 @@ public class ApprovalController {
             }
         }
 
-        // 결재문서 저장
-        String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId);
+        // 첨부파일 저장 로직 (있는지 판단)
+        approvalRequestDTO.setAttachment(0);
 
-        // 휴가유형 처리 (휴가신청서일 경우만)
-        if ("category3".equals(approvalRequestDTO.getCategory())) {
-            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
-                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
+        if (fileList != null && !fileList.isEmpty()) {
+            boolean hasValidFile = false;
+            for (MultipartFile file : fileList) {
+                if (!file.isEmpty()) {
+                    hasValidFile = true;
+                    break; // 적어도 하나의 유효한 파일이 있으면 중단
+                }
+            }
+            if (hasValidFile) {
+                approvalRequestDTO.setAttachment(1); // 유효한 파일이 있을 경우 처리
+            }
+        }
+
+        // 결재문서 저장
+        String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId, fileList);
+
+        // **추가된 휴가 날짜 업데이트 로직**
+        if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
+            if (approvalRequestDTO.getLeaveDate() != null) {
+                // 휴가 날짜 업데이트
+                approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
             } else {
-                model.addAttribute("errorMessage", "휴가유형을 선택해야 합니다.");
+                model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
                 return "/approvals/approvalPage";
             }
 
-            // LocalDate를 문자열로 변환
-            LocalDate leaveDate = approvalService.getLeaveDateForDocument(pmId);
-            if (leaveDate != null) {
-                String formattedLeaveDate = leaveDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                model.addAttribute("leaveDate", formattedLeaveDate);
+            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
+                // 휴가 유형 업데이트
+                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
             } else {
-                model.addAttribute("leaveDate", "휴가 날짜 정보 없음");
+                model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
+                return "/approvals/approvalPage";
             }
         }
 
@@ -352,20 +376,6 @@ public class ApprovalController {
         List<String> referrers = approvalRequestDTO.getReferrers();
         List<String> referrerIds = approvalService.findEmpIdsByNames(referrers);
         approvalService.saveReferrers(pmId, referrerIds);
-
-        // 첨부파일 저장
-        if (!file.isEmpty()) {
-            try {
-                approvalService.saveApprovalFile(pmId, file.getOriginalFilename(),
-                        "C:/uploads/" + file.getOriginalFilename(), file.getSize(), file.getContentType());
-                file.transferTo(new File("C:/uploads/" + file.getOriginalFilename()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                model.addAttribute("errorMessage", "파일 업로드 실패");
-                return "/approvals/approvalPage";
-            }
-        }
-
 
 
         return "/approvals/approvalMain";
@@ -518,7 +528,7 @@ public class ApprovalController {
         // pmId에 해당하는 결재 문서 정보 조회
         DocumentDTO document = approvalService.getDocumentById(pmId);
 
-
+        System.out.println("상세페이지 document = " + document.getAttachment());
 
         if (document == null) {
             model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
@@ -558,14 +568,6 @@ public class ApprovalController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 첨부파일 정보 처리
-        List<String> fileUrls = (document.getFileUrl() != null && !document.getFileUrl().isEmpty())
-                ? Arrays.asList(document.getFileUrl().split(",")).stream()
-                .map(fileName -> "/files/" + fileName)
-                .collect(Collectors.toList())
-                : new ArrayList<>();
-
-        document.setCategoryName(document.getCategoryName());
 
         if ("category3".equals(document.getCategory())) {
             // 휴가 유형 처리
@@ -576,6 +578,12 @@ public class ApprovalController {
             LocalDate leaveDate = approvalService.getLeaveDateForDocument(pmId);
             document.setLeaveDate(leaveDate);
             model.addAttribute("leaveDate", leaveDate); // 모델에 날짜 추가
+        }
+
+        // 첨부파일 처리
+        if (document.getAttachment() == 1){
+            List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(pmId);
+            model.addAttribute("attachmentFileList", uploadFileList);
         }
 
 
@@ -593,7 +601,7 @@ public class ApprovalController {
         model.addAttribute("midApprover", midApprover);
         model.addAttribute("finalApprover", finalApprover);
         model.addAttribute("referrerNames", referrerNames);
-        model.addAttribute("fileUrls", fileUrls);
+
         model.addAttribute("currentOrder", currentOrder);
         model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
         model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
@@ -632,6 +640,7 @@ public class ApprovalController {
                     // 연차/반차 처리 로직 추가
                     processLeaveIfApplicable(pmId, currentEmpId);
 
+
                     // 모든 승인자가 완료되었는지 확인
                     boolean allApproved = approvalService.isAllApproversApproved(pmId);
 
@@ -668,10 +677,13 @@ public class ApprovalController {
      * 연차/반차 처리 메서드
      */
     private void processLeaveIfApplicable(String pmId, String empId) {
+        System.out.println("Processing leave for pmId: " + pmId + ", empId: " + empId);
         DocumentDTO document = approvalService.getDocumentById(pmId);
+        System.out.println("Retrieved document: " + document);
 
         if (document != null) {
             String leaveType = document.getLeaveType(); // 연차/반차 여부 확인
+            LocalDate leaveDate = document.getLeaveDate(); // 휴가 날짜 가져오기
             BigDecimal deduction = BigDecimal.ZERO;
 
             if ("연차".equals(leaveType)) {
@@ -682,6 +694,17 @@ public class ApprovalController {
 
             if (deduction.compareTo(BigDecimal.ZERO) > 0) {
                 approvalService.updateEmployeeLeave(empId, deduction); // 연차/반차 업데이트 처리
+
+                // 근태 데이터 추가
+                AttendanceDTO attendanceDTO = new AttendanceDTO();
+                attendanceDTO.setAttDate(leaveDate);
+                attendanceDTO.setAttTime(LocalTime.of(9, 0)); // 기본 시간 설정 (예: 9:00 AM)
+                attendanceDTO.setAttStatus(leaveType); // 연차/반차
+                attendanceDTO.setEmpId(empId);
+
+                System.out.println("Inserting attendance record: " + attendanceDTO);
+                approvalService.insertAttendanceRecord(attendanceDTO);
+                System.out.println("Attendance record inserted successfully!");
             }
         }
     }
@@ -720,67 +743,68 @@ public class ApprovalController {
 
 
 
-
-
-    // 파일 다운로드 (파일 ID 기준)
-    @GetMapping("/downloadById")
-    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
-        try {
-            FileDTO file = approvalService.getFileById(fileId);
-
-            if (file == null || file.getFilePath() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Path filePath = Paths.get(file.getFilePath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(file.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
-                    .body(resource);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    // 파일 다운로드 (파일 이름으로 조회)
-    @GetMapping("/downloadByName")
-    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
-        try {
-            FileDTO file = approvalService.getFileByFileName(fileName);
-
-            if (file == null || file.getFilePath() == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Path filePath = Paths.get(file.getFilePath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(file.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-                    .body(resource);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
 }
+
+
+//    // 파일 다운로드 (파일 ID 기준)
+//    @GetMapping("/downloadById")
+//    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
+//        try {
+//            FileDTO file = approvalService.getFileById(fileId);
+//
+//            if (file == null || file.getFilePath() == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            Path filePath = Paths.get(file.getFilePath()).normalize();
+//            Resource resource = new UrlResource(filePath.toUri());
+//
+//            if (!resource.exists()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
+//
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(file.getFileType()))
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+//                    .body(resource);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
+//
+//    // 파일 다운로드 (파일 이름으로 조회)
+//    @GetMapping("/downloadByName")
+//    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
+//        try {
+//            FileDTO file = approvalService.getFileByFileName(fileName);
+//
+//            if (file == null || file.getFilePath() == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            Path filePath = Paths.get(file.getFilePath()).normalize();
+//            Resource resource = new UrlResource(filePath.toUri());
+//
+//            if (!resource.exists()) {
+//                return ResponseEntity.notFound().build();
+//            }
+//
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.parseMediaType(file.getFileType()))
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
+//                    .body(resource);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
+//
+//}
 
 
 

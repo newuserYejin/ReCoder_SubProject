@@ -23,8 +23,14 @@ public class BoardDTO {
     private String empName;                      // 작성자 이름 (emp_name)
     private int attachment;                      // 업로드 여부
 
+    //페이지네이션
+    private int offset;
+    private int limit;
+
     private List<VoteItemDTO> voteItems;         // 투표 항목
 
-    private List<MultipartFile> postfile;
+    private List<MultipartFile> postfile;        // 문서
 
+    public void setRowNum(int i) {
+    }
 }

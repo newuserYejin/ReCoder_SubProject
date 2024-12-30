@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render();
 });
 
-
 const profileImgInput = document.querySelector("#profileImg");
 const profileImgBox = document.querySelector(".profileImgBox")
 
@@ -274,3 +273,49 @@ if (isNaN(empJoinedDate)) {
     work_monthDiv.textContent = totalMonths + "개월";
 }
 
+// 전화번호 포맷팅
+document.addEventListener("DOMContentLoaded",()=>{
+    const phoneInput = document.getElementById('phone');
+
+    if (phoneInput && empPhone) {
+        console.log("전화번호 포맷팅")
+        // 전화번호 포맷 함수 호출
+        console.log(formatPhoneNumber(empPhone))
+        phoneInput.value = formatPhoneNumber(empPhone);
+    }
+})
+
+// 전화번호를 010-1111-1111 형식으로 포맷하는 함수
+function formatPhoneNumber(phone) {
+    // 전화번호에서 숫자만 추출
+    let cleaned = phone.replace(/\D/g, '');
+
+    return cleaned.replace(/(\d{3})(\d{1,4})(\d{1,4})/, '$1-$2-$3')
+}
+
+// 이메일 형식 검증 함수
+function validateEmail(event) {
+    const emailInput = event.target;
+    const email = emailInput.value;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const errorMessage = document.getElementById("emailError");
+
+    if (!emailPattern.test(email)) {
+        errorMessage.style.display = "block";  // 오류 메시지 표시
+    } else {
+        errorMessage.style.display = "none";  // 오류 메시지 숨김
+    }
+}
+
+// 전화번호 포맷 함수
+function formatPhoneNumberInput(event) {
+    let phone = event.target.value.replace(/\D/g, '');  // 숫자만 남김
+
+    if (phone.length < 4) {
+        event.target.value = phone;
+    } else if (phone.length < 8) {
+        event.target.value = phone.replace(/(\d{3})(\d{1,4})/, '$1-$2');
+    } else if (phone.length <= 11) {
+        event.target.value = phone.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    }
+}

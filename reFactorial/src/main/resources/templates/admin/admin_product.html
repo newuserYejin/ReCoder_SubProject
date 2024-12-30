@@ -25,17 +25,15 @@
                 <div class="sideTitle">제품 관리</div>
 
                 <ul class="sideMenuUl">
-                    <li id="ㅁㅇ">제품등록</li>
-                    <li id="ㅁㅂ">제품수정</li>
+                    <li id="showRegister">제품등록</li>
+                    <li id="showEdit">제품수정</li>
                 </ul>
             </div>
-            <div class="menuMainBox">
-
-                <!-- 제품 등록 폼 -->
-                <div>
+            <div class="menuMainBox" id="menuMainBox">
+                <!-- 기본으로 제품 등록 화면이 표시됩니다 -->
+                <div id="registerContainer" class="content-container">
                     <h2>제품 등록</h2>
                     <form id="addProductForm" onsubmit="event.preventDefault(); addProduct();">
-
                         <label for="prodName">제품명:</label>
                         <input type="text" id="prodName" required>
 
@@ -62,7 +60,47 @@
                     </form>
                 </div>
 
-
+                <!-- 제품 수정 화면은 기본적으로 숨김 -->
+                <div id="editContainer" class="content-container" style="display: none;">
+                    <h2>제품 수정</h2>
+                    <div class="search-container">
+                        <label for="product-search-input">제품 검색:</label>
+                        <input type="text" id="product-search-input" placeholder="제품명을 입력하세요...">
+                    </div>
+                    <div id="product-list" class="product-list"></div>
+                    <div id="editProductForm" style="display: none;">
+                        <h3>제품 정보 수정</h3>
+                        <form id="updateProductForm">
+                            <input type="hidden" id="editProdId">
+                            <label for="editProdName">제품명:</label>
+                            <input type="text" id="editProdName" required>
+                            <label for="editProdDescription">설명:</label>
+                            <textarea id="editProdDescription" required></textarea>
+                            <label for="editProdPrice">가격:</label>
+                            <input type="number" id="editProdPrice" required>
+                            <label for="editProdImage">이미지 URL:</label>
+                            <input type="text" id="editProdImage" required>
+                            <label for="editProdCategory">카테고리:</label>
+                            <select id="editProdCategory" required>
+                                <option value="초콜릿">초콜릿</option>
+                                <option value="껌">껌</option>
+                                <option value="비스킷">비스킷</option>
+                                <option value="캔디">캔디</option>
+                                <option value="젤리">젤리</option>
+                                <option value="과자">과자</option>
+                            </select>
+                            <label for="editProdStatus">상태:</label>
+                            <select id="editProdStatus" required>
+                                <option value="판매">판매</option>
+                                <option value="비판매">비판매</option>
+                                <option value="단종">단종</option>
+                                <option value="매진">매진</option>
+                            </select>
+                            <button type="button" onclick="updateProduct()">수정하기</button>
+                        </form>
+                        <button id="backToList" onclick="goBackToList()">뒤로가기</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -70,45 +108,6 @@
     <footer th:replace="~{/common/footer::footerFragment}"></footer>
 
 
-    <script>
-
-    // 새 제품 등록 요청 함수
-    async function addProduct() {
-        // 폼에서 입력된 값을 객체로 만듦
-        const newProduct = {
-
-            name: document.getElementById("prodName").value, // 제품명
-            description: document.getElementById("prodDescription").value, // 제품 설명
-            price: document.getElementById("prodPrice").value, // 제품 가격
-            image: document.getElementById("prodImage").value, // 이미지 URL
-            category: document.getElementById("prodCategory").value // 제품 카테고리
-        };
-
-        console.log("등록 요청 데이터:", newProduct); // 확인용 로그
-
-        // 서버에 POST 요청으로 새 제품 등록
-        const response = await fetch('/admin/addProduct', {
-            method: 'POST', // 데이터 저장 요청
-            headers: {
-                'Content-Type': 'application/json', // 요청 데이터 타입 (JSON)
-            },
-            body: JSON.stringify(newProduct), // JSON 형태로 데이터 전송
-        });
-
-        // 서버로부터 응답 받기
-        const result = await response.text();
-        console.log("서버 응답:", result); // 서버 응답 확인용 로그
-
-        // 성공 여부에 따라 알림 표시
-        if (result === "success") {
-            alert("제품 등록 성공!"); // 등록 성공
-            fetchProducts(); // 사용자 페이지의 최신 제품 리스트 업데이트 요청
-        } else {
-            alert("제품 등록 실패!"); // 등록 실패
-        }
-    }
-
-
-</script>
+    <script src="/js/admin/admin_product.js"></script>
 </body>
 </html>

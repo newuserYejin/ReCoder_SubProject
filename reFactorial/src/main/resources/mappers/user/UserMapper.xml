@@ -119,7 +119,8 @@
             employee
         WHERE
             emp_joined >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
-        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m');
+        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m')
+        ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
     </select>
 
 </mapper>

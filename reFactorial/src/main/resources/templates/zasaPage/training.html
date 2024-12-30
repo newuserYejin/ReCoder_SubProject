@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+  <link rel="stylesheet" th:href="@{/css/zasapage/training.css}">
+
+  <!-- React & Babel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js" integrity="sha512-m7nhpWHotpucPI37I4lPovL28Bm2BhAMV8poF3F8Z9oOEZ3jlxGzkgvG0EMt1mVL1xydr1erlBbmN90js/ssUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js" integrity="sha512-I5GJQRKGdj1oDUQxYc6PBfv4JUP8CGi4FJuGuA8Cu79/mFKR7aMfiYhqmdyVQ2V6qmX1LRq6zS8DMUpQHE5eNg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
+
+</head>
+<body>
+<header th:replace="~{/common/header::headerFragment}"></header>
+<section>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-title">자사 페이지</div>
+      <ul>
+        <li><a href="/zasaPage/product">제품 페이지</a></li>
+        <li><a href="/zasaPage/training">교육 페이지</a></li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <div id="quiz-container" class="flex flex-col items-center justify-center h-full w-full">
+        <div id="quiz-card" class="quiz-card">
+          <!-- 퀴즈 내용이 여기에 동적으로 들어갑니다 -->
+        </div>
+      </div>
+    </div>
+</section>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+<script src="/js/zasaPage/training.js"></script>
+
+</body>
+</html>

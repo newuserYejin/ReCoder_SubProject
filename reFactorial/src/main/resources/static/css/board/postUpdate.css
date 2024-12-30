@@ -97,7 +97,7 @@ html, body {
 }
 
 textarea {
-    height: 439px; /* 기본 높이 설정, 직접 숫자로 조절 가능 */
+    height: 150px; /* 기본 높이 설정, 직접 숫자로 조절 가능 */
     width: 100%; /* 가로 전체 사용 */
     resize: none; /* 크기 조절 비활성화 */
     padding: 8px;

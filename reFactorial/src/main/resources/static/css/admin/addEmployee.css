@@ -48,6 +48,20 @@
             margin-bottom: 10px;
         }
 
+        .empIdBox{
+            display: flex;
+            align-items: center;
+
+            label{
+                width: fit-content;
+                margin-right: 5px;
+            }
+            input{
+                margin-right: 5px;
+                width: 40%;
+            }
+        }
+
         input[type="submit"]{
             background-color: #5C1915;
             color: white;
@@ -56,6 +70,22 @@
             cursor: pointer;
             border: none;
         }
+
+        button{
+            background-color: #5C1915;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+        }
     }
 
+}
+
+.error{
+    color: #bf0603;
+    font-size: 0.8em;
+    display: none;
+    margin-bottom: 10px;
 }

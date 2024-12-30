@@ -16,4 +16,6 @@ public interface UploadFileMapper {
     UploadFileDTO findFileByFileId(String fileId);
 
     void deleteByMappingId(String mappingId);
+
+
 }
