@@ -139,4 +139,6 @@ public interface ApprovalMapper {
     String getRejectReasonByApprover(String pmId, String currentEmpId);
 
     void saveFileInfo(Map<String, String> pmId);
+
+    int checkAttendanceExists(String empId, LocalDate attDate);
 }
