@@ -77,12 +77,7 @@ public class BoardController {
         model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
 
-
-
-
-
-
-        return "/board/list";   // html 페이지로 이동
+        return "board/list";   // html 페이지로 이동
     }
 
     // 게시물 등록 / 수정 페이지로 이동
@@ -104,7 +99,7 @@ public class BoardController {
             model.addAttribute("postDetail", postDetail);           // 상세페이지 전달
         }
 
-        return "/board/freeBoardRegist";
+        return "board/freeBoardRegist";
     }
 
 
@@ -126,7 +121,7 @@ public class BoardController {
 
         String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
 
-        System.out.println("boardId = " + boardId);
+
 
         // 게시물의 정보
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
@@ -178,7 +173,7 @@ public class BoardController {
 
         if (categoryCode == 3){
 
-            System.out.println("postFileList = " + postFileList);
+
 
             if (!postFileList.isEmpty()) {
                 board.setPostfile(postFileList);
@@ -187,8 +182,6 @@ public class BoardController {
                 uploadService.upLoadFile(postFileList,boardId);
             }
         }
-
-        System.out.println("board = " + board);
 
         boardService.post(board);   // 게시물 등록 기능
 
@@ -243,7 +236,7 @@ public class BoardController {
         List<VoteResultDTO> resultInquiryList = boardService.voteComplete(postId, user.getEmpId());
         // 투표 TotalList
         List<VoteTotalDTO> voteTotalList = boardService.getVoteResults(postId);
-        System.out.println("voteTotalList = " + voteTotalList);
+
 
         // 초기 투표 수 0으로 세팅
         voteItemList.stream().forEach(item->{
@@ -295,7 +288,7 @@ public class BoardController {
 //        }
 
 
-        return "/board/postDetail";
+        return "board/postDetail";
     }
 
     // 투표 결과를 DB에 저장
@@ -338,7 +331,7 @@ public class BoardController {
     // 게시물 삭제
     @GetMapping("postDelete")
     public String deletePost() {
-        return "/board/postDelete";
+        return "board/postDelete";
     }
 
     @PostMapping("postDelete")

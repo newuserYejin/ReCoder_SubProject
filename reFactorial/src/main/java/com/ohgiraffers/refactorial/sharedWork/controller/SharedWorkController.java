@@ -97,7 +97,7 @@ public class SharedWorkController {
 
         sharedService.saveSharedWork(sharedWork);
 
-        return "/sharedWork/allWork";
+        return "sharedWork/allWork";
     }
 
     // 일정 삭제

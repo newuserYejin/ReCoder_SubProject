@@ -156,7 +156,6 @@ function initSelectOption(){
 
     const categoryCodeValue = Url.get("categoryCode")
 
-    console.log("categoryCodeValue: ",categoryCodeValue)
     const voteContainer = document.querySelector('#vote-container');
 
     const postFileBox = document.querySelector(".postFileBox");
