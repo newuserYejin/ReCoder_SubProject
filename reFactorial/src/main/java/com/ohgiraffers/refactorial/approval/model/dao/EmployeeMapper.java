@@ -5,6 +5,7 @@ import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -32,8 +33,7 @@ public interface EmployeeMapper {
     // emp_id로 이름을 조회
     String findNameByEmpId(@Param("empId") String empId);
 
-    // 연차,반차
-    void updateLeaveBalances(String empId, BigDecimal deduction);
+
 }
 
 //    Object findNameByEmpId(String id);

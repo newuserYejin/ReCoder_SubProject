@@ -121,7 +121,7 @@
         CASE
         WHEN a.pm_status = '반려' THEN '반려'
         WHEN a.pm_status = '완료' THEN '완료'
-        ELSE '진행중'
+        ELSE '진행 중'
         END AS docStatus
         FROM tbl_pm pm
         LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
@@ -433,14 +433,19 @@
     </select>
 
     <select id="allApprovalsCompleted" parameterType="String" resultType="boolean">
-        SELECT COUNT(*) = 0
+        SELECT
+            CASE
+                WHEN COUNT(*) = SUM(CASE WHEN pm_status = '승인' THEN 1 ELSE 0 END)
+                    THEN true
+                ELSE false
+                END
         FROM tbl_approval
-        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
+        WHERE pm_id = #{pmId}
     </select>
 
     <update id="updateDocumentStatus" parameterType="map">
         UPDATE tbl_approval
-        SET pm_status = #{status}
+        SET pm_status = '완료'
         WHERE pm_id = #{pmId};
     </update>
 
@@ -479,6 +484,11 @@
         VALUES (#{attDate}, #{attTime}, #{attStatus}, #{empId})
     </insert>
 
-
+    <select id="checkAttendanceExists" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_attendance
+        WHERE emp_id = #{empId}
+          AND att_date = #{attDate}
+    </select>
 
 </mapper>

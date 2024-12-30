@@ -7,6 +7,7 @@
     import com.ohgiraffers.refactorial.fileUploade.model.dao.UploadFileMapper;
     import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
+    import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
@@ -249,45 +250,38 @@
             return approvalMapper.findFilesByPmId(pmId);
         }
 
-        // 파일 추가
-        public void saveFile(FileDTO file) {
-            approvalMapper.insertFile(file);
-        }
 
-        // 파일 삭제
-        public void deleteFileById(int fileId) {
-            approvalMapper.deleteFileByFileId(fileId);
-        }
-
-        // PM ID로 파일 다운로드 정보 제공
-        public FileDTO getFileById(int fileId) {
-            return approvalMapper.findFileByFileId(fileId);
-        }
-
-        public FileDTO getFileByFileName(String fileName) {
-            return approvalMapper.findFileByFileName(fileName);
-        }
 
 
 
         // 승인 처리
         public void approve(String pmId, String empId) {
+            System.out.println("===== 승인 프로세스 시작 =====");
+
             // 1. 현재 승인자를 '승인' 상태로 업데이트
             approvalMapper.updateApprovalStatus(pmId, empId, "승인");
+            System.out.println("1. 현재 승인자 상태 업데이트 완료: " + empId + " -> 승인");
 
-
-
-            // 2. 모든 대기 중인 승인자의 상태를 '진행 중'으로 업데이트
-            approvalMapper.updateAllPendingToInProgress(pmId);
-
-
-            // 3. 모든 승인자가 완료되었는지 확인
+            // 2. 모든 승인자가 승인 상태인지 확인
             boolean allApproved = approvalMapper.allApprovalsCompleted(pmId);
+            System.out.println("2. 모든 승인자 승인 완료 여부: " + allApproved);
+
             if (allApproved) {
+                // 3. 모든 승인자의 상태를 '완료'로 변경
+                System.out.println("3. 전체 상태 '완료'로 변경 시도");
                 approvalMapper.updateDocumentStatus(pmId, "완료");
+                System.out.println("   상태 변경 완료");
             } else {
-                System.out.println("아직 승인자가 남아 있습니다.");
+                // 4. 아직 승인이 남아있으면 다음 승인자의 상태를 '진행 중'으로 변경
+                System.out.println("4. 다음 승인자 '진행 중' 상태로 변경");
+                approvalMapper.updateAllPendingToInProgress(pmId);
             }
+
+            // 5. 최종 상태 확인
+            List<String> finalStatuses = approvalMapper.getApproversStatus(pmId);
+            System.out.println("5. 최종 상태 목록: " + finalStatuses);
+
+            System.out.println("===== 승인 프로세스 종료 =====");
         }
 
 
@@ -467,17 +461,40 @@
             return approverOrderdozang != null && approverOrderdozang.equals(maxOrder);
         }
 
-        public void updateEmployeeLeave(String empId, BigDecimal deduction) {
-            employeeMapper.updateLeaveBalances(empId, deduction);
-        }
+        public void updateEmployeeLeave(String empId, BigDecimal deduction, String leaveType) {
+            System.out.println("updateEmployeeLeave 호출");
+            System.out.println("empId: " + empId);
+            System.out.println("deduction: " + deduction);
+            System.out.println("leaveType: " + leaveType);
 
+            // 업데이트 직전 사용자 정보 확인
+            LoginUserDTO beforeUser = userMapper.findUserById(empId);
+            System.out.println("업데이트 전 연차: " + beforeUser.getAnnualLeave());
+            System.out.println("업데이트 전 사용 연차: " + beforeUser.getUsedAnnualLeave());
+
+            userMapper.updateUserLeave(empId, deduction, leaveType);
+
+            // 업데이트 직후 사용자 정보 확인
+            LoginUserDTO afterUser = userMapper.findUserById(empId);
+            System.out.println("업데이트 후 연차: " + afterUser.getAnnualLeave());
+            System.out.println("업데이트 후 사용 연차: " + afterUser.getUsedAnnualLeave());
+        }
         public String getRejectReasonByApprover(String pmId, String currentEmpId) {
             return approvalMapper.getRejectReasonByApprover(pmId, currentEmpId);
         }
 
             @Transactional
             public void insertAttendanceRecord(AttendanceDTO attendanceDTO) {
-                approvalMapper.insertAttendance(attendanceDTO);
+                // 이미 해당 날짜에 근태 기록이 있는지 확인
+                int existingRecords = approvalMapper.checkAttendanceExists(
+                        attendanceDTO.getEmpId(),
+                        attendanceDTO.getAttDate()
+                );
+
+                // 기존 기록이 없을 때만 삽입
+                if (existingRecords == 0) {
+                    approvalMapper.insertAttendance(attendanceDTO);
+                }
             }
 
 
