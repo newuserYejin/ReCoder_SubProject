@@ -89,13 +89,17 @@ public class BoardController {
     @GetMapping("freeBoardRegist")
     public String freeBoardRegist(@RequestParam int categoryCode,
                                   @RequestParam(required = false) String postId,
-                                  Model model) {
+                                  Model model,
+                                  HttpSession session) {
 
         List<VoteItemDTO> voteItemList = boardService.itemView(postId);     // 항목리스트
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String viewAuth = String.valueOf(user.getViewAuth());
 
         model.addAttribute("categoryCode", categoryCode);
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
         model.addAttribute("voteItemList", voteItemList);
+        model.addAttribute("viewAuth",viewAuth);
 
         //postId가 있으면 "수정" / 없으면 "등록"
         if (postId != null) {

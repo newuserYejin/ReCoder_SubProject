@@ -105,5 +105,13 @@
 
 <script th:src="@{/js/board/freeBoardRegist.js}"></script>
 
+<script>
+    const viewAuth = '[[${viewAuth}]]'
+
+    if (viewAuth){
+        console.log(viewAuth)
+    }
+</script>
+
 </body>
 </html>

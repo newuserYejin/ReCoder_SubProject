@@ -521,7 +521,7 @@ public class ApprovalController {
         return "/approvals/myDocuments";
     }
 
-    // 결제문서 상세페이지 조회
+    // 결재문서 상세페이지 조회
     @GetMapping("detail/{pmId}")
     public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
 
@@ -531,7 +531,7 @@ public class ApprovalController {
         System.out.println("상세페이지 document = " + document.getAttachment());
 
         if (document == null) {
-            model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
+            model.addAttribute("errorMessage", "해당 결재 문서를 찾을 수 없습니다.");
             return "errorPage"; // 에러 페이지로 리디렉션
         }
 
