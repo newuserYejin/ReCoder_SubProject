@@ -10,6 +10,8 @@ import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
+import com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO;
+import com.ohgiraffers.refactorial.inquiry.service.InquiryService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
@@ -20,13 +22,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+
+import java.util.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Controller
 public class MainController {
@@ -36,9 +47,12 @@ public class MainController {
     private final MailService mailService;
     private final AttendanceService attendanceService;
     private final BoardService boardService;
+    private final InquiryService inquiryService;
     private final AdminService as;
+    
     @Autowired
     private ApprovalService approvalService;
+
 
     @Autowired
     public MainController(MemberService memberService,
@@ -46,14 +60,18 @@ public class MainController {
                           MailService mailService,
                           AttendanceService attendanceService,
                           BoardService boardService,
+                          InquiryService inquiryService,
                           AdminService as
+
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
         this.mailService = mailService;
         this.attendanceService = attendanceService;
         this.boardService = boardService;
+        this.inquiryService = inquiryService;
         this.as = as;
+
     }
 
 
@@ -130,9 +148,41 @@ public class MainController {
     }
 
     @GetMapping("/user/inquiry")
-    public String inquiryPage() {
-        return "/inquiry/inquiry";
+    public String showInquiryPage(){
+        return "inquiry/sendInquiry";
     }
+
+    @PostMapping("/inquiry/sendInquiry")
+    public String sendInquiry(@ModelAttribute InquiryDTO inquiryDTO,
+                              @RequestParam("inquiryFiles") List<MultipartFile> inquiryFileList,
+                              HttpSession session,
+                              Model model) throws IOException {
+        // 로그인 유저 가져오기
+        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        // 유저의 empId를 InquiryDTO에 설정
+        String senderEmpId = loginUser.getEmpId();
+        inquiryDTO.setEmpId(senderEmpId);
+
+        Set<String> generatedIds = new HashSet<>();
+        String IQRid;
+        do {
+            IQRid = "IQR" + String.format("%05d", (int) (Math.random() * 100000));
+        } while (!generatedIds.add(IQRid));
+
+        inquiryDTO.setIqrValue(IQRid);
+
+        try {
+            // 메일 전송과 수신자 정보 저장
+            inquiryService.sendInquiry(inquiryDTO, inquiryFileList);
+        } catch (Exception e) {
+            model.addAttribute("error", "메일 전송 중 오류가 발생했습니다.");
+            return "inquiry/sendInquiry";
+        }
+
+        return "redirect:/inquiry/inquiryList";  // 폼 제출 후 다시 같은 페이지로 리다이렉트
+    }
+
 
     @GetMapping("/user/approvalMain")
     public String approvalMainController(Model model,HttpSession session){

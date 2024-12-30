@@ -1,56 +1,61 @@
 package com.ohgiraffers.refactorial.mail.service;
 
+import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.model.dao.MailMapper;
 import com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class MailService {
 
     private MailMapper mailMapper;
+    private UploadFileService uploadFileService;
 
     @Autowired
-    public MailService(MailMapper mailMapper) {
+    public MailService(MailMapper mailMapper, UploadFileService uploadFileService) {
+        this.uploadFileService = uploadFileService;
         this.mailMapper = mailMapper;
     }
 
     // 메일 보내기
-    public void sendMail(MailDTO mailDTO) {
-
+    public void sendMail(MailDTO mailDTO, List<MultipartFile> mailFileList) throws IOException {
         if (mailDTO.getReceiverEmpIds() == null || mailDTO.getReceiverEmpIds().isEmpty()) {
-            throw new IllegalArgumentException("수신자가 없습니다."); // 예외를 던지거나 로깅을 할 수 있습니다.
+            throw new IllegalArgumentException("수신자가 없습니다.");
         }
 
-        // ID 생성 및 중복 방지 로직
-        Set<String> generatedIds = new HashSet<>();
-        String emId;
-        do {
-            emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
-        } while (!generatedIds.add(emId)); // 중복이 아니면 Set에 추가
+        String emId = mailDTO.getEmailId(); // 메일 ID 사용
 
-        // 공통 메일 ID 설정
-        mailDTO.setEmailId(emId);
+        // 파일 업로드
+        if (!mailFileList.isEmpty()) {
+            mailDTO.setMailfile(mailFileList);
+            mailDTO.setAttachment(1);
+            uploadFileService.upLoadFile(mailFileList, emId);  // emId를 mappingId로 사용
+        }
 
-
-        // 메일 저장
+        // 메일 저장 (tbl_mail 에 insert)
         mailMapper.sendMail(mailDTO); // 메일 정보 저장
 
-        // 수신자 정보 저장
+        // 수신자 정보 저장 (tbl_mail_receivers에 insert)
         if (mailDTO.getReceiverEmpIds() != null) {
             for (String receiverEmpId : mailDTO.getReceiverEmpIds()) {
                 MailReceiverDTO receiverDTO = new MailReceiverDTO();
                 receiverDTO.setEmailId(emId);
                 receiverDTO.setReceiverEmpId(receiverEmpId);
-                receiverDTO.setReadStatus(false); // 기본적으로 읽지 않음 상태
-                mailMapper.saveReceiver(receiverDTO); // 수신자 정보 저장
+                receiverDTO.setReadStatus(false);  // 읽지 않은 상태로 초기화
+                mailMapper.saveReceiver(receiverDTO);  // 수신자 정보 저장
             }
         }
     }
+
 
     // 내가 보낸 메일
     public List<MailDTO> getSentMails(String senderEmpId) {
@@ -107,19 +112,28 @@ public class MailService {
 
     // 상세 페이지
     public MailDTO getMailDetail(String emailId) {
-
-        return mailMapper.getMailDetail(emailId);
+        MailDTO mailDetail = mailMapper.getMailDetail(emailId);
+        if (mailDetail != null) {
+            List<String> receiverEmpIds = mailMapper.getReceiverEmpIds(emailId);
+            mailDetail.setReceiverEmpIds(receiverEmpIds);
+        }
+        return mailDetail;
     }
 
     // 휴지통으로 보내기
-    public void moveToTrash(String emailId, String receiverEmpId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("emailId", emailId);
-        params.put("receiverEmpId", receiverEmpId);
-        params.put("trashStatus", 1);
-
-        mailMapper.updateTrashStatus(params);
+    // 서비스에서 메일을 각 수신자별로 휴지통으로 보낼 수 있도록 변경
+    public void moveToTrash(String emailId, List<String> receiverEmpIds) {
+        // 각 수신자에 대해 개별적으로 trash_status 업데이트
+        for (String receiverEmpId : receiverEmpIds) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("emailId", emailId);
+            params.put("trashStatus", 1); // 휴지통으로 이동
+            params.put("receiverEmpId", receiverEmpId); // 특정 수신자 ID
+            mailMapper.updateTrashStatus(params); // DB 업데이트 호출
+        }
     }
+
+
 
 
     // 휴지통 상세 페이지
@@ -133,4 +147,7 @@ public class MailService {
         mailMapper.updateTrashRemove(emailId,0); // trashStatus 를 0로 변경 (휴지통으로 이동)
     }
 
+    public List<String> getReceiverEmpIds(String emailId) {
+        return mailMapper.getReceiverEmpIds(emailId);
+    }
 }

@@ -18,7 +18,7 @@ public class MailEmployeeService {
     }
 
     public List<MailEmployeeDTO> searchMailEmployees(String searchReceiverInput) {
-        return mailEmployeeMapper.searchMailEmployeesByName(searchReceiverInput);
+        return mailEmployeeMapper.searchMailEmployees(searchReceiverInput);
     }
 
     public List<MailEmployeeDTO> getAllMailEmployees() {
