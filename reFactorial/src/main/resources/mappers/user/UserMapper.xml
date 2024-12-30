@@ -123,4 +123,30 @@
         ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
     </select>
 
+
+    <select id="findUserById" parameterType="string" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
+        SELECT
+        emp_id AS empId,
+        emp_name AS empName,
+        annual_leave AS annualLeave,
+        used_annual_leave AS usedAnnualLeave
+        FROM employee
+        WHERE emp_id = #{empId}
+    </select>
+
+    <update id="updateUserLeave">
+        UPDATE employee
+        SET
+        annual_leave = annual_leave -
+        <choose>
+            <when test="leaveType == '반차'">0.5</when>
+            <otherwise>1</otherwise>
+        </choose>,
+        used_annual_leave = used_annual_leave +
+        <choose>
+            <when test="leaveType == '반차'">0.5</when>
+            <otherwise>1</otherwise>
+        </choose>
+        WHERE emp_id = #{empId}
+    </update>
 </mapper>

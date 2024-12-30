@@ -103,13 +103,7 @@
         WHERE emp_id = #{empId}
     </select>
 
-    <update id="updateLeaveBalances">
-        UPDATE employee
-        SET
-            annual_leave = annual_leave - #{deduction},
-            used_annual_leave = used_annual_leave + #{deduction}
-        WHERE emp_id = #{empId}
-    </update>
+
     
     
 </mapper>

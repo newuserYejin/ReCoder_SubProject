@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("서버 응답 성공 - action:", action);
                     if (action === "approve") {
                         alert("승인되었습니다.");
+                        window.location.reload();
                     } else if (action === "reject") {
                         alert("반려되었습니다.");
                         window.location.href = "/approvals/rejected";
