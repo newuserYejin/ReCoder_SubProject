@@ -169,6 +169,8 @@ public class BoardController {
                 boardService.optionResult(optionDTO);   // 투표 항목 DTO로 전달
             }
 
+
+
         }
 
         if (categoryCode == 3){
@@ -226,12 +228,9 @@ public class BoardController {
 
         }
 
-
-
-
-
         // 항목 리스트 가져옴
-        List<VoteItemDTO> voteItemList = boardService.itemView(postId);
+        List<VoteItemDTO> voteItemList = boardService.itemView(postId);     // 수정 시 항목 데이터를 불러옴
+
         // 투표한사람이면 보여주는 항목리스트
         List<VoteResultDTO> resultInquiryList = boardService.voteComplete(postId, user.getEmpId());
         // 투표 TotalList
@@ -281,12 +280,6 @@ public class BoardController {
         model.addAttribute("user", user);   // user정보 postDetail에 전달(게시물 수정,삭제 권한)
         model.addAttribute("voteView", voteItemList);   // 항목 리스트
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
-//        model.addAttribute("voteTotal", voteTotalList);     // 투표 총계
-
-//        if (resultInquiry != null && resultInquiry.size() > 0) {
-//            model.addAttribute("voteComplete", resultInquiry);   // 투표한사람이면 보여주는 항목리스트
-//        }
-
 
         return "board/postDetail";
     }
