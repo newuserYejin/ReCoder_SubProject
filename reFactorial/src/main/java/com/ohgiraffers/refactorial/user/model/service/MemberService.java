@@ -100,8 +100,6 @@ public class MemberService {
 
         List<Map<String, Object>> chartData = userMapper.getHiredDateGroupBy();
 
-        System.out.println("chartData = " + chartData);
-
         for (Map<String, Object> data : chartData){
             String key = String.valueOf(data.get("joined"));
             Integer value = Integer.parseInt(String.valueOf(data.get("num")));

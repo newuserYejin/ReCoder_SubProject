@@ -25,7 +25,10 @@
             <div class="mainLeft_box">
                 <div style="--menu-size: 350px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
                 <div class="inquiryBox">
-                    <div class="inquiryTitle">1 : 1 문의사항</div>
+                    <div class="inquiryTitleBox">
+                        <div class="">1 : 1 문의사항</div>
+                        <div onclick="location.href='adminInquiryList'" >+ 더보기</div>
+                    </div>
                     <div class="inquiryBoxHeader">
                         <div class="inquirySendName">문의자</div>
                         <div class="inquirySendTitle">제목</div>
@@ -35,7 +38,7 @@
                     <div class="noInquiry" th:if="${inquiryList.isEmpty()}">문의 사항이 없습니다.</div>
 
                     <div class="inquiryContentBox">
-                        <div th:if="${! inquiryList.isEmpty()}" th:each="inquiry : ${inquiryList}" th:onclick="|location.href='@{inquiry/adminInquiryDetail(iqrValue=${inquiry.iqrValue})}'|">
+                        <div th:if="${! inquiryList.isEmpty()}" th:each="inquiry : ${inquiryList}" th:onclick="|location.href='@{adminInquiryDetail(iqrValue=${inquiry.iqrValue})}'|">
                             <div class="inquiryBoxBody">
                                 <div class="inquirySendName" th:text="${inquiry.empId}">문의자</div>
                                 <div class="inquirySendTitle" th:text="${inquiry.iqrTitle}">제목</div>
