@@ -35,6 +35,9 @@ public interface BoardMapper {
     // 투표 항목 전달
     void optionResult(VoteItemDTO options);
 
+    // 투표 항목 삭제
+    void deleteVoteItemList(String postId);
+
     // 투표 항목 조회
     List<VoteItemDTO> itemView(String postId);
 

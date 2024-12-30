@@ -121,8 +121,6 @@ public class BoardController {
 
         String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
 
-
-
         // 게시물의 정보
         BoardDTO board = new BoardDTO();        // BoardDTO 객체에 밑에있는 값을 담음
         if (!postId.equals("")) {                   // postId가 없으면 boardId 생성 (등록)
@@ -159,10 +157,17 @@ public class BoardController {
                 options.add(option5);
             }
 
+            // postId에 해당하는 투표 항목 목록 삭제
+            boardService.deleteVoteItemList(postId);
+
             // 반복문돌려서 1개씩 만들기 (게시물 ID, 항목 이름)
             for (String option : options) {
                 VoteItemDTO optionDTO = new VoteItemDTO();
-                optionDTO.setPostId(boardId);   // 게시물 ID
+                if (!postId.equals("")) {                   // postId가 없으면 boardId 생성 (등록)
+                    optionDTO.setPostId(postId);           // postId가 있으면 postId 전달 (수정)
+                } else {
+                    optionDTO.setPostId(boardId);
+                }
                 optionDTO.setItemTitle(option);   // 항목 이름
 //                System.out.println("optionDTO의 값: " + optionDTO);
 
@@ -199,7 +204,7 @@ public class BoardController {
         // 로그인한 유저 정보를 가져옴
         LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-        // 게시물 상세
+        // 게시물 상세 내용
         BoardDTO postDetail = boardService.postDetail(postId);
         // 댓글 리스트 가져옴
         List<CommentDTO> commentList = boardService.commentView(postId);
@@ -281,12 +286,6 @@ public class BoardController {
         model.addAttribute("user", user);   // user정보 postDetail에 전달(게시물 수정,삭제 권한)
         model.addAttribute("voteView", voteItemList);   // 항목 리스트
         model.addAttribute("currentCategory", categoryCode);    // 게시판 사이드바에 값 전달
-//        model.addAttribute("voteTotal", voteTotalList);     // 투표 총계
-
-//        if (resultInquiry != null && resultInquiry.size() > 0) {
-//            model.addAttribute("voteComplete", resultInquiry);   // 투표한사람이면 보여주는 항목리스트
-//        }
-
 
         return "board/postDetail";
     }
