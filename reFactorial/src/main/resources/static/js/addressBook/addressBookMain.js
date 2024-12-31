@@ -49,7 +49,12 @@ function searchEmployees(keyword) {
             return response.json();
         })
         .then(data => renderEmployees(data))
-        .catch(error => console.error('Error fetching employees:', error));
+        .catch(error => {
+            console.error('Error fetching employees:', error);
+            // 에러 메시지를 사용자에게 표시
+            const tableBody = document.getElementById('employee-list');
+            tableBody.innerHTML = `<div class="table-row">검색 중 오류가 발생했습니다.</div>`;
+        });
 }
 
 // 데이터를 테이블에 렌더링하는 함수

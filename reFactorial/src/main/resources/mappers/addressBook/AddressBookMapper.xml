@@ -18,16 +18,20 @@
     <select id="findAllEmployees" resultMap="EmployeeMap">
         SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone,
                emp_no AS socialNumber, emp_address AS address, annual_leave AS annualLeave
-        FROM employee;
+        FROM employee
+        WHERE view_auth != 'ACCESSLIMIT'
+        ORDER BY emp_name ASC;
     </select>
 
     <!-- 검색 키워드로 직원 조회 -->
 
-    <select id="findEmployeesByKeyword" parameterType="string" resultMap="EmployeeMap">
-        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
-        FROM employee
-        WHERE emp_name LIKE CONCAT('%', #{keyword}, '%')
-           OR dept_code IN (SELECT dept_code FROM tbl_dept WHERE dept_name LIKE CONCAT('%', #{keyword}, '%'));
+        <select id="findEmployeesByKeyword" parameterType="string" resultMap="EmployeeMap">
+            SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+            FROM employee
+            WHERE (emp_name LIKE CONCAT('%', #{keyword}, '%')
+                OR dept_code IN (SELECT dept_code FROM tbl_dept WHERE dept_name LIKE CONCAT('%', #{keyword}, '%')))
+              AND view_auth != 'ACCESSLIMIT'
+            ORDER BY emp_name ASC;
     </select>
 
     <!-- 부서명 조회 -->

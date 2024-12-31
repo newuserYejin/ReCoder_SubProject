@@ -320,7 +320,7 @@
             approvalService.saveReferrers(pmId, referrerIds);
 
 
-            return "/approvals/approvalMain";
+            return "redirect:/user/approvalMain";
         }
 
 

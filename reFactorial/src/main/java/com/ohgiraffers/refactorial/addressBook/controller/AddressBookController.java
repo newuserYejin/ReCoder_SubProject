@@ -6,6 +6,8 @@ import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,7 @@ public class AddressBookController {
     @ResponseBody
     @GetMapping("/search")
     public List<EmployeeDTO> searchEmployees(@RequestParam("keyword") String keyword) {
+        System.out.println("Searching with keyword: " + keyword);
         return addressBookService.searchEmployees(keyword);
     }
 

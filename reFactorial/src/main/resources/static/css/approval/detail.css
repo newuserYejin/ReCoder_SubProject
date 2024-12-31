@@ -349,16 +349,15 @@ html, body {
 }
 
 .file-link a {
-    color: #FFF;
+    color: #FFF;  /* 기본 텍스트 색상 */
     text-decoration: none;
     display: flex;
     align-items: center;
     padding: 0.5rem;
     border-radius: 6px;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;  /* 배경 투명으로 */
 }
-
 .file-link a::before {
     content: '📎';
     margin-right: 10px;
@@ -366,8 +365,8 @@ html, body {
 }
 
 .file-link a:hover {
-    color: #FFD700;
-    background: rgba(255, 255, 255, 0.1);
+    color: #FFD700;  /* 호버 시 색상 변경 */
+    background: rgba(255, 255, 255, 0.1);  /* 호버 시 약간의 배경 */
     transform: translateX(5px);
 }
 

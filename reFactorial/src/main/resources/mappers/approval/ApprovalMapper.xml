@@ -613,7 +613,7 @@
           AND pm.pm_id NOT IN (
             SELECT DISTINCT pm_id
             FROM tbl_approval
-            WHERE pm_status = '완료'
+            WHERE pm_status IN ('완료', '반려')
             )
         GROUP BY
             pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category,
