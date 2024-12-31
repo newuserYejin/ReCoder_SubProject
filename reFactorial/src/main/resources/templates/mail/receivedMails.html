@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- 작성일 -->
-                <div class="table-cell" th:text="${receivedMail.sentDate}"></div>
+                <div class="table-cell" th:text="${#temporals.format(receivedMail.sentDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
             </div>
         </div>
 
