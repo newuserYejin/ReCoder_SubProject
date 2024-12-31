@@ -214,13 +214,12 @@ html, body {
 }
 
 .document-list li {
+    font-size: 16px; /* 기본 글씨 크기 증가 */
     padding: 15px;
-    border-bottom: 1px solid #eee;
-    display: grid;
-    grid-template-columns: 3fr 2fr 1fr;
+    border-bottom: 1px solid #e0e0e0; /* 구분선 색상 조금 연하게 */
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    cursor: pointer;
 }
 
 .document-list li:hover {
@@ -237,18 +236,21 @@ html, body {
     gap: 5px;
 }
 
+.document-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 타이틀과 날짜 사이 간격 조정 */
+}
+
 .document-title {
-    font-weight: 500;
+    font-weight: 600; /* 약간 더 진한 글씨 */
+    color: #333; /* 제목 색상 조금 더 진하게 */
+    font-size: 18px; /* 제목 크기 키우기 */
 }
 
 .document-date {
-    font-size: 0.85em;
-    color: #666;
-}
-
-.approver-info {
-    display: flex;
-    align-items: center;
+    font-size: 14px; /* 날짜 글씨 크기 조정 */
     color: #666;
 }
 
@@ -263,11 +265,12 @@ html, body {
 
 /* 상태 뱃지 스타일 */
 .status-badge {
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.85em;
-    text-align: center;
-    white-space: nowrap;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase; /* 대문자로 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 약간의 입체감 */
 }
 
 .badge-waiting { background: #e3f2fd; color: #1565c0; }
@@ -275,7 +278,47 @@ html, body {
 .badge-completed { background: #e8f5e9; color: #2e7d32; }
 .badge-rejected { background: #ffebee; color: #c62828; }
 
+/* 상태별 색상 더 선명하게 */
+.badge-waiting {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #1565c0;
+}
 
+.badge-progress {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #e65100;
+}
+
+.badge-completed {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+}
+
+.badge-rejected {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #c62828;
+}
+
+/* 승인자 정보 스타일 */
+.approver-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+}
+
+.approver-label {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+}
 
 /*.top-bar {*/
 /*    display: flex; !* 플렉스 박스 레이아웃 사용 *!*/

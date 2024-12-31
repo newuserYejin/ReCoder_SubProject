@@ -48,7 +48,7 @@
             <!-- 제목 -->
             <div class="form-group">
                 <label for="title">제목:</label>
-                <input type="text" id="title" name="title">
+                <input type="text" id="title" name="title" required>
             </div>
 
             <!-- 승인자 입력 -->
@@ -85,7 +85,7 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category" onchange="showLeaveTypeDropdown()">
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()" required>
                     <option value="">선택</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
@@ -118,7 +118,7 @@
             <!-- 내용 -->
             <div class="form-group">
                 <label for="content">내용:</label>
-                <textarea id="content" name="content"></textarea>
+                <textarea id="content" name="content" required></textarea>
             </div>
 
             <!-- 제출 버튼 -->

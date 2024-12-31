@@ -128,8 +128,7 @@ public interface ApprovalMapper {
                                         @Param("status") String status,
                                         @Param("reason") String reason);
 
-    void updateAllApprovalStatusesToRejected(String pmId, String 반려);
-
+   
     List<DocumentDTO> findRejectedDocuments(Map<String, Object> params);
 
     Integer getMaxApprovalOrder(String pmId);
@@ -141,4 +140,10 @@ public interface ApprovalMapper {
     void saveFileInfo(Map<String, String> pmId);
 
     int checkAttendanceExists(String empId, LocalDate attDate);
+
+    List<DocumentDTO> findApprovableDocuments(Map<String, Object> params);
+
+    void updatePreviousApproversToRejected(String pmId, String empId);
+
+    void updateAllApprovalStatusesToRejected(Map<String, Object> params);
 }

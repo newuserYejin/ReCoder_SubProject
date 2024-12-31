@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
@@ -198,18 +199,28 @@ public class MainController {
 
         String empId = user.getEmpId();
 
-        // 상태별 문서 건수 조회
-        model.addAttribute("waitingCount", approvalService.getWaitingCount(empId));
-        model.addAttribute("inProgressCount", approvalService.countInProgressDocuments(empId));
-        model.addAttribute("completedCount", approvalService.getCompletedDocumentsCount(empId));
-        model.addAttribute("rejectedCount", approvalService.countRejectedDocuments(empId));
+        // 각 카테고리별 문서 수 조회
+        int waitingCount = approvalService.getWaitingCount(empId);
+        int inProgressCount = approvalService.getInProgressDocumentsCount(empId);
+        int completedCount = approvalService.getCompletedDocumentsCount(empId);
+        int rejectedCount = approvalService.getRejectedDocumentsCount(empId);
 
+        // 각 탭에 표시할 최근 문서들 조회 (예: 최근 5개)
+        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 3, 0);
+        System.out.println("draftDocuments: " + draftDocuments);  // 로그 추가
+        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 3, 0);
+        System.out.println("Approve Documents: " + approveDocuments);  // 로그 추가
+        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 3, 0);
 
-        // 각 탭에 표시될 문서 목록 조회 (최근 5건씩만)
-        model.addAttribute("draftDocuments", approvalService.getMyDocuments(empId,5,0));
-        model.addAttribute("approveDocuments", approvalService.getWaitingDocuments(empId, 5, 0));
-        model.addAttribute("referenceDocuments", approvalService.getReferenceDocuments(empId, 5, 0));
+        // 모델에 데이터 추가
+        model.addAttribute("waitingCount", waitingCount);
+        model.addAttribute("inProgressCount", inProgressCount);
+        model.addAttribute("completedCount", completedCount);
+        model.addAttribute("rejectedCount", rejectedCount);
 
+        model.addAttribute("draftDocuments", draftDocuments);
+        model.addAttribute("approveDocuments", approveDocuments);
+        model.addAttribute("referenceDocuments", referenceDocuments);
 
         return "approvals/approvalMain";
     }

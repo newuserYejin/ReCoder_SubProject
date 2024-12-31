@@ -256,43 +256,39 @@
 
         // 승인 처리
         public void approve(String pmId, String empId) {
-            System.out.println("===== 승인 프로세스 시작 =====");
-
             // 1. 현재 승인자를 '승인' 상태로 업데이트
             approvalMapper.updateApprovalStatus(pmId, empId, "승인");
-            System.out.println("1. 현재 승인자 상태 업데이트 완료: " + empId + " -> 승인");
 
-            // 2. 모든 승인자가 승인 상태인지 확인
+
+
+            // 2. 모든 대기 중인 승인자의 상태를 '진행 중'으로 업데이트
+            approvalMapper.updateAllPendingToInProgress(pmId);
+
+
+            // 3. 모든 승인자가 완료되었는지 확인
             boolean allApproved = approvalMapper.allApprovalsCompleted(pmId);
-            System.out.println("2. 모든 승인자 승인 완료 여부: " + allApproved);
-
             if (allApproved) {
-                // 3. 모든 승인자의 상태를 '완료'로 변경
-                System.out.println("3. 전체 상태 '완료'로 변경 시도");
                 approvalMapper.updateDocumentStatus(pmId, "완료");
-                System.out.println("   상태 변경 완료");
             } else {
-                // 4. 아직 승인이 남아있으면 다음 승인자의 상태를 '진행 중'으로 변경
-                System.out.println("4. 다음 승인자 '진행 중' 상태로 변경");
-                approvalMapper.updateAllPendingToInProgress(pmId);
+                System.out.println("아직 승인자가 남아 있습니다.");
             }
-
-            // 5. 최종 상태 확인
-            List<String> finalStatuses = approvalMapper.getApproversStatus(pmId);
-            System.out.println("5. 최종 상태 목록: " + finalStatuses);
-
-            System.out.println("===== 승인 프로세스 종료 =====");
         }
 
 
 
-        // 반려 처리
         public void reject(String pmId, String empId, String reason) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("pmId", pmId);
+            params.put("status", "반려");
+
             // 1. 해당 승인자의 상태를 반려로 변경
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
 
-            // 2. 문서 상태를 '반려'로 업데이트
-            approvalMapper.updateAllApprovalStatusesToRejected(pmId, "반려");
+            // 2. 이전 승인자들의 상태도 '반려'로 변경
+            approvalMapper.updatePreviousApproversToRejected(pmId, empId);
+
+            // 3. 문서 전체 상태를 '반려'로 업데이트
+            approvalMapper.updateAllApprovalStatusesToRejected(params);
         }
 
         // 전결 처리
@@ -504,6 +500,15 @@
 
         public int countRejectedDocuments(String empId) {
             return approvalMapper.countRejectedDocuments(empId);
+        }
+
+        public List<DocumentDTO> getApprovableDocuments(String empId, int limit, int offset) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("empId", empId);
+            params.put("limit", limit);
+            params.put("offset", offset);
+
+            return approvalMapper.findApprovableDocuments(params);
         }
     }
 
