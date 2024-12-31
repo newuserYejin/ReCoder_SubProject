@@ -69,11 +69,15 @@
         WHERE email_id = #{emailId}
     </select>
 
-    <!-- 메일의 상세 페이지 -->
     <select id="getMailDetail" resultMap="MailResultMap">
-        SELECT *
-        FROM tbl_mail
-        WHERE email_id = #{emailId}
+        SELECT DISTINCT e.*, m.*, mr.*
+        FROM employee e
+        JOIN tbl_mail m ON e.emp_id = m.sender_emp_id
+        JOIN tbl_mail_receivers mr ON e.emp_id = mr.receiver_emp_id
+        WHERE m.email_id = #{emailId}
+        OR mr.receiver_emp_id IN (
+        SELECT receiver_emp_id FROM tbl_mail_receivers WHERE email_id = #{emailId}
+        )
     </select>
     <!-- 휴지통 메일의 상세 페이지-->
     <select id="getMailDetailBin" resultMap="MailResultMap">
