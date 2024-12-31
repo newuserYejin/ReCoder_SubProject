@@ -108,3 +108,61 @@ html, body {
     color: #5C1915; /* 마지막 셀의 텍스트 색상 설정 */
     font-weight: bold; /* 마지막 셀의 텍스트 굵게 설정 */
 }
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-width: 30px;
+    text-align: center;
+}
+
+.pagination a:hover {
+    background-color: #5C1915;
+    color: white;
+}
+
+.pagination .active a {
+    background-color: #5C1915;
+    color: white;
+    font-weight: bold;
+}
+
+.pagination li a.disabled {
+    background-color: #e0e0e0;
+    color: #ccc;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.pagination .first, .pagination .last {
+    font-weight: bold;
+}
+
+.pagination .prev, .pagination .next {
+    font-weight: bold;
+}

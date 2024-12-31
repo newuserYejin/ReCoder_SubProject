@@ -36,36 +36,8 @@ public class MailController {
 
     // 메일 쓰기 페이지로 이동
     @GetMapping("/sendMail")
-    public String showSendMailPage(@RequestParam(defaultValue = "1") int currentPage, Model model, HttpSession session) {
+    public String showSendMailPage() {
 
-        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-
-        if (user == null) {
-            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
-            return "redirect:/login";
-        }
-
-        String loggedInEmpId = user.getEmpId();
-        int limit = 14;
-        int offset = (currentPage - 1) * limit;
-
-        List<MailDTO> myDocuments = mailService.getSendMailDocuments(loggedInEmpId, limit, offset,currentPage);
-        int totalDocuments = mailService.getTotalSendMailDocuments(loggedInEmpId);
-        int totalPages = (int) Math.ceil((double) totalDocuments / limit);
-
-        int startNumber = (totalPages - currentPage) * limit + 1;
-        for (int i = 0; i < myDocuments.size(); i++) {
-            myDocuments.get(i).setRowNum(startNumber + (myDocuments.size() - 1 - i));
-        }
-
-        int prevPage = Math.max(1, currentPage - 1);
-        int nextPage = Math.min(totalPages, currentPage + 1);
-
-        model.addAttribute("documents", myDocuments);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("prevPage", prevPage);
-        model.addAttribute("nextPage", nextPage);
         return "/mail/sendMail";
     }
 
@@ -133,18 +105,32 @@ public class MailController {
         return "redirect:/mail/sentMails"; // 답신 후 보낸 메일 목록으로 리디렉션
     }
 
-    //내가 보낸 메일 읽기
-    @GetMapping("/sentMails")
-    public String sentMails(Model model, HttpSession session) {
+    @GetMapping("sentMails")
+    public String sentMails(@RequestParam(defaultValue = "1") int currentPage, Model model, HttpSession session) {
         // 로그인 유저 정보 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+
+        if (loginUser == null) {
+            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return "redirect:/login";
+        }
+
         String senderEmpId = loginUser.getEmpId();
+        int limit = 14;
+        int offset = (currentPage - 1) * limit;
 
-        // 보낸 메일 목록을 모델에 추가
-        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpId);
+        List<MailDTO> sentMails = mailService.getSendMailDocuments(senderEmpId, limit, offset, currentPage);
+        int totalDocuments = mailService.getTotalSendMailDocuments(senderEmpId);
+        int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-        // Model sentMails 데이터가 제대로 추가되었는지 확인
+        int prevPage = Math.max(1, currentPage - 1);
+        int nextPage = Math.min(totalPages, currentPage + 1);
+
         model.addAttribute("sentMails", sentMails);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("prevPage", prevPage);
+        model.addAttribute("nextPage", nextPage);
 
         return "mail/sentMails";
     }
