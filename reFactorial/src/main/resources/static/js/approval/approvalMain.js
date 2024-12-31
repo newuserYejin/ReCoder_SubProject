@@ -13,5 +13,10 @@ function showTab(tabName) {
     document.getElementById(tabName + '-tab').classList.add('active');
 
     // 선택된 탭 버튼을 active 상태로 변경
-    event.target.classList.add('active');
+    document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
 }
+
+// 페이지 로드 시 기본 탭 활성화
+document.addEventListener('DOMContentLoaded', function() {
+    showTab('draft'); // 기본으로 기안 문서 탭 표시
+});

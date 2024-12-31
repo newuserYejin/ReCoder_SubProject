@@ -57,18 +57,26 @@
             pm.pm_title AS title,
             pm.pm_create AS createDate,
             pm.pm_category AS category,
-            MAX(appr.pm_status) AS status,
+            MAX(ap.pm_status) AS status,
             pm.pm_attachment AS attachment,
             emp.emp_name AS creatorName,
-            GROUP_CONCAT(DISTINCT appr.emp_id ORDER BY appr.approval_order) AS approvers,
-            pm.pm_referrer AS referrers
+            GROUP_CONCAT(DISTINCT ap.emp_id ORDER BY ap.approval_order) AS approvers,
+            pm.pm_referrer AS referrers,
+            (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+             FROM tbl_approval a2
+                      JOIN employee e2 ON a2.emp_id = e2.emp_id
+                      JOIN tbl_position p2 ON e2.position_value = p2.position_value
+             WHERE a2.pm_id = pm.pm_id
+               AND a2.pm_status IN ('대기 중', '진행 중')
+             ORDER BY a2.approval_order
+                LIMIT 1) AS currentApprover
         FROM
             tbl_pm pm
-                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                LEFT JOIN tbl_approval appr ON pm.pm_id = appr.pm_id
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
         WHERE
-            appr.pm_status = '대기 중'
-          AND appr.emp_id = #{empId} -- 현재 로그인한 사용자의 ID
+            ap.pm_status = '대기 중'
+          AND ap.emp_id = #{empId}
         GROUP BY
             pm.pm_id
         ORDER BY
@@ -119,19 +127,25 @@
         a.pm_status AS status,
         pm.pm_attachment AS attachment,
         emp.emp_name AS creatorName,
-        pm.pm_referrer AS referrers
+        pm.pm_referrer AS referrers,
+        (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+        FROM tbl_approval a2
+        JOIN employee e2 ON a2.emp_id = e2.emp_id
+        JOIN tbl_position p2 ON e2.position_value = p2.position_value
+        WHERE a2.pm_id = pm.pm_id
+        ORDER BY a2.approval_order
+        LIMIT 1) AS currentApprover
         FROM
         tbl_pm pm
-        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id <!-- 상태 조인 -->
+        JOIN tbl_pm_referrer pr ON pr.pm_id = pm.pm_id
+        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
         LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-        WHERE EXISTS (
-        SELECT 1
-        FROM tbl_pm_referrer pr
-        WHERE pr.pm_id = pm.pm_id
-        AND pr.emp_id = #{empId}
-        )
+        WHERE pr.emp_id = #{empId}
+        GROUP BY
+        pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category, a.pm_status,
+        pm.pm_attachment, emp.emp_name, pm.pm_referrer
         ORDER BY pm.pm_create DESC
-        LIMIT #{limit} OFFSET #{offset} <!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
+        LIMIT #{limit} OFFSET #{offset}<!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
     </select>
 
     <select id="getTotalReferenceDocuments" resultType="int">
@@ -150,23 +164,36 @@
 
     <select id="getMyDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
         SELECT
-        pm.pm_id AS pmId,
-        pm.pm_title AS title,
-        pm.pm_create AS createDate,
-        pm.pm_category AS category,
-        a.pm_status AS status,
-        pm.pm_attachment AS attachment,
-        emp.emp_name AS creatorName,
-        pm.pm_referrer AS referrers
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            CASE
+                WHEN MAX(a.pm_status) IN ('대기 중', '진행 중', '완료', '전결') THEN MAX(a.pm_status)
+                ELSE MAX(a.pm_status)
+                END AS status,
+            pm.pm_attachment AS attachment,
+            emp.emp_name AS creatorName,
+            pm.pm_referrer AS referrers,
+            (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+             FROM tbl_approval a2
+                      JOIN employee e2 ON a2.emp_id = e2.emp_id
+                      JOIN tbl_position p2 ON e2.position_value = p2.position_value
+             WHERE a2.pm_id = pm.pm_id
+             ORDER BY a2.approval_order
+                LIMIT 1) AS currentApprover
         FROM
-        tbl_pm pm
-        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
-        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            tbl_pm pm
+            LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
         WHERE
-        pm.emp_id = #{empId}
+            pm.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category,
+            pm.pm_attachment, emp.emp_name, pm.pm_referrer
         ORDER BY
-        pm.pm_create DESC
-        LIMIT #{limit} OFFSET #{offset}
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
 
     </select>
 
@@ -351,20 +378,28 @@
             pm.pm_title AS title,
             pm.pm_create AS createDate,
             pm.pm_category AS category,
-            MAX(ap.pm_status) AS status,
-            emp.emp_name AS creatorName
+            '진행 중' AS status,
+            emp.emp_name AS creatorName,
+            (SELECT CONCAT(e.emp_name, ' ', p.position_name)
+             FROM tbl_approval sub_ap
+                      JOIN employee e ON sub_ap.emp_id = e.emp_id
+                      JOIN tbl_position p ON e.position_value = p.position_value
+             WHERE sub_ap.pm_id = pm.pm_id
+               AND sub_ap.pm_status IN ('진행 중')
+             ORDER BY sub_ap.approval_order
+                LIMIT 1) AS currentApprover
         FROM
             tbl_pm pm
-                LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
-                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
         WHERE
-            ap.pm_status IN ('승인', '진행 중')
+            ap.pm_status IN ('진행 중', '승인')
           AND ap.emp_id = #{empId}
         GROUP BY
             pm.pm_id
         ORDER BY
             pm.pm_create DESC
-            LIMIT #{limit} OFFSET #{offset};
+            LIMIT #{limit} OFFSET #{offset}
 
     </select>
 
@@ -552,4 +587,55 @@
           AND att_date = #{attDate}
     </select>
 
+
+    <select id="findApprovableDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            MAX(ap.pm_status) AS status,
+            emp.emp_name AS creatorName,
+            (SELECT CONCAT(e.emp_name, ' ', p.position_name)
+             FROM tbl_approval sub_ap
+                      JOIN employee e ON sub_ap.emp_id = e.emp_id
+                      JOIN tbl_position p ON e.position_value = p.position_value
+             WHERE sub_ap.pm_id = pm.pm_id
+               AND sub_ap.pm_status IN ('대기 중', '진행 중')
+             ORDER BY sub_ap.approval_order
+                LIMIT 1) AS currentApprover
+        FROM
+            tbl_pm pm
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE
+            ap.emp_id = #{empId}
+          AND pm.pm_id NOT IN (
+            SELECT DISTINCT pm_id
+            FROM tbl_approval
+            WHERE pm_status = '완료'
+            )
+        GROUP BY
+            pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category,
+            emp.emp_name
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <update id="updatePreviousApproversToRejected">
+        <![CDATA[
+        UPDATE tbl_approval
+        SET pm_status = '반려'
+        WHERE pm_id = #{pmId}
+          AND approval_order < (
+            SELECT temp.approval_order
+            FROM (
+                     SELECT approval_order
+                     FROM tbl_approval
+                     WHERE pm_id = #{pmId} AND emp_id = #{empId}
+                 ) temp
+        )
+        ]]>
+    </update>
 </mapper>

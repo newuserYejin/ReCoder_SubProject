@@ -281,7 +281,10 @@
             // 1. 해당 승인자의 상태를 반려로 변경
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
 
-            // 2. 문서 상태를 '반려'로 업데이트
+            // 2. 이전 승인자들의 상태도 '반려'로 변경
+            approvalMapper.updatePreviousApproversToRejected(pmId, empId);
+
+            // 3. 문서 전체 상태를 '반려'로 업데이트
             approvalMapper.updateAllApprovalStatusesToRejected(pmId, "반려");
         }
 
@@ -494,6 +497,15 @@
 
         public int countRejectedDocuments(String empId) {
             return approvalMapper.countRejectedDocuments(empId);
+        }
+
+        public List<DocumentDTO> getApprovableDocuments(String empId, int limit, int offset) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("empId", empId);
+            params.put("limit", limit);
+            params.put("offset", offset);
+
+            return approvalMapper.findApprovableDocuments(params);
         }
     }
 

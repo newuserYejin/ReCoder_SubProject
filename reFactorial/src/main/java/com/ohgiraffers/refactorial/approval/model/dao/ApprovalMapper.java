@@ -141,4 +141,8 @@ public interface ApprovalMapper {
     void saveFileInfo(Map<String, String> pmId);
 
     int checkAttendanceExists(String empId, LocalDate attDate);
+
+    List<DocumentDTO> findApprovableDocuments(Map<String, Object> params);
+
+    void updatePreviousApproversToRejected(String pmId, String empId);
 }
