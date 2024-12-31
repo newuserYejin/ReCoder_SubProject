@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>전자 결제</title>
+    <title>전자 결재</title>
 
     <!-- 폰트 적용 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,11 +25,11 @@
 </head>
 <body>
 <div class="snowfall-container" id="snowContainer"></div>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 <section class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-title">전자결제</div>
+        <div class="sidebar-title">전자결재</div>
     </div>
 
     <!-- Main Content -->
@@ -48,7 +48,7 @@
             <!-- 제목 -->
             <div class="form-group">
                 <label for="title">제목:</label>
-                <input type="text" id="title" name="title">
+                <input type="text" id="title" name="title" required>
             </div>
 
             <!-- 승인자 입력 -->
@@ -85,7 +85,7 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category" onchange="showLeaveTypeDropdown()">
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()" required>
                     <option value="">선택</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
@@ -118,7 +118,7 @@
             <!-- 내용 -->
             <div class="form-group">
                 <label for="content">내용:</label>
-                <textarea id="content" name="content"></textarea>
+                <textarea id="content" name="content" required></textarea>
             </div>
 
             <!-- 제출 버튼 -->
@@ -128,7 +128,7 @@
         </form>
     </div>
 </section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
 <script src="/js/approval/approvalPage.js"></script>
 
 

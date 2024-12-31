@@ -62,8 +62,8 @@
         @GetMapping("approvalPage")
         public String paymentPage() {
 
-            return "/approvals/approvalPage";
-        }
+        return "approvals/approvalPage";
+    }
 
         @GetMapping("completed")
         public String getCompletedDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
@@ -76,53 +76,31 @@
             }
 
             String loggedInEmpId = user.getEmpId();
-            int limit = 14; // 한 페이지당 문서 수
-            int totalDocuments = approvalService.getCompletedDocumentsCount(loggedInEmpId); // 전체 문서 개수 가져오기
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            int totalPages = totalDocuments > 0 ? (int) Math.ceil((double) totalDocuments / limit) : 1; // 최소 1페이지
+            List<DocumentDTO> myDocuments = approvalService.getCompletedDocuments(loggedInEmpId, limit, offset);
+            int totalDocuments = approvalService.getCompletedDocumentsCount(loggedInEmpId);
+            int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-            // 현재 페이지 범위 검증
-            if (currentPage < 1) {
-                currentPage = 1;
-            }
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
-            }
-
-            int offset = (currentPage - 1) * limit; // offset 계산
-
-            // 완료된 문서 가져오기
-            List<DocumentDTO> completedDocuments = approvalService.getCompletedDocuments(loggedInEmpId, limit, offset);
-            if (completedDocuments == null) { // null 방지
-                completedDocuments = new ArrayList<>();
+            // 번호 매기기 수정 - 각 페이지 내에서 아래에서 위로 증가하도록
+            int startNumber = (totalPages - currentPage) * limit + 1;
+            for (int i = 0; i < myDocuments.size(); i++) {
+                // i 대신 (size - 1 - i)를 사용하여 역순으로 번호 매기기
+                myDocuments.get(i).setRowNum(startNumber + (myDocuments.size() - 1 - i));
             }
 
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
-            // 문서 번호 설정 (현재 페이지에 맞는 번호)
-            for (int i = 0; i < completedDocuments.size(); i++) {
-                completedDocuments.get(i).setRowNum(totalDocuments - offset - i);
-            }
-
-            // 최신 글이 위로 정렬되도록 번호를 매기기
-            int totalCount = completedDocuments.size();
-            for (int i = 0; i < completedDocuments.size(); i++) {
-                completedDocuments.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
-            }
-
-            // 이전/다음 페이지 번호 설정
-            int prevPage = currentPage > 1 ? currentPage - 1 : 1;
-            int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-            System.out.println("Completed documents: " + completedDocuments);
-
-            // 모델에 데이터 추가
-            model.addAttribute("documents", completedDocuments);
+            model.addAttribute("documents", myDocuments);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("totalPages", totalPages);
-            model.addAttribute("prevPage", currentPage > 1 ? currentPage - 1 : 1);
-            model.addAttribute("nextPage", currentPage < totalPages ? currentPage + 1 : totalPages);
+            model.addAttribute("prevPage", prevPage);
+            model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/completed";
-        }
+        return "approvals/completed";
+    }
 
         @GetMapping("inProgress")
         public String getInProgressDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
@@ -135,43 +113,22 @@
             }
 
             String loggedInEmpId = user.getEmpId();
-            int limit = 14; // 한 페이지당 문서 수
-            int totalDocuments = approvalService.getInProgressDocumentsCount(loggedInEmpId); // 전체 문서 개수 가져오기
-            int totalPages = totalDocuments > 0 ? (int) Math.ceil((double) totalDocuments / limit) : 1;
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            // 현재 페이지 범위 검증
-            if (currentPage < 1) {
-                currentPage = 1;
-            }
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
-            }
-
-            int offset = (currentPage - 1) * limit; // offset 계산
-
-
-            System.out.println("empId: " + loggedInEmpId);
-            System.out.println("limit: " + limit);
-            System.out.println("offset: " + offset);
-
-            // 진행 중인 문서 가져오기
             List<DocumentDTO> inProgressDocuments = approvalService.getInProgressDocuments(loggedInEmpId, limit, offset);
+            int totalDocuments = approvalService.getInProgressDocumentsCount(loggedInEmpId);
+            int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-            System.out.println("In Progress Documents: " + inProgressDocuments);
-            // 문서 번호 설정
+            // 번호 매기기 수정 - 각 페이지 내에서 아래에서 위로 증가하도록
+            int startNumber = (totalPages - currentPage) * limit + 1;
             for (int i = 0; i < inProgressDocuments.size(); i++) {
-                inProgressDocuments.get(i).setRowNum(totalDocuments - offset - i);
+                // i 대신 (size - 1 - i)를 사용하여 역순으로 번호 매기기
+                inProgressDocuments.get(i).setRowNum(startNumber + (inProgressDocuments.size() - 1 - i));
             }
 
-            // 최신 글이 위로 정렬되도록 번호 설정
-            int totalCount = inProgressDocuments.size();
-            for (int i = 0; i < inProgressDocuments.size(); i++) {
-                inProgressDocuments.get(i).setRowNum(totalCount - i);
-            }
-
-            // 이전/다음 페이지 설정
-            int prevPage = currentPage > 1 ? currentPage - 1 : 1;
-            int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
             // 모델에 데이터 추가
             model.addAttribute("documents", inProgressDocuments);
@@ -180,8 +137,8 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/inProgress";
-        }
+        return "approvals/inProgress";
+    }
 
 
         @GetMapping("rejected")
@@ -195,47 +152,31 @@
             }
 
             String loggedInEmpId = user.getEmpId();
-            int limit = 14; // 한 페이지당 문서 수
-            int totalDocuments = approvalService.getRejectedDocumentsCount(loggedInEmpId); // 전체 문서 개수 가져오기
-            int totalPages = totalDocuments > 0 ? (int) Math.ceil((double) totalDocuments / limit) : 1;
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            // 현재 페이지 범위 검증
-            if (currentPage < 1) {
-                currentPage = 1;
-            }
-            if (currentPage > totalPages) {
-                currentPage = totalPages;
-            }
+            List<DocumentDTO> rejectedDocuments  = approvalService.getRejectedDocuments(loggedInEmpId, limit, offset);
+            int totalDocuments = approvalService.getInProgressDocumentsCount(loggedInEmpId);
+            int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-            int offset = (currentPage - 1) * limit; // offset 계산
-
-            // 반려된 문서 가져오기
-            List<DocumentDTO> rejectedDocuments = approvalService.getRejectedDocuments(loggedInEmpId, limit, offset);
-
-            // 문서 번호 설정
-            for (int i = 0; i < rejectedDocuments.size(); i++) {
-                rejectedDocuments.get(i).setRowNum(totalDocuments - offset - i);
+            // 번호 매기기 수정 - 각 페이지 내에서 아래에서 위로 증가하도록
+            int startNumber = (totalPages - currentPage) * limit + 1;
+            for (int i = 0; i < rejectedDocuments .size(); i++) {
+                // i 대신 (size - 1 - i)를 사용하여 역순으로 번호 매기기
+                rejectedDocuments .get(i).setRowNum(startNumber + (rejectedDocuments .size() - 1 - i));
             }
 
-            // 최신 글이 위로 정렬되도록 번호 설정
-            int totalCount = rejectedDocuments.size();
-            for (int i = 0; i < rejectedDocuments.size(); i++) {
-                rejectedDocuments.get(i).setRowNum(totalCount - i);
-            }
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
-            // 이전/다음 페이지 설정
-            int prevPage = currentPage > 1 ? currentPage - 1 : 1;
-            int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
-
-            // 모델에 데이터 추가
-            model.addAttribute("documents", rejectedDocuments);
+            model.addAttribute("documents", rejectedDocuments );
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/rejected";
-        }
+        return "approvals/rejected";
+    }
 
 
         @GetMapping("searchEmployee")
@@ -260,8 +201,8 @@
 
             model.addAttribute("employees", employees);
 
-            return "/approvals/searchEmployee";
-        }
+        return "approvals/searchEmployee";
+    }
 
         @GetMapping("searchReferrers")
         public String searchReferrersController(@RequestParam(value = "name", required = false) String name, Model model) {
@@ -281,9 +222,9 @@
             }
 
 
-            model.addAttribute("referrers", referrers);
-            return "/approvals/searchReferrers";
-        }
+        model.addAttribute("referrers", referrers);
+        return "approvals/searchReferrers";
+    }
 
         @PostMapping("/submitApproval")
         public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
@@ -315,11 +256,11 @@
                 approverNames.add(approvalRequestDTO.getFinalApprover());
             }
 
-            // 승인자가 없으면 오류 메시지 반환
-            if (approverNames.isEmpty()) {
-                model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
-                return "/approvals/approvalPage";
-            }
+        // 승인자가 없으면 오류 메시지 반환
+        if (approverNames.isEmpty()) {
+            model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
+            return "approvals/approvalPage";
+        }
 
             // 이름으로 emp_id 조회
             List<Map<String, Object>> approvers = new ArrayList<>();
@@ -350,24 +291,24 @@
             // 결재문서 저장
             String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId, fileList);
 
-            // **추가된 휴가 날짜 업데이트 로직**
-            if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
-                if (approvalRequestDTO.getLeaveDate() != null) {
-                    // 휴가 날짜 업데이트
-                    approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
-                } else {
-                    model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
-                    return "/approvals/approvalPage";
-                }
-
-                if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
-                    // 휴가 유형 업데이트
-                    approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
-                } else {
-                    model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
-                    return "/approvals/approvalPage";
-                }
+        // **추가된 휴가 날짜 업데이트 로직**
+        if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
+            if (approvalRequestDTO.getLeaveDate() != null) {
+                // 휴가 날짜 업데이트
+                approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
+            } else {
+                model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
+                return "approvals/approvalPage";
             }
+
+            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
+                // 휴가 유형 업데이트
+                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
+            } else {
+                model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
+                return "approvals/approvalPage";
+            }
+        }
 
             // 승인자 저장 (입력된 승인자만 저장)
             approvalService.saveApprovers(pmId, approvers);
@@ -378,15 +319,13 @@
             approvalService.saveReferrers(pmId, referrerIds);
 
 
-            return "/approvals/approvalMain";
-        }
+        return "approvals/approvalMain";
+    }
 
 
         // 대기 중
         @GetMapping("waiting")
         public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
-            // 세션에서 로그인한 사용자 정보 가져오기
-
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
             if (user == null) {
@@ -394,39 +333,36 @@
                 return "redirect:/login";
             }
 
-            // emp_id를 로그로 확인
             String loggedInEmpId = user.getEmpId();
-            System.out.println("현재 로그인한 사용자 ID: " + loggedInEmpId);
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            int limit = 14;  // 한 페이지에 14개 문서
-            int offset = (currentPage - 1) * limit;  // offset 계산
-
-            // 대기 중 문서 조회
-            List<DocumentDTO> waitingDocs = approvalService.getWaitingDocuments(loggedInEmpId, limit, offset);
-            System.out.println("Retrieved waitingDocs: " + waitingDocs);
-
+            List<DocumentDTO> waitingDocuments = approvalService.getWaitingDocuments(loggedInEmpId, limit, offset);
             int totalDocuments = approvalService.getWaitingCount(loggedInEmpId);
-            int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
 
-            // 문서 번호 설정 (현재 페이지에 맞는 번호)
-            for (int i = 0; i < waitingDocs.size(); i++) {
-                waitingDocs.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
+            // totalPages 계산 수정 - 최소 1페이지 보장
+            int totalPages = Math.max(1, (int) Math.ceil((double) totalDocuments / limit));
+
+            // 번호 매기기 수정
+            if (!waitingDocuments.isEmpty()) {
+                int startNumber = (totalPages - currentPage) * limit + 1;
+                for (int i = 0; i < waitingDocuments.size(); i++) {
+                    waitingDocuments.get(i).setRowNum(startNumber + (waitingDocuments.size() - 1 - i));
+                }
             }
 
-            // 이전 페이지 번호 계산
-            int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
-            // 다음 페이지 번호 계산
-            int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
-            model.addAttribute("documents", waitingDocs);
+            model.addAttribute("documents", waitingDocuments);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
 
-            return "/approvals/waiting";
-        }
+        return "approvals/waiting";
+    }
 
 
         @GetMapping("referenceDocuments")
@@ -441,49 +377,36 @@
             }
 
             String loggedInEmpId = user.getEmpId();
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            int limit = 14;  // 한 페이지에 14개 문서
-            int offset = (currentPage - 1) * limit;  // offset 계산
-
-            // 참조자 문서 조회 (limit, offset 추가)
-            List<DocumentDTO> referenceDocs = approvalService.getReferenceDocuments(loggedInEmpId, limit, offset);
-
-            // 참조 문서 목록 출력 (디버깅)
-            System.out.println("참조 문서 목록: " + referenceDocs);
-
-            // 최신 글이 위로 정렬되도록 번호를 매기기
-            int totalCount = referenceDocs.size();
-            for (int i = 0; i < referenceDocs.size(); i++) {
-                referenceDocs.get(i).setRowNum(totalCount - i); // 최신 글일수록 높은 번호
-            }
-
-            // 총 문서 개수로 페이지 수 계산
+            List<DocumentDTO> myDocuments = approvalService.getReferenceDocuments(loggedInEmpId, limit, offset);
             int totalDocuments = approvalService.getTotalReferenceDocuments(loggedInEmpId);
-            int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
+            int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-            // 문서 번호 설정 (현재 페이지에 맞는 번호)
-            for (int i = 0; i < referenceDocs.size(); i++) {
-                referenceDocs.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
+            // 번호 매기기 수정 - 각 페이지 내에서 아래에서 위로 증가하도록
+            int startNumber = (totalPages - currentPage) * limit + 1;
+            for (int i = 0; i < myDocuments.size(); i++) {
+                // i 대신 (size - 1 - i)를 사용하여 역순으로 번호 매기기
+                myDocuments.get(i).setRowNum(startNumber + (myDocuments.size() - 1 - i));
             }
 
-            // 이전 페이지 번호 계산
-            int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
-            // 다음 페이지 번호 계산
-            int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
-            model.addAttribute("documents", referenceDocs);
+            model.addAttribute("documents", myDocuments);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
-            return "approvals/referenceDocuments";
+            return "/approvals/referenceDocuments";
         }
 
 
         @GetMapping("myDocuments")
         public String getMyDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
             // 세션에서 로그인한 사용자 정보 가져오기
-            // 세션에서 로그인 사용자 정보 가져오기
+
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
             if (user == null) {
@@ -491,26 +414,24 @@
                 return "redirect:/login";
             }
 
+
             String loggedInEmpId = user.getEmpId();
-            int limit = 14;  // 한 페이지에 14개 문서
-            int offset = (currentPage - 1) * limit;  // offset 계산
+            int limit = 14;
+            int offset = (currentPage - 1) * limit;
 
-            // 작성자가 작성한 문서 가져오기
             List<DocumentDTO> myDocuments = approvalService.getMyDocuments(loggedInEmpId, limit, offset);
-
-            // 전체 문서 개수 가져오기
             int totalDocuments = approvalService.getMyDocumentsCount(loggedInEmpId);
-            int totalPages = (int) Math.ceil((double) totalDocuments / limit);  // 총 페이지 수 계산
+            int totalPages = (int) Math.ceil((double) totalDocuments / limit);
 
-            // 문서 번호 설정 (현재 페이지에 맞는 번호)
+            // 번호 매기기 수정 - 각 페이지 내에서 아래에서 위로 증가하도록
+            int startNumber = (totalPages - currentPage) * limit + 1;
             for (int i = 0; i < myDocuments.size(); i++) {
-                myDocuments.get(i).setRowNum(totalDocuments - offset - i);  // 번호는 현재 페이지를 기준으로 설정
+                // i 대신 (size - 1 - i)를 사용하여 역순으로 번호 매기기
+                myDocuments.get(i).setRowNum(startNumber + (myDocuments.size() - 1 - i));
             }
 
-            // 이전 페이지 번호 계산
-            int prevPage = (currentPage - 1 < 1) ? 1 : currentPage - 1;
-            // 다음 페이지 번호 계산
-            int nextPage = (currentPage + 1 > totalPages) ? totalPages : currentPage + 1;
+            int prevPage = Math.max(1, currentPage - 1);
+            int nextPage = Math.min(totalPages, currentPage + 1);
 
             model.addAttribute("documents", myDocuments);
             model.addAttribute("currentPage", currentPage);
@@ -518,22 +439,22 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/myDocuments";
-        }
+        return "approvals/myDocuments";
+    }
 
-        // 결제문서 상세페이지 조회
-        @GetMapping("detail/{pmId}")
-        public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
+    // 결제문서 상세페이지 조회
+    @GetMapping("detail/{pmId}")
+    public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
 
             // pmId에 해당하는 결재 문서 정보 조회
             DocumentDTO document = approvalService.getDocumentById(pmId);
 
             System.out.println("상세페이지 document = " + document.getAttachment());
 
-            if (document == null) {
-                model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
-                return "errorPage"; // 에러 페이지로 리디렉션
-            }
+        if (document == null) {
+            model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
+            return "errorPage"; // 에러 페이지로 리디렉션
+        }
 
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
             if (user == null) {
@@ -602,12 +523,12 @@
             model.addAttribute("finalApprover", finalApprover);
             model.addAttribute("referrerNames", referrerNames);
 
-            model.addAttribute("currentOrder", currentOrder);
-            model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
-            model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
-            model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
-            return "/approvals/detail";
-        }
+        model.addAttribute("currentOrder", currentOrder);
+        model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
+        model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
+        model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
+        return "approvals/detail";
+    }
 
         @PostMapping("detail")
         public String handleApprovalAction(@RequestParam("pmId") String pmId,
@@ -741,9 +662,6 @@
             System.out.println("Received pmId: " + pmId); // 디버깅 로그 추가
             return "approvals/detail"; // 상세 페이지로 이동
         }
-
-
-
 
     }
 

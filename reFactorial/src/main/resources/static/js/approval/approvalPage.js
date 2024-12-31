@@ -150,6 +150,41 @@ function showLeaveTypeDropdown() {
     }
 }
 
+// form submit 이벤트 리스너 추가
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 기본 제출 동작 중지
+
+    // 필수 필드 검증
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const content = document.getElementById('content').value.trim();
+
+    // 에러 메시지 초기화
+    let errorMessage = '';
+
+    // 각 필드 검증
+    if (!title) {
+        errorMessage += '제목을 입력해주세요.\n';
+    }
+
+    if (!category) {
+        errorMessage += '분류를 선택해주세요.\n';
+    }
+
+    if (!content) {
+        errorMessage += '내용을 입력해주세요.\n';
+    }
+
+    // 에러가 있으면 alert로 표시
+    if (errorMessage) {
+        alert(errorMessage);
+        return;
+    }
+
+    // 모든 검증을 통과하면 form 제출
+    this.submit();
+});
+
 
 
 function createSnowflake() {

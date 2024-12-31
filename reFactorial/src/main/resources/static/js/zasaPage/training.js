@@ -121,14 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             this.hintsRemaining = 3;
             this.element = null;
             // 여기에 이미지 경로 지정
-            this.imageUrl = '/images/oompa-loompa.png';
+            this.imageUrl = '/images/zasaPage/움파룸파.png';
         }
 
         render() {
             return `
             <div class="oompa-loompa" onclick="toggleHint()">
                 <div class="oompa-loompa-character">
-                    <div class="oompa-loompa-head"></div>
+                   <img src="${this.imageUrl}" alt="움파룸파" class="oompa-loompa-image" />
                 </div>
                 <div class="hint-bubble ${showHint ? 'show' : ''}">
                     <div class="hint-text">

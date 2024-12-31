@@ -123,6 +123,12 @@
         item_title = #{itemTitle};
     </insert>
 
+    <!-- 투표 항목 삭제 -->
+    <delete id="deleteVoteItemList" parameterType="String">
+        delete from tbl_vote_item
+        where post_id = #{postId}
+    </delete>
+
     <!-- 투표항목 선택결과 조회 -->
     <select id="getVoteResults" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
         select

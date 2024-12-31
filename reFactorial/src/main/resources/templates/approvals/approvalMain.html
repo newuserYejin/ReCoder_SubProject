@@ -19,7 +19,7 @@
 
 </head>
 <body>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 <section>
     <div class="container">
 
@@ -29,7 +29,7 @@
 
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="sidebar-title">전자결제</div>
+            <div class="sidebar-title">전자결재</div>
 
 
             <ul>
@@ -47,94 +47,92 @@
         <div class="main-content">
             <div class="button-container">
                 <a href="/approvals/approvalPage" class="main-btn new-approval-btn">새 결재 작성하기</a>
-                <a href="/board/list" class="main-btn download-btn">양식 다운로드</a>
+                <a href="/board/list?categoryCode=3"  class="main-btn download-btn">양식 다운로드</a>
             </div>
 
-<!--            <div class="status-cards">-->
-<!--                <div class="status-card card-waiting" onclick="location.href='/approvals/waiting'">-->
-<!--                    <h3>결재 대기</h3>-->
-<!--                    <div class="status-count" th:text="${waitingCount}">0</div>-->
-<!--                    <div class="status-text">대기중인 문서</div>-->
-<!--                </div>-->
-<!--                <div class="status-card card-progress" onclick="location.href='/approvals/inProgress'">-->
-<!--                    <h3>결재 진행중</h3>-->
-<!--                    <div class="status-count" th:text="${inProgressCount}">0</div>-->
-<!--                    <div class="status-text">처리중인 문서</div>-->
-<!--                </div>-->
-<!--                <div class="status-card card-completed" onclick="location.href='/approvals/completed'">-->
-<!--                    <h3>결재 완료</h3>-->
-<!--                    <div class="status-count" th:text="${completedCount}">0</div>-->
-<!--                    <div class="status-text">완료된 문서</div>-->
-<!--                </div>-->
-<!--                <div class="status-card card-rejected" onclick="location.href='/approvals/rejected'">-->
-<!--                    <h3>결재 반려</h3>-->
-<!--                    <div class="status-count" th:text="${rejectedCount}">0</div>-->
-<!--                    <div class="status-text">반려된 문서</div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="status-cards">
+                <div class="status-card card-waiting" onclick="location.href='/approvals/waiting'">
+                    <h3>결재 대기</h3>
+                    <div class="status-count" th:text="${waitingCount}">0</div>
+                    <div class="status-text">대기중인 문서</div>
+                </div>
+                <div class="status-card card-progress" onclick="location.href='/approvals/inProgress'">
+                    <h3>결재 진행중</h3>
+                    <div class="status-count" th:text="${inProgressCount}">0</div>
+                    <div class="status-text">처리중인 문서</div>
+                </div>
+                <div class="status-card card-completed" onclick="location.href='/approvals/completed'">
+                    <h3>결재 완료</h3>
+                    <div class="status-count" th:text="${completedCount}">0</div>
+                    <div class="status-text">완료된 문서</div>
+                </div>
+                <div class="status-card card-rejected" onclick="location.href='/approvals/rejected'">
+                    <h3>결재 반려</h3>
+                    <div class="status-count" th:text="${rejectedCount}">0</div>
+                    <div class="status-text">반려된 문서</div>
+                </div>
+            </div>
 
-<!--            <div class="documents-panel">-->
-<!--                <div class="tab-container">-->
-<!--                    <button class="tab-button active" onclick="showTab('draft')">기안 문서</button>-->
-<!--                    <button class="tab-button" onclick="showTab('approve')">결재할 문서</button>-->
-<!--                    <button class="tab-button" onclick="showTab('reference')">참조 문서</button>-->
-<!--                </div>-->
+            <div class="documents-panel">
+                <div class="tab-container">
+                    <button class="tab-button active" onclick="showTab('draft')">기안 문서</button>
+                    <button class="tab-button" onclick="showTab('approve')">결재할 문서</button>
+                    <button class="tab-button" onclick="showTab('reference')">참조 문서</button>
+                </div>
 
-<!--                &lt;!&ndash; 기안 문서 탭 &ndash;&gt;-->
-<!--                <div id="draft-tab" class="tab-content active">-->
-<!--                    <ul class="document-list">-->
-<!--                        <li th:each="doc : ${draftDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">-->
-<!--                            <div class="document-info">-->
-<!--                                <span class="document-title" th:text="${doc.title}"></span>-->
-<!--                                <span class="document-date" th:text="${#temporals.format(doc.createDate, 'yyyy-MM-dd')}"></span>-->
-<!--                            </div>-->
-<!--                            <div class="approver-info">-->
-<!--                                <span class="approver-label">현재 결재자</span>-->
-<!--                                <span th:text="${doc.currentApprover}"></span>-->
-<!--                            </div>-->
-<!--                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
+                <!-- 기안 문서 탭 -->
+                <div id="draft-tab" class="tab-content active">
+                    <ul class="document-list">
+                        <li th:each="doc : ${draftDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div class="approver-info">
+                                <span class="approver-label">현재 결재자</span>
+                                <span th:text="${doc.currentApprover}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
 
-<!--                &lt;!&ndash; 결재할 문서 탭 &ndash;&gt;-->
-<!--                <div id="approve-tab" class="tab-content">-->
-<!--                    <ul class="document-list">-->
-<!--                        <li th:each="doc : ${approveDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">-->
-<!--                            <div class="document-info">-->
-<!--                                <span class="document-title" th:text="${doc.title}"></span>-->
-<!--                                <span class="document-date" th:text="${#temporals.format(doc.createDate, 'yyyy-MM-dd')}"></span>-->
-<!--                            </div>-->
-<!--                            <div class="approver-info">-->
-<!--                                <span class="approver-label">결재 순서</span>-->
-<!--                                <span th:text="${doc.approvalOrder + '/' + doc.totalApprovers}"></span>-->
-<!--                            </div>-->
-<!--                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
+                <!-- 결재할 문서 탭 -->
+                <div id="approve-tab" class="tab-content">
+                    <ul class="document-list">
+                        <li th:each="doc : ${approveDocuments}"
+                            th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}"
+                                  th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
 
-<!--                &lt;!&ndash; 참조 문서 탭 &ndash;&gt;-->
-<!--                <div id="reference-tab" class="tab-content">-->
-<!--                    <ul class="document-list">-->
-<!--                        <li th:each="doc : ${referenceDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">-->
-<!--                            <div class="document-info">-->
-<!--                                <span class="document-title" th:text="${doc.title}"></span>-->
-<!--                                <span class="document-date" th:text="${#temporals.format(doc.createDate, 'yyyy-MM-dd')}"></span>-->
-<!--                            </div>-->
-<!--                            <div class="approver-info">-->
-<!--                                <span class="approver-label">기안자</span>-->
-<!--                                <span th:text="${doc.creatorName}"></span>-->
-<!--                            </div>-->
-<!--                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+                <!-- 참조 문서 탭 -->
+                <div id="reference-tab" class="tab-content">
+                    <ul class="document-list">
+                        <li th:each="doc : ${referenceDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div class="approver-info">
+                                <span class="approver-label">기안자</span>
+                                <span th:text="${doc.currentApprover}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
 
 
 <script src="/js/approval/approvalMain.js"></script>

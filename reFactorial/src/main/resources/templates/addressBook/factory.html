@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="snowfall-container" id="snowContainer"></div>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 
 <section class="container">
   <!-- Sidebar -->
@@ -32,7 +32,7 @@
   <div class="main-content">
     <!-- 검색 바 -->
     <div class="top-bar">
-      <input type="text" id="factory-search-input" placeholder="이름 또는 부서명 검색">
+      <input type="text" id="factory-search-input" placeholder="공장명 또는 담당자이름 검색">
       <button onclick="searchFactories()">검색</button>
     </div>
 
@@ -50,7 +50,7 @@
 </section>
 
 
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
 <script src="/js/addressBook/factory.js"></script>
 
 
