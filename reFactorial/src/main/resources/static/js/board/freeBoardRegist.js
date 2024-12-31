@@ -186,3 +186,4 @@ function initSelectOption(){
 updateDeleteButtons();  // 삭제버튼 표시여부
 initSelectOption();     // 카테고리 3,4일 때 첨부파일,투표 표시
 
+
