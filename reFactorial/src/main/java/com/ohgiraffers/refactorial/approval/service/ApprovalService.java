@@ -276,8 +276,11 @@
 
 
 
-        // 반려 처리
         public void reject(String pmId, String empId, String reason) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("pmId", pmId);
+            params.put("status", "반려");
+
             // 1. 해당 승인자의 상태를 반려로 변경
             approvalMapper.updateApprovalStatusWithReason(pmId, empId, "반려", reason);
 
@@ -285,7 +288,7 @@
             approvalMapper.updatePreviousApproversToRejected(pmId, empId);
 
             // 3. 문서 전체 상태를 '반려'로 업데이트
-            approvalMapper.updateAllApprovalStatusesToRejected(pmId, "반려");
+            approvalMapper.updateAllApprovalStatusesToRejected(params);
         }
 
         // 전결 처리

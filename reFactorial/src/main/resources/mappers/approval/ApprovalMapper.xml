@@ -624,11 +624,11 @@
     </select>
 
     <update id="updatePreviousApproversToRejected">
-        <![CDATA[
+       <![CDATA[
         UPDATE tbl_approval
         SET pm_status = '반려'
         WHERE pm_id = #{pmId}
-          AND approval_order < (
+          AND approval_order <= (
             SELECT temp.approval_order
             FROM (
                      SELECT approval_order
