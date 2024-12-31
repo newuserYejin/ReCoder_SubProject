@@ -20,10 +20,11 @@ document.getElementById('add-option').addEventListener('click', function () {
 
     // 새 항목 추가
     const newOption = document.createElement('div');
+
     newOption.classList.add('input-group-item');
     newOption.innerHTML = `
                             <label for="option${optionCount}">항목 ${optionCount} : </label>
-                            <input type="text" id="option${optionCount}" name="option${optionCount}" placeholder="내용을 입력하세요">
+                            <input type="text" name="option${optionCount}" placeholder="내용을 입력하세요">
                             <button type="button" class="delete-option">삭제</button>`;
     pollContainer.appendChild(newOption);
 
@@ -154,12 +155,21 @@ function onChangeSelectOption(){
 function initSelectOption(){
     const Url = new URLSearchParams(window.location.search);
 
-    const categoryCodeValue = Url.get("categoryCode")
+    const categoryCodeValue = Url.get("categoryCode");
 
+    console.log("categoryCodeValue: ",categoryCodeValue)
     const voteContainer = document.querySelector('#vote-container');
 
     const postFileBox = document.querySelector(".postFileBox");
     const freeBoardForm = document.querySelector('#freeBoardForm');
+    const postId = document.querySelector('#postId');
+    //
+    const addOption = document.querySelector('#add-option');
+
+    // 수정일 경우에는 항목 추가 버튼을 숨김
+    if(postId.value){
+        addOption.style.display = 'none';
+    }
 
     // 카테고리 코드가 4일 경우 투표항목 노출
     if(categoryCodeValue == 4){
@@ -184,3 +194,5 @@ function initSelectOption(){
 // 처음 페이지 로딩 시 최소 항목 수 보장
 updateDeleteButtons();  // 삭제버튼 표시여부
 initSelectOption();     // 카테고리 3,4일 때 첨부파일,투표 표시
+
+

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+    <!-- 여기 까지 -->
+
+    <link rel="stylesheet" th:href="@{/css/admin/notificationEvent.css}">
+
+</head>
+<body>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">공지사항 / 이벤트 등록</div>
+
+                <ul class="sideMenuUl">
+                    <li id="notificationSelect" th:onclick="|location.href='@{/admin/notificationEvent(categoryCode=1, page=1)}'|">공지사항</li>
+                    <li id="eventSelect" th:onclick="|location.href='@{/admin/notificationEvent(categoryCode=5, page=1)}'|">이벤트</li>
+                    <li id="addPost">등록하기</li>
+                </ul>
+            </div>
+            <div class="menuMainBox">
+
+                <div class="postHeader">
+                    <div class="postNum">번호</div>
+                    <div class="postTitle">제목</div>
+                    <div class="postDate">작성일</div>
+                </div>
+
+                <div class="noPostText" th:if="${postList.isEmpty()}">게시글이 없습니다.</div>
+
+                <div class="postItemBox">
+                    <div class="postItem" th:if="${postList.size() > 0}" th:each="post,postStat : ${postList}" th:data-post-id="${post.postId}">
+                        <div class="postNum" th:text="${postList.size() - postStat.index}">번호</div>
+                        <div class="postTitle" th:text="${post.postTitle}">제목</div>
+                        <div class="postDate" th:text="${#temporals.format(post.postCreationDate, 'yyyy-MM-dd')}">작성일</div>
+                    </div>
+                </div>
+
+
+                <!-- 페이지네이션 표시 -->
+                <div class="pagination">
+                    <ul>
+                        <!-- 첫 페이지 -->
+                        <li class="first">
+                            <a href="?page=1"><<</a>
+                        </li>
+                        <!-- 이전 페이지 -->
+                        <li class="prev">
+                            <a th:href="@{'/board/list?page=' + ${prevPage}}" class="prev"><</a>
+                        </li>
+
+                        <!-- 페이지 번호들 -->
+                        <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <li th:classappend="${i == currentPage ? 'active' : ''}">
+                                <a th:href="@{'/board/list?page=' + ${i}}" th:text="${i}"></a>
+                            </li>
+                        </th:block>
+
+                        <!-- 다음 페이지 -->
+                        <li class="next">
+                            <a th:href="@{'/board/list?page=' + ${nextPage}}" class="next">></a>
+                        </li>
+                        <!-- 마지막 페이지 -->
+                        <li class="last">
+                            <a th:href="@{'/board/list?page=' + ${totalPages}}" class="last">>></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+    <script>
+        const postList = '[[${postList}]]'
+    </script>
+
+    <script th:src="@{/js/admin/notificationEvent.js}"></script>
+</body>
+</html>

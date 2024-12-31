@@ -11,7 +11,7 @@ let sendSearchEmpName = '';
 let searchDept = null;
 let searchEmpName = null;
 
-let randomStr = 'P';
+let randomStr = 'C';
 
 // 정보수정 꺼
 document.addEventListener("DOMContentLoaded", function () {
@@ -464,7 +464,7 @@ function setRandomStr(deptCode){
     const value = deptCode.value;
 
     if (value == 1){
-        randomStr = 'P'
+        randomStr = 'C'
     } else if(value == 2){
         randomStr = 'D'
     } else if(value == 3){

@@ -50,7 +50,7 @@ public class AddressBookController {
     @GetMapping("/employeeAddressBook")
     public String getAddressBookPage(){
 
-        return "/addressBook/addressBookMain";
+        return "addressBook/addressBookMain";
     }
 
 
@@ -70,7 +70,7 @@ public class AddressBookController {
 
     @GetMapping("/factoryAddressBook")
     public String factoryAddressBook(){
-        return "/addressBook/factory";
+        return "addressBook/factory";
     }
 
 

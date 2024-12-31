@@ -77,6 +77,11 @@ public class BoardService {
         boardMapper.optionResult(options);
     }
 
+    // 특정 게시글에 해당하는 투표 항목 목록 삭제
+    public void deleteVoteItemList(String postId) {
+
+        boardMapper.deleteVoteItemList(postId);
+    }
     public List<VoteItemDTO> itemView(String postId) {
 
         return boardMapper.itemView(postId);

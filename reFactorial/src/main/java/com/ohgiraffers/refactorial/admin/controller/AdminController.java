@@ -8,6 +8,8 @@ import com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO;
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
 import com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO;
+import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
+import com.ohgiraffers.refactorial.board.service.BoardService;
 import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import com.ohgiraffers.refactorial.user.model.service.MemberService;
@@ -32,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.FileSystems;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +51,9 @@ public class AdminController {
     private MemberService ms;
     @Autowired
     private SpringTemplateEngine templateEngine;
+
+    @Autowired
+    private BoardService boardService;
 
     // 사원 페이지
     @GetMapping("employee")
@@ -233,7 +239,7 @@ public class AdminController {
 
             renderer.getFontResolver()
                     .addFont(
-                            new ClassPathResource("static/font/NanumGothic.ttf").getURL().toString(),
+                            new ClassPathResource("NanumGothic.ttf").getURL().toString(),
                             BaseFont.IDENTITY_H,
                             BaseFont.EMBEDDED
                     );
@@ -250,7 +256,7 @@ public class AdminController {
 
     @GetMapping("product")
     public String adminProduct(){
-        return "/admin/admin_product";
+        return "admin/admin_product";
     }
 
     @PostMapping("addProduct")
@@ -318,7 +324,7 @@ public class AdminController {
 
     @GetMapping("factoryAddressBook")
     public String adminFactoryAddressBook(){
-        return "/admin/admin_factoryAddressBook";
+        return "admin/admin_factoryAddressBook";
     }
 
 
@@ -376,7 +382,6 @@ public class AdminController {
         }
     }
 
-
     @GetMapping("/factories")
     @ResponseBody
     public List<FactoryDTO> getAllFactories() {
@@ -395,5 +400,120 @@ public class AdminController {
         return adminService.getFactoryById(id);
     }
 
+    @GetMapping("notificationEvent")
+    public String notificationEventPage(
+                                        @RequestParam int categoryCode, Model model,
+                                        @RequestParam(value = "page", defaultValue = "1") int currentPage,
+                                        @RequestParam(required = false) String searchContents
+                                        ){
+
+        int limit = 10; // 한 페이지당 문서 수
+        int totalBoardList = boardService.getBoardListCount(categoryCode); // 전체 게시글 개수 가져오기
+        int totalPages = totalBoardList > 0 ? (int) Math.ceil((double) totalBoardList / limit) : 1; // 총 페이지 수
+
+        // 현재 페이지 범위 검증
+        if (currentPage < 1) {
+            currentPage = 1;
+        }
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        int offset = (currentPage - 1) * limit; // offset 계산
+
+        List<BoardDTO> postList = boardService.postList(categoryCode, limit, offset, searchContents);
+
+        // 문서 번호 설정
+        for (int i = 0; i < postList.size(); i++) {
+            postList.get(i).setRowNum(totalBoardList - offset - i);
+        }
+
+        // 이전/다음 페이지 설정
+        int prevPage = currentPage > 1 ? currentPage - 1 : 1;
+        int nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+
+        model.addAttribute("currentPage", currentPage); // 현재 페이지 번호
+        model.addAttribute("totalPages", totalPages); // 전체 페이지 수
+        model.addAttribute("prevPage", prevPage); // 이전 페이지 번호
+        model.addAttribute("nextPage", nextPage); // 다음 페이지 번호
+        model.addAttribute("totalBoardList", totalBoardList); // 전체 페이지 갯수
+
+        model.addAttribute("postList", postList);    // 템플릿에 값 전달
+        model.addAttribute("categoryCode", categoryCode);   // 카테고리코드를 게시물 등록페이지로 이동시키기 위한 셋팅
+
+        return "admin/notificationEvent";
+    }
+
+    @GetMapping("postDetail")
+    @ResponseBody
+    public Map<String, Object> getPostDetail(@RequestParam String postId){
+       BoardDTO postDetail =  boardService.postDetail(postId);
+
+       Map<String, Object> result = new HashMap<>();
+
+       result.put("postDetail",postDetail);
+
+       return result;
+    }
+
+    @PostMapping("modifyPost")
+    @ResponseBody
+    public Map<String, Object> modifyPost(@RequestBody Map<String, String> requestData,HttpSession session){
+        String postId = requestData.get("postId");
+        String postTitle = requestData.get("postTitle");
+        String postContent = requestData.get("postContent");
+        String postCategory = requestData.get("postCategory");
+
+        System.out.println("postCategory = " + postCategory);
+
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
+
+        System.out.println("empId = " + empId);
+
+        if (postId != null){
+            System.out.println("postId = " + postId);
+
+            BoardDTO post = boardService.postDetail(postId);
+
+            System.out.println("post = " + post);
+
+            LocalDateTime now = LocalDateTime.now();
+            post.setPostTitle(postTitle);
+            post.setPostContent(postContent);
+            post.setPostModificationDate(now);
+
+            System.out.println("업데이트 보내기 전 post = " + post);
+
+            boardService.post(post);
+        } else{
+            String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            BoardDTO newPost = new BoardDTO();
+
+            newPost.setPostId(boardId);
+            newPost.setPostTitle(postTitle);
+            newPost.setPostContent(postContent);
+            newPost.setEmpId(empId);
+            newPost.setCategoryCode(Integer.parseInt(postCategory));
+            newPost.setPostCreationDate(currentTime);
+            newPost.setPostModificationDate(currentTime);
+
+            System.out.println("newPost = " + newPost);
+
+            boardService.post(newPost);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        return result;
+    }
+
+    @GetMapping("deletePost")
+    @ResponseBody
+    public void deletePost(@RequestParam String postId){
+        System.out.println("postId = " + postId);
+        boardService.postDelete(postId);
+    }
 
 }
