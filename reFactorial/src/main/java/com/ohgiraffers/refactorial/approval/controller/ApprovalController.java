@@ -617,8 +617,14 @@
                     // 결제 신청자 기준으로 연차 업데이트
                     approvalService.updateEmployeeLeave(creatorId, deduction, leaveType);
 
-                    // 업데이트된 정보 다시 조회
-                    LoginUserDTO updatedUser = userMapper.findUserById(creatorId);
+                    // 근태 기록 생성
+                    AttendanceDTO attendanceDTO = new AttendanceDTO();
+                    attendanceDTO.setEmpId(creatorId);
+                    attendanceDTO.setAttDate(leaveDate);
+                    attendanceDTO.setAttTime(LocalTime.of(9, 0)); // 기본 출근 시간
+                    attendanceDTO.setAttStatus(leaveType.equals("연차") ? "연차" : "반차");
+
+                    approvalService.insertAttendanceRecord(attendanceDTO);
                 }
             } else {
                 System.out.println("문서 정보가 없습니다.");
