@@ -19,5 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/uploadImg/**")
                 .addResourceLocations("file:///"+uploadPath.replace("\\", "/"));
+
+        String fontPath = projectRootPath + "/src/main/resources/static/fonts/";
+        registry.addResourceHandler("/fonts/**")
+                .addResourceLocations("file:///"+fontPath.replace("\\","/"));
     }
 }

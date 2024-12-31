@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>결제 문서 상세보기</title>
+  <title>결재 문서 상세보기</title>
   <!-- 폰트 적용 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,12 +14,12 @@
   <link rel="stylesheet" href="/css/approval/detail.css">
 </head>
 <body>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 
 <section class="wrapper">
   <!-- 사이드바 -->
   <div class="sidebar">
-    <div class="sidebar-title">전자결제</div>
+    <div class="sidebar-title">전자결재</div>
     <ul>
       <li><a href="/approvals/waiting">대기 중</a></li>
       <li><a href="/approvals/inProgress">진행 중</a></li>
@@ -70,8 +70,8 @@
 
 <!--    &lt;!&ndash; 도장 영역 &ndash;&gt;-->
 <!--    <div id="stamp-container" class="stamp-container">-->
-<!--      <img src="/images/approved.png" alt="결제 승인 도장" class="stamp stamp-approved">-->
-<!--      <img src="/images/rejected.png" alt="결제 반려 도장" class="stamp stamp-rejected">-->
+<!--      <img src="/images/approved.png" alt="결재 승인 도장" class="stamp stamp-approved">-->
+<!--      <img src="/images/rejected.png" alt="결재 반려 도장" class="stamp stamp-rejected">-->
 <!--    </div>-->
 
     <!-- 문서 내용 -->
@@ -140,7 +140,7 @@
       </div>
 
       <!-- 첨부파일 -->
-        <div th:if="${attachmentFileList != null}">
+        <div th:if="${attachmentFileList != null}" class="additional-info">
           <h3>첨부파일</h3>
           <ul>
             <li th:each="file : ${attachmentFileList}">
@@ -170,7 +170,7 @@
   </div>
 </div>
 
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
 
 <script src="/js/approval/detail.js"></script>
 

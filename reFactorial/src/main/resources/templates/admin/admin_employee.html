@@ -24,7 +24,7 @@
 </head>
 <body>
 
-    <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
     <section>
         <div class="leftBox">
             <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
@@ -46,7 +46,7 @@
         </div>
     </section>
     <!-- 유저 페이지들과 footer 공동 사용 -->
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
 
     <script th:src="@{/js/admin/admin_employee.js}"></script>
 </body>

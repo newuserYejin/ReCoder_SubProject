@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class FileDTO {
 
     private int fileId;          // 파일 ID
-    private String pmId;         // 결제 문서 ID
+    private String pmId;         // 결재 문서 ID
     private String fileName;     // 파일 이름
     private String filePath;     // 파일 경로
     private long fileSize;       // 파일 크기

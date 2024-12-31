@@ -22,7 +22,7 @@
 </head>
 <body>
 
-    <header th:replace="~{/common/header::headerFragment}"></header>
+    <header th:replace="~{common/header::headerFragment}"></header>
 <!--    <section th:replace="~{/common/test::testFragment}"></section>-->
     <section>
 
@@ -38,8 +38,8 @@
                         <div class="profileImg">
                             <img th:src="${LoginUserInfo != null ?
                                         ( LoginUserInfo.profile != null && LoginUserInfo.profile != '' && !LoginUserInfo.profile.isEmpty()
-                                        ? '/uploadImg/' + LoginUserInfo.profile : '/uploadImg/defaultImg.png')
-                                        : '/uploadImg/defaultImg.png'}">
+                                        ? 'uploadImg/' + LoginUserInfo.profile : 'uploadImg/defaultImg.png')
+                                        : 'uploadImg/defaultImg.png'}">
     <!--                        <img src="../static/images/loopy.jpg">-->
                         </div>
                         <div class="profileInfo" th:if="${LoginUserInfo}">
@@ -158,7 +158,7 @@
         </div>
 
     </section>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
@@ -171,7 +171,7 @@
                     right: 'customBtn today prev next'
                 },
                 titleFormat: function(date) {
-                    return date.date.year + '년 ' + (parseInt(date.date.month) + 1) + '월' + "(출석체크 이벤트)";
+                    return (parseInt(date.date.month) + 1) + '월' + "(출석체크 이벤트)";
                 },
                 customButtons:{
                     customBtn :{

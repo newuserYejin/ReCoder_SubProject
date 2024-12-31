@@ -25,7 +25,7 @@
 
 </head>
 <body>
-    <header th:replace="~{/common/header::headerFragment}"></header>
+    <header th:replace="~{common/header::headerFragment}"></header>
     <section>
         <div class="myPageSection">
             <div class="pageTitle">마이페이지</div>
@@ -35,7 +35,7 @@
     <!--이미지 박스-->
                     <div class="profileImg">
 <!--                        <img src="../images/loopy.jpg">-->
-                        <div class="profileImgBox" style="background-image: url('../uploadImg/defaultImg.png')">
+                        <div class="profileImgBox" style="background-image: url('uploadImg/defaultImg.png')">
 <!--                        <div class="profileImgBox" style="background-image: url('../../static/images/loopy.jpg')">-->
                         <!--                            <img src="../../static/images/loopy.jpg">-->
                             <label for="profileImg">
@@ -133,7 +133,7 @@
             </div>
         </div>
     </section>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
 
     <div class="modal fade" id="passwordChangeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

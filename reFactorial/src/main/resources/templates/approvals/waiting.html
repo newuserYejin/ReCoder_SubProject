@@ -18,11 +18,11 @@
     <link rel="stylesheet" th:href="@{/css/approval/waiting.css}">
 </head>
 <body>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 <section>
     <div class="container">
         <div class="sidebar">
-            <div class="sidebar-title">전자결제</div>
+            <div class="sidebar-title">전자결재</div>
             <ul>
                 <li><a href="/approvals/waiting">대기 중</a></li>
                 <li><a href="/approvals/inProgress">진행 중</a></li>
@@ -49,6 +49,9 @@
                 <a th:href="@{'/approvals/detail/' + ${doc.pmId}}" th:text="${doc.title}"></a>
                 <div class="table-cell" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></div>
                 <div class="table-cell" th:text="${doc.status}"></div>
+            </div>
+            <div th:if="${#lists.isEmpty(documents)}" class="no-documents">
+                게시글이 없습니다.
             </div>
 
             <!-- 페이지네이션 표시 -->
@@ -85,7 +88,7 @@
         </div>
     </div>
 </section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
 
 
 </body>

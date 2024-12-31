@@ -62,8 +62,8 @@
         @GetMapping("approvalPage")
         public String paymentPage() {
 
-            return "/approvals/approvalPage";
-        }
+        return "approvals/approvalPage";
+    }
 
         @GetMapping("completed")
         public String getCompletedDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
@@ -99,8 +99,8 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/completed";
-        }
+        return "approvals/completed";
+    }
 
         @GetMapping("inProgress")
         public String getInProgressDocuments(@RequestParam(value = "page", defaultValue = "1") int currentPage,
@@ -136,8 +136,8 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/inProgress";
-        }
+        return "approvals/inProgress";
+    }
 
 
         @GetMapping("rejected")
@@ -174,8 +174,8 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/rejected";
-        }
+        return "approvals/rejected";
+    }
 
 
         @GetMapping("searchEmployee")
@@ -200,8 +200,8 @@
 
             model.addAttribute("employees", employees);
 
-            return "/approvals/searchEmployee";
-        }
+        return "approvals/searchEmployee";
+    }
 
         @GetMapping("searchReferrers")
         public String searchReferrersController(@RequestParam(value = "name", required = false) String name, Model model) {
@@ -221,9 +221,9 @@
             }
 
 
-            model.addAttribute("referrers", referrers);
-            return "/approvals/searchReferrers";
-        }
+        model.addAttribute("referrers", referrers);
+        return "approvals/searchReferrers";
+    }
 
         @PostMapping("/submitApproval")
         public String submitApproval(@ModelAttribute ApprovalRequestDTO approvalRequestDTO,
@@ -255,11 +255,11 @@
                 approverNames.add(approvalRequestDTO.getFinalApprover());
             }
 
-            // 승인자가 없으면 오류 메시지 반환
-            if (approverNames.isEmpty()) {
-                model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
-                return "/approvals/approvalPage";
-            }
+        // 승인자가 없으면 오류 메시지 반환
+        if (approverNames.isEmpty()) {
+            model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
+            return "approvals/approvalPage";
+        }
 
             // 이름으로 emp_id 조회
             List<Map<String, Object>> approvers = new ArrayList<>();
@@ -290,24 +290,24 @@
             // 결재문서 저장
             String pmId = approvalService.saveApproval(approvalRequestDTO, creatorId, fileList);
 
-            // **추가된 휴가 날짜 업데이트 로직**
-            if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
-                if (approvalRequestDTO.getLeaveDate() != null) {
-                    // 휴가 날짜 업데이트
-                    approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
-                } else {
-                    model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
-                    return "/approvals/approvalPage";
-                }
-
-                if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
-                    // 휴가 유형 업데이트
-                    approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
-                } else {
-                    model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
-                    return "/approvals/approvalPage";
-                }
+        // **추가된 휴가 날짜 업데이트 로직**
+        if ("category3".equals(approvalRequestDTO.getCategory())) { // 휴가 신청서 분류 확인
+            if (approvalRequestDTO.getLeaveDate() != null) {
+                // 휴가 날짜 업데이트
+                approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
+            } else {
+                model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
+                return "approvals/approvalPage";
             }
+
+            if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
+                // 휴가 유형 업데이트
+                approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
+            } else {
+                model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
+                return "approvals/approvalPage";
+            }
+        }
 
             // 승인자 저장 (입력된 승인자만 저장)
             approvalService.saveApprovers(pmId, approvers);
@@ -318,7 +318,7 @@
             approvalService.saveReferrers(pmId, referrerIds);
 
 
-            return "/approvals/approvalMain";
+            return "redirect:/user/approvalMain";
         }
 
 
@@ -359,8 +359,9 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-            return "/approvals/waiting";
-        }
+
+        return "approvals/waiting";
+    }
 
 
         @GetMapping("referenceDocuments")
@@ -437,15 +438,12 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
+        return "approvals/myDocuments";
+    }
 
-
-
-            return "/approvals/myDocuments";
-        }
-
-        // 결제문서 상세페이지 조회
-        @GetMapping("detail/{pmId}")
-        public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
+    // 결제문서 상세페이지 조회
+    @GetMapping("detail/{pmId}")
+    public String getApprovalDetail(@PathVariable("pmId") String pmId, Model model, HttpSession session) {
 
             // pmId에 해당하는 결재 문서 정보 조회
             DocumentDTO document = approvalService.getDocumentById(pmId);
@@ -524,12 +522,12 @@
             model.addAttribute("finalApprover", finalApprover);
             model.addAttribute("referrerNames", referrerNames);
 
-            model.addAttribute("currentOrder", currentOrder);
-            model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
-            model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
-            model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
-            return "/approvals/detail";
-        }
+        model.addAttribute("currentOrder", currentOrder);
+        model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
+        model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
+        model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
+        return "approvals/detail";
+    }
 
         @PostMapping("detail")
         public String handleApprovalAction(@RequestParam("pmId") String pmId,
