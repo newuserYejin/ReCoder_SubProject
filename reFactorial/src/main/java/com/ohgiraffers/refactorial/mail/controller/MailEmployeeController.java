@@ -1,4 +1,5 @@
 package com.ohgiraffers.refactorial.mail.controller;
+
 import com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO;
 import com.ohgiraffers.refactorial.mail.service.MailEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class MailEmployeeController {
         if (searchReceiverInput != null && !searchReceiverInput.isEmpty()) {
             return mailEmployeeService.searchMailEmployees(searchReceiverInput);
         } else {
+            System.out.println("수신자검색" + mailEmployeeService.getAllMailEmployees());
             return mailEmployeeService.getAllMailEmployees(); // 모든 직원 목록을 반환하는 메서드
         }
     }

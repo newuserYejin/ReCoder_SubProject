@@ -19,16 +19,23 @@
 
 </head>
 <body>
-<header>
-</header>
-
+<header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
 <section class="inquiry-detail">
 
     <div class="leftBox">
         <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
     </div>
 
-    <h1>문의 상세</h1>
+    <div class="rightBox">
+        <div class="sideMenu">
+            <div class="sideTitle">1:1 문의</div>
+
+            <ul class="sideMenuUl">
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">전체 조회</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryNoAnswerList}'|">미답변</li>
+                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">답변완료</li>
+            </ul>
+        </div>
 
     <table>
         <tr>
@@ -52,8 +59,8 @@
             <td th:text="${adminInquiries.answerDetail != null ? adminInquiries.answerDetail : '없음'}"></td>
         </tr>
         <tr>
-            <th>문의 고유 ID (iqrValue)</th>
-            <td th:text="${adminInquiries.iqrValue}"></td>
+            <th>문의자</th>
+            <td th:text="${adminInquiries.empName}"></td>
         </tr>
         <tr>
             <th>문의자</th>
@@ -104,7 +111,7 @@
     </div>
 
     <div class="back-button">
-        <a href="/inquiry/inquiryList">목록으로 돌아가기</a>
+        <a href="/admin/adminInquiryList">목록으로 돌아가기</a>
     </div>
 </section>
 

@@ -42,4 +42,9 @@ public class InquiryService {
     public InquiryDTO getInquiryDetail(String iqrValue) {
         return inquiryMapper.selectInquiryDetail(iqrValue);
     }
+
+    // 문의 삭제 메소드
+    public void deleteInquiry(String iqrValue) {
+        inquiryMapper.deleteInquiry(iqrValue);
+    }
 }
