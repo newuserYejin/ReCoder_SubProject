@@ -82,6 +82,7 @@ html, body {
 
 /* 상단 버튼 영역 */
 .button-container {
+    justify-content: flex-end;
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
@@ -318,6 +319,19 @@ html, body {
     border-radius: 15px;
     font-size: 12px;
     font-weight: 500;
+}
+
+
+
+.sidebar-title a {
+    color: #000; /* 원래 색상 유지 */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-title a:hover {
+    color: #000; /* 호버 시에도 색상 변경 없음 */
+    text-decoration: none;
 }
 
 /*.top-bar {*/

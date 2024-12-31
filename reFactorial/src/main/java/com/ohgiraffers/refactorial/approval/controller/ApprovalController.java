@@ -7,6 +7,7 @@
     import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
     import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
+    import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpSession;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.core.io.FileSystemResource;
@@ -324,7 +325,7 @@
 
         // 대기 중
         @GetMapping("waiting")
-        public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
+        public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session, HttpServletRequest request) {
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
             if (user == null) {
@@ -358,6 +359,7 @@
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
+            model.addAttribute("currentUri", request.getRequestURI());
 
             return "/approvals/waiting";
         }
