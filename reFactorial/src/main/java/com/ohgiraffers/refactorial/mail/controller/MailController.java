@@ -203,5 +203,6 @@ public class MailController {
         mailService.removeToTrash(emailId);
 
         return "redirect:/mail/mailBin"; // 휴지통 페이지로 리디렉션
+//        안녕
     }
 }
