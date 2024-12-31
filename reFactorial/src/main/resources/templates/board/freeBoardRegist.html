@@ -31,7 +31,7 @@
 
             <form id="freeBoardForm" action="/board/freeBoardRegist" method="post" enctype="multipart/form-data">
 
-                <input type="hidden" name="postId" th:value="${postDetail != null} ? ${postDetail.postId} : ''">
+                <input type="hidden" id="postId" name="postId" th:value="${postDetail != null} ? ${postDetail.postId} : ''">
 
                 <div class="BoradRegist_topBox">
 
@@ -84,16 +84,25 @@
 
                         <div id="poll-options" class="container">
                             <!-- 기본 항목 1과 2는 삭제 버튼을 없애고 항상 표시 -->
-                            <div class="input-group-item">
-                                <label for="option1">항목 1 : </label>
-                                <input type="text" id="option1" name="option1" placeholder="내용을 입력하세요">
-                            </div>
+                            <th:block th:if="!${postDetail}">
+                                <div class="input-group-item">
+                                    <label for="option1">항목 1 : </label>
+                                    <input type="text" id="option1" name="option1" placeholder="내용을 입력하세요">
+                                </div>
 
-                            <div class="input-group-item">
-                                <label for="option2">항목 2 : </label>
-                                <input type="text" id="option2" name="option2" placeholder="내용을 입력하세요">
-                            </div>
+                                <div class="input-group-item">
+                                    <label for="option2">항목 2 : </label>
+                                    <input type="text" id="option2" name="option2" placeholder="내용을 입력하세요">
+                                </div>
+                            </th:block>
+                            <th:block th:if="${postDetail}">
+                                <div th:each="voteItem, stat : ${voteItemList}" class="input-group-item">
+                                    <label th:for="|option${stat.index + 1}|" th:text="|항목${stat.index + 1}:|"></label>
+                                    <input type="text" th:id="|option${stat.index + 1}|" th:name="|option${stat.index + 1}|" th:value="${voteItem.itemTitle}" placeholder="내용을 입력하세요">
+                                </div>
+                            </th:block>
                         </div>
+
                         <p id="error-message" style="color: #2b2b2b; display: none;">최대 항목 수는 5개입니다.</p>
                     </div>
                 </div>
