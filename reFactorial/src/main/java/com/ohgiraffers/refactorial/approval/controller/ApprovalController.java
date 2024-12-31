@@ -7,7 +7,6 @@
     import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
     import com.ohgiraffers.refactorial.user.model.dao.UserMapper;
     import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
-    import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpSession;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.core.io.FileSystemResource;
@@ -181,14 +180,16 @@
 
         @GetMapping("searchEmployee")
         public String searchEmployeeController(@RequestParam("name") String name, Model model) {
+
+
             List<EmployeeDTO> employees;
             if (name != null && !name.isEmpty()) {
-                // 입력된 이름을 기반으로 검색
                 employees = approvalService.searchByName(name);
             } else {
-                // 이름이 없으면 전체 리스트 반환
                 employees = approvalService.findAllEmployees();
             }
+
+
 
             // 부서명과 직책명을 추가로 조회하여 설정
             for (EmployeeDTO employee : employees) {
@@ -325,7 +326,7 @@
 
         // 대기 중
         @GetMapping("waiting")
-        public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session, HttpServletRequest request) {
+        public String getApprovalWaiting(@RequestParam(value = "page", defaultValue = "1") int currentPage, Model model, HttpSession session) {
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
             if (user == null) {
@@ -359,7 +360,7 @@
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
-            model.addAttribute("currentUri", request.getRequestURI());
+
 
             return "/approvals/waiting";
         }

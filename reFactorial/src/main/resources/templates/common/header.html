@@ -31,14 +31,15 @@
                         </div>
 
                         <!-- 전자결재 -->
-                        <div class="menu_item" onclick="location.href='/user/approvalMain'">
-                            <p class="menu_title">전자결제</p>
+                        <div class="menu_item">
+                            <p class="menu_title" onclick="location.href='/user/approvalMain'">전자결제</p>
                             <ul class="submenuBox">
-                                <li>대기 중</li>
-                                <li>완료</li>
-                                <li>반려</li>
-                                <li>내가 작성한</li>
-                                <li>진행 중</li>
+                                <li onclick="location.href='/approvals/waiting'">대기 중</li>
+                                <li onclick="location.href='/approvals/inProgress'">진행 중</li>
+                                <li onclick="location.href='/approvals/completed'">완료</li>
+                                <li onclick="location.href='/approvals/rejected'">반려</li>
+                                <li onclick="location.href='/approvals/myDocuments'">내가 작성한</li>
+                                <li onclick="location.href='/approvals/referenceDocuments'">참조</li>
                             </ul>
                         </div>
 
@@ -66,11 +67,11 @@
                         </div>
 
                         <!-- 자사 페이지 -->
-                        <div class="menu_item" onclick="location.href='/zasaPage/product'">
-                            <p class="menu_title">자사 페이지</p>
+                        <div class="menu_item" >
+                            <p class="menu_title" onclick="location.href='/zasaPage/product'">자사 페이지</p>
                             <ul class="submenuBox">
-                                <li>제품 페이지</li>
-                                <li>교육 페이지</li>
+                                <li onclick="location.href='/zasaPage/product'">제품 페이지</li>
+                                <li onclick="location.href='/zasaPage/training'">교육 페이지</li>
                             </ul>
                         </div>
 
@@ -78,8 +79,8 @@
                         <div class="menu_item">
                             <p class="menu_title" onclick="location.href='/addressBook/employeeAddressBook'">주소록</p>
                             <ul class="submenuBox">
-                                <li>사내 직원</li>
-                                <li>협력 업체</li>
+                                <li onclick="location.href='/addressBook/employeeAddressBook'">사내 직원</li>
+                                <li onclick="location.href='/addressBook/factoryAddressBook'">협력 업체</li>
                             </ul>
                         </div>
                     </div>

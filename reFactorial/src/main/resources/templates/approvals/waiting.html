@@ -24,24 +24,13 @@
         <div class="sidebar">
             <div class="sidebar-title">전자결제</div>
             <ul>
-                <li th:classappend="${currentUri == '/approvals/waiting' ? 'active' : ''}">
-                    <a href="/approvals/waiting">대기 중</a>
-                </li>
-                <li th:classappend="${#request.requestURI == '/approvals/inProgress' ? 'active' : ''}">
-                    <a href="/approvals/inProgress">진행 중</a>
-                </li>
-                <li th:classappend="${#request.requestURI == '/approvals/completed' ? 'active' : ''}">
-                    <a href="/approvals/completed">완료</a>
-                </li>
-                <li th:classappend="${#request.requestURI == '/approvals/rejected' ? 'active' : ''}">
-                    <a href="/approvals/rejected">반려</a>
-                </li>
-                <li th:classappend="${#request.requestURI == '/approvals/myDocuments' ? 'active' : ''}">
-                    <a href="/approvals/myDocuments">내가 작성한</a>
-                </li>
-                <li th:classappend="${#request.requestURI == '/approvals/referenceDocuments' ? 'active' : ''}">
-                    <a href="/approvals/referenceDocuments">참조</a>
-                </li>
+                <li><a href="/approvals/waiting">대기 중</a></li>
+                <li><a href="/approvals/inProgress">진행 중</a></li>
+                <li><a href="/approvals/completed">완료</a></li>
+                <li><a href="/approvals/rejected">반려</a></li>
+
+                <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+                <li><a href="/approvals/referenceDocuments">참조</a></li>
             </ul>
         </div>
         <div class="main-content">
