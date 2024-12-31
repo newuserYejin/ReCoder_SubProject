@@ -43,7 +43,7 @@ public class MailController {
     public String sendMail(@ModelAttribute MailDTO mailDTO,
                            @RequestParam("mailFiles") List<MultipartFile> mailFileList,
                            HttpSession session,
-                           Model model) throws IOException {
+                           Model model) {
 
         // 로그인 유저 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");

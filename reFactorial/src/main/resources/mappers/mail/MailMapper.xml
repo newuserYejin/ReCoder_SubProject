@@ -35,12 +35,22 @@
 
     <!--내가 보낸 메일-->
     <select id="getSentMails" resultMap="MailResultMap">
-        SELECT *
-        FROM tbl_mail m
-        JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
-        JOIN employee e on e.emp_id = m.sender_emp_id
-        WHERE m.sender_emp_id = #{senderEmpId}
-        AND mr.trash_status = 0
+        SELECT
+        m.email_id,
+        m.email_title,
+        m.email_content,
+        m.sent_date,
+        m.sender_emp_id,
+        mr.receiver_emp_id,
+        e.emp_name AS receiver_emp_name
+        FROM
+        tbl_mail m
+        JOIN
+        tbl_mail_receivers mr ON m.sender_emp_id = mr.receiver_emp_id
+        JOIN
+        employee e ON mr.receiver_emp_id = e.emp_id
+        WHERE
+        m.email_id = #{emailId}
     </select>
 
     <!--내가 받은 메일-->

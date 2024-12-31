@@ -21,10 +21,10 @@
     <div class="sidebar">
       <div class="sidebar-title">사내 메일</div>
       <ul>
-        <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>
+<!--        <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
         <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
         <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
-        <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>
+<!--        <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
       </ul>
     </div>
 
@@ -47,7 +47,7 @@
           <div class="form-group">
             <label for="receiverEmpIds">수신자:</label>
             <input type="text" id="receiverEmpIds" name="receiverEmpIds"
-                   th:value="${originalMail != null ? originalMail.senderEmpId : ''}" readonly/>
+                   th:value="${originalMail != null ? originalMail.receiverEmpName : ''}" readonly/>
           </div>
 
           <!-- 내용 -->
