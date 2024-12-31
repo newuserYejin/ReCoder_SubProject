@@ -66,7 +66,12 @@ public class UploadFileService {
             List<UploadFileDTO> existList = uploadMapper.findFileByMappingId(mappingId);
             System.out.println("existList = " + existList);
 
-            if (existList != null) {
+            if (existList != null &&
+                    (mappingId.startsWith("C") || mappingId.startsWith("D") ||
+                            mappingId.startsWith("M") || mappingId.startsWith("A") || mappingId.startsWith("S") ||
+                            (mappingId.length() > 0 && Character.isDigit(mappingId.charAt(0)))))
+            {
+                System.out.println("mappingId = " + mappingId);
                 uploadMapper.deleteByMappingId(mappingId);
                 System.out.println("삭제함");
             }

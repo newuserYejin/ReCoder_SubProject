@@ -15,7 +15,6 @@
     <!-- 여기 까지 -->
 
     <link rel="stylesheet" th:href="@{/css/admin/notificationEvent.css}">
-    <link rel="stylesheet" href="../../static/css/admin/notificationEvent.css">
 
 </head>
 <body>
@@ -43,7 +42,7 @@
                     <div class="postDate">작성일</div>
                 </div>
 
-                <div th:if="${postList.isEmpty()}">게시글이 없습니다.</div>
+                <div class="noPostText" th:if="${postList.isEmpty()}">게시글이 없습니다.</div>
 
                 <div class="postItemBox">
                     <div class="postItem" th:if="${postList.size() > 0}" th:each="post,postStat : ${postList}" th:data-post-id="${post.postId}">
@@ -89,108 +88,9 @@
     <footer th:replace="~{common/footer::footerFragment}"></footer>
 
     <script>
-        const postItemList = document.querySelectorAll(".postItem")
-
-        postItemList.forEach(postItem =>{
-            postItem.addEventListener("click",(event)=>{
-                const postId = event.currentTarget.dataset.postId;
-                const url = new URLSearchParams(window.location.search);
-
-                fetch(`/admin/postDetail?postId=${postId}`,{
-                    method : 'GET'
-                }).then(response => response.json())
-                    .then(data =>{
-                        console.log("detail data : ",data)
-                        const menuMainBox = document.querySelector(".menuMainBox")
-
-                        if (data.postDetail != null){
-                            menuMainBox.innerHTML ='';
-
-                            menuMainBox.innerHTML = `
-                                    <div class="postInfo">
-                                        <div>
-                                            <label for="postTitle">제목 : </label>
-                                            <input id="postTitle" name="postTitle" type="text" value="${data.postDetail.postTitle}" disabled>
-                                        </div>
-
-                                        <div class="buttons">
-                                            <button id="modifyPost" data-post-id="${data.postDetail.postId}">수정하기</button>
-                                            <button id="modifyDelete" data-post-id="${data.postDetail.postId}">삭제하기</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="postInfo">
-                                        <label for="postDate">작성일 : </label>
-                                        <input id="postDate" name="postDate" type="text" value="${data.postDetail.postCreationDate}" disabled>
-                                    </div>
-
-                                    <div class="postInfo">
-                                        <label for="postContent">내용 </label>
-                                        <textarea id="postContent" name="postContent" disabled>${data.postDetail.postContent}"</textarea>
-                                    </div>
-                            `
-
-                            const modifyBtn = document.getElementById("modifyPost").addEventListener("click",modifyPost);
-                            const modifyDelete = document.getElementById("modifyDelete").addEventListener("click",deletePost);
-                        }
-                    })
-            })
-        })
-
-        function modifyPost(event){
-            const inputTags = document.querySelectorAll("#postTitle, #postContent")
-            const modifyBtn = event.currentTarget
-
-            inputTags.forEach(tag => tag.disabled = false)
-
-            modifyBtn.textContent= "저장하기"
-
-            const modifyDelete = document.getElementById("modifyDelete")
-            modifyDelete.style.display = "none"
-
-            modifyBtn.removeEventListener("click",modifyPost);
-            modifyBtn.addEventListener("click",savePost);
-        }
-
-        function savePost (event){
-            const postId = event.currentTarget.dataset.postId
-            const url = new URLSearchParams(window.location.search)
-            const categoryCode = url.get("categoryCode");
-
-            fetch("/admin/modifyPost",{
-                method:'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body:JSON.stringify({
-                    "postId": postId,
-                    "postTitle": document.getElementById("postTitle").value,
-                    "postContent": document.getElementById("postContent").value
-                })
-            })
-
-            // 새 URL로 리디렉션
-            location.reload(`/admin/postDetail?postId=${postId}`);
-        }
-
-        function deletePost (event){
-            const postId = event.currentTarget.dataset.postId
-
-            console.log("modifyDelete postId: ",postId)
-        }
-
-    </script>
-
-    <script>
         const postList = '[[${postList}]]'
-        const categoryCode = '[[${categoryCode}]]'
-
-        if (postList){
-            console.log("postList: ",postList )
-        }
-        if (categoryCode){
-            console.log("categoryCode: ",categoryCode )
-        }
     </script>
+
+    <script th:src="@{/js/admin/notificationEvent.js}"></script>
 </body>
 </html>

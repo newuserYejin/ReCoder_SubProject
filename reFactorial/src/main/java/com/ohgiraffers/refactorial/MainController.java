@@ -2,6 +2,7 @@ package com.ohgiraffers.refactorial;
 
 import com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO;
 import com.ohgiraffers.refactorial.admin.model.service.AdminService;
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.approval.service.ApprovalService;
 import com.ohgiraffers.refactorial.attendance.service.AttendanceService;
 import com.ohgiraffers.refactorial.board.model.dto.BoardDTO;
@@ -32,7 +33,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class MainController {
     private final InquiryService inquiryService;
     private final AdminService as;
     private final AdminInquiryService adminInquiryService;
-    
+
     @Autowired
     private ApprovalService approvalService;
 
@@ -66,7 +66,6 @@ public class MainController {
                           InquiryService inquiryService,
                           AdminService as,
                           AdminInquiryService adminInquiryService
-
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
@@ -76,7 +75,6 @@ public class MainController {
         this.inquiryService = inquiryService;
         this.as = as;
         this.adminInquiryService = adminInquiryService;
-
     }
 
 
@@ -121,12 +119,12 @@ public class MainController {
         if(!receivedMails.isEmpty()){
             Map<String,Object> findSender = new HashMap<>();
 
-            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
 
             for (MailDTO mail : receivedMails){
                 String name = memberService.getNameById(mail.getSenderEmpId());
 
-                LocalDateTime date = mail.getSentDate();
+                String date = (smp.format(mail.getSentDate()));
 
                 Map<String, Object> mailWithDate = new HashMap<>();
                 mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
@@ -201,30 +199,40 @@ public class MainController {
 
         String empId = user.getEmpId();
 
-        // 상태별 문서 건수 조회
-        model.addAttribute("waitingCount", approvalService.getWaitingCount(empId));
-        model.addAttribute("inProgressCount", approvalService.countInProgressDocuments(empId));
-        model.addAttribute("completedCount", approvalService.getCompletedDocumentsCount(empId));
-        model.addAttribute("rejectedCount", approvalService.countRejectedDocuments(empId));
+        // 각 카테고리별 문서 수 조회
+        int waitingCount = approvalService.getWaitingCount(empId);
+        int inProgressCount = approvalService.getInProgressDocumentsCount(empId);
+        int completedCount = approvalService.getCompletedDocumentsCount(empId);
+        int rejectedCount = approvalService.getRejectedDocumentsCount(empId);
 
+        // 각 탭에 표시할 최근 문서들 조회 (예: 최근 5개)
+        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 5, 0);
+        System.out.println("draftDocuments: " + draftDocuments);  // 로그 추가
+        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 5, 0);
+        System.out.println("Approve Documents: " + approveDocuments);  // 로그 추가
+        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 5, 0);
 
-        // 각 탭에 표시될 문서 목록 조회 (최근 5건씩만)
-        model.addAttribute("draftDocuments", approvalService.getMyDocuments(empId,5,0));
-        model.addAttribute("approveDocuments", approvalService.getWaitingDocuments(empId, 5, 0));
-        model.addAttribute("referenceDocuments", approvalService.getReferenceDocuments(empId, 5, 0));
+        // 모델에 데이터 추가
+        model.addAttribute("waitingCount", waitingCount);
+        model.addAttribute("inProgressCount", inProgressCount);
+        model.addAttribute("completedCount", completedCount);
+        model.addAttribute("rejectedCount", rejectedCount);
 
+        model.addAttribute("draftDocuments", draftDocuments);
+        model.addAttribute("approveDocuments", approveDocuments);
+        model.addAttribute("referenceDocuments", referenceDocuments);
 
-        return "/approvals/approvalMain";
+        return "approvals/approvalMain";
     }
 
     @GetMapping("/user/notification")
     public String notification() {
-        return "/board/notification";
+        return "board/notification";
     }
 
     @GetMapping("/user/allWork")
     public String sharedWork(){
-        return "/sharedWork/allWork";
+        return "sharedWork/allWork";
     }
   
     @GetMapping("/auth/login")
@@ -232,8 +240,6 @@ public class MainController {
 
     @GetMapping("/admin/main")
     public String adminPage(Model model){
-
-        List<InquiryDTO> inquiryList = adminInquiryService.getAllInquiries();
 
         // 입사 현황
         Map<String, Object> empHiredDateChart = memberService.getHiredDateGroupBy();
@@ -252,9 +258,12 @@ public class MainController {
             model.addAttribute("commentList",commentList);
         }
 
-        model.addAttribute("inquiryList",inquiryList);
+        List<InquiryDTO> inquiryList = adminInquiryService.getAllInquiries();
+
+
         model.addAttribute("attendanceChart",attendanceChart);
         model.addAttribute("empHiredDateChart",empHiredDateChart);
+        model.addAttribute("inquiryList",inquiryList);
 
         return "admin/admin_main";
     };

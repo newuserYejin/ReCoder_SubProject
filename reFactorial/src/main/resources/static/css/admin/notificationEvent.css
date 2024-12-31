@@ -9,13 +9,17 @@ section {
         }
 
         .menuMainBox{
-            border: solid 1px red;
             flex: 1;
 
             padding: 20px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+
+            .noPostText{
+                font-size: 1.2em;
+                text-align: center;
+            }
 
             .postItemBox{
                 width: 100%;
@@ -66,6 +70,10 @@ section {
 
                 #postContent{
                     min-height: 30vh;
+                }
+
+                #postCategory{
+                    padding: 0px 10px;
                 }
             }
 
