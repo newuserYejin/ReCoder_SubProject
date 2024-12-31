@@ -1,3 +1,41 @@
-![logo_horizontal](https://github.com/user-attachments/assets/eade3a29-c891-44db-b65c-352f422cf6c0)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/9ef6cad7-b464-4234-bf09-4b57d1b3d8e4" alt="logo_horizontal">
+</div>
 
+## 👥 팀원 소개
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="" width="100" alt="승찬">
+        <br />
+        <strong>승찬</strong>
+        <br />
+        DBA
+      </td>
+      <td align="center">
+        <img src="/path/to/profile2.png" width="100" alt="정현">
+        <br />
+        <strong>정현</strong>
+        <br />
+        형상관리
+      </td>
+      <td align="center">
+        <img src="/path/to/profile3.png" width="100" alt="용욱">
+        <br />
+        <strong>용욱</strong>
+        <br />
+        DBA
+      </td>
+      <td align="center">
+        <img src="/path/to/profile4.png" width="100" alt="예진">
+        <br />
+        <strong>예진</strong>
+        <br />
+        PM
+      </td>
+    </tr>
+  </table>
+</div>
 
