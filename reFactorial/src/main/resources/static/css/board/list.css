@@ -58,6 +58,8 @@ html, body {
     flex: 1; /* 남은 공간을 메인 콘텐츠가 차지 */
     padding: 20px; /* 내부 여백 */
     overflow-y: auto; /* 메인 콘텐츠 내용 넘칠 경우 스크롤 */
+    display: flex;
+    flex-direction: column;
 }
 .top-bar {
     display: flex; /* 플렉스 정렬 */
@@ -100,15 +102,22 @@ html, body {
     flex: 2; /* 모든 셀의 너비를 동일하게 설정 */
     text-align: center; /* 텍스트 중앙 정렬 */
 }
+.table-header,.table-board{
+    .table-cell:first-child {
+        flex: 0.5; /* 첫 번째 셀의 너비를 좁게 설정 */
+    }
 
-.table-cell:first-child {
-    flex: 0.5; /* 첫 번째 셀의 너비를 좁게 설정 */
+    .table-cell:last-child {
+        color: #5C1915; /* 마지막 셀의 텍스트 색상 설정 */
+        font-weight: bold; /* 마지막 셀의 텍스트 굵게 설정 */
+    }
 }
 
-.table-cell:last-child {
-    color: #5C1915; /* 마지막 셀의 텍스트 색상 설정 */
-    font-weight: bold; /* 마지막 셀의 텍스트 굵게 설정 */
+.postListBox{
+    width: 100%;
+    flex: 1;
 }
+
 
 /* 페이지네이션 컨테이너 스타일 */
 .pagination {

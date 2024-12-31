@@ -598,3 +598,24 @@ section{
 .fc-h-event .fc-event-title{
     font-size: 2.5em;
 }
+
+.fc .fc-scroller-liquid-absolute{
+    overflow: hidden;
+}
+
+.fc{
+    ::-webkit-scrollbar{
+        display: none;
+    }
+
+    .fc-col-header {
+        width: 100% !important;
+    }
+
+    .fc-daygrid-body{
+        width: 100% !important;
+        table{
+            width: 100%!important;
+        }
+    }
+}

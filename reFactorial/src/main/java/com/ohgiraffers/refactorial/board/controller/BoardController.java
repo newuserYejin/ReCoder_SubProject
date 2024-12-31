@@ -230,10 +230,6 @@ public class BoardController {
 
         }
 
-
-
-
-
         // 항목 리스트 가져옴
         List<VoteItemDTO> voteItemList = boardService.itemView(postId);
         // 투표한사람이면 보여주는 항목리스트

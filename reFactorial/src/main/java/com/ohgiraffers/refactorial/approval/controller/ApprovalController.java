@@ -62,7 +62,7 @@
         @GetMapping("approvalPage")
         public String paymentPage() {
 
-        return "/approvals/approvalPage";
+        return "approvals/approvalPage";
     }
 
         @GetMapping("completed")
@@ -121,7 +121,7 @@
             model.addAttribute("prevPage", currentPage > 1 ? currentPage - 1 : 1);
             model.addAttribute("nextPage", currentPage < totalPages ? currentPage + 1 : totalPages);
 
-        return "/approvals/completed";
+        return "approvals/completed";
     }
 
         @GetMapping("inProgress")
@@ -180,7 +180,7 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-        return "/approvals/inProgress";
+        return "approvals/inProgress";
     }
 
 
@@ -234,7 +234,7 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-        return "/approvals/rejected";
+        return "approvals/rejected";
     }
 
 
@@ -260,7 +260,7 @@
 
             model.addAttribute("employees", employees);
 
-        return "/approvals/searchEmployee";
+        return "approvals/searchEmployee";
     }
 
         @GetMapping("searchReferrers")
@@ -282,7 +282,7 @@
 
 
         model.addAttribute("referrers", referrers);
-        return "/approvals/searchReferrers";
+        return "approvals/searchReferrers";
     }
 
         @PostMapping("/submitApproval")
@@ -318,7 +318,7 @@
         // 승인자가 없으면 오류 메시지 반환
         if (approverNames.isEmpty()) {
             model.addAttribute("errorMessage", "최소 한 명의 승인자가 필요합니다.");
-            return "/approvals/approvalPage";
+            return "approvals/approvalPage";
         }
 
             // 이름으로 emp_id 조회
@@ -357,7 +357,7 @@
                 approvalService.updateLeaveDate(pmId, approvalRequestDTO.getLeaveDate());
             } else {
                 model.addAttribute("errorMessage", "휴가 날짜를 선택해야 합니다.");
-                return "/approvals/approvalPage";
+                return "approvals/approvalPage";
             }
 
             if (approvalRequestDTO.getLeaveType() != null && !approvalRequestDTO.getLeaveType().isEmpty()) {
@@ -365,7 +365,7 @@
                 approvalService.updateLeaveType(pmId, approvalRequestDTO.getLeaveType());
             } else {
                 model.addAttribute("errorMessage", "휴가 유형을 선택해야 합니다.");
-                return "/approvals/approvalPage";
+                return "approvals/approvalPage";
             }
         }
 
@@ -378,7 +378,7 @@
             approvalService.saveReferrers(pmId, referrerIds);
 
 
-        return "/approvals/approvalMain";
+        return "approvals/approvalMain";
     }
 
 
@@ -425,7 +425,7 @@
             model.addAttribute("nextPage", nextPage);
 
 
-        return "/approvals/waiting";
+        return "approvals/waiting";
     }
 
 
@@ -518,7 +518,7 @@
             model.addAttribute("prevPage", prevPage);
             model.addAttribute("nextPage", nextPage);
 
-        return "/approvals/myDocuments";
+        return "approvals/myDocuments";
     }
 
     // 결제문서 상세페이지 조회
@@ -606,7 +606,7 @@
         model.addAttribute("isCurrentApprover", approvalService.isCurrentApprover(pmId, currentEmpId));
         model.addAttribute("rejectReason", rejectReason); // 반려 이유 모델에 추가
         model.addAttribute("isRejecter", rejectReason != null); // 반려자인지 여부 확인
-        return "/approvals/detail";
+        return "approvals/detail";
     }
 
         @PostMapping("detail")
@@ -741,9 +741,6 @@
             System.out.println("Received pmId: " + pmId); // 디버깅 로그 추가
             return "approvals/detail"; // 상세 페이지로 이동
         }
-
-
-
 
     }
 
