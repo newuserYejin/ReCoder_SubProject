@@ -668,65 +668,6 @@
     }
 
 
-    //    // 파일 다운로드 (파일 ID 기준)
-    //    @GetMapping("/downloadById")
-    //    public ResponseEntity<Resource> downloadFileById(@RequestParam int fileId) {
-    //        try {
-    //            FileDTO file = approvalService.getFileById(fileId);
-    //
-    //            if (file == null || file.getFilePath() == null) {
-    //                return ResponseEntity.notFound().build();
-    //            }
-    //
-    //            Path filePath = Paths.get(file.getFilePath()).normalize();
-    //            Resource resource = new UrlResource(filePath.toUri());
-    //
-    //            if (!resource.exists()) {
-    //                return ResponseEntity.notFound().build();
-    //            }
-    //
-    //            String encodedFileName = URLEncoder.encode(file.getFileName(), "UTF-8").replace("+", "%20");
-    //
-    //            return ResponseEntity.ok()
-    //                    .contentType(MediaType.parseMediaType(file.getFileType()))
-    //                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
-    //                    .body(resource);
-    //
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            return ResponseEntity.internalServerError().build();
-    //        }
-    //    }
-    //
-    //    // 파일 다운로드 (파일 이름으로 조회)
-    //    @GetMapping("/downloadByName")
-    //    public ResponseEntity<Resource> downloadFileByName(@RequestParam String fileName) {
-    //        try {
-    //            FileDTO file = approvalService.getFileByFileName(fileName);
-    //
-    //            if (file == null || file.getFilePath() == null) {
-    //                return ResponseEntity.notFound().build();
-    //            }
-    //
-    //            Path filePath = Paths.get(file.getFilePath()).normalize();
-    //            Resource resource = new UrlResource(filePath.toUri());
-    //
-    //            if (!resource.exists()) {
-    //                return ResponseEntity.notFound().build();
-    //            }
-    //
-    //            return ResponseEntity.ok()
-    //                    .contentType(MediaType.parseMediaType(file.getFileType()))
-    //                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
-    //                    .body(resource);
-    //
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            return ResponseEntity.internalServerError().build();
-    //        }
-    //    }
-    //
-    //}
 
 
 

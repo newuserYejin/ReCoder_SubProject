@@ -148,7 +148,7 @@ html, body {
 }
 
 .flower-petal {
-    width: 20px;
+    width: 30px;  /* 꽃잎 크기 조절 */
     height: 20px;
     background: radial-gradient(circle at 50% 50%, #FF69B4, #FF1493);
     border-radius: 50% 50% 0 50%;
@@ -188,7 +188,7 @@ html, body {
 
 @keyframes float {
     0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+    50% { transform: translateY(50px) rotate(180deg); }
 }
 
 
