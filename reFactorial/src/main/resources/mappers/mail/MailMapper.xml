@@ -9,8 +9,7 @@
         <id property="emailId" column="email_id"/>
         <result property="emailTitle" column="email_title"/>
         <result property="emailContent" column="email_content"/>
-        <result property="sentDate" column="sent_date"/>
-        <result property="trashStatus" column="trash_status"/>
+        <result property="sentDate" column="sent_date" javaType="java.time.LocalDateTime"/>
         <result property="senderEmpId" column="sender_emp_id"/>
         <result property="attachment" column="attachment"/>
     </resultMap>
@@ -26,7 +25,7 @@
     <!-- 메일 보내기 -->
     <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
         INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, sender_emp_id, attachment)
-        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, CURDATE() , #{senderEmpId}, #{attachment})
+        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, now() , #{senderEmpId}, #{attachment})
     </insert>
     <insert id="saveReceiver" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
         INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status ,trash_status )
@@ -73,17 +72,33 @@
     <!-- 메일의 상세 페이지 -->
     <select id="getMailDetail" resultMap="MailResultMap">
         SELECT *
-        FROM employee e
-        JOIN tbl_mail m on e.emp_id = m.sender_emp_id
-        JOIN tbl_mail_receivers mr on e.emp_id = mr.receiver_emp_id
-        WHERE m.email_id = #{emailId}
+        FROM tbl_mail
+        WHERE email_id = #{emailId}
     </select>
-
     <!-- 휴지통 메일의 상세 페이지-->
     <select id="getMailDetailBin" resultMap="MailResultMap">
         SELECT *
         FROM tbl_mail
         WHERE email_id = #{emailId}
+    </select>
+
+    <select id="getReplyMailDetail" resultMap="MailResultMap">
+        SELECT
+        m.email_id,
+        m.email_title,
+        m.email_content,
+        m.sent_date,
+        m.sender_emp_id,
+        mr.receiver_emp_id,
+        e.emp_name AS receiver_emp_name
+        FROM
+        tbl_mail m
+        JOIN
+        tbl_mail_receivers mr ON m.email_id = mr.email_id
+        JOIN
+        employee e ON mr.receiver_emp_id = e.emp_id
+        WHERE
+        m.email_id = #{emailId}
     </select>
 
     <!-- 휴지통으로 이동 -->

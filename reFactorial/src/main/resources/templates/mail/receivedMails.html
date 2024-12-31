@@ -44,19 +44,19 @@
         </div>
 
         <!-- Table Body -->
-        <div th:each="mail : ${receivedMails}">
+        <div th:each="receivedMail : ${receivedMails}">
             <div class="table-row">
 
                 <!-- 보낸 사람 -->
-                <div class="table-cell" th:text="${mail.receiverEmpName}"></div>
+                <div class="table-cell" th:text="${receivedMail.receiverEmpName}"></div>
 
                 <!-- 제목, 클릭 시 mailDetail 로 이동 -->
                 <div class="table-cell">
-                    <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
+                    <a th:href="@{'/mail/detail'(emailId=${receivedMail.emailId})}" th:text="${receivedMail.emailTitle}"></a>
                 </div>
 
                 <!-- 작성일 -->
-                <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
+                <div class="table-cell" th:text="${receivedMail.sentDate}"></div>
             </div>
         </div>
 

@@ -38,7 +38,7 @@ public class MailController {
 
         return "mail/sendMail";
     }
-
+    // 메일 보내기
     @PostMapping("/sendMail")
     public String sendMail(@ModelAttribute MailDTO mailDTO,
                            @RequestParam("mailFiles") List<MultipartFile> mailFileList,
@@ -70,6 +70,37 @@ public class MailController {
         }
 
         return "redirect:/mail/sendMail";  // 메일 전송 후 리다이렉트
+    }
+
+    // 메일 답신
+    @PostMapping("/reply")
+    public String replyMail(@ModelAttribute MailDTO mailDTO, HttpSession session,@RequestParam("mailFiles") List<MultipartFile> mailFileList, Model model) throws IOException {
+        // 로그인 유저 가져오기
+        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        // 발신자 정보 설정 (로그인한 사용자)
+        mailDTO.setSenderEmpId(loginUser.getEmpId());
+
+        // 메일 ID 생성 및 설정
+        String emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
+        mailDTO.setEmailId(emId); // 이메일 ID 설정
+
+
+        // 수신자 설정 (원본 메일의 발신자가 수신자가 됨)
+        String receiverEmpId = mailDTO.getReceiverEmpIds().get(0); // 원본 메일의 발신자를 수신자로 설정
+        mailDTO.setReceiverEmpIds(Arrays.asList(receiverEmpId));
+
+        // 메일 서비스 호출 (답신 메일 보내기)
+        // mailService.sendMail(mailDTO,mailFileList);
+
+        try {
+            // 메일 전송
+            mailService.sendMail(mailDTO, mailFileList);  // 메일 전송과 수신자 정보 저장
+        } catch (Exception e) {
+            model.addAttribute("error", "메일 전송 중 오류가 발생했습니다.");
+            return "mail/sendMail";
+        }
+
+        return "redirect:/mail/sentMails"; // 답신 후 보낸 메일 목록으로 리디렉션
     }
 
     //내가 보낸 메일 읽기
@@ -109,11 +140,10 @@ public class MailController {
         MailDTO mailDetail = mailService.getMailDetail(emailId);
         List<String> mailReceiver = mailService.getReceiverEmpIds(emailId);
 
-        if (mailDetail.getAttachment() == 1){
+        if (mailDetail.getAttachment() == 1) {
             List<UploadFileDTO> uploadFileList = uploadService.findFileByMappingId(emailId);
-
-            if (!uploadFileList.isEmpty()){
-                model.addAttribute("attachmentFileList",uploadFileList);
+            if (!uploadFileList.isEmpty()) {
+                model.addAttribute("attachmentFileList", uploadFileList);
             }
         }
 
@@ -133,7 +163,7 @@ public class MailController {
     // 답신 페이지로 이동
     @GetMapping("/reply")
     public String showReplyPage(@RequestParam("emailId") String emailId, Model model) {
-        MailDTO originalMail = mailService.getMailDetail(emailId);
+        MailDTO originalMail = mailService.getReplyMailDetail(emailId);
 
         if (originalMail == null) {
             throw new IllegalArgumentException("해당 이메일이 존재하지 않습니다.");
@@ -141,31 +171,6 @@ public class MailController {
 
         model.addAttribute("originalMail", originalMail);
         return "mail/replyMail"; // 템플릿 경로 확인
-    }
-
-    // 메일 답신
-    @PostMapping("/reply")
-    public String replyMail(@ModelAttribute MailDTO mailDTO, HttpSession session) throws IOException {
-        // 로그인 유저 가져오기
-        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-
-        // 메일 ID 생성 및 설정
-        String emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
-        mailDTO.setEmailId(emId); // 이메일 ID 설정
-
-        // 발신자 정보 설정 (로그인한 사용자)
-        mailDTO.setSenderEmpId(loginUser.getEmpId());
-
-        // 수신자 설정 (원본 메일의 발신자가 수신자가 됨)
-        String receiverEmpId = mailDTO.getReceiverEmpIds().get(0); // 원본 메일의 발신자를 수신자로 설정
-        mailDTO.setReceiverEmpIds(Arrays.asList(receiverEmpId));
-
-        List<MultipartFile> mailFileList = new ArrayList<>();
-
-        // 메일 서비스 호출 (답신 메일 보내기)
-        mailService.sendMail(mailDTO,mailFileList);
-
-        return "redirect:/mail/sentMails"; // 답신 후 보낸 메일 목록으로 리디렉션
     }
 
     // 휴지통 보기

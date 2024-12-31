@@ -150,4 +150,8 @@ public class MailService {
     public List<String> getReceiverEmpIds(String emailId) {
         return mailMapper.getReceiverEmpIds(emailId);
     }
+
+    public MailDTO getReplyMailDetail(String emailId) {
+        return mailMapper.getReplyMailDetail(emailId);
+    }
 }

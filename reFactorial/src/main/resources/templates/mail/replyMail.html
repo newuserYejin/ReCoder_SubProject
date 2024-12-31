@@ -29,7 +29,7 @@
     </div>
 
     <div class="form-container">
-      <form id="replyMailForm" th:action="@{/mail/reply}" method="post">
+      <form id="replyMailForm" th:action="@{/mail/reply}" method="post" enctype="multipart/form-data">
         <div class="sendMail_topBox">
           <!-- 제출 버튼 -->
           <div class="button-group">
@@ -46,8 +46,18 @@
           <!-- 수신자 -->
           <div class="form-group">
             <label for="receiverEmpIds">수신자:</label>
-            <input type="text" id="receiverEmpIds" name="receiverEmpIds"
-                   th:value="${originalMail != null ? originalMail.receiverEmpName : ''}" readonly/>
+            <!-- 화면에 보이는 수신자 이름 -->
+            <input type="text" id="receiverEmpIds" name="receiverEmpIdsDisplay"
+                   th:value="${originalMail.receiverEmpName}" readonly/>
+
+            <!-- 실제로 서버로 전송되는 수신자 ID -->
+            <input type="hidden" name="receiverEmpIds" th:value="${originalMail.receiverEmpId}"/>
+          </div>
+
+          <!-- 첨부 파일 -->
+          <div class="form-group mailFileBox">
+            <label for="mailFiles">첨부파일:</label>
+            <input type="file" id="mailFiles" name="mailFiles" multiple>
           </div>
 
           <!-- 내용 -->

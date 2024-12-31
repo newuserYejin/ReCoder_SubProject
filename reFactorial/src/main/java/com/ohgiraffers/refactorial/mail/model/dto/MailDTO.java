@@ -3,7 +3,7 @@ package com.ohgiraffers.refactorial.mail.model.dto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -16,7 +16,7 @@ public class MailDTO {
     private String emailId;            // 메일 고유 ID
     private String emailTitle;         // 메일 제목
     private String emailContent;       // 메일 내용
-    private Date sentDate;             // 발송 날짜
+    private LocalDateTime sentDate;             // 발송 날짜
     private boolean trashStatus;        // 휴지통 이동 여부
     private String senderEmpId;        // 발신자 사원번호
     private String receiverEmpId;

@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -120,12 +121,12 @@ public class MainController {
         if(!receivedMails.isEmpty()){
             Map<String,Object> findSender = new HashMap<>();
 
-            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             for (MailDTO mail : receivedMails){
                 String name = memberService.getNameById(mail.getSenderEmpId());
 
-                String date = (smp.format(mail.getSentDate()));
+                LocalDateTime date = mail.getSentDate();
 
                 Map<String, Object> mailWithDate = new HashMap<>();
                 mailWithDate.put("mail", mail);  // 기존 mail 객체 저장

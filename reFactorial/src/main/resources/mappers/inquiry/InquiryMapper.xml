@@ -31,7 +31,7 @@
     <!--  문의 세부 사항  -->
     <select id="selectInquiryDetail" resultMap="InquiryResultMap">
         SELECT *
-        FROM tbl_inquiry i JOIN employee e i ON e.emp_id = i.emp_id
+        FROM tbl_inquiry i JOIN employee e ON e.emp_id = i.emp_id
         WHERE i.iqr_value = #{iqrValue}
     </select>
 
