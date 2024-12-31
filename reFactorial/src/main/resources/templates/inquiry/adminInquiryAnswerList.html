@@ -115,7 +115,7 @@
                 <!-- 작성일 -->
                 <div class="table-cell" th:text="${inquiry.iqrCreationDate}"></div>
                 <!-- 문의자-->
-                <div class="table-cell" th:text="${inquiry.empId}"></div>
+                <div class="table-cell" th:text="${inquiry.empName}"></div>
                 <!-- 상태 -->
                 <div class="table-cell">
                     <span th:if="${inquiry.answerStatus == false}">답변대기중</span>

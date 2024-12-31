@@ -20,6 +20,7 @@ public class InquiryDTO {
     private String empId;         // 문의자 사원번호
     private String answerDetail;   // 답변 내용 (NULL 허용)
     private int attachment;
+    private String empName;
 
     private List<MultipartFile> inquiryFile;
 }

@@ -22,9 +22,11 @@ public class MailDTO {
     private String receiverEmpId;
     private List<String> receiverEmpIds; // 수신자 목록 (새로 추가된 필드)
     private int attachment;
-
+    private String empName;
     private String deptName;        // 부서명
     private String positionName;    // 직책명
+    private String senderEmpName;  // 발신자 사원명
+    private String receiverEmpName;// 수신자 사원명
 
     private List<MultipartFile> mailfile;
     private List<String> mailfileNames;  // 파일명만 저장하는 리스트

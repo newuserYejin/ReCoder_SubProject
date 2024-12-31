@@ -1,14 +1,15 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>mailDetail</title>
-    <!--폰트 적용-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메일 상세</title>
+    <!-- 폰트 적용 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
+    <!-- CSS 파일 연결 -->
     <link rel="stylesheet" href="/css/common/header.css">
     <link rel="stylesheet" href="/css/common/footer.css">
     <link rel="stylesheet" href="/css/common/style.css">
@@ -30,68 +31,31 @@
             </ul>
         </div>
 
-        <div class="top-bar">
-            <button type="button" th:onclick="|location.href='@{/mail/reply(emailId=${mailDetail.emailId})}'|">
-                답신 하기
-            </button>
-<!--            &lt;!&ndash; 휴지통으로 보내기 버튼 &ndash;&gt;-->
-<!--            <div id="move-to-trash-buttons">-->
-<!--                &lt;!&ndash; 각 수신자별로 버튼이 JavaScript 에서 추가됩니다 &ndash;&gt;-->
-<!--                    <script th:inline="javascript">-->
-<!--                        /* 수신자 목록과 메일 ID 가져오기 */-->
-<!--                        const emailId = /*[[${mailDetail.emailId}]]*/ '';-->
-<!--                        const receiverEmpIds = /*[[${mailDetail.receiverEmpIds}]]*/ [];-->
-<!--                        const container = document.getElementById('move-to-trash-buttons');-->
-
-<!--                        receiverEmpIds.forEach(receiverEmpId => {-->
-<!--                        const form = document.createElement('form');-->
-<!--                        form.action = '/mail/moveToTrash';-->
-<!--                        form.method = 'post';-->
-<!--                        form.style.display = 'inline';-->
-
-<!--                        const emailInput = document.createElement('input');-->
-<!--                        emailInput.type = 'hidden';-->
-<!--                        emailInput.name = 'emailId';-->
-<!--                        emailInput.value = emailId;-->
-
-<!--                        const receiverInput = document.createElement('input');-->
-<!--                        receiverInput.type = 'hidden';-->
-<!--                        receiverInput.name = 'receiverEmpId';-->
-<!--                        receiverInput.value = receiverEmpId;-->
-
-<!--                        const button = document.createElement('button');-->
-<!--                        button.type = 'submit';-->
-<!--                        button.textContent = `휴지통으로 보내기 (수신자: ${receiverEmpId})`;-->
-
-<!--                        form.appendChild(emailInput);-->
-<!--                        form.appendChild(receiverInput);-->
-<!--                        form.appendChild(button);-->
-<!--                        container.appendChild(form);-->
-<!--                    });-->
-<!--                </script>-->
-            <!-- 각 수신자별로 휴지통으로 보내기 버튼 -->
-<!--            <div th:each="receiverEmpId : ${mailDetail.receiverEmpIds}">-->
-<!--                <form th:action="@{/mail/moveToTrash}" method="post" style="display: inline;">-->
-<!--                    <input type="hidden" name="emailId" th:value="${mailDetail.emailId}">-->
-<!--                    <input type="hidden" name="receiverEmpId" th:value="${receiverEmpId}">-->
-<!--                    <button type="submit">휴지통으로 보내기 (수신자: [[${receiverEmpId}]])</button>-->
-<!--                </form>-->
-<!--            </div>-->
+        <div class="main-content">
+            <div class="top-bar">
+                <button type="button" th:onclick="|location.href='@{/mail/reply(emailId=${mailDetail.emailId})}'|">
+                    답신 하기
+                </button>
             </div>
 
-        <!-- Mail Detail Section -->
-        <div class="mail-detail">
-            <h2 th:text="${mailDetail.emailTitle}"></h2>  <!-- 이메일 제목 -->
-            <div th:each="file : ${attachmentFileList}"> <!-- 파일 첨부 -->
-                <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}">첨부 파일</a>
+            <!-- Mail Detail Section -->
+            <div class="mail-detail">
+                <div class="mail-detail-header">
+                    <h2 th:text="${mailDetail.emailTitle}"></h2> <!-- 이메일 제목 -->
+
+                    <div class="mail-meta">
+                        <span>보낸사람: <span th:text="${mailDetail.empName}"></span></span>
+                        <span>보낸 날짜: <span th:text="${#dates.format(mailDetail.sentDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                    </div>
+                </div>
+                <div class="mail-content">
+                    <p th:text="${mailDetail.emailContent}"></p> <!-- 메일 내용 -->
+                </div>
+                <div th:each="file : ${attachmentFileList}">
+                    <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}">첨부 파일</a>
+                </div>
             </div>
-            <div class="mail-meta">
-                <span>보낸사람: <span th:text="${mailDetail.senderEmpId}"></span></span> <!-- 발신자 -->
-                <span>보낸 날짜: <span th:text="${#dates.format(mailDetail.sentDate, 'yyyy-MM-dd')}"></span></span> <!-- 발송 날짜 -->
-            </div>
-            <div class="mail-content">
-                <p th:text="${mailDetail.emailContent}"></p> <!-- 메일 내용 -->
-            </div>
+
         </div>
     </div>
 </section>
