@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+    <!-- 여기 까지 -->
+
+    <link rel="stylesheet" th:href="@{/css/admin/notificationEvent.css}">
+    <link rel="stylesheet" href="../../static/css/admin/notificationEvent.css">
+
+</head>
+<body>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">공지사항 / 이벤트 등록</div>
+
+                <ul class="sideMenuUl">
+                    <li id="notificationSelect" th:onclick="|location.href='@{/admin/notificationEvent(categoryCode=1, page=1)}'|">공지사항</li>
+                    <li id="eventSelect" th:onclick="|location.href='@{/admin/notificationEvent(categoryCode=5, page=1)}'|">이벤트</li>
+                    <li id="addPost">등록하기</li>
+                </ul>
+            </div>
+            <div class="menuMainBox">
+
+                <div class="postHeader">
+                    <div class="postNum">번호</div>
+                    <div class="postTitle">제목</div>
+                    <div class="postDate">작성일</div>
+                </div>
+
+                <div th:if="${postList.isEmpty()}">게시글이 없습니다.</div>
+
+                <div class="postItemBox">
+                    <div class="postItem" th:if="${postList.size() > 0}" th:each="post,postStat : ${postList}" th:data-post-id="${post.postId}">
+                        <div class="postNum" th:text="${postList.size() - postStat.index}">번호</div>
+                        <div class="postTitle" th:text="${post.postTitle}">제목</div>
+                        <div class="postDate" th:text="${#temporals.format(post.postCreationDate, 'yyyy-MM-dd')}">작성일</div>
+                    </div>
+                </div>
+
+
+                <!-- 페이지네이션 표시 -->
+                <div class="pagination">
+                    <ul>
+                        <!-- 첫 페이지 -->
+                        <li class="first">
+                            <a href="?page=1"><<</a>
+                        </li>
+                        <!-- 이전 페이지 -->
+                        <li class="prev">
+                            <a th:href="@{'/board/list?page=' + ${prevPage}}" class="prev"><</a>
+                        </li>
+
+                        <!-- 페이지 번호들 -->
+                        <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                            <li th:classappend="${i == currentPage ? 'active' : ''}">
+                                <a th:href="@{'/board/list?page=' + ${i}}" th:text="${i}"></a>
+                            </li>
+                        </th:block>
+
+                        <!-- 다음 페이지 -->
+                        <li class="next">
+                            <a th:href="@{'/board/list?page=' + ${nextPage}}" class="next">></a>
+                        </li>
+                        <!-- 마지막 페이지 -->
+                        <li class="last">
+                            <a th:href="@{'/board/list?page=' + ${totalPages}}" class="last">>></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+    <script>
+        const postItemList = document.querySelectorAll(".postItem")
+
+        postItemList.forEach(postItem =>{
+            postItem.addEventListener("click",(event)=>{
+                const postId = event.currentTarget.dataset.postId;
+                const url = new URLSearchParams(window.location.search);
+
+                fetch(`/admin/postDetail?postId=${postId}`,{
+                    method : 'GET'
+                }).then(response => response.json())
+                    .then(data =>{
+                        console.log("detail data : ",data)
+                        const menuMainBox = document.querySelector(".menuMainBox")
+
+                        if (data.postDetail != null){
+                            menuMainBox.innerHTML ='';
+
+                            menuMainBox.innerHTML = `
+                                    <div class="postInfo">
+                                        <div>
+                                            <label for="postTitle">제목 : </label>
+                                            <input id="postTitle" name="postTitle" type="text" value="${data.postDetail.postTitle}" disabled>
+                                        </div>
+
+                                        <div class="buttons">
+                                            <button id="modifyPost" data-post-id="${data.postDetail.postId}">수정하기</button>
+                                            <button id="modifyDelete" data-post-id="${data.postDetail.postId}">삭제하기</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="postInfo">
+                                        <label for="postDate">작성일 : </label>
+                                        <input id="postDate" name="postDate" type="text" value="${data.postDetail.postCreationDate}" disabled>
+                                    </div>
+
+                                    <div class="postInfo">
+                                        <label for="postContent">내용 </label>
+                                        <textarea id="postContent" name="postContent" disabled>${data.postDetail.postContent}"</textarea>
+                                    </div>
+                            `
+
+                            const modifyBtn = document.getElementById("modifyPost").addEventListener("click",modifyPost);
+                            const modifyDelete = document.getElementById("modifyDelete").addEventListener("click",deletePost);
+                        }
+                    })
+            })
+        })
+
+        function modifyPost(event){
+            const inputTags = document.querySelectorAll("#postTitle, #postContent")
+            const modifyBtn = event.currentTarget
+
+            inputTags.forEach(tag => tag.disabled = false)
+
+            modifyBtn.textContent= "저장하기"
+
+            const modifyDelete = document.getElementById("modifyDelete")
+            modifyDelete.style.display = "none"
+
+            modifyBtn.removeEventListener("click",modifyPost);
+            modifyBtn.addEventListener("click",savePost);
+        }
+
+        function savePost (event){
+            const postId = event.currentTarget.dataset.postId
+            const url = new URLSearchParams(window.location.search)
+            const categoryCode = url.get("categoryCode");
+
+            fetch("/admin/modifyPost",{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    "postId": postId,
+                    "postTitle": document.getElementById("postTitle").value,
+                    "postContent": document.getElementById("postContent").value
+                })
+            })
+
+            // 새 URL로 리디렉션
+            location.reload(`/admin/postDetail?postId=${postId}`);
+        }
+
+        function deletePost (event){
+            const postId = event.currentTarget.dataset.postId
+
+            console.log("modifyDelete postId: ",postId)
+        }
+
+    </script>
+
+    <script>
+        const postList = '[[${postList}]]'
+        const categoryCode = '[[${categoryCode}]]'
+
+        if (postList){
+            console.log("postList: ",postList )
+        }
+        if (categoryCode){
+            console.log("categoryCode: ",categoryCode )
+        }
+    </script>
+</body>
+</html>

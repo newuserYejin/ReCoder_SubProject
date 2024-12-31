@@ -12,6 +12,7 @@ import com.ohgiraffers.refactorial.booking.model.dto.CabinetDTO;
 import com.ohgiraffers.refactorial.booking.service.CabinetService;
 import com.ohgiraffers.refactorial.booking.service.ReservationService;
 import com.ohgiraffers.refactorial.inquiry.model.dto.InquiryDTO;
+import com.ohgiraffers.refactorial.inquiry.service.AdminInquiryService;
 import com.ohgiraffers.refactorial.inquiry.service.InquiryService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.service.MailService;
@@ -50,7 +51,8 @@ public class MainController {
     private final BoardService boardService;
     private final InquiryService inquiryService;
     private final AdminService as;
-    
+    private final AdminInquiryService adminInquiryService;
+
     @Autowired
     private ApprovalService approvalService;
 
@@ -62,8 +64,8 @@ public class MainController {
                           AttendanceService attendanceService,
                           BoardService boardService,
                           InquiryService inquiryService,
-                          AdminService as
-
+                          AdminService as,
+                          AdminInquiryService adminInquiryService
                         ){
         this.memberService = memberService;
         this.cabinetService = cabinetService;
@@ -72,7 +74,7 @@ public class MainController {
         this.boardService = boardService;
         this.inquiryService = inquiryService;
         this.as = as;
-
+        this.adminInquiryService = adminInquiryService;
     }
 
 
@@ -220,17 +222,17 @@ public class MainController {
         model.addAttribute("approveDocuments", approveDocuments);
         model.addAttribute("referenceDocuments", referenceDocuments);
 
-        return "/approvals/approvalMain";
+        return "approvals/approvalMain";
     }
 
     @GetMapping("/user/notification")
     public String notification() {
-        return "/board/notification";
+        return "board/notification";
     }
 
     @GetMapping("/user/allWork")
     public String sharedWork(){
-        return "/sharedWork/allWork";
+        return "sharedWork/allWork";
     }
   
     @GetMapping("/auth/login")
@@ -256,9 +258,12 @@ public class MainController {
             model.addAttribute("commentList",commentList);
         }
 
+        List<InquiryDTO> inquiryList = adminInquiryService.getAllInquiries();
+
 
         model.addAttribute("attendanceChart",attendanceChart);
         model.addAttribute("empHiredDateChart",empHiredDateChart);
+        model.addAttribute("inquiryList",inquiryList);
 
         return "admin/admin_main";
     };
@@ -293,7 +298,7 @@ public class MainController {
         receivedMails.removeIf(mail -> mail.getSenderEmpId().equals(receiverEmpId));
         model.addAttribute("receivedMails", receivedMails);
 
-        return "/mail/mailMain"; // 전체 메일 페이지로 리턴
+        return "mail/mailMain"; // 전체 메일 페이지로 리턴
     }
 
     @GetMapping("/goldTicket")

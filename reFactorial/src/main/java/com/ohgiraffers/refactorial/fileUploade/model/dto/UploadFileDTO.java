@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class UploadFileDTO {
 
     private int fileId;          // 파일 ID
-    private String mappingId;         // 결제 문서 ID
+    private String mappingId;         // 결재 문서 ID
     private String storeFileName;  // 파일 이름
     private String originFileName; //원래(업로드 될때)의 파일 이름
     private long fileSize;       // 파일 크기

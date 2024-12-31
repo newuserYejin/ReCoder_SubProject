@@ -73,8 +73,6 @@ public class AttendanceService {
     public Map<String, Object> getAttendanceGroupBy(LocalDate today) {
         List<Map<String,Object>> resultList =  attendanceMapper.getAttendanceGroupBy(today);
 
-        System.out.println("List<Map<String,Object>> = " + resultList);
-
         Map<String, Object> returnData = new HashMap<>();
 
         for (Map<String, Object> result : resultList){
