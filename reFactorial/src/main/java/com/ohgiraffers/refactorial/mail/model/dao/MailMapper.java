@@ -1,5 +1,6 @@
 package com.ohgiraffers.refactorial.mail.model.dao;
 
+import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -41,4 +42,9 @@ public interface MailMapper {
 
     // 휴지통으로 이동하기
     void updateTrashStatus(Map<String, Object> params);
+
+
+    int getTotalSendMailDocuments(String empId);
+
+    List<MailDTO> getSendMailDocuments(Map<String, Object> params);
 }
