@@ -29,7 +29,7 @@
         DBA
       </td>
       <td align="center">
-        <img src="/path/to/profile4.png" width="100" alt="예진">
+      <img src="https://github.com/user-attachments/assets/4e722741-d7eb-459a-8d81-9a6290e130c4" width="100" alt="예진">
         <br />
         <strong>예진</strong>
         <br />
