@@ -185,3 +185,4 @@ function initSelectOption(){
 // 처음 페이지 로딩 시 최소 항목 수 보장
 updateDeleteButtons();  // 삭제버튼 표시여부
 initSelectOption();     // 카테고리 3,4일 때 첨부파일,투표 표시
+
