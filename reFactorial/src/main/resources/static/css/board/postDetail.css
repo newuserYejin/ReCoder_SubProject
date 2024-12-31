@@ -161,53 +161,226 @@
 }
 
 .rightBoxContainer{
+    padding: 20px 10px;
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: start;
-}
 
-.rightBoxContainer .top-bar{
-    align-self: end;
-
-    display: flex;
-    align-items: center;
-}
-
-.rightBoxContainer .top-bar form button{
-    margin-right: 10px;
-    background-color: #5C1915;
-    border: none;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 10px;
-}
-
-.rightBoxContainer .top-bar form:last-child button{
-    margin-right: 0;
-}
-
-.boardDetail{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: space-between;
-}
-#boardDetailForm{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: space-between;
-
-    .top-bar button {
-        padding: 10px 15px;
+    .backToList{
         background-color: #5C1915;
         color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 10px;
+        margin-right: 10px;
+        font-family: "Noto Sans KR", sans-serif;
+        font-size: 0.8em;
+    }
+
+    .top-bar{
+        align-self: end;
+
+        display: flex;
+        align-items: center;
+
+        form button{
+            margin-right: 10px;
+            background-color: #5C1915;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        form:last-child button{
+            margin-right: 0;
+        }
+    }
+
+    .boardDetail{
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0 5%;
+        box-sizing: border-box;
+
+        .postInfoTopBox{
+            border-bottom: solid 2px #4F4F4F;
+
+            >div {
+                font-size: 1.3em;
+                margin-bottom: 10px;
+                display:flex;
+                justify-content: space-between;
+
+                .boardInfo{
+                    display: flex;
+                    align-items: center;
+                    width: 50%;
+
+                    div:first-child{
+                        margin-right: 15px;
+                    }
+                }
+            }
+
+        }
+
+        .content{
+            width: 100%;
+            flex: 1.2;
+
+            padding: 3% 0;
+
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: column;
+            /*justify-content: start;*/
+
+            .contentText{
+                font-size: 1.5em;
+                margin-bottom: 10px;
+                width: 100%;
+                flex: 1;
+            }
+
+            .attachmentFileBox{
+                display: flex;
+                font-size: 1.1em;
+
+                >div:first-child{
+                    margin-right: 10px;
+                }
+
+                .attfileBox{
+                    display: flex;
+                    flex-direction: column;
+
+                    .attfile{
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+
+            .voteForm{
+                width: 100%;
+
+                .vote-item{
+                    display: flex;
+                    margin: 10px 0;
+
+                    input[type="checkbox"]{
+                        margin-right: 10px;
+                    }
+                    label{
+                        margin-right: 10px;
+                    }
+
+                    .voteTotalCount{
+                        justify-items: end;
+                    }
+                }
+
+                >div button{
+                    border-radius: 10px;
+                    background-color: #5C1915;
+                    border: none;
+                    color: white;
+                    padding: 5px 10px;
+                }
+            }
+        }
+
+        .commentBox{
+            padding: 1% 0;
+            width: 100%;
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+
+            max-height: 25vh;
+
+            .commentForm{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                box-sizing: border-box;
+
+                p{
+                    margin: 0;
+                    margin-right: 10px;
+                }
+
+                textarea{
+                    flex: 1;
+                    resize: none;
+                    padding: 5px 10px;
+                }
+
+                button{
+                    margin-left: 10px;
+                    background-color: #5C1915;
+                    color: white;
+                    border-radius: 4px;
+                    padding: 5px 10px;
+                    border: none;
+                }
+            }
+
+            #comment-list{
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                overflow: hidden;
+
+                .comment-item-box{
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                }
+
+                .comment-header, .comment-item{
+                    display: flex;
+                    border-bottom: 2px solid gray;
+                    padding: 10px;
+                    align-items: center;
+                    justify-content: start;
+
+                    .commentWriter{width: 15%;}
+                    .commentContent{width: 50%}
+                    .commentLike{
+                        width: 10%;
+
+                        button{
+                            border: none;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: none;
+
+                            img{
+                                height: 20px;
+                                aspect-ratio: 1 /1;
+                                margin-right: 10px;
+                            }
+                        }
+                    }
+                    .commentDate{width: 20%}
+
+                    .deleteBtn{
+                        max-width: 20%;
+                        border: none;
+                        background-color: #5C1915;
+                        color: white;
+                        border-radius: 5px;
+                    }
+                }
+            }
+        }
     }
 }
