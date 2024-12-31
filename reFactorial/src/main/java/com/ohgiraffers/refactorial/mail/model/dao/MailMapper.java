@@ -1,6 +1,5 @@
 package com.ohgiraffers.refactorial.mail.model.dao;
 
-import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,4 +46,6 @@ public interface MailMapper {
     int getTotalSendMailDocuments(String empId);
 
     List<MailDTO> getSendMailDocuments(Map<String, Object> params);
+
+    MailDTO getReplyMailDetail(String emailId);
 }

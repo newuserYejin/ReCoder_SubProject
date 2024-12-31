@@ -14,17 +14,17 @@
     <link rel="stylesheet" href="/css/mail/mailMain.css">
 </head>
 <body>
-<header th:replace="~{common/header::headerFragment}"></header>
+<header th:replace="~{/common/header::headerFragment}"></header>
 <section>
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-title">사내 메일</div>
             <ul>
-                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>
+<!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
                 <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
                 <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
-                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>
+<!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
             </ul>
         </div>
 
@@ -56,7 +56,7 @@
                         <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
                     </div>
                     <!-- 작성일 -->
-                    <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
+                    <div class="table-cell" th:text="${mail.sentDate}"></div>
                 </div>
             </div>
 
@@ -78,6 +78,6 @@
         </div>
     </div>
 </section>
-<footer th:replace="~{common/footer::footerFragment}"></footer>
+<footer th:replace="~{/common/footer::footerFragment}"></footer>
 </body>
 </html>

@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
@@ -50,10 +47,9 @@ public class InquiryController {
         String senderEmpId = loginUser.getEmpId();
         List<InquiryDTO> sentInquiries = inquiryService.sentInquiries(senderEmpId);
 
-
-
         model.addAttribute("sentInquiries", sentInquiries);
-        return "/inquiry/inquiryList";
+
+        return "inquiry/inquiryList";
     }
 
     // 문의 상세 조회
@@ -69,5 +65,11 @@ public class InquiryController {
         }
         model.addAttribute("inquiryDetail", inquiryDetail);
         return "inquiry/inquiryDetail";
+    }
+
+    @GetMapping("deleteInquiry")
+    public String deleteInquiry(@RequestParam("iqrValue") String iqrValue) {
+        inquiryService.deleteInquiry(iqrValue);
+        return "redirect:/inquiry/inquiryList";  // 삭제 후 목록 페이지로 이동
     }
 }

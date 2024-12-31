@@ -1,10 +1,8 @@
 package com.ohgiraffers.refactorial.mail.service;
 
-import com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO;
 import com.ohgiraffers.refactorial.fileUploade.model.service.UploadFileService;
 import com.ohgiraffers.refactorial.mail.model.dto.MailDTO;
 import com.ohgiraffers.refactorial.mail.model.dao.MailMapper;
-import com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO;
 import com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,5 +174,9 @@ public class MailService {
 
     public int getTotalSendMailDocuments(String empId) {
         return mailMapper.getTotalSendMailDocuments(empId);
+    }
+
+    public MailDTO getReplyMailDetail(String emailId) {
+        return mailMapper.getReplyMailDetail(emailId);
     }
 }

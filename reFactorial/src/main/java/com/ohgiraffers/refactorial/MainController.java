@@ -111,30 +111,30 @@ public class MainController {
         }
 
         // 내가 받은 메일 가져오기
-        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
-
-        List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
-
-        if(!receivedMails.isEmpty()){
-            Map<String,Object> findSender = new HashMap<>();
-
-            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd");
-
-            for (MailDTO mail : receivedMails){
-                String name = memberService.getNameById(mail.getSenderEmpId());
-
-                String date = (smp.format(mail.getSentDate()));
-
-                Map<String, Object> mailWithDate = new HashMap<>();
-                mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
-                mailWithDate.put("date", date);  // 날짜 정보 추가
-
-                findSender.put(name, mailWithDate);
-            }
-
-            model.addAttribute("receivedMails", findSender);
-        }
+//        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+//        String empId = loginUser.getEmpId(); // 보낸 사람의 empId로 설정
+//
+//        List<MailDTO> receivedMails = mailService.getReceivedMails(empId);
+//
+//        if(!receivedMails.isEmpty()){
+//            Map<String,Object> findSender = new HashMap<>();
+//
+//            SimpleDateFormat smp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+//            for (MailDTO mail : receivedMails){
+//                String name = memberService.getNameById(mail.getSenderEmpId());
+//
+//                String date = (smp.format(mail.getSentDate()));
+//
+//                Map<String, Object> mailWithDate = new HashMap<>();
+//                mailWithDate.put("mail", mail);  // 기존 mail 객체 저장
+//                mailWithDate.put("date", date);  // 날짜 정보 추가
+//
+//                findSender.put(name, mailWithDate);
+//            }
+//
+//            model.addAttribute("receivedMails", findSender);
+//        }
 
         return "index";
     }
@@ -206,11 +206,11 @@ public class MainController {
         int rejectedCount = approvalService.getRejectedDocumentsCount(empId);
 
         // 각 탭에 표시할 최근 문서들 조회 (예: 최근 5개)
-        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 5, 0);
+        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 3, 0);
         System.out.println("draftDocuments: " + draftDocuments);  // 로그 추가
-        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 5, 0);
+        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 3, 0);
         System.out.println("Approve Documents: " + approveDocuments);  // 로그 추가
-        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 5, 0);
+        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 3, 0);
 
         // 모델에 데이터 추가
         model.addAttribute("waitingCount", waitingCount);

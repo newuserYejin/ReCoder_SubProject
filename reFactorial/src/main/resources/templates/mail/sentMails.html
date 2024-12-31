@@ -21,10 +21,10 @@
         <div class="sidebar">
             <div class="sidebar-title">사내 메일</div>
             <ul>
-                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>
+<!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
                 <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
                 <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
-                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>
+<!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
             </ul>
         </div>
 
@@ -44,19 +44,19 @@
             </div>
 
             <!-- Table body -->
-            <div th:each="mail : ${sentMails}">
+            <div th:each="sentMail : ${sentMails}">
                 <div class="table-row">
 
                     <!-- 받는 사람 -->
-                    <div class="table-cell" th:text="${mail.receiverEmpId}"></div>
+                    <div class="table-cell" th:text="${sentMail.receiverEmpName}"></div>
 
                     <!-- 제목, 클릭 시 mailDetail로 이동 -->
                     <div class="table-cell">
-                        <a th:href="@{'/mail/detail'(emailId=${mail.emailId})}" th:text="${mail.emailTitle}"></a>
+                        <a th:href="@{'/mail/detail'(emailId=${sentMail.emailId})}" th:text="${sentMail.emailTitle}"></a>
                     </div>
 
                     <!-- 작성일 -->
-                    <div class="table-cell" th:text="${#dates.format(mail.sentDate, 'yyyy-MM-dd')}"></div>
+                    <div class="table-cell" th:text="${sentMail.sentDate}"></div>
                 </div>
             </div>
 
