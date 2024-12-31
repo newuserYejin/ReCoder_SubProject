@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.fileUploade.model.dao.UploadFileMapper">
+
+    <!-- 파일 저장 -->
+    <insert id="addFile" parameterType="com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO">
+        insert into tbl_files
+        (
+            mapping_id,
+            store_file_name,
+            origin_file_name,
+            file_size,
+            file_type,
+            uploaded_at
+        )
+        values
+            (
+                #{mappingId},
+                #{storeFileName},
+                #{originFileName},
+                #{fileSize},
+                #{fileType},
+                #{uploadedAt}
+            )
+    </insert>
+
+    <select id="findFileByMappingId" resultType="com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO" parameterType="String">
+        select
+            *
+        from
+            tbl_files
+        where
+            mapping_id = #{mappingId}
+    </select>
+
+    <select id="findFileByFileId" resultType="com.ohgiraffers.refactorial.fileUploade.model.dto.UploadFileDTO" parameterType="String">
+        select
+            *
+        from
+            tbl_files
+        where
+            file_id = #{fileId}
+    </select>
+
+    <delete id="deleteByMappingId" parameterType="String">
+        DELETE FROM tbl_files
+        WHERE mapping_id = #{mappingId}
+    </delete>
+
+
+
+
+
+</mapper>

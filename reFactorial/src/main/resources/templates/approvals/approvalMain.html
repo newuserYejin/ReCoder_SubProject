@@ -19,66 +19,125 @@
 
 </head>
 <body>
-<header th:replace="~{/common/header::headerFragment}"></header>
+<header th:replace="~{common/header::headerFragment}"></header>
 <section>
     <div class="container">
+
+        <!-- 눈송이 레이어 -->
+        <div class="snow-layer"></div>
+
+
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="sidebar-title">전자결제</div>
+            <div class="sidebar-title">
+                <a href="/user/approvalMain">전자결제</a>
+            </div>
 
 
             <ul>
-                <li><a href="/approvals/approvalWaiting">대기 중</a></li>
-                <li>진행 중</li>
-                <li>완료</li>
-                <li>반려</li>
-                <li>취소</li>
-                <li>내가 작성한</li>
+                <li><a href="/approvals/waiting">대기 중</a></li>
+                <li><a href="/approvals/inProgress">진행 중</a></li>
+                <li><a href="/approvals/completed">완료</a></li>
+                <li><a href="/approvals/rejected">반려</a></li>
+
+                <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+                <li><a href="/approvals/referenceDocuments">참조</a></li>
             </ul>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Bar -->
-            <div class="top-bar">
-                <a href="/approvals/approvalPage" class="button">결재 신청</a>
+            <div class="button-container">
+                <a href="/approvals/approvalPage" class="main-btn new-approval-btn">새 결재 작성하기</a>
+                <a href="/board/list?categoryCode=3"  class="main-btn download-btn">양식 다운로드</a>
             </div>
 
-            <!-- Table -->
-            <div class="table-header">
-                <div class="table-cell">번호</div>
-                <div class="table-cell">보낸 사람</div>
-                <div class="table-cell">제목</div>
-                <div class="table-cell">작성일</div>
-                <div class="table-cell">상태</div>
+            <div class="status-cards">
+                <div class="status-card card-waiting" onclick="location.href='/approvals/waiting'">
+                    <h3>결재 대기</h3>
+                    <div class="status-count" th:text="${waitingCount}">0</div>
+                    <div class="status-text">대기중인 문서</div>
+                </div>
+                <div class="status-card card-progress" onclick="location.href='/approvals/inProgress'">
+                    <h3>결재 진행중</h3>
+                    <div class="status-count" th:text="${inProgressCount}">0</div>
+                    <div class="status-text">처리중인 문서</div>
+                </div>
+                <div class="status-card card-completed" onclick="location.href='/approvals/completed'">
+                    <h3>결재 완료</h3>
+                    <div class="status-count" th:text="${completedCount}">0</div>
+                    <div class="status-text">완료된 문서</div>
+                </div>
+                <div class="status-card card-rejected" onclick="location.href='/approvals/rejected'">
+                    <h3>결재 반려</h3>
+                    <div class="status-count" th:text="${rejectedCount}">0</div>
+                    <div class="status-text">반려된 문서</div>
+                </div>
             </div>
 
-            <div class="table-row">
-                <div class="table-cell">1</div>
-                <div class="table-cell">문정현</div>
-                <div class="table-cell">전자결제 사용금지</div>
-                <div class="table-cell">2024.11.26</div>
-                <div class="table-cell">대기 중</div>
-            </div>
+            <div class="documents-panel">
+                <div class="tab-container">
+                    <button class="tab-button active" onclick="showTab('draft')">기안 문서</button>
+                    <button class="tab-button" onclick="showTab('approve')">결재할 문서</button>
+                    <button class="tab-button" onclick="showTab('reference')">참조 문서</button>
+                </div>
 
-            <div class="table-row">
-                <div class="table-cell">2</div>
-                <div class="table-cell">문정현</div>
-                <div class="table-cell">전자결제 테스트 중</div>
-                <div class="table-cell">2024.11.26</div>
-                <div class="table-cell">대기 중</div>
-            </div>
+                <!-- 기안 문서 탭 -->
+                <div id="draft-tab" class="tab-content active">
+                    <ul class="document-list">
+                        <li th:each="doc : ${draftDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div class="approver-info">
+                                <span class="approver-label">현재 결재자</span>
+                                <span th:text="${doc.currentApprover}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
 
-            <div class="table-row">
-                <div class="table-cell">3</div>
-                <div class="table-cell">문정현</div>
-                <div class="table-cell">사내 카페오픈</div>
-                <div class="table-cell">2024.11.26</div>
-                <div class="table-cell">완료</div>
+                <!-- 결재할 문서 탭 -->
+                <div id="approve-tab" class="tab-content">
+                    <ul class="document-list">
+                        <li th:each="doc : ${approveDocuments}"
+                            th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}"
+                                  th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 참조 문서 탭 -->
+                <div id="reference-tab" class="tab-content">
+                    <ul class="document-list">
+                        <li th:each="doc : ${referenceDocuments}" th:onclick="|location.href='@{/approvals/detail/{pmId}(pmId=${doc.pmId})}'|">
+                            <div class="document-info">
+                                <span class="document-title" th:text="${doc.title}"></span>
+                                <span class="document-date" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                            <div class="approver-info">
+                                <span class="approver-label">기안자</span>
+                                <span th:text="${doc.currentApprover}"></span>
+                            </div>
+                            <span class="status-badge" th:classappend="${'badge-' + doc.status}" th:text="${doc.status}"></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </section>
 <footer th:replace="~{/common/footer::footerFragment}"></footer>
+
+
+<script src="/js/approval/approvalMain.js"></script>
+
 </body>
 </html>

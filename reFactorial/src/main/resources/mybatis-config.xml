@@ -1,0 +1,5 @@
+<configuration>
+    <typeHandlers>
+        <typeHandler handler="org.apache.ibatis.type.ByteArrayTypeHandler"/>
+    </typeHandlers>
+</configuration>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+    <!-- 여기 까지 -->
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_employee.css}">
+
+    <!--등록하기 일 경우-->
+    <link rel="stylesheet" th:href="@{/css/admin/addEmployee.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_employee.css">
+
+
+</head>
+<body>
+
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">사 원</div>
+
+                <ul class="sideMenuUl">
+                    <li id="modifyEmpInfo" class="selected">정보수정</li>
+                    <li id="registeEmp">등록하기</li>
+                    <li id="updateAtt">근태수정</li>
+                </ul>
+            </div>
+            <div class="menuMainBox">
+
+            </div>
+        </div>
+    </section>
+    <!-- 유저 페이지들과 footer 공동 사용 -->
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+    <script th:src="@{/js/admin/admin_employee.js}"></script>
+</body>
+</html>

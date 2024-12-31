@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메일 상세</title>
+    <!-- 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" href="/css/common/header.css">
+    <link rel="stylesheet" href="/css/common/footer.css">
+    <link rel="stylesheet" href="/css/common/style.css">
+    <link rel="stylesheet" href="/css/mail/mailDetail.css">
+
+</head>
+<body>
+<header th:replace="~{common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">사내 메일</div>
+            <ul>
+<!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
+                <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
+                <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
+<!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <button type="button" th:onclick="|location.href='@{/mail/reply(emailId=${mailDetail.emailId})}'|">
+                    답신 하기
+                </button>
+            </div>
+
+            <!-- Mail Detail Section -->
+            <div class="mail-detail">
+                <div class="mail-detail-header">
+                    <h2 th:text="${mailDetail.emailTitle}"></h2> <!-- 이메일 제목 -->
+
+                    <div class="mail-meta">
+                        <span>보낸사람: <span th:text="${mailDetail.empName}"></span></span>
+                        <span>보낸 날짜: <span th:text="${mailDetail.sentDate}"></span></span>
+                    </div>
+                </div>
+                <div class="mail-content">
+                    <p th:text="${mailDetail.emailContent}"></p> <!-- 메일 내용 -->
+                </div>
+                <div th:each="file : ${attachmentFileList}">
+                    <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}">첨부 파일</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
+</body>
+</html>

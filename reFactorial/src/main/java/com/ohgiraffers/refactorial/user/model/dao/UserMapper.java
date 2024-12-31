@@ -1,14 +1,17 @@
 package com.ohgiraffers.refactorial.user.model.dao;
 
+import com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO;
 import com.ohgiraffers.refactorial.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface UserMapper {
 
-    UserDTO findByUsername(String username);
+    LoginUserDTO findByUsername(String username);
 
     int addEmployee(UserDTO userDTO);
 
@@ -19,4 +22,22 @@ public interface UserMapper {
     int changePW(Map<String, String> updateData);
 
     int updatePersonalInfo(Map<String, String> updateData);
+
+    String findEmpIdByName(String name);
+
+    String getNameById(String empId);
+
+    List<Map<String, Object>> getHiredDateGroupBy();
+
+
+    LoginUserDTO findUserById(String empId);
+
+    void updateUserLeave(String empId, BigDecimal deduction, String leaveType);
+
+    int addCheckEvent(Map<String, Object> sendData);
+
+    int getCheckEvent(Map<String, Object> sendData);
+
+    List<String> getAllCheckEvent(Map<String, Object> sendData);
+
 }

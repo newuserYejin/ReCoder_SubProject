@@ -11,67 +11,267 @@
         <result property="postCreationDate" column="post_creationDate"/>
         <result property="postModificationDate" column="post_modificationDate"/>
         <result property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
         <result property="categoryCode" column="category_code"/>
+        <result property="attachment" column="attachment"/>
     </resultMap>
 
     <!-- 게시물 전체 조회 -->
-    <select id="postList" resultMap="boardResultMap">
-        select
-           *
-        from
-          tbl_post
-        where
-        category_code = #{categoryCode}
+    <select id="postList" parameterType="int" resultMap="boardResultMap">
+        SELECT
+            *
+        FROM
+            tbl_post p
+        LEFT JOIN
+            employee e
+        ON
+            p.emp_id = e.emp_id
+        WHERE
+            p.category_code = #{categoryCode}
+        <if test="searchContents != null and searchContents != ''">
+            AND (p.post_title LIKE CONCAT('%', #{searchContents}, '%')
+            OR e.emp_name LIKE CONCAT('%', #{searchContents}, '%'))
+        </if>
+        ORDER BY
+            p.post_creationDate DESC
+        LIMIT
+            #{limit} OFFSET #{offset};
     </select>
 
-    <!-- 게시물 등록 -->
+    <!-- 게시물 카테고리별 카운트 -->
+    <select id="getBoardListCount" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
+        SELECT
+        COUNT(*)
+        FROM
+        tbl_post p
+        LEFT JOIN
+        employee e
+        ON
+        p.emp_id = e.emp_id
+        WHERE
+        p.category_code = #{categoryCode}
+        <if test="searchContents != null and searchContents != ''">
+            AND (p.post_title LIKE CONCAT('%', #{searchContents}, '%')
+            OR e.emp_name LIKE CONCAT('%', #{searchContents}, '%'))
+        </if>
+        ORDER BY
+        p.post_creationDate DESC;
+    </select>
+
+    <!-- 게시물 등록, 수정 -->
     <insert id="boardPost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
         insert into tbl_post
         (
+        post_id,
         post_title,
         post_content,
         post_creationDate,
         emp_id,
         post_modificationDate,
-        category_code
+        category_code,
+        attachment
         )
         values
         (
+        #{postId},
         #{postTitle},
         #{postContent},
         #{postCreationDate},
         #{empId},
         #{postModificationDate},
-        #{categoryCode}
+        #{categoryCode},
+        #{attachment}
         )
+        on duplicate key update
+        post_id = #{postId},
+        post_title = #{postTitle},
+        post_content = #{postContent},
+        post_creationDate = #{postCreationDate},
+        emp_id = #{empId},
+        post_modificationDate = #{postModificationDate},
+        category_code = #{categoryCode},
+        attachment = #{attachment};
     </insert>
 
-    <!-- 게시물 상세페이지 -->
-    <select id="postDetail" parameterType="int" resultMap="boardResultMap">
-        SELECT
+    <!-- 투표 항목 조회 -->
+    <select id="itemView" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO">
+        select
             *
-        FROM
-            tbl_post
-        WHERE
+        from
+            tbl_vote_item
+        where
             post_id = #{postId}
     </select>
 
-    <!-- 게시물 수정 -->
-    <update id="updatePost" parameterType="com.ohgiraffers.refactorial.board.model.dto.BoardDTO">
-        update tbl_post
-        set
-        post_title = #{postTitle},
-        post_content = #{postContent},
-        category_code = #{categoryCode},
-        post_modificationDate = #{postModificationDate}
+    <!-- 투표 항목 등록 -->
+    <insert id="optionResult" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteItemDTO">
+        insert into tbl_vote_item
+        (
+        item_id,
+        post_id,
+        item_title
+        )
+        value
+        (
+        #{itemId},
+        #{postId},
+        #{itemTitle}
+        )
+        on duplicate key update
+        item_id = #{itemId},
+        post_id = #{postId},
+        item_title = #{itemTitle};
+    </insert>
+
+    <!-- 투표 항목 삭제 -->
+    <delete id="deleteVoteItemList" parameterType="String">
+        delete from tbl_vote_item
+        where post_id = #{postId}
+    </delete>
+
+    <!-- 투표항목 선택결과 조회 -->
+    <select id="getVoteResults" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
+        select
+        item_id, count(item_id) as vote_count
+        from
+        tbl_vote_result
         where
         post_id = #{postId}
-    </update>
+        group by item_id
+    </select>
+
+    <!-- 투표 결과 생성 -->
+    <insert id="voteResult" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
+        INSERT INTO tbl_vote_result (
+        emp_id,
+        item_id,
+        post_id
+        )
+        VALUES
+        <foreach collection="voteItemList" item="item" separator=",">
+            (
+            #{item.empId},
+            #{item.itemId},
+            #{item.postId}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 게시물 상세페이지 -->
+    <select id="postDetail" parameterType="String" resultMap="boardResultMap">
+        SELECT
+            *
+        FROM
+            tbl_post AS p
+        JOIN
+            employee AS e
+        ON
+            p.emp_id = e.emp_id
+        WHERE
+            p.post_id = #{postId}
+    </select>
 
     <!-- 게시물 삭제 -->
-    <delete id="postDelete" parameterType="int">
+    <delete id="postDelete" parameterType="String">
         DELETE FROM tbl_post
         WHERE post_id = #{postId}
     </delete>
+
+    <!-- 댓글 등록 -->
+    <insert id="comment" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO">
+        insert into tbl_comment
+        (
+        post_id,
+        emp_id,
+        comment_content,
+        comment_creationDate
+        )
+        values
+        (
+        #{postId},
+        #{empId},
+        #{commentContent},
+        #{commentCreationDate}
+        )
+    </insert>
+
+    <!-- 댓글 조회 -->
+    <select id="commentView" parameterType="String" resultType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO">
+        SELECT
+            *
+        FROM
+            tbl_comment AS c
+        JOIN
+            employee AS e
+        ON
+            c.emp_id = e.emp_id
+        WHERE
+            c.post_id = #{postId}
+        ORDER BY
+            c.comment_creationDate ;
+    </select>
+
+    <!-- 댓글 삭제 -->
+    <delete id="commentDelete" parameterType="int">
+        delete from tbl_comment
+        where comment_id = #{commentId}
+    </delete>
+
+    <!-- 댓글 좋아요 삽입 -->
+    <insert id="commentLikesInsert" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentLikesDTO">
+        insert into tbl_comment_likes
+        (
+        comment_id,
+        emp_id
+        )
+        values
+        (
+        #{commentId},
+        #{empId}
+        )
+    </insert>
+
+    <!-- 댓글 좋아요 삭제 -->
+    <delete id="commentLikesDelete" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentLikesDTO">
+        delete from tbl_comment_likes
+        where
+        comment_id = #{commentId}
+        and
+        emp_id = #{empId}
+    </delete>
+
+    <!-- 댓글 갯수 조회 -->
+    <select id="commentLikesCount" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO" resultType="int">
+        select
+            count(*)
+        from
+            tbl_comment_likes
+        where
+            comment_id = #{commentId}
+    </select>
+
+    <!-- 댓글 본인투표 여부 -->
+    <select id="isMyLike" parameterType="com.ohgiraffers.refactorial.board.model.dto.CommentDTO" resultType="int">
+        select
+        count(*)
+        from
+        tbl_comment_likes
+        where
+        comment_id = #{commentId}
+        and
+        emp_id = #{empId}
+    </select>
+
+    <!-- 투표한 사람에게 보여주는 항목 -->
+    <select id="voteComplete" parameterType="com.ohgiraffers.refactorial.board.model.dto.VoteResultDTO">
+        select
+            *
+        from
+            tbl_vote_result
+        where
+            post_id = #{postId}
+            and emp_id = #{empId}
+    </select>
+
 
 </mapper>

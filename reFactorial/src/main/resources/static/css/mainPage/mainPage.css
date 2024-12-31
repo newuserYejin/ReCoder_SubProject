@@ -1,0 +1,628 @@
+section{
+    margin: 0 10%;
+}
+
+.holeContainer{
+    padding: 13px 0;
+    height: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    .main_upperBox{
+        width: 100%;
+        height: 48%;
+
+        max-height: 37vh;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .profileWeather{
+            width: 38%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .profile, .WeatherAPIBox{
+                width: 100%;
+                height: 48%;
+            }
+
+            .profile{
+                display: flex;
+                justify-content: space-between;
+                border: solid 1px rgba(79, 79, 79, 40%);
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+                border-radius: 10px;
+
+                .profileImg{
+                    width: 40%;
+                    height: 100%;
+                    padding: 10px;
+                    box-sizing: border-box;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    img{
+                        width: 68%;
+                        aspect-ratio: 1 / 1 ;
+                        border-radius: 50%;
+                        border: solid 5px black;
+                        padding: 5px;
+                        box-sizing: border-box;
+                    }
+                }
+
+                .profileInfo{
+                    width: 58%;
+                    height: 100%;
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    font-size: 1.1em;
+
+                    .firstLine{
+                        width: 100%;
+                        height: 30%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: start;
+
+                        div{
+                            width: fit-content;
+                        }
+
+                        p{
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        button{
+                            background: none;
+                            height: fit-content;
+                            font-size: 0.5em;
+                            border: none;
+                            color: #4F4F4F;
+                        }
+                    }
+
+                    .secondLine{
+                        width: 100%;
+                        height: max-content;
+                    }
+
+                    .thirdLine{
+                        width: 100%;
+                        height: 30%;
+                        display: flex;
+                        justify-content: space-between;
+
+                        div{
+                            height: 100%;
+                            display: flex;
+                            align-items: end;
+                        }
+
+                        #todayAtt{
+                            border: none;
+                            height: 100%;
+                            padding: 10px;
+                            box-sizing: border-box;
+                            background-color: #5C1915;
+                            color: white;
+
+                            width: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            border-radius: 10px;
+
+                            margin-right: 10px;
+                        }
+                    }
+                }
+            }
+
+            .WeatherAPIBox{
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+                border-radius: 10px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+
+                background-color: rgba(92, 25, 21, 0.2);
+
+                .weatherImg,.weatherTemp {
+                    width: 100%;
+                    height: 100%;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: end;
+                }
+
+                .weatherImg img{
+                    height: 100%;
+                    aspect-ratio: 1 / 1;
+                }
+
+                .weatherTemp{
+                    display: flex;
+                    align-items: center;
+                    height: fit-content;
+                    justify-content: start;
+
+                    div:first-child{
+                        align-self: start;
+                        color: #023e8a;
+                        font-size: 1.5em;
+                        margin-right: 10px;
+
+                        span:last-child{
+                            border: solid 2.5px #023e8a;
+                        }
+                    }
+
+                    div:last-child{
+                        color: #d62828;
+                        font-size: 2em;
+
+                        span:last-child{
+                            border: solid 2.5px #d62828;
+                        }
+                    }
+
+                    div{
+                        display: flex;
+                        align-items: center;
+
+                        span{
+                            align-self: start;
+                            border-radius: 50%;
+                            display: inline-block;
+
+                            width: 5px;
+                            height: 5px;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        .companyMailBox{
+            width: 60%;
+            height: 100%;
+
+            padding: 20px;
+
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: column;
+
+            border: solid 1px rgba(79, 79, 79, 40%);
+            box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+            border-radius: 10px;
+
+            .mailBoxTitleBox{
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                color: rgba(0,0,0,0.8);
+
+                div{
+                    font-size: 0.5em;
+                    cursor: pointer;
+                }
+
+                .mailBoxTitle{
+                    font-size: 1.5em;
+                    padding: 0 10px;
+                    border-bottom: solid 4px #5C1915;
+                }
+            }
+
+            .mailContent{
+                width: 100%;
+                flex: 1;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                align-items: center;
+
+                font-family: "Noto Sans KR", sans-serif;
+
+                .noMailMsg{
+                    font-size: 1.3em;
+                }
+
+                .mailTh, .mailTd{
+                    justify-items: start;
+                    width: 100%;
+                    display: flex;
+                    margin-bottom: 5px;
+                    border-bottom: solid 1px #4F4F4F;
+                    font-size: 0.8em;
+                    font-weight: bold;
+
+                    .mailNum{
+                        width: 10%;
+                        text-align: center;
+                    }
+
+                    .sender{
+                        text-align: center;
+                        width: 20%;
+                    }
+
+                    .mailTitle{
+                        text-align: center;
+                        width: 50%;
+                    }
+
+                    .mailDate{
+                        text-align: center;
+                        width: 20%;
+                    }
+
+                }
+
+                .mailTd{
+                    cursor: pointer;
+                    margin-bottom: 10px;
+                }
+
+                .mailTh{
+                    font-size: 1.1em;
+                    margin-bottom: 10px;
+                    border-bottom: solid 2px #4F4F4F;
+                }
+
+            }
+
+
+        }
+
+    }
+
+    .main_footerBox{
+        width: 100%;
+        height: 49%;
+        max-height: 39vh;
+
+        display: flex;
+        justify-content: space-between;
+
+        >div{
+            border: solid 1px blue;
+        }
+
+        .checkEvent{
+            width: 38%;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+
+            border: solid 1px rgba(79, 79, 79, 40%);
+            box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+            border-radius: 10px;
+
+            #checkCalendar{
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+
+        .voteBoardSummary{
+            border: none;
+            width: 60%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+
+            .voteSummary{
+                width: 39%;
+                height: 100%;
+
+                border: solid 1px rgba(79, 79, 79, 40%);
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+                border-radius: 10px;
+
+                padding: 20px;
+                box-sizing: border-box;
+
+                display: flex;
+                flex-direction: column;
+
+                .voteTitleBox{
+                    display: flex;
+                    justify-content: space-between;
+                    color: rgba(0,0,0,0.8);
+
+                    .voteTitle{
+                        font-size: 1.5em;
+                        padding: 0 10px;
+                        border-bottom: solid 4px #5C1915;
+                    }
+                }
+
+                .voteNone{
+                    font-size: 1.1em;
+                    text-align: center;
+                    margin-top: 10%;
+                }
+
+                .voteContentBoxBox{
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    flex: 1;
+
+                    display: none;
+
+                    img{
+                        cursor: pointer;
+                    }
+
+                    .voteContentBox{
+                        width: 100%;
+                        flex: 1;
+
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        >div{
+                            width: 10%;
+                        }
+
+                        .prevBtn:disabled, .nextBtn:disabled{
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                        }
+
+                        .voteContent{
+                            width: 80%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                    }
+
+                    button{
+                        background-color: #5C1915;
+                        color: white;
+                        padding: 10px 20px;
+                        border-radius: 10px;
+                        border: none;
+                        cursor: pointer;
+                    }
+                }
+
+
+            }
+
+            .boardSummary{
+                width: 59%;
+                height: 100%;
+                box-sizing: border-box;
+
+                display: flex;
+                flex-direction: column;
+
+                padding: 20px;
+
+                border: solid 1px rgba(79, 79, 79, 40%);
+                box-shadow: 3px 3px 5px rgba(79, 79, 79, 40%);
+                border-radius: 10px;
+
+                .totalBox{
+                    width: 100%;
+                    height: 100%;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    .boardTitleBox{
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        height: fit-content;
+                        margin-bottom: 20px;
+
+                        .boardTitle{
+                            color: rgba(0,0,0,0.8);
+                            font-size: 1.5em;
+                            padding:0 10px;
+                            border-bottom: solid 4px #5C1915;
+                        }
+
+                        div{
+                            font-size: 0.5em;
+                            color: rgba(0,0,0,0.8);
+                            cursor: pointer;
+                        }
+
+                        div:last-child{
+                            cursor: pointer;
+                        }
+                    }
+
+                    .boardDataBox{
+                        width: 100%;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: start;
+                        align-items: center;
+
+                        overflow: hidden;
+
+                        font-size: 1.1em;
+
+                        font-family: "Noto Sans KR", sans-serif;
+                        font-weight: bold;
+
+                        .DataHeader {
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            border: none;
+                            border-bottom: solid 1px #4F4F4F;
+
+                            margin-bottom: 15px;
+
+                            div{
+                                width: 10%;
+                                text-align: center;
+                                font-size: 0.8em;
+                            }
+
+                            .postEmpName{
+                                width: 15%;
+                            }
+
+                            .postTitle{
+                                width: 50%;
+                            }
+
+                            .postDate{
+                                width: 25%;
+                            }
+                        }
+
+                        .DataBody{
+                            width: 100%;
+                            flex: 1;
+
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: start;
+
+                            overflow-y: auto;
+                            overflow-x: hidden;
+
+
+                            .MainData{
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+
+                                margin-bottom: 10px;
+
+                                border-bottom: solid 1px #4F4F4F;
+
+                                div{
+                                    width: 10%;
+                                    text-align: center;
+                                    font-size: 0.8em;
+
+                                    cursor: pointer;
+                                }
+
+                                .postEmpName{
+                                    width: 15%;
+                                }
+
+                                .postTitle{
+                                    width: 50%;
+                                }
+
+                                .postDate{
+                                    width: 25%;
+                                }
+                            }
+
+                            .noPost{
+                                text-align: center;
+                            }
+
+                            .MainData:last-child{
+                                margin-bottom: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#custom_canvas{
+    position: absolute;
+    width: 99%;
+    height: 99%;
+    z-index: -3;
+}
+
+.fc {
+    font-size: 0.7em;
+}
+
+.fc .fc-toolbar-title{
+    font-weight: 400;
+}
+
+.fc .fc-toolbar.fc-header-toolbar{
+    margin-bottom: 10px;
+}
+
+
+.fc .fc-view-harness{
+    width: 100%;
+    height: 100%;
+}
+
+.fc table{
+    font-size: 1.1em;
+}
+
+.fc-daygrid-event{
+    text-align: center;
+}
+
+.fc-h-event .fc-event-title{
+    font-size: 2.5em;
+}
+
+.fc .fc-scroller-liquid-absolute{
+    overflow: hidden;
+}
+
+.fc{
+    ::-webkit-scrollbar{
+        display: none;
+    }
+
+    .fc-col-header {
+        width: 100% !important;
+    }
+
+    .fc-daygrid-body{
+        width: 100% !important;
+        table{
+            width: 100%!important;
+        }
+    }
+}

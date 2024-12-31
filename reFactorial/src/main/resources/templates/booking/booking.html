@@ -2,30 +2,58 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회의실 예약</title>
+  <title>예약 페이지</title>
+
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/common/header.css">
+  <link rel="stylesheet" href="/css/common/footer.css">
+  <link rel="stylesheet" href="/css/common/style.css">
+
+  <link rel="stylesheet" href="/css/booking/booking.css">
+
 </head>
 <body>
-<h1>회의실 예약</h1>
-<ul>
-  <th:block th:each="reservation : ${reservations}">
-    <li>
-      <!-- 예약한 회의실 번호 -->
-      <span>회의실 번호: <span th:text="${reservation.conferenceRoomNo}"></span></span>
-      <br>
-      <!-- 예약 ID -->
-      <span>예약 ID: <span th:text="${reservation.reservationId}"></span></span>
-      <br>
-      <!-- 예약 페이지로 이동하는 링크 -->
-      <a th:href="@{/bookingForm(roomNo=${reservation.conferenceRoomNo})}">예약하기</a>
-      <!-- 예약 삭제 버튼 -->
-      <form action="/deleteReservation" method="post" style="display: inline;">
-        <input type="hidden" name="reservationId" th:value="${reservation.reservationId}">
-        <button type="submit">삭제</button>
-      </form>
-    </li>
-  </th:block>
-</ul>
+  <header th:replace="~{common/header::headerFragment}"></header>
+  <section>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-title">예약 관리</div>
+        <ul>
+          <li th:onclick="|location.href='@{/booking}'|" class="sidebar-selected">예약 하기</li>
+          <li th:onclick="|location.href='@{/booking/myBookingList}'|">예약 내역</li>
+        </ul>
+      </div>
+
+      <div class="main-content-wrap">
+        <div class="main-content">
+
+          <div th:each="cabinet : ${cabinets}" class="room-img-content-flex">
+            <div class="room-img-content">
+              <img th:src="|/images/${cabinet.cabinetImg}|" th:alt="${cabinet.roomName}">
+            </div>
+            <div class="room-text-content">
+              <p class="roomName" th:text="${cabinet.roomName}"></p>
+              <p th:text="|위치 : ${cabinet.roomLocation} |">위치 : 4F 홍보부 옆</p>
+              <p th:text="|구성 : ${cabinet.fixtures} |">구성 : 화이트 보드, 빔 프로젝트</p>
+            </div>
+            <div class="room-reservation-button">
+              <button th:onclick="|location.href='@{/booking/bookingForm(roomNo=${cabinet.conferenceRoomNo})}'|">예약하기</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer th:replace="~{common/footer::footerFragment}"></footer>
+
 </body>
 </html>
+

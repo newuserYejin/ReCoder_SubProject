@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailMapper">
+
+    <resultMap id="MailResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+        <id property="emailId" column="email_id"/>
+        <result property="emailTitle" column="email_title"/>
+        <result property="emailContent" column="email_content"/>
+        <result property="sentDate" column="sent_date" javaType="java.time.LocalDateTime"/>
+        <result property="senderEmpId" column="sender_emp_id"/>
+        <result property="attachment" column="attachment"/>
+    </resultMap>
+
+    <resultMap id="MailReceiverResultMap" type="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
+        <id property="id" column="id"/>
+        <result property="emailId" column="email_id"/>
+        <result property="receiverEmpId" column="receiver_emp_id"/>
+        <result property="readStatus" column="read_status"/>
+        <result property="trashStatus" column="trash_status"/>
+    </resultMap>
+
+    <!-- 메일 보내기 -->
+    <insert id="sendMail" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+        INSERT INTO tbl_mail (email_id, email_title, email_content, sent_date, sender_emp_id, attachment)
+        VALUES (#{emailId}, #{emailTitle}, #{emailContent}, now() , #{senderEmpId}, #{attachment})
+    </insert>
+    <insert id="saveReceiver" parameterType="com.ohgiraffers.refactorial.mail.model.dto.MailReceiverDTO">
+        INSERT INTO tbl_mail_receivers (email_id, receiver_emp_id, read_status ,trash_status )
+        VALUES (#{emailId}, #{receiverEmpId}, #{readStatus} , 0 )
+    </insert>
+
+    <!--내가 보낸 메일-->
+    <select id="getSentMails" resultMap="MailResultMap">
+        SELECT
+        m.email_id,
+        m.email_title,
+        m.email_content,
+        m.sent_date,
+        m.sender_emp_id,
+        mr.receiver_emp_id,
+        e.emp_name AS receiver_emp_name
+        FROM
+        tbl_mail m
+        JOIN
+        tbl_mail_receivers mr ON m.sender_emp_id = mr.receiver_emp_id
+        JOIN
+        employee e ON mr.receiver_emp_id = e.emp_id
+        WHERE
+        m.email_id = #{emailId}
+    </select>
+
+    <!--내가 받은 메일-->
+    <select id="getReceivedMails" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail m
+        JOIN tbl_mail_receivers mr on m.email_id = mr.email_id
+        JOIN employee e on e.emp_id = mr.receiver_emp_id
+        WHERE mr.receiver_emp_id = #{receiverEmpId}
+        AND mr.trash_status = 0
+    </select>
+
+    <!-- 내가 보낸 메일의 수신자 사원 ID 가져오기 -->
+    <select id="getReceiverEmpIds" resultType="java.lang.String">
+        SELECT receiver_emp_id
+        FROM tbl_mail_receivers
+        WHERE email_id = #{emailId}
+    </select>
+
+    <!-- 메일의 상세 페이지 -->
+    <select id="getMailDetail" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE email_id = #{emailId}
+    </select>
+    <!-- 휴지통 메일의 상세 페이지-->
+    <select id="getMailDetailBin" resultMap="MailResultMap">
+        SELECT *
+        FROM tbl_mail
+        WHERE email_id = #{emailId}
+    </select>
+
+    <select id="getReplyMailDetail" resultMap="MailResultMap">
+        SELECT
+        m.email_id,
+        m.email_title,
+        m.email_content,
+        m.sent_date,
+        m.sender_emp_id,
+        mr.receiver_emp_id,
+        e.emp_name AS receiver_emp_name
+        FROM
+        tbl_mail m
+        JOIN
+        tbl_mail_receivers mr ON m.email_id = mr.email_id
+        JOIN
+        employee e ON mr.receiver_emp_id = e.emp_id
+        WHERE
+        m.email_id = #{emailId}
+    </select>
+
+    <!-- 휴지통으로 이동 -->
+    <!-- 특정 수신자에 대해 휴지통 이동 -->
+    <update id="updateTrashStatus" parameterType="map">
+        UPDATE tbl_mail_receivers
+        SET trash_status = #{trashStatus}
+        WHERE email_id = #{emailId}
+        AND receiver_emp_id = #{receiverEmpId} <!-- 특정 수신자에 대해서만 업데이트 -->
+    </update>
+
+    <!-- 휴지통에서 복구하기-->
+    <update id="updateTrashRemove" parameterType="java.lang.String">
+        UPDATE tbl_mail_receivers
+        SET trash_status = 0
+        WHERE email_id = #{emailId}
+    </update>
+
+    <!--받은 메일 보낸 메일 휴지통에서 불러오기-->
+    <select id="getReceivedMailsBin" resultMap="MailResultMap">
+        SELECT m.*, mr.receiver_emp_id
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
+        WHERE mr.trash_status = 1
+    </select>
+    <select id="getSentMailsBin" resultMap="MailResultMap">
+        SELECT m.*, mr.receiver_emp_id
+        FROM tbl_mail m
+        INNER JOIN tbl_mail_receivers mr ON m.email_id = mr.email_id
+        WHERE mr.trash_status = 1
+    </select>
+
+    <!-- 발신 메일 목록 조회 (페이징) -->
+    <select id="getSendMailDocuments" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+        SELECT
+        m.email_id AS emailId,
+        m.email_title AS emailTitle,
+        m.sent_date AS sentDate,
+        m.attachment,
+        e.emp_name AS positionName,
+        d.dept_name AS deptName,
+        (SELECT COUNT(*) FROM tbl_mail_receivers mr WHERE mr.email_id = m.email_id) AS receiverCount
+        FROM
+        tbl_mail m
+        JOIN
+        employee e ON m.sender_emp_id = e.emp_id
+        JOIN
+        tbl_department d ON e.dept_code = d.dept_code
+        WHERE
+        m.sender_emp_id = #{empId}
+        ORDER BY
+        m.sent_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 총 발신 메일 개수 조회 -->
+    <select id="getTotalSendMailDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_mail
+        WHERE sender_emp_id = #{empId}
+    </select>
+
+
+</mapper>

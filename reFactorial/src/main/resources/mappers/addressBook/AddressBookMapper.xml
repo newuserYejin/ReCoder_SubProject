@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.addressBook.model.dao.AddressBookMapper">
+
+
+    <resultMap id="EmployeeMap" type="com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO">
+        <result property="id" column="emp_id"/>
+        <result property="name" column="emp_name"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="positionValue" column="position_value"/>
+        <result property="email" column="emp_email"/>
+        <result property="phone" column="emp_phone"/>
+    </resultMap>
+    <!-- 전체 직원 조회 -->
+    <select id="findAllEmployees" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone,
+               emp_no AS socialNumber, emp_address AS address, annual_leave AS annualLeave
+        FROM employee
+        WHERE view_auth != 'ACCESSLIMIT'
+        ORDER BY emp_name ASC;
+    </select>
+
+    <!-- 검색 키워드로 직원 조회 -->
+
+        <select id="findEmployeesByKeyword" parameterType="string" resultMap="EmployeeMap">
+            SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+            FROM employee
+            WHERE (emp_name LIKE CONCAT('%', #{keyword}, '%')
+                OR dept_code IN (SELECT dept_code FROM tbl_dept WHERE dept_name LIKE CONCAT('%', #{keyword}, '%')))
+              AND view_auth != 'ACCESSLIMIT'
+            ORDER BY emp_name ASC;
+    </select>
+
+    <!-- 부서명 조회 -->
+    <select id="findDeptName" parameterType="int" resultType="string">
+        SELECT dept_name
+        FROM tbl_dept
+        WHERE dept_code = #{deptCode};
+    </select>
+
+    <!-- 직책명 조회 -->
+    <select id="findPositionName" parameterType="int" resultType="string">
+        SELECT position_name
+        FROM tbl_position
+        WHERE position_value = #{positionValue};
+    </select>
+
+
+    <!-- 직원 총 수 -->
+    <select id="getTotalEmployeeCount" resultType="int">
+        SELECT COUNT(*) FROM employee;
+    </select>
+
+    <!-- 페이지네이션 적용된 직원 조회 -->
+    <select id="findEmployeesWithPagination" parameterType="map" resultMap="EmployeeMap">
+        SELECT emp_id, emp_name, dept_code, position_value, emp_email, emp_phone
+        FROM employee
+        ORDER BY emp_id ASC
+            LIMIT #{limit} OFFSET #{offset};
+    </select>
+
+    <!-- 전체 협력업체 조회 -->
+    <select id="findAllFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT fab_id, manager_name, manager_phone, fab_email, fab_name,
+               fab_address, fab_product, emp_id, fab_phone, fab_image
+        FROM tbl_factory
+        ORDER BY fab_name ASC;
+    </select>
+
+    <!-- 키워드로 협력업체 검색 -->
+    <select id="searchFactoriesByKeyword" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT fab_id, manager_name, manager_phone, fab_email, fab_name,
+               fab_address, fab_product, emp_id, fab_phone, fab_image
+        FROM tbl_factory
+        WHERE fab_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_address LIKE CONCAT('%', #{keyword}, '%')
+           OR manager_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_product LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY fab_name ASC;
+    </select>
+
+</mapper>

@@ -5,16 +5,16 @@
     <title>sidebar</title>
 </head>
 <body>
-    <!-- 게시판 목록 -->
-    <div class="sidebar" th:fragment="sidebarFragment">
-        <div class="sidebar-title">게시판</div>
-        <ul>
-            <li onclick="location.href='/board/list?categoryCode=1'">공지사항</li>
-            <li onclick="location.href='/board/list?categoryCode=2'">자유 게시판</li>
-            <li onclick="location.href='/board/list?categoryCode=3'">문서 양식</li>
-            <li onclick="location.href='/board/list?categoryCode=4'">투표 게시판</li>
-            <li onclick="location.href='/board/list?categoryCode=5'">이벤트</li>
-        </ul>
-    </div>
+<!-- 게시판 목록 -->
+<div class="sidebar" th:fragment="sidebarFragment">
+    <div class="sidebar-title">게시판</div>
+    <ul>
+        <li th:class="${currentCategory == 1} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=1'">공지사항</li>
+        <li th:class="${currentCategory == 2} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=2'">자유 게시판</li>
+        <li th:class="${currentCategory == 3} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=3'">문서 양식</li>
+        <li th:class="${currentCategory == 4} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=4'">투표 게시판</li>
+        <li th:class="${currentCategory == 5} ? 'active' : ''" onclick="location.href='/board/list?categoryCode=5'">이벤트</li>
+    </ul>
+</div>
 </body>
 </html>

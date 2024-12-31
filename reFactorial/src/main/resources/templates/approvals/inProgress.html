@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!--폰트 적용-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{/css/approval/inProgress.css}">
+</head>
+<body>
+<header th:replace="~{common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-title">전자결재</div>
+            <ul>
+                <li><a href="/approvals/waiting">대기 중</a></li>
+                <li><a href="/approvals/inProgress">진행 중</a></li>
+                <li><a href="/approvals/completed">완료</a></li>
+                <li><a href="/approvals/rejected">반려</a></li>
+
+                <li><a href="/approvals/myDocuments">내가 작성한</a></li>
+                <li><a href="/approvals/referenceDocuments">참조</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>진행 중 문서</h1>
+            <div class="table-header">
+                <div class="table-cell">번호</div>
+                <div class="table-cell">기안자</div>
+                <div class="table-cell">제목</div>
+                <div class="table-cell">작성일</div>
+                <div class="table-cell">상태</div>
+            </div>
+            <div class="table-row" th:each="doc : ${documents}">
+                <div class="table-cell" th:text="${doc.rowNum}"></div>
+                <div class="table-cell" th:text="${doc.creatorName}"></div> <!-- 작성자 이름 -->
+                <a class="table-cell" th:href="@{'/approvals/detail/' + ${doc.pmId}}" th:text="${doc.title}"></a>
+                <div class="table-cell" th:text="${#dates.format(doc.createDate, 'yyyy-MM-dd')}"></div>
+                <div class="table-cell" th:text="${doc.status}"></div>
+            </div>
+            <div th:if="${#lists.isEmpty(documents)}" class="no-documents">
+                게시글이 없습니다.
+            </div>
+
+            <!-- 페이지네이션 표시 -->
+            <div class="pagination">
+                <ul>
+                    <!-- 첫 페이지 -->
+                    <li class="first">
+                        <a href="?page=1"><<</a>
+                    </li>
+                    <!-- 이전 페이지 -->
+                    <li class="prev">
+                        <a th:href="@{'/approvals/inProgress?page=' + ${prevPage}}" class="prev"><</a>
+                    </li>
+
+                    <!-- 페이지 번호들 -->
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <li th:classappend="${i == currentPage ? 'active' : ''}">
+                            <a th:href="@{'/approvals/inProgress?page=' + ${i}}" th:text="${i}"></a>
+                        </li>
+                    </th:block>
+
+                    <!-- 다음 페이지 -->
+                    <li class="next">
+                        <a th:href="@{'/approvals/inProgress?page=' + ${nextPage}}" class="next">></a>
+                    </li>
+                    <!-- 마지막 페이지 -->
+                    <li class="last">
+                        <a th:href="@{'/approvals/inProgress?page=' + ${totalPages}}" class="last">>></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{common/footer::footerFragment}"></footer>
+</body>
+</html>

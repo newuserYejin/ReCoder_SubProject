@@ -3,10 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_main.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_main.css">
 </head>
 <body>
 
-  <h1>admin</h1>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="pageTitle">관리자 페이지</div>
+        <div class="mainBox">
+            <div class="mainLeft_box">
+                <div style="--menu-size: 350px;" th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+                <div class="inquiryBox">
+                    <div class="inquiryTitleBox">
+                        <div class="">1 : 1 문의사항</div>
+                        <div onclick="location.href='adminInquiryList'" >+ 더보기</div>
+                    </div>
+                    <div class="inquiryBoxHeader">
+                        <div class="inquirySendName">문의자</div>
+                        <div class="inquirySendTitle">제목</div>
+                        <div class="inquiryStatus">답변상태</div>
+                    </div>
+
+                    <div class="noInquiry" th:if="${inquiryList.isEmpty()}">문의 사항이 없습니다.</div>
+
+                    <div class="inquiryContentBox">
+                        <div th:if="${! inquiryList.isEmpty()}" th:each="inquiry : ${inquiryList}" th:onclick="|location.href='@{adminInquiryDetail(iqrValue=${inquiry.iqrValue})}'|">
+                            <div class="inquiryBoxBody">
+                                <div class="inquirySendName" th:text="${inquiry.empId}">문의자</div>
+                                <div class="inquirySendTitle" th:text="${inquiry.iqrTitle}">제목</div>
+                                <div class="inquiryStatus" th:text="${inquiry.answerStatus} == false ? '미답변' : '답변완료' ">답변상태</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mainRight_box">
+                <div class="hiredDateChart">
+                    <div class="chartTitle">입사 현황 ( 최근 2년 이내)</div>
+                    <div class="hiredChartBox">
+                        <canvas id="hiredChart"></canvas>
+                    </div>
+                </div>
+                <div class="mainRightBottom_box">
+                    <div class="eventReaction">
+                        <div class="chartTitle">이벤트 반응</div>
+
+                        <div class="reactionCommentBox">
+                            <div class="noEventText" th:if="${recentlyEvent} == null">아직 이벤트가 없습니다.</div>
+                            <div id="reactionComment" th:if="${recentlyEvent} != null">
+                                <div class="postInfo">
+                                    <div class="postDate" th:text="|작성일 : ${#temporals.format(recentlyEvent.postCreationDate, 'yyyy-MM-dd')}|"></div>
+                                    <div class="postContent"  th:text="${recentlyEvent.postContent}"></div>
+                                </div>
+                                <div class="commentInfo">
+                                    <div class="noComment" th:if="${commentList.size()} == 0">댓글이 없습니다 ㅠㅠ </div>
+                                    <div class="commentBox" th:each="comment, num : ${commentList}" th:if="${commentList.size()} > 0">
+                                        <div class="commentNum" th:text="${num.count}"></div>
+                                        <div class="commentContent" th:text="${comment.commentContent}"></div>
+                                        <div class="commentEmpName" th:text="${comment.empName}"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attendanceChart">
+                        <div class="chartTitle">오늘의 근태</div>
+                        <div class="attChartBox">
+                            <canvas id="attChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 유저 페이지들과 footer 공동 사용 -->
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        const attendanceChart = /*[[${attendanceChart}]]*/{}
+        const empHiredDateChart = /*[[${empHiredDateChart}]]*/{}
+    </script>
+
+    <script>
+        const recentlyEvent = '[[${recentlyEvent}]]';
+
+        const commentList = '[[${commentList}]]';
+
+        const inquiryList = '[[${inquiryList}]]';
+    </script>
+
+    <script th:src="@{/js/admin/admin_main.js}"></script>
 
 </body>
 </html>

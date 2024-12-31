@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.refactorial.user.model.dao.UserMapper">
-    <resultMap id="LoginUser" type="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
 
+    <resultMap id="LoginUser" type="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
         <id property="empId" column="emp_id"/>
         <result property="empName" column="emp_name"/>
         <result property="empNo" column="emp_no"/>
@@ -12,11 +12,14 @@
         <result property="empEmail" column="emp_email"/>
         <result property="empJoined" column="emp_joined"/>
         <result property="annualLeave" column="annual_leave"/>
+        <result property="usedAnnualLeave" column="used_annual_leave"/>
         <result property="empPwd" column="emp_pwd"/>
         <result property="profile" column="profile"/>
         <result property="empPhone" column="emp_phone"/>
         <result property="deptCode" column="dept_code"/>
+        <result property="deptName" column="dept_name"/>
         <result property="positionValue" column="position_value"/>
+        <result property="positionName" column="position_name"/>
         <result property="viewAuth" column="view_auth"/>
     </resultMap>
 
@@ -29,11 +32,26 @@
 
     <select id="findByUsername" parameterType="String" resultMap="LoginUser">
         SELECT
-            *
-        FROM
-            employee
-        WHERE
-            emp_id = #{username}
+            e.emp_id,
+            e.emp_name,
+            e.emp_no,
+            e.emp_address,
+            e.emp_email,
+            e.emp_joined,
+            e.annual_leave,
+            e.used_annual_leave,
+            e.emp_pwd,
+            e.profile,
+            e.emp_phone,
+            e.dept_code,
+            d.dept_name,
+            e.position_value,
+            p.position_name,
+            e.view_auth
+        FROM employee e
+        LEFT JOIN tbl_dept d ON e.dept_code = d.dept_code
+        LEFT JOIN tbl_position p ON e.position_value = p.position_value
+        WHERE emp_id = #{username}
     </select>
 
     <select id="findDeptName" parameterType="int">
@@ -65,17 +83,102 @@
     <update id="updatePersonalInfo" parameterType="map">
         UPDATE employee
         <set>
-            <if test="email != null">
+            <if test="email != null and email != 'null'">
                 emp_email = #{email},
             </if>
-            <if test="phone != null">
+            <if test="phone != null and phone != 'null'">
                 emp_phone = #{phone},
             </if>
-            <if test="address != null">
+            <if test="address != null and address != 'null'">
                 emp_address = #{address},
+            </if>
+            <if test="fileImgName != null and fileImgName != ''">
+                profile = #{fileImgName},
             </if>
         </set>
         WHERE emp_id = #{userId}
     </update>
+
+    <select id="findEmpIdByName" resultType="String">
+        SELECT emp_id
+        FROM employee
+        WHERE emp_name = #{name}
+        LIMIT 1
+    </select>
+
+    <select id="getNameById" resultType="String" parameterType="String">
+        SELECT emp_name
+        FROM employee
+        WHERE emp_id = #{empId}
+    </select>
+
+    <select id="getHiredDateGroupBy">
+        SELECT
+            DATE_FORMAT(emp_joined, '%Y-%m') as joined, COUNT(*) as num
+        FROM
+            employee
+        WHERE
+            emp_joined >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+        GROUP BY DATE_FORMAT(emp_joined, '%Y-%m')
+        ORDER BY DATE_FORMAT(emp_joined, '%Y-%m') ;
+    </select>
+
+
+
+    <select id="findUserById" parameterType="string" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO">
+        SELECT
+        emp_id AS empId,
+        emp_name AS empName,
+        annual_leave AS annualLeave,
+        used_annual_leave AS usedAnnualLeave
+        FROM employee
+        WHERE emp_id = #{empId}
+    </select>
+
+    <update id="updateUserLeave">
+        UPDATE employee
+        SET
+        annual_leave = annual_leave -
+        <choose>
+            <when test="leaveType == '반차'">0.5</when>
+            <otherwise>1</otherwise>
+        </choose>,
+        used_annual_leave = used_annual_leave +
+        <choose>
+            <when test="leaveType == '반차'">0.5</when>
+            <otherwise>1</otherwise>
+        </choose>
+        WHERE emp_id = #{empId}
+    </update>
+
+    <insert id="addCheckEvent" parameterType="map">
+        INSERT INTO tbl_presence
+        (prs_date, emp_id)
+        values
+        (#{today},#{empId})
+    </insert>
+
+    <select id="getCheckEvent" parameterType="map">
+        select
+            count(*)
+        from
+            tbl_presence
+        where
+            prs_date = #{today}
+        AND
+            emp_id = #{empId}
+    </select>
+
+    <select id="getAllCheckEvent" parameterType="map">
+        select
+            prs_date
+        from
+            tbl_presence
+        where
+            prs_date between #{start} and #{end}
+        and
+            emp_id = #{empId}
+    </select>
+
 
 </mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.sharedWork.model.dao.SharedWorkMapper">
+    <resultMap id="sharedWorkResultMap" type="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        <id property="workId" column="work_id"/>
+        <result property="workTitle" column="work_title"/>
+        <result property="workExplanation" column="work_explanation"/>
+        <result property="deadLine" column="deadline"/>
+        <result property="workSchedule" column="work_schedule"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="workColor" column="work_color"/>
+    </resultMap>
+
+
+    <!-- 업무 저장 -->
+    <insert id="saveSharedWork" parameterType="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        INSERT INTO tbl_sharedWork
+        (
+        work_id,
+        work_title,
+        work_explanation,
+        deadline,
+        work_schedule,
+        dept_code,
+        work_color
+        )
+        VALUES
+        (
+        #{workId},
+        #{workTitle},
+        #{workExplanation},
+        #{deadLine},
+        #{workSchedule},
+        #{deptCode},
+        #{workColor}
+        )
+    </insert>
+
+    <!-- 모든 업무 조회 -->
+    <select id="getAllSharedWork" resultMap="sharedWorkResultMap">
+        SELECT
+            *
+        FROM
+            tbl_sharedWork
+        WHERE
+            dept_code = #{deptCode}
+    </select>
+
+    <!-- 업무 삭제 -->
+    <delete id="deleteEventById" parameterType="String">
+        DELETE FROM tbl_sharedWork
+        WHERE work_id = #{workId}
+    </delete>
+
+    <!-- 업무 조회 -->
+    <select id="findEventById" parameterType="String" resultType="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        SELECT *
+        FROM tbl_sharedWork
+        WHERE work_id = #{workId}
+    </select>
+
+    <!-- 업무 수정 -->
+    <update id="updateSharedWork" parameterType="com.ohgiraffers.refactorial.sharedWork.model.dto.SharedWorkDTO">
+        UPDATE tbl_sharedWork
+        SET
+        work_title = #{workTitle},
+        work_explanation = #{workExplanation},
+        work_schedule = #{workSchedule},
+        deadline = #{deadLine},
+        dept_code = #{deptCode},
+        work_color = #{workColor}
+        WHERE work_id = #{workId}
+    </update>
+
+</mapper>

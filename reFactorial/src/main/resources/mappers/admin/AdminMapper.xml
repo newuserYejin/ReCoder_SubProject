@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.admin.model.dao.AdminMapper">
+
+    <select id="getAllEmployee" resultType="com.ohgiraffers.refactorial.user.model.dto.LoginUserDTO" parameterType="Map">
+        SELECT
+            e.emp_id AS empId,
+            e.emp_name AS empName,
+            e.emp_no AS empNo,
+            e.emp_address AS empAddress,
+            e.emp_email AS empEmail,
+            e.emp_joined AS empJoined,
+            e.annual_leave AS annualLeave,
+            e.used_annual_leave as usedAnnualLeave,
+            e.emp_pwd AS empPwd,
+            e.profile AS profile,
+            e.emp_phone AS empPhone,
+            e.dept_code AS deptCode,
+            d.dept_name AS deptName,
+            e.position_value AS positionValue,
+            p.position_name AS positionName,
+            e.view_auth AS viewAuth
+        FROM employee e
+            JOIN tbl_dept d ON e.dept_code = d.dept_code
+            JOIN tbl_position p ON e.position_value = p.position_value
+        <where>
+            <if test="sendDept != null and sendDept != 0">
+                AND e.dept_code = #{sendDept}
+            </if>
+            <if test="sendSearchEmpName != null and sendSearchEmpName != ''">
+                AND e.emp_name LIKE CONCAT('%', #{sendSearchEmpName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <update id="modifyEmpInfoUpdate" parameterType="com.ohgiraffers.refactorial.user.model.dto.UserDTO">
+        UPDATE employee
+        SET
+            emp_name = #{empName},
+            emp_no = #{empNo},
+            emp_address = #{empAddress},
+            emp_email = #{empEmail},
+            emp_joined = #{empJoined},
+            annual_leave = #{annualLeave},
+            profile = #{profile},
+            emp_phone = #{empPhone},
+            dept_code = #{deptCode},
+            position_value = #{positionValue},
+            view_auth = #{viewAuth}
+            <if test="empPwd != null">
+                , emp_pwd = #{empPwd}
+            </if>
+        WHERE emp_id = #{empId}
+    </update>
+
+    <select id="getByDateAtt" parameterType="Map" resultType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        SELECT a.att_date AS attDate, a.att_time AS attTime, a.att_status AS attStatus, e.emp_id AS empId
+        FROM tbl_attendance a
+        LEFT OUTER JOIN employee e ON e.emp_id = a.emp_id
+        WHERE DATE(a.att_date) = #{selectedDay}
+        <if test="searchDept != null and searchDept != '' and searchDept != 0 " >
+            AND e.dept_code = #{searchDept}
+        </if>
+        <if test="searchEmpName != null and searchEmpName != ''">
+            AND e.emp_name LIKE CONCAT('%', #{searchEmpName}, '%')
+        </if>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="getTotalCountByDateAtt" parameterType="Map" resultType="int">
+        SELECT count(*)
+        FROM tbl_attendance a
+        LEFT OUTER JOIN employee e ON e.emp_id = a.emp_id
+        WHERE DATE(a.att_date) = #{selectedDay}
+        <if test="searchDept != null and searchDept != '' and searchDept != 0 " >
+            AND e.dept_code = #{searchDept}
+        </if>
+        <if test="searchEmpName != null and searchEmpName != ''">
+            AND e.emp_name LIKE CONCAT('%', #{searchEmpName}, '%')
+        </if>
+    </select>
+
+    <update id="modifyEmpAtt" parameterType="Map">
+        UPDATE tbl_attendance
+        SET
+            att_status = #{selectedStatus}
+        WHERE emp_id = #{empId}
+          AND att_date = #{attDate}
+    </update>
+
+    <select id="getTktReserve" parameterType="String" resultType="com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO">
+        SELECT
+            tkt_reserv_id AS tktReserveId,
+            tkt_reserv_name AS tktReserveName,
+            tkt_reserv_phone AS tktReservePhone,
+            tkt_reserv_address AS tktReserveAddress,
+            tkt_reserv_accomp_name AS tktReserveAccomp,
+            tkt_reserv_date AS tktReserveDate
+        FROM
+            tbl_tktreserv
+        <where>
+            <if test="selectedDay != null and selectedDay != ''">
+                tkt_reserv_date = #{selectedDay}
+            </if>
+        </where>
+    </select>
+
+    <select id="getReserveById" parameterType="String" resultType="com.ohgiraffers.refactorial.admin.model.dto.TktReserveDTO">
+        SELECT
+            tkt_reserv_id AS tktReserveId,
+            tkt_reserv_name AS tktReserveName,
+            tkt_reserv_phone AS tktReservePhone,
+            tkt_reserv_address AS tktReserveAddress,
+            tkt_reserv_accomp_name AS tktReserveAccomp,
+            tkt_reserv_date AS tktReserveDate
+        FROM
+            tbl_tktreserv
+        WHERE
+            tkt_reserv_id = ${reserveId}
+    </select>
+
+    <select id="getTotalCountTktReserve">
+        select count(*)
+        from tbl_tktreserv
+    </select>
+
+    <insert id="insertProduct">
+    INSERT INTO tbl_product
+    (prod_id, prod_name, prod_description, emp_id, prod_price, prod_image_path, prod_category)
+    VALUES
+    (#{id}, #{name}, #{description}, #{empId}, #{price}, #{image}, #{category})
+    </insert>
+
+    <select id="getMaxProductId" resultType="string">
+        SELECT MAX(prod_id) FROM tbl_product
+    </select>
+
+
+    <resultMap id="ProductResultMap" type="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        <result property="id" column="prod_id"/>
+        <result property="name" column="prod_name"/>
+        <result property="price" column="prod_price"/>
+        <result property="description" column="prod_description"/>
+        <result property="image" column="prod_image_path"/>
+        <result property="empId" column="emp_id"/>
+        <result property="category" column="prod_category"/>
+        <result property="status" column="prod_status"/>
+    </resultMap>
+
+    <select id="getAllProducts" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+
+    </select>
+
+    <select id="searchProducts" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+        WHERE prod_name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="getProductById" parameterType="string" resultMap="ProductResultMap">
+        SELECT prod_id, prod_name, prod_price, prod_description, prod_image_path, emp_id, prod_category,prod_status
+        FROM tbl_product
+        WHERE prod_id = #{id}
+    </select>
+
+
+    <update id="updateProduct" parameterType="com.ohgiraffers.refactorial.zasaPage.model.dto.ProductDTO">
+        UPDATE tbl_product
+        SET prod_name = #{name},
+            prod_price = #{price},
+            prod_description = #{description},
+            prod_image_path = #{image},
+            prod_category = #{category},
+            prod_status = #{status}
+        WHERE prod_id = #{id}
+    </update>
+
+
+
+    <!-- 협력업체 등록 -->
+    <insert id="insertFactory" parameterType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        INSERT INTO tbl_factory
+        (fab_id, manager_name, manager_phone, fab_email, fab_name, fab_address, fab_product, emp_id, fab_phone, fab_image)
+        VALUES
+            (#{fabId}, #{managerName}, #{managerPhone}, #{fabEmail}, #{fabName}, #{fabAddress}, #{fabProduct}, #{empId}, #{fabPhone}, #{fabImage})
+    </insert>
+
+    <!-- 가장 큰 ID 가져오기 -->
+    <select id="getMaxFactoryId" resultType="string">
+        SELECT MAX(fab_id) FROM tbl_factory
+    </select>
+
+    <update id="updateFactory">
+        UPDATE tbl_factory
+        SET
+            fab_name = #{fabName},
+            fab_address = #{fabAddress},
+            fab_phone = #{fabPhone},
+            manager_name = #{managerName},
+            manager_phone = #{managerPhone},
+            fab_email = #{fabEmail},
+            fab_product = #{fabProduct},
+            fab_image = #{fabImage}
+        WHERE fab_id = #{fabId}
+    </update>
+
+    <select id="getAllFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory;
+    </select>
+
+    <select id="searchFactories" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory
+        WHERE fab_name LIKE CONCAT('%', #{keyword}, '%')
+           OR fab_address LIKE CONCAT('%', #{keyword}, '%')
+           OR manager_name LIKE CONCAT('%', #{keyword}, '%');
+    </select>
+
+    <select id="findFactoryById" parameterType="string" resultType="com.ohgiraffers.refactorial.addressBook.model.dto.FactoryDTO">
+        SELECT * FROM tbl_factory WHERE fab_id = #{id}
+    </select>
+</mapper>

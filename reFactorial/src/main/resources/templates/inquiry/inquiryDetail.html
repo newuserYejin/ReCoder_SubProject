@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 상세</title>
+    <!-- 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inquiry/inquiryList.css}">
+
+</head>
+<body>
+<header th:replace="~{common/header::headerFragment}"></header>
+<section>
+    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-title">1:1 문의</div>
+        <ul>
+            <li th:onclick="|location.href='@{/user/inquiry}'|">1:1 문의하기</li>
+            <li th:onclick="|location.href='@{/inquiry/inquiryList}'|">문의 내역</li>
+        </ul>
+    </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <button type="button" th:onclick="|location.href='@{/inquiry/deleteInquiry(iqrValue=${inquiryDetail.iqrValue})}'|">
+                    삭제하기
+                </button>
+            </div>
+
+            <div class="detail-content">
+                <p><strong>제목:</strong> <span th:text="${inquiryDetail.iqrTitle}"></span></p>
+                <p><strong>내용:</strong> <span th:text="${inquiryDetail.iqrDetails}"></span></p>
+                <p><strong>답변 상태:</strong> <span th:text="${inquiryDetail.answerStatus ? '답변 완료' : '답변 대기 중'}"></span></p>
+                <p><strong>작성일:</strong> <span th:text="${inquiryDetail.iqrCreationDate}"></span></p>
+                <p><strong>답변 내용:</strong> <span th:text="${inquiryDetail.answerDetail != null ? inquiryDetail.answerDetail : '없음'}"></span></p>
+            </div>
+
+            <div th:each="file : ${attachmentFileList}"> <!-- 파일 첨부 -->
+                <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}">첨부 파일</a>
+            </div>
+
+            <div class="back-button">
+                <a href="/inquiry/inquiryList">목록으로 돌아가기</a>
+            </div>
+
+
+
+        </div>
+    </div>
+</section>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
+</body>
+</html>

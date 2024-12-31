@@ -17,27 +17,257 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <!--여기까지 공동 복사-->
 
+    <link rel="stylesheet" th:href="@{/css/mainPage/mainPage.css}">
+
 </head>
 <body>
 
-    <header th:replace="~{/common/header::headerFragment}"></header>
-    <section th:replace="~{/common/test::testFragment}"></section>
+    <header th:replace="~{common/header::headerFragment}"></header>
+<!--    <section th:replace="~{/common/test::testFragment}"></section>-->
     <section>
 
 <!--        <h1>Welcome, <span th:text="${userId}"></span>!</h1>-->
-        <h3>Main Page</h3>
-        <p th:text="${LoginUserInfo?.empId ?: 'No User'}"></p>
-        <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>
+
+        <div class="holeContainer">
+            <!-- 프로필, 날씨 API, 사내 메일 -->
+            <div class="main_upperBox">
+                <div class="profileWeather">
+                    <div class="profile">
+    <!--                    <p th:text="${LoginUserInfo ?: 'User information is not available'}"></p>-->
+    <!--                    <p id="todayAtt"></p>-->
+                        <div class="profileImg">
+                            <img th:src="${LoginUserInfo != null ?
+                                        ( LoginUserInfo.profile != null && LoginUserInfo.profile != '' && !LoginUserInfo.profile.isEmpty()
+                                        ? 'uploadImg/' + LoginUserInfo.profile : 'uploadImg/defaultImg.png')
+                                        : 'uploadImg/defaultImg.png'}">
+    <!--                        <img src="../static/images/loopy.jpg">-->
+                        </div>
+                        <div class="profileInfo" th:if="${LoginUserInfo}">
+                            <div class="firstLine">
+                                <div th:text="|이 름 : ${LoginUserInfo.empName}|"></div>
+                                <p th:text="${LoginUserInfo.empId}"></p>
+    <!--                         <div>이 름 : 홍길동</div>&ndash;&gt;-->
+    <!--                         <p>12321</p>&ndash;&gt;-->
+                                <button
+                                        onclick="redirectBasedOnAuth()"
+                                        id="linkedMyPage">
+                                    + 더보기
+                                </button>
+                            </div>
+                            <div class="secondLine" th:text="|부 서 : ${LoginUserInfo.deptName}|"></div>
+    <!--                    <div class="secondLine">부 서 : 홍보부</div>-->
+
+                            <div class="thirdLine">
+                                <div th:text="|직 책 : ${LoginUserInfo.positionName}|"></div>
+                                <div id="todayAtt"></div>
+
+    <!--                        <div>직 책 : 팀장</div>-->
+    <!--                        <div id="todayAtt">지각</div>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="WeatherAPIBox">
+
+                    </div>
+                </div>
+
+                <div class="companyMailBox">
+                    <div class="mailBoxTitleBox">
+                        <div class="mailBoxTitle">사내 메일</div>
+                        <div onclick="location.href='mail/receivedMails'">+ 더보기</div>
+                    </div>
+
+                    <div class="mailContent">
+                        <div class="noMailMsg" th:if="!${receivedMails}">받은 메일이 없습니다.</div>
+
+                        <div class="mailTh" th:if="${receivedMails}">
+                            <div class="mailNum">번호</div>
+                            <div class="sender">보낸사람</div>
+                            <div class="mailTitle">제목</div>
+                            <div class="mailDate">수신일</div>
+                        </div>
+
+                        <div th:onclick="|location.href='@{'/mail/detail'(emailId=${mail.mail.emailId})}'|" class="mailTd" th:each="mail, num : ${receivedMails}">
+                            <div class="mailNum" th:text="${num.count}">번호</div>
+                            <div class="sender" th:text="${mail.senderName}">보낸사람</div>
+                            <div class="mailTitle" th:text="${mail.mail.emailTitle}">제목</div>
+                            <div class="mailDate" th:text="${mail.date}">수신일</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 출석체크 이벤트, 투표 요약, 게시판 -->
+            <div class="main_footerBox">
+            <div class="checkEvent">
+                <div id='checkCalendar'></div>
+            </div>
+            <div class="voteBoardSummary">
+                <div class="voteSummary">
+                    <div class="voteTitleBox">
+                        <div class="voteTitle">투표</div>
+                    </div>
+                    <div class="voteNone" th:unless="${recently3List} != null">아직 투표가 없습니다.</div>
+                    <div th:if="${recently3List}" th:each="post, postStat : ${recently3List}"  th:data-num="${postStat.index}" class="voteContentBoxBox">
+                        <div class="voteContentBox">
+                            <div class="prevBtn" th:id="|prevBtn_${postStat.index}|">
+                                <img src="/images/angle-left-solid.svg" alt="왼쪽 이동">
+                            </div>
+                            <div class="voteContent">
+                                <div class="voteContentGle" th:text="${post.postContent}"></div>
+                            </div>
+                            <div class="nextBtn" th:id="|nextBtn_${postStat.index}|">
+                                <img src="/images/angle-right-solid.svg" alt="왼쪽 이동">
+                            </div>
+                        </div>
+                        <button class="moveVote" th:onclick="|location.href = '@{/board/postDetail(postId=${post.postId}, categoryCode=4)}'|">투표하러 가기</button>
+                    </div>
+                </div>
+                <div class="boardSummary">
+                    <div class="totalBox">
+                        <div class="boardTitleBox">
+                            <div class="boardTitle">게시물</div>
+                            <div onclick="location.href='board/list?categoryCode=1'">+ 더보기</div>
+                        </div>
+
+                        <div class="boardDataBox">
+                            <!-- 테이블 헤더 -->
+                            <div class="DataHeader">
+                                <div>번호</div>
+                                <div class="postEmpName">작성자</div>
+                                <div class="postTitle">제목</div>
+                                <div class="postDate">작성일</div>
+                            </div>
+
+                           <div class="DataBody">
+                               <div class="MainData noPost" th:unless="${boardList} != null">없음</div>
+                               <div th:onclick="|location.href='@{/board/postDetail(postId=${board.postId}, categoryCode=${1})}'|" class="MainData" th:if="${boardList} != null" th:each="board, boardStat : ${boardList}">
+                                   <div th:text="${boardStat.count}"></div>
+                                   <div class="postEmpName" th:text="${board.empName}"></div>
+                                   <div class="postTitle" th:text="${board.postTitle}"></div>
+                                   <div class="postDate" th:text="${#temporals.format(board.postCreationDate, 'yyyy-MM-dd')}"></div>
+                               </div>
+                           </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
     </section>
-    <footer th:replace="~{/common/footer::footerFragment}"></footer>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+    <canvas id="custom_canvas"></canvas>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 
     <script>
-        const message = `[[${message}]]`
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('custom_canvas')
+            const jsConfetti = new JSConfetti({ canvas })
 
-        if (message){
-            console.log(message);
+            var calendarEl = document.getElementById('checkCalendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+                headerToolbar: { // 헤더에 표시할 툴 바
+                    left: 'title',
+                    right: 'customBtn today prev next'
+                },
+                titleFormat: function(date) {
+                    return (parseInt(date.date.month) + 1) + '월' + "(출석체크 이벤트)";
+                },
+                customButtons:{
+                    customBtn :{
+                        text: "출석체크 하기",
+                        id : "checkBtn",
+                        click : function (){
+                            fetch("/user/addCheckEvent",{
+                                method:'GET'
+                            }).then( () =>{
+                                console.log("클릭함")
+                                calendar.refetchEvents();
+                                setEventBtn();
+                            } )
+
+                            // JSConfetti 동작 추가
+                            jsConfetti.addConfetti({
+                                emojis: ['🍫', '🍰', '🍩', '🍬', '🍭', '🍪️'],
+                                emojiSize: 80,
+                                confettiNumber: 60,
+                            });
+                        },
+                    }
+                },
+                selectable: true, // 날짜 선택 여부 설정
+                locale: 'ko', // 한국어 설정
+                fixedWeekCount: false,
+                electMirror: false,
+                events:function (info,addEvent){
+
+                    fetch(`/user/getAllCheckEvent?start=${info.startStr}&end=${info.endStr}`,{
+                        method:"GET"
+                    }).then(response => response.json())
+                        .then(data=>{
+                            console.log("출석체크 이벤트 data : ",data)
+
+                            if (data.length > 0){
+                                const events = data.map(data =>({
+                                    title: "🍫",
+                                    color : "#ffffff",
+                                    start: data,
+                                    allDay:true,
+                                    background: "none",
+                                }))
+
+                                addEvent(events)
+                                setEventBtn();
+                            }
+
+                        })
+                }
+            });
+
+            calendar.render();
+        });
+
+        function setEventBtn(){
+            fetch("/user/getCheckEvent",{
+                method:'GET'
+            }).then(response => response.json())
+                .then(data =>{
+                    if (data.result > 0){
+                        document.querySelector('.fc-customBtn-button').style.display = 'none';
+                    }else {
+                        document.querySelector('.fc-customBtn-button').style.display = 'inline-block';
+                    }
+                })
         }
+
     </script>
 
+    <script>
+        const message = `[[${message}]]''`
+
+        const viewAuth = '[[${LoginUserInfo.viewAuth}]]';
+        const profileUrl = '[[${LoginUserInfo.profile}]]';
+
+        const recently3List = '[[${recently3List}]]';
+
+        const receivedMails = '[[${receivedMails}]]'
+
+        if (receivedMails){
+            console.log("receivedMails: ",receivedMails)
+        }
+
+    </script>
+
+    <script>
+        const canvas = document.getElementById('custom_canvas')
+
+    </script>
+
+    <script th:src="@{/js/mainPage/mainPage.js}"></script>
 </body>
 </html>
