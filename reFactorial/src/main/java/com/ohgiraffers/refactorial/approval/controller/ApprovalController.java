@@ -130,7 +130,6 @@
             int prevPage = Math.max(1, currentPage - 1);
             int nextPage = Math.min(totalPages, currentPage + 1);
 
-            // 모델에 데이터 추가
             model.addAttribute("documents", inProgressDocuments);
             model.addAttribute("currentPage", currentPage);
             model.addAttribute("totalPages", totalPages);
@@ -319,8 +318,8 @@
             approvalService.saveReferrers(pmId, referrerIds);
 
 
-        return "approvals/approvalMain";
-    }
+            return "redirect:/user/approvalMain";
+        }
 
 
         // 대기 중
@@ -451,10 +450,10 @@
 
             System.out.println("상세페이지 document = " + document.getAttachment());
 
-        if (document == null) {
-            model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
-            return "errorPage"; // 에러 페이지로 리디렉션
-        }
+            if (document == null) {
+                model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
+                return "errorPage"; // 에러 페이지로 리디렉션
+            }
 
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
             if (user == null) {
@@ -662,6 +661,9 @@
             System.out.println("Received pmId: " + pmId); // 디버깅 로그 추가
             return "approvals/detail"; // 상세 페이지로 이동
         }
+
+
+
 
     }
 

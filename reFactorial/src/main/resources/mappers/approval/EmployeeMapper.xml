@@ -18,7 +18,7 @@
             emp_pwd AS password,
             profile AS profileImage,
             emp_phone AS phone,
-            dept_code AS departmentCode,
+            dept_code AS deptCode,
             position_value AS positionValue,
             view_auth AS viewAuth
         FROM employee
@@ -60,7 +60,7 @@
             emp_pwd AS password,
             profile AS profileImage,
             emp_phone AS phone,
-            dept_code AS departmentCode,
+            dept_code AS deptCode,
             position_value AS positionValue,
             view_auth AS viewAuth
         FROM employee

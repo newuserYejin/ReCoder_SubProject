@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="stat-item">
                         <div>사용한 힌트</div>
-                        <div class="font-bold">${hintsUsed}Bitcoin</div>
+                        <div class="font-bold">${hintsUsed}</div>
                     </div>
                 </div>
             </div>

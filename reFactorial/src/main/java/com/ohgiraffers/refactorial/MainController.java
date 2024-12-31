@@ -206,11 +206,11 @@ public class MainController {
         int rejectedCount = approvalService.getRejectedDocumentsCount(empId);
 
         // 각 탭에 표시할 최근 문서들 조회 (예: 최근 5개)
-        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 3, 0);
+        List<DocumentDTO> draftDocuments = approvalService.getMyDocuments(empId, 5, 0);
         System.out.println("draftDocuments: " + draftDocuments);  // 로그 추가
-        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 3, 0);
+        List<DocumentDTO> approveDocuments = approvalService.getApprovableDocuments(empId, 5, 0);
         System.out.println("Approve Documents: " + approveDocuments);  // 로그 추가
-        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 3, 0);
+        List<DocumentDTO> referenceDocuments = approvalService.getReferenceDocuments(empId, 5, 0);
 
         // 모델에 데이터 추가
         model.addAttribute("waitingCount", waitingCount);

@@ -8,6 +8,7 @@ import com.ohgiraffers.refactorial.approval.model.dto.EmployeeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,13 +34,18 @@ public class AddressBookService {
 
     public List<EmployeeDTO> searchEmployees(String keyword) {
         List<EmployeeDTO> employees = addressBookMapper.findEmployeesByKeyword(keyword);
+        List<EmployeeDTO> filteredEmployees = new ArrayList<>();
+
         for (EmployeeDTO employee : employees) {
-            String deptName = addressBookMapper.findDeptName(employee.getDeptCode());
-            String positionName = addressBookMapper.findPositionName(employee.getPositionValue());
-            employee.setDeptName(deptName);
-            employee.setPositionName(positionName);
+            if (!"ACCESSLIMIT".equals(employee.getViewAuth())) {
+                String deptName = addressBookMapper.findDeptName(employee.getDeptCode());
+                String positionName = addressBookMapper.findPositionName(employee.getPositionValue());
+                employee.setDeptName(deptName);
+                employee.setPositionName(positionName);
+                filteredEmployees.add(employee);
+            }
         }
-        return employees;
+        return filteredEmployees;
     }
     public int getEmployeeCount() {
         return addressBookMapper.getTotalEmployeeCount();

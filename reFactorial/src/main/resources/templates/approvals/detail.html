@@ -140,7 +140,7 @@
       </div>
 
       <!-- 첨부파일 -->
-        <div th:if="${attachmentFileList != null}">
+        <div th:if="${attachmentFileList != null}" class="additional-info">
           <h3>첨부파일</h3>
           <ul>
             <li th:each="file : ${attachmentFileList}">
