@@ -96,10 +96,13 @@
           <p><strong>휴가 날짜:</strong>
             <span th:text="${document.leaveDate != null ? document.leaveDate : '휴가 날짜 정보 없음'}"></span>
           </p>
+        </div>
+
           <div th:if="${isRejecter}">
             <h3>반려 사유</h3>
             <p th:text="${rejectReason}" class="reject-reason"></p>
           </div>
+
           <p><strong>내용:</strong>
           <span th:text="${document != null ? document.content : '내용 없음'}">내용</span>
         </p>
@@ -152,6 +155,7 @@
       <button class="submit-btn" onclick="window.history.back()">뒤로가기</button>
     </div>
   </div>
+
 </section>
 
 <!-- 모달창 -->
