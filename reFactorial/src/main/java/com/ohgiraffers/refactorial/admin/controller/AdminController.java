@@ -458,28 +458,62 @@ public class AdminController {
 
     @PostMapping("modifyPost")
     @ResponseBody
-    public Map<String, Object> modifyPost(@RequestBody Map<String, String> requestData){
+    public Map<String, Object> modifyPost(@RequestBody Map<String, String> requestData,HttpSession session){
         String postId = requestData.get("postId");
         String postTitle = requestData.get("postTitle");
         String postContent = requestData.get("postContent");
+        String postCategory = requestData.get("postCategory");
 
-        System.out.println("postId = " + postId);
+        System.out.println("postCategory = " + postCategory);
 
-        BoardDTO post = boardService.postDetail(postId);
+        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
+        String empId = user.getEmpId();
 
-        System.out.println("post = " + post);
+        System.out.println("empId = " + empId);
 
-        LocalDateTime now = LocalDateTime.now();
-        post.setPostTitle(postTitle);
-        post.setPostContent(postContent);
-        post.setPostModificationDate(now);
+        if (postId != null){
+            System.out.println("postId = " + postId);
 
-        System.out.println("업데이트 보내기 전 post = " + post);
+            BoardDTO post = boardService.postDetail(postId);
 
-        boardService.post(post);
+            System.out.println("post = " + post);
+
+            LocalDateTime now = LocalDateTime.now();
+            post.setPostTitle(postTitle);
+            post.setPostContent(postContent);
+            post.setPostModificationDate(now);
+
+            System.out.println("업데이트 보내기 전 post = " + post);
+
+            boardService.post(post);
+        } else{
+            String boardId = "BO" + String.format("%05d", (int) (Math.random() * 100000));     // 5자리 랜덤 문자열 생성(게시물 ID)
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            BoardDTO newPost = new BoardDTO();
+
+            newPost.setPostId(boardId);
+            newPost.setPostTitle(postTitle);
+            newPost.setPostContent(postContent);
+            newPost.setEmpId(empId);
+            newPost.setCategoryCode(Integer.parseInt(postCategory));
+            newPost.setPostCreationDate(currentTime);
+            newPost.setPostModificationDate(currentTime);
+
+            System.out.println("newPost = " + newPost);
+
+            boardService.post(newPost);
+        }
 
         Map<String, Object> result = new HashMap<>();
         return result;
+    }
+
+    @GetMapping("deletePost")
+    @ResponseBody
+    public void deletePost(@RequestParam String postId){
+        System.out.println("postId = " + postId);
+        boardService.postDelete(postId);
     }
 
 }

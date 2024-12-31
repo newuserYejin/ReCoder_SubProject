@@ -29,6 +29,9 @@
         <div class="rightBoxContainer">
         <!-- 로그인한 사용자와 작성자 ID 비교(본인만 수정,삭제 권한버튼 부여) -->
             <div class="top-bar button">
+                <!-- 목록으로 돌아가기 -->
+                <a class="backToList" th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}">목록으로 돌아가기</a>
+
                 <th:block th:if="${user.empId} == ${postDetail.empId}">
 
                     <!-- 상세페이지 게시물 수정 -->
@@ -36,128 +39,142 @@
                         <!-- 게시물 ID 전달 -->
                         <input type="hidden" name="postId" th:value="${postDetail.postId}">
                         <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
-                        <button type="submit" style="display: block; margin-top: 20px;">수 정</button>
+                        <button type="submit">수 정</button>
                     </form>
 
                     <!-- 상세페이지 게시물 삭제 -->
                     <form action="/board/postDelete" method="post">
                         <input type="hidden" name="postId" th:value="${postDetail.postId}">
                         <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}">
-                        <button type="submit" style="display: block; margin-top: 20px;">삭 제</button>
+                        <button type="submit">삭 제</button>
                     </form>
                 </th:block>
             </div>
 
             <div class="boardDetail">
                 <!-- 게시물 상세 제목 -->
-                <h1 class="board-title" th:text="${postDetail.postTitle}">게시물 제목</h1>
+                <div class="postInfoTopBox">
+                    <div>
+                        <div class="boardInfo">
+                            <div>제목 : </div>
+                            <div class="board-title" th:text="${postDetail.postTitle}">게시물 제목</div>
+                        </div>
 
-                <!-- 작성자 정보 -->
-                <div class="board-Author">
-                    <div class="board-header">
-                        <div>작성자:</div>
-                        <div th:text="${postDetail.empName}">작성자</div>
+                        <div class="boardInfo">
+                            <div>작성자:</div>
+                            <div th:text="${postDetail.empName}">작성자</div>
+                        </div>
                     </div>
-                    <!-- 작성 날짜 -->
-                    <div class="board-date">
-                        <div>작성일:</div>
-                        <div th:text="${postDetail.postCreationDate}">작성일</div>
+
+                    <div>
+                        <div class="boardInfo">
+                            <div>분류 : </div>
+                            <div th:text="${postDetail.categoryCode == 1 ? '공지사항' :
+                                           (postDetail.categoryCode == 2 ? '자유게시판' :
+                                           (postDetail.categoryCode == 3 ? '문서양식' :
+                                           (postDetail.categoryCode == 4 ? '투표 게시판' : '이벤트')))}">
+                                자유게시판
+                            </div>
+                        </div>
+                        <div  class="boardInfo">
+                            <div>작성일:</div>
+                            <div th:text="${#temporals.format(postDetail.postCreationDate, 'yyyy-MM-dd')}">작성일</div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 게시물 내용 -->
                 <div class="content">
-                    <div>내용:</div>
-                    <div th:text="${postDetail.postContent}">
+                    <div class="contentText" th:text="${postDetail.postContent}">
                         게시물 내용이 여기에 표시됩니다.
                     </div>
-                </div>
 
-                <br>
-                <hr>
-
-                <div th:if="${currentCategory == 3}" class="attachmentFileBox">
-                    <div>첨부 파일:</div>
-                    <div class="noAttachment">없음</div>
-                    <div th:each="file : ${attachmentFileList}">
-                        <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}"></a>
-                    </div>
-                </div>
-
-                <!-- 투표 항목 조회 / DB에 전송 -->
-                <form action="/board/vote" method="post" th:if="${currentCategory == 4}" class="voteForm">
-                    <div>
-                        <div th:each="vote : ${voteView}" class="vote-item">
-<!--                            <div th:text="${vote.itemId}"></div>-->
-                            <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}" th:checked="${vote.isOwnVoted}" th:disabled="${vote.isOwnVoted}" />
-                            <label th:for="${vote.itemTitle}" th:text="${vote.itemTitle}"></label>
-                            <div th:text="${vote.totalCount}"></div>
-                            <div th:text="${vote.isOwnVoted}"></div>
-                            <hr>
+                    <div th:if="${currentCategory == 3}" class="attachmentFileBox">
+                        <div>첨부 파일:</div>
+                        <div class="noAttachment">없음</div>
+                        <div class="attfileBox">
+                            <div class="attfile" th:each="file : ${attachmentFileList}">
+                                <a class="attachmentFile" th:href="@{/files/downLoad(fileId=${file.fileId})}" th:text="${file.originFileName}"></a>
+                            </div>
                         </div>
-                        <button type="submit">투표하기</button>
-                    </div>
-                    <input type="hidden" name="categoryCode" th:value="${currentCategory}" />
-                    <input type="hidden" name="postId" th:value="${postDetail.postId}" />
-                    <input type="hidden" name="voteResults" th:value="${voteSelectResult}" />
-                    <input type="hidden" name="voteSelectResult" th:value="${voteSelectResult}" />
-                </form>
-
-                <!-- 목록으로 돌아가기 -->
-                <a class="backToList" th:href="@{/board/list(categoryCode=${postDetail.categoryCode})}" style="display: block; margin-top: 20px;">목록으로 돌아가기</a>
-
-                <!-- 댓글 등록 -->
-                <form class="commentForm" action="/board/comment" method="post">
-                    <p>댓글</p>
-                    <textarea id="comment" name="comment"></textarea>
-                    <!-- 게시글 ID를 숨겨서 전달 -->
-                    <input type="hidden" name="postId" th:value="${postDetail.postId}" />
-                    <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}" />
-                    <button type="submit">등 록</button>
-                    <hr />
-                    <div th:if="${comment != null}">
-                        <span th:text="${comment}">댓글 내용이 여기에 표시됩니다.</span>
-                    </div>
-                </form>
-
-                <!-- 댓글 조회 -->
-                <div id="comment-list">
-                    <!-- 댓글 제목 추가 -->
-                    <div class="comment-header" style="display: flex; font-weight: bold; border-bottom: 2px solid gray; padding: 10px;">
-                        <div style="width: 15%;">등록자</div>
-                        <div style="width: 50%;">댓글 내용</div>
-                        <div style="width: 10%;">추천수</div>
-                        <div style="width: 20%;">날짜</div>
                     </div>
 
-                    <!-- 댓글이 없을 때 메시지 출력 -->
-                    <div th:if="${#lists.isEmpty(commentView)}" style="padding: 10px; text-align: center; color: gray;">
-                        작성된 댓글이 없습니다.
-                    </div>
+                    <!-- 투표 항목 조회 / DB에 전송 -->
+                    <form action="/board/vote" method="post" th:if="${currentCategory == 4}" class="voteForm">
+                        <div>
+                            <div th:each="vote : ${voteView}" class="vote-item">
+                                <!--                            <div th:text="${vote.itemId}"></div>-->
+                                <input type="checkbox" name="voteIdList[]" th:value="${vote.itemId}" th:checked="${vote.isOwnVoted}" th:disabled="${voteView.?[isOwnVoted].size() > 0}" />
+                                <label th:for="${vote.itemTitle}" th:text="${vote.itemTitle}"></label>
+                                <div class="voteTotalCount" th:text="| / ${vote.totalCount}|"></div>
+                            </div>
+                            <button type="submit">투표하기</button>
+                        </div>
+                        <input type="hidden" name="categoryCode" th:value="${currentCategory}" />
+                        <input type="hidden" name="postId" th:value="${postDetail.postId}" />
+                        <input type="hidden" name="voteResults" th:value="${voteSelectResult}" />
+                        <input type="hidden" name="voteSelectResult" th:value="${voteSelectResult}" />
+                    </form>
+                </div>
 
-                    <!-- 댓글 내용 출력 -->
-                    <div th:each="comment : ${commentView}" class="comment-item" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
-                        <div style="width: 15%;" th:text="${comment.empName}">등록자</div>
-                        <div style="width: 60%;" th:text="${comment.commentContent}">댓글 내용</div>
+                <div class="commentBox">
+                    <!-- 댓글 등록 -->
+                    <form class="commentForm" action="/board/comment" method="post">
+                        <p>댓글</p>
+                        <textarea id="comment" name="comment"></textarea>
+                        <!-- 게시글 ID를 숨겨서 전달 -->
+                        <input type="hidden" name="postId" th:value="${postDetail.postId}" />
+                        <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}" />
+                        <button type="submit">등 록</button>
+                    </form>
 
-                        <!-- 좋아요 -->
-                        <form action="/board/commentLikesInsert" method="post">
-                        <button type="submit">추천</button>
-                        <input type="hidden" name="commentId" th:value="${comment.commentId}"/>
-                        <input type="hidden" name="postId" th:value="${postDetail.postId}"/>
-                        <input type="hidden" name="isMyLike" th:value="${comment.isMyLike}"/>
-                        <div th:text="${comment.likeCount}"/>
-                        <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}"/>
-                        </form>
+                    <!-- 댓글 조회 -->
+                    <div id="comment-list">
+                        <!-- 댓글 제목 추가 -->
+                        <div class="comment-header">
+                            <div class="commentWriter">등록자</div>
+                            <div class="commentContent">댓글 내용</div>
+                            <div class="commentLike">추천수</div>
+                            <div class="commentDate">날짜</div>
+                        </div>
 
-                        <div style="width: 20%;" th:text="${comment.commentCreationDate}">날짜</div>
+                        <!-- 댓글이 없을 때 메시지 출력 -->
+                        <div th:if="${#lists.isEmpty(commentView)}" style="padding: 10px; text-align: center; color: gray;">
+                            작성된 댓글이 없습니다.
+                        </div>
 
-                        <!-- 댓글 삭제 버튼 -->
-                        <th:block th:if="${user.empId} == ${comment.empId}">
-                            <button type="button" data-toggle="modal" data-target="#commentDeleteModal" th:data-comment-id="${comment.commentId}" th:data-post-id="${comment.postId}" class="deleteBtn">삭제</button>
-                        </th:block>
+                        <div class="comment-item-box">
+                            <!-- 댓글 내용 출력 -->
+                            <div th:each="comment : ${commentView}" class="comment-item" style="display: flex; border-bottom: 1px solid gray; padding: 10px;">
+                                <div class="commentWriter" th:text="${comment.empName}">등록자</div>
+                                <div class="commentContent" th:text="${comment.commentContent}">댓글 내용</div>
+
+                                <!-- 좋아요 -->
+                                <form class="commentLike" action="/board/commentLikesInsert" method="post">
+                                    <button type="submit">
+<!--                                        <img th:if="${comment.likeCount} == 0" src="../../static/images/heart-regular.svg"/>-->
+                                        <img th:if="${!comment.isMyLike}" th:src="@{/images/heart-regular.svg}" />
+                                        <img th:if="${comment.isMyLike}" th:src="@{/images/full-heart-solid.svg}"/>
+                                        <div th:text="${comment.likeCount}"></div>
+                                    </button>
+                                    <input type="hidden" name="commentId" th:value="${comment.commentId}"/>
+                                    <input type="hidden" name="postId" th:value="${postDetail.postId}"/>
+                                    <input type="hidden" name="isMyLike" th:value="${comment.isMyLike}"/>
+                                    <input type="hidden" name="categoryCode" th:value="${postDetail.categoryCode}"/>
+                                </form>
+
+                                <div class="commentDate" th:text="${#temporals.format(comment.commentCreationDate, 'yyyy-MM-dd')}">날짜</div>
+
+                                <!-- 댓글 삭제 버튼 -->
+                                <th:block th:if="${user.empId} == ${comment.empId}">
+                                    <button type="button" data-toggle="modal" data-target="#commentDeleteModal" th:data-comment-id="${comment.commentId}" th:data-post-id="${comment.postId}" class="deleteBtn">삭제</button>
+                                </th:block>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+
             </div>
 
 
@@ -278,6 +295,12 @@
             });
     });
 
+</script>
+
+<script>
+    const commentView = '[[${commentView}]]'
+
+    console.log(commentView)
 </script>
 
 <!--boostrap-->
