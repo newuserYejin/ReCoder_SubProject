@@ -82,7 +82,7 @@ public class MailController {
         String senderEmpId = loginUser.getEmpId();
 
         // 보낸 메일 목록을 모델에 추가
-        List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
+        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpId);
 
         // Model sentMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("sentMails", sentMails);
@@ -100,7 +100,7 @@ public class MailController {
         String receiverEmpIds = loginUser.getEmpId();
 
         // 내가 받은 메일 목록을 모델에 추가
-        List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpIds);
+        List<MailDTO> receivedMails = mailEmployeeService.getReceivedMails(receiverEmpIds);
 
         // 현재 페이지를 receivedMails 로 설정
         model.addAttribute("currentPageItem", "receivedMails");
