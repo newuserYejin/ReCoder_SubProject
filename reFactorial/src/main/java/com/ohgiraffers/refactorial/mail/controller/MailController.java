@@ -36,7 +36,7 @@ public class MailController {
 
     // 메일 쓰기 페이지로 이동
     @GetMapping("/sendMail")
-    public String showSendMailPage( Model model, HttpSession session) {
+    public String showSendMailPage() {
 
         return "/mail/sendMail";
     }

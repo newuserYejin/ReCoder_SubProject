@@ -155,22 +155,14 @@
         SELECT
         m.email_id AS emailId,
         m.email_title AS emailTitle,
-        m.sent_date AS sentDate,
-        m.attachment,
-        e.emp_name AS positionName,
-        d.dept_name AS deptName,
-        (SELECT COUNT(*) FROM tbl_mail_receivers mr WHERE mr.email_id = m.email_id) AS receiverCount
+        m.sent_date AS sentDate
         FROM
         tbl_mail m
-        JOIN
-        employee e ON m.sender_emp_id = e.emp_id
-        JOIN
-        tbl_department d ON e.dept_code = d.dept_code
         WHERE
         m.sender_emp_id = #{empId}
         ORDER BY
         m.sent_date DESC
-        LIMIT #{limit} OFFSET #{offset}
+        LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <!-- 총 발신 메일 개수 조회 -->
