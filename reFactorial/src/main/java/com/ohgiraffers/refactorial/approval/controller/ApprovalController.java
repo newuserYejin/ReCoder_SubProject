@@ -234,7 +234,7 @@
 
             LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
 
-            System.out.println("fileList = " + fileList);
+
 
             if (user == null) {
                 model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
@@ -448,7 +448,7 @@
             // pmId에 해당하는 결재 문서 정보 조회
             DocumentDTO document = approvalService.getDocumentById(pmId);
 
-            System.out.println("상세페이지 document = " + document.getAttachment());
+
 
             if (document == null) {
                 model.addAttribute("errorMessage", "해당 결제 문서를 찾을 수 없습니다.");
@@ -511,8 +511,7 @@
             // 반려자인지 확인하고 반려 이유 가져오기
             String rejectReason = approvalService.getRejectReasonByApprover(pmId, currentEmpId);
 
-            System.out.println("Reject Reason: " + rejectReason);
-            System.out.println("Is Rejecter: " + (rejectReason != null));
+
 
             // 모델에 데이터 추가
             model.addAttribute("document", document);
@@ -658,7 +657,7 @@
                 return "error/500"; // 오류 페이지로 이동
             }
 
-            System.out.println("Received pmId: " + pmId); // 디버깅 로그 추가
+
             return "approvals/detail"; // 상세 페이지로 이동
         }
 
