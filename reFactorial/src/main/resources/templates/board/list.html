@@ -92,14 +92,6 @@
                     </div>
                 </th:block>
 
-                <!-- 스크롤 탑 버튼 (카테고리 3일 때만 표시) -->
-                <th:block th:if="${categoryCode == 3}">
-                    <div id="scrollTopBtn" class="category-3-scroll-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                    </div>
-                </th:block>
 
                 <!-- 다른 카테고리는 기존 테이블 형태 유지 -->
                 <th:block th:unless="${categoryCode == 3}">
@@ -160,7 +152,8 @@
             </div>
         </div>
     </section>
-    
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
 
     </body>
     </html>

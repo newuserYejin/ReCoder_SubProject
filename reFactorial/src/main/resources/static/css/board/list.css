@@ -217,6 +217,16 @@ a:visited {
 
 
 /* 카테고리 3번에만 적용되는 스타일 */
+
+/*.category-3 .main-content {*/
+/*    flex: 1; !* 남은 공간을 메인 콘텐츠가 차지 *!*/
+/*    padding: 20px; !* 내부 여백 *!*/
+/*    overflow-y: auto; !* 메인 콘텐츠 내용 넘칠 경우 스크롤 *!*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    max-height: calc(100vh - 215px);  !* ⭐ 오른쪽숫자가 커질수록 메인컨텐츠 하단부분이 위로올라감*!*/
+/*}*/
+
 .category-3 .document-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(280px, 1fr));
