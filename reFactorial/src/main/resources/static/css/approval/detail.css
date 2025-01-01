@@ -18,7 +18,7 @@ html, body {
 /* 사이드바 */
 .sidebar {
     width: 20%;
-    border-right: 1px solid black;
+    border-right: 1px solid #5C1915;
     padding: 20px;
     overflow-y: auto;
 }
