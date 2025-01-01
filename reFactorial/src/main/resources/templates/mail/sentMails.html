@@ -33,12 +33,12 @@
 <!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
                 <li class="menu-item"
                     th:onclick="|location.href='@{/mail/sentMails}'|"
-                    th:classappend="${currentPage == 'sentMails'} ? 'bold' : ''">
+                    th:classappend="${currentItemPage == 'sentMails'} ? 'bold' : ''">
                     보낸 메일
                 </li>
                 <li class="menu-item"
                     th:onclick="|location.href='@{/mail/receivedMails}'|"
-                    th:classappend="${currentPage == 'receivedMails'} ? 'bold' : ''">
+                    th:classappend="${currentItemPage == 'receivedMails'} ? 'bold' : ''">
                     받은 메일
                 </li>
 <!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
