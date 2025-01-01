@@ -74,57 +74,19 @@ public class MailController {
         return "redirect:/mail/sendMail";  // 메일 전송 후 리다이렉트
     }
 
-    // 메일 답신
-    @PostMapping("/reply")
-    public String replyMail(@ModelAttribute MailDTO mailDTO, HttpSession session, @RequestParam("mailFiles") List<MultipartFile> mailFileList, Model model) throws IOException {
-        // 로그인 유저 가져오기
-        LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        mailDTO.setSenderEmpId(loginUser.getEmpId());
-
-        // 메일 ID 생성 및 설정
-        String emId = "EM" + String.format("%05d", (int) (Math.random() * 100000));
-        mailDTO.setEmailId(emId);
-
-        // 원본 메일의 발신자를 수신자로 설정
-        String receiverEmpId = mailDTO.getReceiverEmpIds().get(0); // 첫 번째 수신자
-        mailDTO.setReceiverEmpIds(Arrays.asList(receiverEmpId)); // 단일 수신자로 설정
-
-        // 메일 서비스 호출
-        try {
-            mailService.sendMail(mailDTO, mailFileList);
-        } catch (Exception e) {
-            model.addAttribute("error", "메일 전송 중 오류가 발생했습니다.");
-            return "mail/sendMail";
-        }
-
-        return "redirect:/mail/sentMails"; // 답신 후 보낸 메일 목록으로 리디렉션
-    }
-
-    // 답신 페이지로 이동
-    @GetMapping("/reply")
-    public String showReplyPage(@RequestParam("emailId") String emailId, Model model) {
-        MailDTO originalMail = mailService.getReplyMailDetail(emailId);
-
-        if (originalMail == null) {
-            throw new IllegalArgumentException("해당 이메일이 존재하지 않습니다.");
-        }
-
-        model.addAttribute("originalMail", originalMail);
-        return "mail/replyMail"; // 템플릿 경로 확인
-    }
-
-    // 보낸 메일 페이지
+    //내가 보낸 메일 읽기
     @GetMapping("/sentMails")
     public String sentMails(Model model, HttpSession session) {
+        // 로그인 유저 정보 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        String senderEmpIds = loginUser.getEmpId();
+        String senderEmpId = loginUser.getEmpId();
 
         // 보낸 메일 목록을 모델에 추가
-        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpIds);
+        List<MailDTO> sentMails = mailService.getSentMails(senderEmpId);
 
-        // 현재 페이지를 sentMails로 설정
-        model.addAttribute("currentPage", "sentMails");
+        // Model sentMails 데이터가 제대로 추가되었는지 확인
         model.addAttribute("sentMails", sentMails);
+        model.addAttribute("currentItemPage", "sentMails");
 
         return "mail/sentMails";
     }
@@ -139,10 +101,8 @@ public class MailController {
         List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpIds);
 
         // 현재 페이지를 receivedMails 로 설정
-        model.addAttribute("currentPage", "receivedMails");
+        model.addAttribute("currentPageItem", "receivedMails");
         model.addAttribute("receivedMails", receivedMails);
-
-        int limit = 15; // 한 페이지당 문서 수
 
         return "mail/receivedMails";
     }
