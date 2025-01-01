@@ -11,6 +11,18 @@
     <link rel="stylesheet" href="/css/common/footer.css">
     <link rel="stylesheet" href="/css/common/style.css">
     <link rel="stylesheet" href="/css/mail/sentMails.css">
+    <link rel="stylesheet" href="/css/mail/boldHover.css">
+    <script src="/js/mail/boldHover.js" defer></script>
+    <script>document.addEventListener("DOMContentLoaded", () => {
+        const currentPath = window.location.pathname;
+        const menuItems = document.querySelectorAll(".menu-item");
+
+        menuItems.forEach(item => {
+            if (currentPath.includes(item.textContent.trim())) {
+                item.classList.add("bold");
+            }
+        });
+    });</script>
 
 </head>
 <body>
@@ -22,8 +34,8 @@
             <div class="sidebar-title">사내 메일</div>
             <ul>
 <!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
-                <li th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
-                <li th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
+                    <li class="menu-item" th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
+                    <li class="menu-item" th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
 <!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
             </ul>
         </div>
@@ -44,6 +56,10 @@
             </div>
 
             <!-- Table body -->
+
+            <div th:if="${#lists.isEmpty(sentMails)}" class="no-mails">
+                <span>보낸 메일 없음</span>
+            </div>
             <div th:each="sentMail : ${sentMails}">
                 <div class="table-row">
 

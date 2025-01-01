@@ -36,36 +36,8 @@ public class MailController {
 
     // 메일 쓰기 페이지로 이동
     @GetMapping("/sendMail")
-    public String showSendMailPage(@RequestParam(defaultValue = "1") int currentPage, Model model, HttpSession session) {
+    public String showSendMailPage( Model model, HttpSession session) {
 
-        LoginUserDTO user = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-
-        if (user == null) {
-            model.addAttribute("errorMessage", "로그인 정보가 없습니다. 다시 로그인해주세요.");
-            return "redirect:/login";
-        }
-
-        String loggedInEmpId = user.getEmpId();
-        int limit = 14;
-        int offset = (currentPage - 1) * limit;
-
-        List<MailDTO> myDocuments = mailService.getSendMailDocuments(loggedInEmpId, limit, offset,currentPage);
-        int totalDocuments = mailService.getTotalSendMailDocuments(loggedInEmpId);
-        int totalPages = (int) Math.ceil((double) totalDocuments / limit);
-
-        int startNumber = (totalPages - currentPage) * limit + 1;
-        for (int i = 0; i < myDocuments.size(); i++) {
-            myDocuments.get(i).setRowNum(startNumber + (myDocuments.size() - 1 - i));
-        }
-
-        int prevPage = Math.max(1, currentPage - 1);
-        int nextPage = Math.min(totalPages, currentPage + 1);
-
-        model.addAttribute("documents", myDocuments);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("prevPage", prevPage);
-        model.addAttribute("nextPage", nextPage);
         return "/mail/sendMail";
     }
 
