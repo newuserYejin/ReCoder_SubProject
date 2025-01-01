@@ -58,8 +58,22 @@ public class MailService {
 
 
     // 내가 보낸 메일
+    // 기존 메서드 (파라미터 1개)
     public List<MailDTO> getSentMails(String senderEmpId) {
         List<MailDTO> sentMails = mailMapper.getSentMails(senderEmpId);
+
+        // 각 메일에 대한 수신자 정보 추가
+        for (MailDTO mailDTO : sentMails) {
+            List<String> receiverEmpIds = mailMapper.getReceiverEmpIds(mailDTO.getEmailId());
+            mailDTO.setReceiverEmpIds(receiverEmpIds);
+        }
+
+        return sentMails;
+    }
+
+    // 새로 추가할 페이지네이션용 메서드 (파라미터 3개)
+    public List<MailDTO> getSentMails(String senderEmpId, int limit, int offset) {
+        List<MailDTO> sentMails = mailMapper.getSentMailsPaginated(senderEmpId, limit, offset);
 
         // 각 메일에 대한 수신자 정보 추가
         for (MailDTO mailDTO : sentMails) {
@@ -151,4 +165,8 @@ public class MailService {
         return mailMapper.getReceiverEmpIds(emailId);
     }
 
+
+    public int getSentMailsCount(String senderEmpId) {
+        return mailMapper.getSentMailsCount(senderEmpId);
+    }
 }

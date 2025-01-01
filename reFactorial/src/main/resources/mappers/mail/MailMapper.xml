@@ -150,23 +150,26 @@
         WHERE mr.trash_status = 1
     </select>
 
-    <!-- 발신 메일 목록 조회 (페이징) -->
-    <select id="getSendMailDocuments" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+
+    <!-- 페이지네이션을 위한 새로운 쿼리 -->
+    <select id="getSentMailsPaginated" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
         SELECT
         m.email_id AS emailId,
         m.email_title AS emailTitle,
-        m.sent_date AS sentDate
+        m.sender_emp_id AS senderEmpId,
+        m.sent_date AS sentDate,
+        ROW_NUMBER() OVER (ORDER BY m.sent_date DESC) AS rowNum
         FROM
         tbl_mail m
         WHERE
         m.sender_emp_id = #{empId}
         ORDER BY
         m.sent_date DESC
-        LIMIT #{limit} OFFSET #{offset};
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- 총 발신 메일 개수 조회 -->
-    <select id="getTotalSendMailDocuments" resultType="int">
+    <!-- 보낸 메일 총 개수 조회 -->
+    <select id="getSentMailsCount" resultType="int">
         SELECT COUNT(*)
         FROM tbl_mail
         WHERE sender_emp_id = #{empId}
