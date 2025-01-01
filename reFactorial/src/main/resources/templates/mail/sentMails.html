@@ -13,16 +13,13 @@
     <link rel="stylesheet" href="/css/mail/sentMails.css">
     <link rel="stylesheet" href="/css/mail/boldHover.css">
     <script src="/js/mail/boldHover.js" defer></script>
-    <script>document.addEventListener("DOMContentLoaded", () => {
-        const currentPath = window.location.pathname;
-        const menuItems = document.querySelectorAll(".menu-item");
 
-        menuItems.forEach(item => {
-            if (currentPath.includes(item.textContent.trim())) {
-                item.classList.add("bold");
-            }
-        });
-    });</script>
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+
 
 </head>
 <body>
@@ -34,8 +31,16 @@
             <div class="sidebar-title">사내 메일</div>
             <ul>
 <!--                <li th:onclick="|location.href='@{/user/mail}'|">전체 메일</li>-->
-                    <li class="menu-item" th:onclick="|location.href='@{/mail/sentMails}'|">보낸 메일</li>
-                    <li class="menu-item" th:onclick="|location.href='@{/mail/receivedMails}'|">받은 메일</li>
+                <li class="menu-item"
+                    th:onclick="|location.href='@{/mail/sentMails}'|"
+                    th:classappend="${currentPage == 'sentMails'} ? 'bold' : ''">
+                    보낸 메일
+                </li>
+                <li class="menu-item"
+                    th:onclick="|location.href='@{/mail/receivedMails}'|"
+                    th:classappend="${currentPage == 'receivedMails'} ? 'bold' : ''">
+                    받은 메일
+                </li>
 <!--                <li th:onclick="|location.href='@{/mail/mailBin}'|">휴지통</li>-->
             </ul>
         </div>
@@ -52,7 +57,7 @@
             <div class="table-header">
                 <div class="table-cell">받는 사람</div>
                 <div class="table-cell">제목</div>
-                <div class="table-cell">작성일</div>
+                <div class="table-cell">작성시간</div>
             </div>
 
             <!-- Table body -->

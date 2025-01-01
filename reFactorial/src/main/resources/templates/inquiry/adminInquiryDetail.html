@@ -18,6 +18,9 @@
     <link rel="stylesheet" th:href="@{/css/common/style.css}">
     <link rel="stylesheet" th:href="@{/css/inquiry/adminInquiryDetail.css}">
 
+
+
+
 </head>
 <body>
 <header th:replace="~{/admin/common/admin_header::adminHeaderFragment}"></header>
@@ -47,7 +50,7 @@
                 <div class="inquiry-meta">
                     <span>답변 상태 : </span><span th:if="${adminInquiries.answerStatus == false}">답변대기중</span>
                     <span th:if="${adminInquiries.answerStatus == true}">답변완료</span>
-                    <span>작성일: <span th:text="${#temporals.format(adminInquiries.iqrCreationDate)}"></span></span>
+                    <span>작성시간: <span th:text="${#temporals.format(adminInquiries.iqrCreationDate)}"></span></span>
                 </div>
             </div>
 

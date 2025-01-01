@@ -113,23 +113,23 @@ public class MailController {
         return "mail/replyMail"; // 템플릿 경로 확인
     }
 
-    //내가 보낸 메일 읽기
+    // 보낸 메일 페이지
     @GetMapping("/sentMails")
     public String sentMails(Model model, HttpSession session) {
-        // 로그인 유저 정보 가져오기
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
-        String senderEmpId = loginUser.getEmpId();
+        String senderEmpIds = loginUser.getEmpId();
 
         // 보낸 메일 목록을 모델에 추가
-        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpId);
+        List<MailDTO> sentMails = mailEmployeeService.getSentMails(senderEmpIds);
 
-        // Model sentMails 데이터가 제대로 추가되었는지 확인
+        // 현재 페이지를 sentMails로 설정
+        model.addAttribute("currentPage", "sentMails");
         model.addAttribute("sentMails", sentMails);
 
         return "mail/sentMails";
     }
 
-    //내가 받은 메일 읽기
+    // 받은 메일 페이지
     @GetMapping("/receivedMails")
     public String receivedMails(Model model, HttpSession session) {
         LoginUserDTO loginUser = (LoginUserDTO) session.getAttribute("LoginUserInfo");
@@ -138,7 +138,8 @@ public class MailController {
         // 내가 받은 메일 목록을 모델에 추가
         List<MailDTO> receivedMails = mailEmployeeService.getReceivedMails(receiverEmpIds);
 
-        // Model receivedMails 데이터가 제대로 추가되었는지 확인
+        // 현재 페이지를 receivedMails로 설정
+        model.addAttribute("currentPage", "receivedMails");
         model.addAttribute("receivedMails", receivedMails);
 
         return "mail/receivedMails";

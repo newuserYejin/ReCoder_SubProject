@@ -43,7 +43,7 @@
 
                     <div class="inquiry-meta">
                         <span>답변상태: <span th:text="${inquiryDetail.answerDetail != null ? inquiryDetail.answerDetail : '없음'}"></span></span>
-                        <span>작성일: <span th:text="${#temporals.format(inquiryDetail.iqrCreationDate)}"></span></span>
+                        <span>작성시간: <span th:text="${#temporals.format(inquiryDetail.iqrCreationDate)}"></span></span>
 
                     </div>
                 </div>

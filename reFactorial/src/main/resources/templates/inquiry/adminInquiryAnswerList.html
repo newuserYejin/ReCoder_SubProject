@@ -85,7 +85,10 @@
             margin-top:50px;
         }
 
-    </style>
+        .bold{
+            font-weight: bold;
+        }
+        </style>
 
 
 </head>
@@ -102,9 +105,15 @@
             <div class="sideTitle">1:1 문의</div>
 
             <ul class="sideMenuUl">
-                <li th:onclick="|location.href='@{/admin/adminInquiryList}'|">전체 조회</li>
-                <li th:onclick="|location.href='@{/admin/adminInquiryNoAnswerList}'|">미답변</li>
-                <li th:onclick="|location.href='@{/admin/adminInquiryAnswerList}'|">답변완료</li>
+                <li class="menu-item"
+                    th:onclick="|location.href='@{/admin/adminInquiryList}'|"
+                    th:classappend="${currentPage == 'adminInquiryList'} ? 'bold' : ''">전체 조회</li>
+                <li class="menu-item"
+                    th:onclick="|location.href='@{/admin/adminInquiryNoAnswerList}'|"
+                    th:classappend="${currentPage == 'adminInquiryNoAnswerList'} ? 'bold' : ''">미답변</li>
+                <li class="menu-item"
+                    th:onclick="|location.href='@{/admin/adminInquiryAnswerList}'|"
+                    th:classappend="${currentPage == 'adminInquiryAnswerList'} ? 'bold' : ''">답변완료</li>
             </ul>
         </div>
 
@@ -112,7 +121,7 @@
             <!-- Table Header -->
             <div class="table-header">
                 <div class="table-cell">제목</div>
-                <div class="table-cell">작성일</div>
+                <div class="table-cell">작성시간</div>
                 <div class="table-cell">문의자</div>
                 <div class="table-cell">상태</div>
             </div>
