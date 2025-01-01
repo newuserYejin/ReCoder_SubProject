@@ -136,11 +136,13 @@ public class MailController {
         String receiverEmpIds = loginUser.getEmpId();
 
         // 내가 받은 메일 목록을 모델에 추가
-        List<MailDTO> receivedMails = mailEmployeeService.getReceivedMails(receiverEmpIds);
+        List<MailDTO> receivedMails = mailService.getReceivedMails(receiverEmpIds);
 
-        // 현재 페이지를 receivedMails로 설정
+        // 현재 페이지를 receivedMails 로 설정
         model.addAttribute("currentPage", "receivedMails");
         model.addAttribute("receivedMails", receivedMails);
+
+        int limit = 15; // 한 페이지당 문서 수
 
         return "mail/receivedMails";
     }
