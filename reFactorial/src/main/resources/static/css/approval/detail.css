@@ -59,11 +59,7 @@ html, body {
     display: none;
 }
 
-.sidebar li:hover {
-    font-family: 'Noto Sans KR', Arial, sans-serif;
-    color: #5C1915;
-    font-weight: 1000;
-}
+
 
 .sidebar li a {
     text-decoration: none;

@@ -28,6 +28,11 @@ html, body {
     text-align: center;
 }
 
+.selected{
+    color: #5C1915;
+    font-weight: bold;
+}
+
 .sidebar ul {
     margin-top: 10px;
     list-style: none;
@@ -53,12 +58,6 @@ html, body {
 
 .sidebar li:last-child::after {
     display: none;
-}
-
-.sidebar li:hover {
-    font-family: 'Noto Sans KR', Arial, sans-serif;
-    color: #5C1915;
-    font-weight: 1000;
 }
 
 .sidebar li a {
@@ -491,6 +490,10 @@ html, body {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+.sidebar-title .selected{
+    color: #5C1915;
 }
 
 .sidebar-title a:hover {

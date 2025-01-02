@@ -36,6 +36,11 @@ html, body {
     font-size: 18px;
 }
 
+.sidebar .selected{
+    font-weight: bold;
+    color: #5C1915;
+}
+
 .sidebar li {
     position: relative; /* 가상 요소 위치를 설정하기 위한 기준 위치 */
     padding: 10px 0; /* 리스트 항목의 상하 여백 설정 */
@@ -55,12 +60,6 @@ html, body {
     display: none; /* 마지막 항목의 구분선을 제거 */
 }
 
-.sidebar li:hover {
-    font-family: 'Noto Sans KR', Arial, sans-serif; /* 마우스 오버 시 글꼴 설정 */
-    color: #5C1915; /* 마우스 오버 시 글씨 색상 설정 */
-    font-weight: 1000; /* 마우스 오버 시 글씨 굵게 설정 */
-}
-
 .sidebar li a {
     text-decoration: none; /* 링크 밑줄 제거 */
     color: inherit; /* 부모 요소의 색상을 상속 */
@@ -77,6 +76,8 @@ html, body {
 #quiz-container {
     height: 100%;
     width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 /* 메인 컨텐츠 영역 크기 조정 */
