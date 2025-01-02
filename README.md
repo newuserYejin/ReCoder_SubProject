@@ -82,7 +82,7 @@
   </tr>
   <tr>
     <td align="center">승찬</td>
-    <td>• 데이터베이스 설계 및 구현<br>• 메일시스템 <br>• 1:1문의 </td>
+    <td>• 데이터베이스 설계 및 구현<br>• 사내메일 <br>• 1:1문의 </td>
   </tr>
   <tr>
     <td align="center">정현</td>
@@ -90,25 +90,47 @@
   </tr>
   <tr>
     <td align="center">용욱</td>
-    <td>•데이터베이스 설계 및 구현<br>• 게시판 <br>• 투표 & 이벤트 </td>
+    <td>• 데이터베이스 설계 및 구현<br>• 게시판 <br>• 투표 & 이벤트 </td>
   </tr>
   <tr>
     <td align="center">예진</td>
-    <td>• 프로젝트 총괄 관리자<br>• (예진님물어보고적기) <br>• 회의실예약시스템</td>
+    <td>• 프로젝트 총괄 관리자<br>• 마이페이지/근태/로그인/비밀번호 변경/메일인증 <br> • 관리자(인사관리, 예약자 조회 및 추출) <br> • 문서추출 / 문서 첨부(업로드, 다운로드)<br>• 출석이벤트<br>• 회의실예약시스템</td>
   </tr>
 </table>
 </div> <br>
 
 
-<hr><br>
+<br><hr><br>
 
-## 3. 프로젝트 기간
+## 3. 🗓️프로젝트 기간
 <table>
   <tr>
-    <th width="200"></th>
-    <th width="400"></th>
+    <th width="200">전체 프로젝트 기간</th>
+    <th width="400">24-11-20 ~ 25-01-03</th>
+  </tr>
+  <tr>
+    <td width="180" align="center">프로젝트 주제 정하기</td>
+    <td width="380" align="center">24-11-21 ~ 24-11-22</td>
+  </tr>
+  <tr>
+    <td width="180" align="center">요구사항명세 & <br>단위업무작성</td>
+    <td width="380" align="center">24-11-23 ~ 24-11-27</td>
+  </tr>
+  <tr>
+    <td width="180" align="center">논리&물리데이터모델링 설계</td>
+    <td width="380" align="center">24-11-28 ~ 24-12-05</td>
+  </tr>
+  <tr>
+    <td width="180" align="center">기능작업</td>
+    <td width="380" align="center">24-12-06 ~ 25-01-03</td>
   </tr>
 </table>
+
+<br><hr><br>
+
+## 4. 📊ERD
+
+![ERD](https://github.com/user-attachments/assets/dace3739-853d-4b91-8d0d-1d04121affb5)
 
 
 
