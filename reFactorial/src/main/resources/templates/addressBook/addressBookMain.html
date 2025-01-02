@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>주소록</title>
+    <!-- 폰트 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common/header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+    <link rel="stylesheet" th:href="@{/css/addressBook/addressBookMain.css}">
+
+</head>
+<body>
+
+    <header th:replace="~{common/header::headerFragment}"></header>
+
+
+    <section class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">주소록</div>
+            <ul>
+                <li class="selected"><a href="/addressBook/employeeAddressBook">사내 직원</a></li>
+                <li><a href="/addressBook/factoryAddressBook">협력 업체</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="main-content">
+            <!-- 검색 바 -->
+            <div class="top-bar">
+                <input type="text" id="search-input" placeholder="이름 또는 부서명 검색">
+                <button onclick="searchEmployees()">검색</button>
+            </div>
+
+            <!-- 테이블 -->
+            <div class="table-header">
+                <div class="table-cell">사번</div>
+                <div class="table-cell">이름</div>
+                <div class="table-cell">부서</div>
+                <div class="table-cell">직책</div>
+                <div class="table-cell">이메일</div>
+                <div class="table-cell">전화번호</div>
+            </div>
+            <div id="employee-list">
+                <!-- 여기에서 검색 결과가 실시간으로 표시됩니다 -->
+            </div>
+
+
+            <!-- 위로 이동 버튼 -->
+            <button id="scrollToTop" title="위로 가기">▲</button>
+
+        </div>
+
+
+    </section>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+<script src="/js/addressBook/addressBookMain.js"></script>
+
+</body>
+</html>

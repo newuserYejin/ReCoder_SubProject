@@ -1,0 +1,69 @@
+.menu {
+    width: var(--menu-size, 100%);
+    height: var(--menu-size, 100%);
+    background: white;
+    position: relative;
+    padding: calc(var(--menu-size) * 0.0125); /* 5px 기준 */
+    box-sizing: border-box;
+    border-radius: 50%;
+
+    .line {
+        position: absolute;
+        width: calc(var(--menu-size) - var(--menu-size) * 0.025); /* 10px 기준 */
+        height: 0;
+        border: calc(var(--menu-size) * 0.005) solid white; /* 2px 기준 */
+        top: calc(var(--menu-size) * 0.47); /* 47% 기준 */
+        left: calc(var(--menu-size) * 0.01); /* 1% 기준 */
+        transform-origin: center bottom;
+        transform: rotate(calc(360deg / 3 * var(--i) + 30deg));
+        z-index: 2;
+    }
+
+    .menu_background {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: calc(var(--menu-size) * 0.325) solid #5C1915; /* 130px 기준 */
+        box-sizing: border-box;
+
+        .center-key{
+            position: absolute;
+            top: calc(var(--menu-size) * 0.06); /* 15% 기준 */
+            left: calc(var(--menu-size) * 0.065); /* 18% 기준 */
+            width: 100%;
+            font-size: 50px;
+            z-index: 3;
+            cursor: pointer;
+        }
+
+        li {
+            position: absolute;
+            list-style: none;
+            top: calc(var(--menu-size) * 0.05); /* 15% 기준 */
+            left: calc(var(--menu-size) * 0.05); /* 18% 기준 */
+            transform-origin: 50% 50%;
+            transform: rotate(calc(360deg / 6 * var(--i))) translate(calc(var(--menu-size) * 0.325)) rotate(calc(-360deg / 6 * var(--i)));
+
+            width: calc(var(--menu-size) * 0.225); /* 90px 기준 */
+            min-height: calc(var(--menu-size) * 0.225);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            a {
+                font-size: calc(var(--menu-size) * 0.05);
+                text-decoration: none;
+                color: white;
+                text-align: center;
+                width: calc(var(--menu-size) * 0.25);
+                word-break: keep-all;
+            }
+
+            a:hover{
+                font-size: calc(var(--menu-size) * 0.06); /* 1.1em 기준 */
+            }
+        }
+    }
+}

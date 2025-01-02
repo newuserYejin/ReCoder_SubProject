@@ -6,7 +6,7 @@
     <title>담당자 검색</title>
 
     <!-- 외부 CSS 파일 불러오기 -->
-    <link rel="stylesheet" href="/css/approval/searchEmployee.css">
+    <link rel="stylesheet" th:href="@{/css/approval/searchEmployee.css}">
 
 </head>
 <body>
@@ -31,8 +31,8 @@
     <tr th:each="employee : ${employees}">
         <td th:text="${employee.id}"></td>
         <td th:text="${employee.name}"></td>
-        <td th:text="${employee.deptCode}"></td>
-        <td th:text="${employee.positionValue}"></td>
+        <td th:text="${employee.deptName}"></td>
+        <td th:text="${employee.positionName}"></td>
         <td th:text="${employee.email}"></td>
         <td>
             <button type="button" th:data-name="${employee.name}" onclick="selectEmployee(this)">선택</button>

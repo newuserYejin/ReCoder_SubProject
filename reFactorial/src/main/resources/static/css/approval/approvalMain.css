@@ -1,140 +1,502 @@
 html, body {
-    height: 100%; /* 전체 페이지 높이를 100%로 설정 */
-    margin: 0; /* 페이지 외부 여백 제거 */
-    padding: 0; /* 페이지 내부 여백 제거 */
-    box-sizing: border-box; /* 요소 크기 계산 방식을 테두리 포함으로 설정 */
-    overflow: hidden; /* 스크롤바를 숨김 */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .container {
-    display: flex; /* 플렉스 박스 레이아웃 사용 */
-    flex-direction: row; /* 자식 요소를 가로로 배치 */
-    height: 100%; /* 컨테이너 높이를 전체 화면에 맞춤 */
+    display: flex;
+    flex-direction: row;
+    height: 100%;
 }
 
 .sidebar {
-    width: 20%; /* 사이드바 너비를 화면의 20%로 설정 */
-    border-right: 1px solid black; /* 오른쪽 경계선을 검은색으로 추가 */
-    padding: 20px; /* 내부 여백 설정 */
-    overflow-y: auto; /* 내용이 넘칠 경우 수직 스크롤바 추가 */
+    width: 20%;
+    border-right: 1px solid #5C1915;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .sidebar-title {
-    font-size: 32px; /* 제목 글꼴 크기 설정 */
-    font-weight: bold; /* 제목 글꼴을 굵게 설정 */
-    color: #000; /* 제목 색상을 검은색으로 설정 */
-    margin-bottom: 15px; /* 아래 여백 설정 */
-    margin-top: 46px; /* 위쪽 여백 설정 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 15px;
+    margin-top: 46px;
+    text-align: center;
+}
+
+.selected{
+    color: #5C1915;
+    font-weight: bold;
 }
 
 .sidebar ul {
-    margin-top: 10px; /* 리스트의 상단 여백 설정 */
-    list-style: none; /* 리스트 스타일 제거 */
-    padding: 0; /* 내부 여백 제거 */
-    text-align: center; /* 리스트 항목을 중앙 정렬 */
+    margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: center;
     font-size: 18px;
 }
 
 .sidebar li {
-    position: relative; /* 가상 요소 위치를 설정하기 위한 기준 위치 */
-    padding: 10px 0; /* 리스트 항목의 상하 여백 설정 */
-    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    position: relative;
+    padding: 10px 0;
+    cursor: pointer;
 }
 
 .sidebar li::after {
-    content: ''; /* 구분선을 추가하기 위한 가상 요소 */
-    display: block; /* 블록 요소로 설정 */
-    width: 45%; /* 구분선 길이를 리스트 항목 너비의 45%로 설정 */
-    height: 2px; /* 구분선 두께 설정 */
-    background-color: black; /* 구분선 색상을 검은색으로 설정 */
-    margin: 5px auto 0; /* 구분선을 중앙 정렬 및 여백 추가 */
+    content: '';
+    display: block;
+    width: 45%;
+    height: 2px;
+    background-color: black;
+    margin: 5px auto 0;
 }
 
 .sidebar li:last-child::after {
-    display: none; /* 마지막 항목의 구분선을 제거 */
-}
-
-.sidebar li:hover {
-    font-family: 'Noto Sans KR', Arial, sans-serif; /* 마우스 오버 시 글꼴 설정 */
-    color: #5C1915; /* 마우스 오버 시 글씨 색상 설정 */
-    font-weight: 1000; /* 마우스 오버 시 글씨 굵게 설정 */
+    display: none;
 }
 
 .sidebar li a {
-    text-decoration: none; /* 링크 밑줄 제거 */
-    color: inherit; /* 부모 요소의 색상을 상속 */
-    font-weight: inherit; /* 부모 요소의 글씨 굵기 상속 */
-    font-family: inherit; /* 부모 요소의 글꼴 상속 */
+    text-decoration: none;
+    color: inherit;
+    font-weight: inherit;
+    font-family: inherit;
 }
 
 .sidebar li a:hover {
-    color: #5C1915; /* 마우스 오버 시 링크 색상 설정 */
-    font-weight: bold; /* 마우스 오버 시 링크 굵게 설정 */
+    color: #5C1915;
+    font-weight: bold;
 }
 
 .main-content {
-    flex: 1; /* 메인 콘텐츠가 남은 공간을 차지하도록 설정 */
-    padding: 20px; /* 내부 여백 설정 */
-    overflow-y: auto; /* 내용이 넘칠 경우 수직 스크롤바 추가 */
+    flex-grow: 1;
+    padding: 20px;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
 }
 
-.top-bar {
-    display: flex; /* 플렉스 박스 레이아웃 사용 */
-    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
-    margin-bottom: 20px; /* 하단 여백 설정 */
+.candy-garden {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.button {
-    display: inline-block; /* 버튼처럼 보이게 설정 */
-    padding: 10px 15px; /* 버튼 내부 여백 설정 */
-    background-color: #5C1915; /* 버튼 배경색 설정 */
-    color: white; /* 버튼 글씨 색상 설정 */
-    text-decoration: none; /* 밑줄 제거 */
-    border-radius: 5px; /* 버튼 모서리를 둥글게 설정 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-    font-size: 14px; /* 글씨 크기 설정 */
-    font-family: 'Noto Sans KR', Arial, sans-serif; /* 폰트 설정 */
-    font-weight: bold; /* 글씨 두께 설정 */
+.garden-background {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to top, #8BC34A, #4CAF50);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
 }
 
-.button:hover {
-    background-color: #7e2411; /* 마우스 오버 시 버튼 배경색 변경 */
-    color: white; /* 마우스 오버 시 글씨 색상 유지 */
+.candy-plants {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
-.table-header {
-    display: flex; /* 플렉스 박스 레이아웃 사용 */
-    justify-content: space-between; /* 요소 간의 공간을 균등 분배 */
-    align-items: center; /* 수직 중앙 정렬 */
-    padding: 10px 0; /* 상하 여백 설정 */
-    border-bottom: 2px solid black; /* 하단에 두꺼운 경계선 추가 */
-    font-weight: bold; /* 글씨를 굵게 설정 */
-    font-size: 1.1em; /* 글씨 크기 설정 */
+.candy-plant {
+    position: absolute;
+    bottom: 15%;
+    transform-origin: bottom center;
 }
 
-.table-row {
-    display: flex; /* 플렉스 박스 레이아웃 사용 */
-    justify-content: space-between; /* 요소 간의 공간을 균등 분배 */
-    align-items: center; /* 수직 중앙 정렬 */
-    padding: 10px 0; /* 상하 여백 설정 */
-    border-bottom: 1px solid #ccc; /* 하단 경계선 추가 */
+.plant-stem {
+    width: 6px;
+    height: 80px;
+    background: linear-gradient(to top, #4CAF50, #8BC34A);
+    margin: 0 auto;
+    position: relative;
 }
 
-.table-row:last-child {
-    border-bottom: none; /* 마지막 행의 경계선 제거 */
+.plant-flower {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.table-cell {
-    flex: 1; /* 모든 셀의 너비를 동일하게 설정 */
-    text-align: center; /* 텍스트 중앙 정렬 */
+.flower-center {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.table-cell:first-child {
-    flex: 0.5; /* 첫 번째 셀의 너비를 좁게 설정 */
+.flower-petal {
+    width: 30px;  /* 꽃잎 크기 조절 */
+    height: 20px;
+    background: radial-gradient(circle at 50% 50%, #FF69B4, #FF1493);
+    border-radius: 50% 50% 0 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0;
 }
 
-.table-cell:last-child {
-    color: #5C1915; /* 마지막 셀의 텍스트 색상 설정 */
-    font-weight: bold; /* 마지막 셀의 텍스트 굵게 설정 */
+.flower-petal:nth-child(1) { transform: rotate(0deg) translate(-50%, -50%); }
+.flower-petal:nth-child(2) { transform: rotate(72deg) translate(-50%, -50%); }
+.flower-petal:nth-child(3) { transform: rotate(144deg) translate(-50%, -50%); }
+.flower-petal:nth-child(4) { transform: rotate(216deg) translate(-50%, -50%); }
+.flower-petal:nth-child(5) { transform: rotate(288deg) translate(-50%, -50%); }
+
+.plant-flower:hover {
+    transform: translateX(-50%) scale(1.1);
+}
+
+.floating-candies {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.floating-candy {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: float 5s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(50px) rotate(180deg); }
+}
+
+.button-container {
+    justify-content: flex-end;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 1em;
+}
+
+.main-btn {
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.new-approval-btn {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+}
+
+.new-approval-btn:hover {
+    background: linear-gradient(135deg, #FF8E53, #FF6B6B);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #6A11CB, #2575FC);
+}
+
+.download-btn:hover {
+    background: linear-gradient(135deg, #2575FC, #6A11CB);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 업데이트된 상태 카드 스타일 */
+.status-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 1em;
+}
+
+.status-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 25px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.status-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.status-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: currentColor;
+}
+
+.status-card h3 {
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.status-count {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.status-label {
+    font-size: 0.9em;
+    color: #666;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+}
+
+.status-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background: currentColor;
+    opacity: 0.1;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.status-card:hover::after {
+    width: 120px;
+    height: 120px;
+}
+
+/* 상태별 색상 */
+.card-waiting { color: #3498db; }
+.card-progress { color: #f39c12; }
+.card-completed { color: #2ecc71; }
+.card-rejected { color: #e74c3c; }
+
+/* 이하 기존 코드 유지 */
+.documents-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    flex: 1;
+    max-height: calc(100vh - 500px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ... (나머지 코드는 변경 없이 유지) ... */
+
+.tab-container {
+    border-bottom: 2px solid #eee;
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: #666;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.tab-button:hover {
+    color: #2196F3;
+}
+
+.tab-button.active {
+    color: #2196F3;
+    font-weight: 500;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #2196F3;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.document-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.document-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px; /* 패딩을 늘려 크기를 키웁니다. 필요에 따라 조절하세요. */
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.document-list li:hover {
+    background-color: #f5f5f5;
+}
+.document-list li:last-child {
+    border-bottom: none;
+}
+
+.document-info {
+    flex: 0 0 35%; /* 문서 정보의 너비를 줄입니다. 35-45% 사이에서 조절 가능합니다. */
+    padding-right: 15px;
+}
+
+.document-title {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+
+.document-date {
+    font-size: 13px;
+    color: #666;
+}
+
+.approver-label {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 3px 6px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-right: 6px;
+}
+
+.status-badge {
+    flex: 0 0 7%;
+    text-align: right;
+    padding: 4px 20px;
+    border-radius: 15px;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: uppercase;
+    margin-left: -220px; /* 왼쪽 여백을 줄입니다. 이 값을 조절하세요. */
+
+}
+
+.badge-waiting {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #1565c0;
+}
+
+.badge-progress {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #e65100;
+}
+
+.badge-completed {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+}
+
+.badge-rejected {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #c62828;
+}
+
+.approver-info {
+    flex: 0 0 40%;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.approver-label {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.sidebar-title a {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-title .selected{
+    color: #5C1915;
+}
+
+.sidebar-title a:hover {
+    color: #000;
+    text-decoration: none;
 }

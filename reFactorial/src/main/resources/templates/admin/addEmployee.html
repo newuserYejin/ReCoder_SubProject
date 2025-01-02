@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{css/admin/addEmployee.css}">
+    <link rel="stylesheet" href="../../static/css/admin/addEmployee.css">
+</head>
+<body>
+    <section>
+
+        <form class="addEmployeeFragment" th:fragment="addEmployeeFragment" th:action="${ModifyUser != null ? '/admin/modifyEmpInfo' : '/user/addEmployee'}" method="post">
+            <div class="uploadFile">
+                <label>
+                    <img th:src="${ModifyUser != null && ModifyUser.profile != null && ModifyUser.profile != '' && ModifyUser.profile != 'null' ? '/uploadImg/' + ModifyUser.profile : '/uploadImg/defaultImg.png'}" alt="프로필 이미지">
+                </label>
+            </div>
+
+
+            <div class="inputInfo">
+                <div class="inputSet">
+                    <label for="empName">이름 : </label>
+                    <input oninput="validateName(event)" type="text" id="empName" name="empName" th:value="${ModifyUser != null ? ModifyUser.empName : ''}" required>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empNo">주민번호 : </label>
+                    <input type="text" id="empNo" name="empNo" maxlength="14" th:value="${ModifyUser != null ? ModifyUser.empNo : ''}" required>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empAddress">주소 : </label>
+                    <input type="text" id="empAddress" name="empAddress" th:value="${ModifyUser != null ? ModifyUser.empAddress : ''}" required>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empEmail">이메일 : </label>
+                    <input type="text" id="empEmail" name="empEmail" th:value="${ModifyUser != null ? ModifyUser.empEmail : ''}" required onblur="validateEmail(event)">
+                </div>
+                <div class="error">이메일 형식이 올바르지 않습니다.</div>
+
+                <div class="inputSet">
+                    <label for="deptCode">부서 : </label>
+                    <select name="deptCode" id="deptCode" th:value="${ModifyUser != null ? ModifyUser.deptCode : ''}" onchange="setRandomStr(this)">
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.deptCode == 1}">인사팀</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.deptCode == 2}">개발팀</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.deptCode == 3}">마케팅팀</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.deptCode == 4}">회계팀</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.deptCode == 5}">영업팀</option>
+                    </select>
+                </div>
+
+                <div class="inputSet">
+                    <label for="positionValue">직급 : </label>
+                    <select name="positionValue" id="positionValue" th:value="${ModifyUser != null ? ModifyUser.positionValue : ''}">
+                        <option value=1 th:selected="${ModifyUser != null && ModifyUser.positionValue == 1}">사장</option>
+                        <option value=2 th:selected="${ModifyUser != null && ModifyUser.positionValue == 2}">부사장</option>
+                        <option value=3 th:selected="${ModifyUser != null && ModifyUser.positionValue == 3}">이사</option>
+                        <option value=4 th:selected="${ModifyUser != null && ModifyUser.positionValue == 4}">부장</option>
+                        <option value=5 th:selected="${ModifyUser != null && ModifyUser.positionValue == 5}">과장</option>
+                        <option value=6 th:selected="${ModifyUser != null && ModifyUser.positionValue == 6}">차장</option>
+                        <option value=7 th:selected="${ModifyUser != null && ModifyUser.positionValue == 7}">대리</option>
+                        <option value=8 th:selected="${ModifyUser != null && ModifyUser.positionValue == 8}">주임</option>
+                        <option value=9 th:selected="${ModifyUser != null && ModifyUser.positionValue == 9}">사원</option>
+                        <option value=10 th:selected="${ModifyUser != null && ModifyUser.positionValue == 10}">인턴</option>
+                    </select>
+                </div>
+
+                <div class="inputSet empIdBox" >
+                    <label for="empId">사원번호 : </label>
+                    <input type="text" id="empId" name="empId" th:value="${ModifyUser != null ? ModifyUser.empId : ''}" readonly>
+                    <button type="button" th:unless="${ModifyUser}" onclick="randomEmpId()">생성하기</button>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empJoined">입사일 : </label>
+                    <input type="date" id="empJoined" name="empJoined" th:value="${ModifyUser != null ? ModifyUser.empJoined : ''}" required>
+                </div>
+
+                <div class="inputSet">
+                    <label for="annualLeave">연차 : </label>
+                    <input type="text" id="annualLeave" name="annualLeave" th:value="${ModifyUser != null ? ModifyUser.annualLeave : ''}" required oninput="validateAnnualLeave(event)">
+                </div>
+
+                <div th:unless="${ModifyUser != null and ModifyUser.empId != LoginUserInfo.empId}" class="inputSet">
+                    <label for="empPwd">비밀번호 : </label>
+                    <input type="password" id="empPwd" name="empPwd" readonly>
+                </div>
+
+                <div class="inputSet">
+                    <label for="empPhone">연락처 : </label>
+                    <input type="text" maxlength="11" id="empPhone" name="empPhone" th:value="${ModifyUser != null ? ModifyUser.empPhone : ''}" required oninput="formatPhoneNumber(event)">
+                </div>
+
+                <div class="inputSet">
+                    <label for="viewAuth">권한 : </label>
+                    <select name="viewAuth" id="viewAuth">
+                        <option value="USER" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'USER'}">일반 사원</option>
+                        <option value="ADMIN" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ADMIN'}">관리자</option>
+                        <option value="ACCESSLIMIT" th:selected="${ModifyUser != null && ModifyUser.viewAuth == 'ACCESSLIMIT'}">접근 제한</option>
+                    </select>
+                </div>
+
+                <input type="submit" th:value="${ModifyUser != null ? '저장' : '등록'}">
+            </div>
+        </form>
+
+    </section>
+</body>
+</html>

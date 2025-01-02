@@ -1,0 +1,229 @@
+
+/* 기본 스타일 */
+html, body {
+
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    overflow: hidden; /* 페이지 스크롤 제거 */
+}
+
+.menuMainBox h2 {
+    margin-bottom: 20px;
+    font-size: 24px; /* 제목 크기 조정 */
+    color: #343a40;
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 폼 스타일 */
+form#addFactoryForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 입력 필드 간격 */
+    max-width: 600px; /* 폼의 최대 너비 설정 */
+    margin: 0 auto; /* 폼을 가운데 정렬 */
+}
+
+form#addFactoryForm label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #495057; /* 약간 어두운 회색 텍스트 */
+}
+
+form#addFactoryForm input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+form#addFactoryForm input[type="file"] {
+    padding: 5px; /* 파일 업로드 필드의 여백 조정 */
+}
+
+form#addFactoryForm button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold; /* 텍스트 강조 */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* 배경색 변경 효과 */
+}
+
+form#addFactoryForm button:hover {
+    background-color: #0056b3; /* 호버 시 진한 파란색 */
+}
+
+
+/* 메인 박스 (등록 상태) */
+.menuMainBox.register-mode {
+    width: 90%;
+    margin: 20px auto;
+    height: calc(100vh - 250px); /* 고정 높이 */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-y: auto; /* 등록 모드에서 스크롤 활성화 */
+    overflow-x: hidden;
+}
+
+/* 메인 박스 (수정 상태) */
+.menuMainBox.edit-mode {
+    width: 90%;
+    margin: 20px auto;
+    height: calc(100vh - 250px); /* 고정 높이 */
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden; /* 수정 모드에서는 스크롤 제거 */
+}
+
+
+/* 콘텐츠 컨테이너 (등록 및 수정 화면 포함) */
+.content-container {
+    flex: 1; /* 남은 공간을 모두 사용 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 제거 */
+    padding: 15px; /* 내부 여백 */
+    background-color: #f9f9f9; /* 연한 회색 배경 */
+    border: 1px solid #ddd; /* 얇은 테두리 */
+    border-radius: 10px; /* 둥근 모서리 */
+}
+
+/* 등록/수정 화면 제목 스타일 */
+.content-container h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    text-align: center; /* 가운데 정렬 */
+}
+/* 리스트 스타일 */
+.factory-list {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    overflow-y: auto; /* 리스트에만 세로 스크롤 추가 */
+    overflow-x: hidden;
+    max-height: calc(100vh - 380px); /* 메인 박스 내부 높이에 맞춤 */
+    box-sizing: border-box;
+}
+
+/* 카드 스타일 */
+.factory-card {
+    width: 230px; /* 고정 너비 */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s; /* 호버 시 확대 효과 */
+}
+
+.factory-card:hover {
+    transform: scale(1.05); /* 살짝 확대 */
+}
+
+.factory-card img {
+    width: 100%;
+    height: 150px; /* 고정 높이 */
+    object-fit: cover; /* 이미지 비율 유지하며 잘라냄 */
+    border-radius: 10px; /* 둥근 모서리 */
+    margin-bottom: 10px;
+}
+
+.factory-card h3 {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #333;
+}
+
+.factory-card p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* 수정 폼 */
+form#updateFactoryForm {
+    display: flex;
+    flex-direction: column; /* 입력 필드를 세로로 나열 */
+    gap: 15px; /* 필드 간 간격 */
+    max-width: 600px; /* 폼의 최대 너비 설정 */
+    margin: 0 auto; /* 폼을 가운데 정렬 */
+    padding: 20px; /* 내부 여백 */
+    background-color: #ffffff; /* 흰색 배경 */
+    border: 1px solid #ccc; /* 테두리 추가 */
+    border-radius: 10px; /* 둥근 모서리 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+}
+
+/* 수정 폼 내 레이블 */
+form#updateFactoryForm label {
+    font-weight: bold; /* 텍스트 강조 */
+    margin-bottom: 5px; /* 레이블과 입력 필드 간 간격 */
+    color: #495057; /* 약간 어두운 텍스트 색상 */
+}
+
+/* 수정 폼 내 입력 필드 */
+form#updateFactoryForm input {
+    padding: 10px; /* 내부 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    font-size: 14px; /* 텍스트 크기 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+/* 수정 버튼 */
+form#updateFactoryForm button {
+    padding: 10px 15px; /* 버튼 여백 */
+    background-color: #007bff; /* 기본 파란색 */
+    color: white; /* 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 둥근 모서리 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold; /* 강조 */
+    cursor: pointer; /* 클릭 가능 */
+    transition: background-color 0.3s ease; /* 배경색 변경 효과 */
+}
+
+/* 수정 버튼 호버 효과 */
+form#updateFactoryForm button:hover {
+    background-color: #0056b3; /* 더 어두운 파란색 */
+}
+
+/* 뒤로가기 버튼 */
+button#backToList {
+    margin-top: 20px; /* 위쪽 간격 */
+    padding: 10px 15px; /* 버튼 여백 */
+    background-color: #dc3545; /* 빨간색 */
+    color: white; /* 텍스트 색상 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 둥근 모서리 */
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: bold; /* 강조 */
+    cursor: pointer; /* 클릭 가능 */
+    transition: background-color 0.3s ease; /* 배경색 변경 효과 */
+}
+
+button#backToList:hover {
+    background-color: #c82333; /* 더 어두운 빨간색 */
+}

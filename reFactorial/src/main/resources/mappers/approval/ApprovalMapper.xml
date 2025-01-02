@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.approval.model.dao.ApprovalMapper">
+
+    <insert id="insertPm" parameterType="map">
+        INSERT INTO tbl_pm (pm_id, pm_title, pm_create, pm_category, pm_attachment, emp_id, pm_content)
+        VALUES (#{pmId}, #{title}, #{date}, #{category}, #{attachment}, #{creatorId},#{content})
+    </insert>
+
+
+    <insert id="insertApprover" parameterType="map">
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status, approval_order)
+        VALUES
+        <foreach collection="approvers" item="approver" separator=",">
+            (#{approver.empId}, #{pmId}, '대기 중', #{approver.approvalOrder})
+        </foreach>
+    </insert>
+
+    <!--    <insert id="insertReferrer" parameterType="map">-->
+    <!--        INSERT INTO tbl_pm_referrer (pm_id, emp_id)-->
+    <!--        VALUES (#{pmId}, #{empId})-->
+    <!--    </insert>-->
+
+
+    <select id="getDocumentDetails" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            CASE
+                WHEN ap.approval_order = (
+                    SELECT MAX(approval_order)
+                    FROM tbl_approval
+                    WHERE pm_id = pm.pm_id
+                ) THEN '진행 중'
+                ELSE ap.pm_status
+                END AS status,
+            pm.pm_attachment AS attachment,
+            pm.emp_id AS creator,
+            JSON_UNQUOTE(JSON_EXTRACT(pm.pm_referrer, '$')) AS referrers,
+            GROUP_CONCAT(DISTINCT ap.emp_id ORDER BY ap.approval_order) AS approvers,
+            pm.pm_content AS content
+        FROM
+            tbl_pm pm
+                LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        GROUP BY
+            pm.pm_id;
+    </select>
+
+    <select id="getWaitingDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            MAX(ap.pm_status) AS status,
+            pm.pm_attachment AS attachment,
+            emp.emp_name AS creatorName,
+            GROUP_CONCAT(DISTINCT ap.emp_id ORDER BY ap.approval_order) AS approvers,
+            pm.pm_referrer AS referrers,
+            (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+             FROM tbl_approval a2
+                      JOIN employee e2 ON a2.emp_id = e2.emp_id
+                      JOIN tbl_position p2 ON e2.position_value = p2.position_value
+             WHERE a2.pm_id = pm.pm_id
+               AND a2.pm_status IN ('대기 중', '진행 중')
+             ORDER BY a2.approval_order
+                LIMIT 1) AS currentApprover
+        FROM
+            tbl_pm pm
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE
+            ap.pm_status = '대기 중'
+          AND ap.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset};
+    </select>
+
+    <select id="getWaitingCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+                 INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status = '대기 중'
+          AND ap.emp_id = #{empId}
+    </select>
+
+    <select id="findEmployeeNameById" resultType="String">
+        SELECT emp_name FROM employee WHERE emp_id = #{employeeId}
+    </select>
+
+    <insert id="saveApprovers" parameterType="map">
+        INSERT INTO tbl_approval (emp_id, pm_id, pm_status, approval_order)
+        VALUES
+        <foreach collection="approvers" item="approver" index="index" separator=",">
+            (#{approver.empId}, #{pmId},
+            CASE
+            WHEN #{approver.order} = 1 THEN '진행 중'
+            ELSE '대기 중'
+            END,
+            #{approver.order})
+        </foreach>
+    </insert>
+
+    <!-- 참조자 저장 -->
+    <insert id="saveReferrers" parameterType="map">
+        INSERT INTO tbl_pm_referrer (pm_id, emp_id)
+        VALUES
+        <foreach collection="referrers" item="referrer" separator=",">
+            (#{pmId}, #{referrer})
+        </foreach>
+    </insert>
+
+    <select id="getReferenceDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        a.pm_status AS status,
+        pm.pm_attachment AS attachment,
+        emp.emp_name AS creatorName,
+        pm.pm_referrer AS referrers,
+        (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+        FROM tbl_approval a2
+        JOIN employee e2 ON a2.emp_id = e2.emp_id
+        JOIN tbl_position p2 ON e2.position_value = p2.position_value
+        WHERE a2.pm_id = pm.pm_id
+        ORDER BY a2.approval_order
+        LIMIT 1) AS currentApprover
+        FROM
+        tbl_pm pm
+        JOIN tbl_pm_referrer pr ON pr.pm_id = pm.pm_id
+        LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE pr.emp_id = #{empId}
+        GROUP BY
+        pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category, a.pm_status,
+        pm.pm_attachment, emp.emp_name, pm.pm_referrer
+        ORDER BY pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset}<!-- 페이지네이션을 위한 LIMIT, OFFSET 추가 -->
+    </select>
+
+    <select id="getTotalReferenceDocuments" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE EXISTS (
+            SELECT 1
+            FROM tbl_pm_referrer pr
+            WHERE pr.pm_id = pm.pm_id
+              AND pr.emp_id = #{empId}
+        )
+    </select>
+
+
+
+    <select id="getMyDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            CASE
+                WHEN MAX(a.pm_status) IN ('대기 중', '진행 중', '완료', '전결') THEN MAX(a.pm_status)
+                ELSE MAX(a.pm_status)
+                END AS status,
+            pm.pm_attachment AS attachment,
+            emp.emp_name AS creatorName,
+            pm.pm_referrer AS referrers,
+            (SELECT CONCAT(e2.emp_name, ' ', p2.position_name)
+             FROM tbl_approval a2
+                      JOIN employee e2 ON a2.emp_id = e2.emp_id
+                      JOIN tbl_position p2 ON e2.position_value = p2.position_value
+             WHERE a2.pm_id = pm.pm_id
+             ORDER BY a2.approval_order
+                LIMIT 1) AS currentApprover
+        FROM
+            tbl_pm pm
+            LEFT JOIN tbl_approval a ON pm.pm_id = a.pm_id
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE
+            pm.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category,
+            pm.pm_attachment, emp.emp_name, pm.pm_referrer
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+
+    </select>
+
+
+    <select id="getMyDocumentsCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pm pm
+        WHERE pm.emp_id = #{empId}  <!-- empId는 Map에서 가져옵니다 -->
+    </select>
+
+
+
+    <!--    <insert id="insertApprovalFile" parameterType="map">-->
+    <!--        INSERT INTO tbl_approval_files (pm_id, file_name, file_path, file_size, file_type, uploaded_at)-->
+    <!--        VALUES (#{pmId}, #{fileName}, #{filePath}, #{fileSize}, #{fileType}, NOW())-->
+    <!--    </insert>-->
+
+    <select id="getDocumentById" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            MAX(ap.pm_status) AS status,
+            pm.emp_id AS creator,
+            pm.pm_attachment AS attachment,
+            emp.emp_name AS creatorName, -- 작성자 이름
+            pm.leave_type AS leaveType,
+            pm.leave_date AS leaveDate, -- 휴가 날짜 추가
+            GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers, -- 승인자 목록 (순서 보장)
+            GROUP_CONCAT(DISTINCT pr.emp_id) AS referrers, -- 참조자 목록
+            pm.pm_content AS content
+--             GROUP_CONCAT(DISTINCT af.file_path) AS fileUrl -- 첨부 파일 경로
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id -- 작성자 정보
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id -- 승인자 정보
+                 LEFT JOIN tbl_pm_referrer pr ON pm.pm_id = pr.pm_id -- 참조자 정보
+--                  LEFT JOIN tbl_approval_files af ON pm.pm_id = af.pm_id -- 첨부 파일 정보
+        WHERE pm.pm_id = #{pmId}
+        GROUP BY pm.pm_id;
+    </select>
+
+    <select id="getApproversStatus" resultType="string">
+        SELECT pm_status
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <!-- 승인 상태 업데이트 -->
+    <update id="updateApprovalStatus">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId};
+    </update>
+
+
+
+    <!-- 모든 승인 상태 가져오기 -->
+    <select id="getAllApprovalStatuses" resultType="string">
+        SELECT pm_status
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <!-- 승인 순서 가져오기 -->
+    <select id="getApprovalOrder" resultType="int">
+        SELECT approval_order
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND emp_id = #{empId}
+    </select>
+
+    <!-- 승인자 상태를 반려로 업데이트 -->
+    <update id="updateApprovalStatusWithReason">
+        UPDATE tbl_approval
+        SET pm_status = #{status}, reason = #{reason}
+        WHERE pm_id = #{pmId} AND emp_id = #{empId};
+    </update>
+
+
+    <!-- 문서의 모든 승인자 상태를 반려로 업데이트 -->
+    <update id="updateAllApprovalStatusesToRejected">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId};
+    </update>
+
+    <!-- 완료된 문서 조회 -->
+    <select id="getCompletedDocuments" parameterType="map" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+        pm.pm_id AS pmId,
+        pm.pm_title AS title,
+        pm.pm_create AS createDate,
+        pm.pm_category AS category,
+        MAX(ap.pm_status) AS status,
+        emp.emp_name AS creatorName,
+        GROUP_CONCAT(ap.emp_id ORDER BY ap.approval_order ASC) AS approvers
+        FROM
+        tbl_pm pm
+        LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE
+        ap.pm_status = '완료'
+        AND ap.emp_id = #{empId}  <!-- 추가된 조건 -->
+        GROUP BY
+        pm.pm_id
+        ORDER BY
+        pm.pm_create DESC
+        LIMIT #{limit} OFFSET #{offset};
+    </select>
+
+    <!-- 완료된 문서 개수 조회 -->
+    <select id="getCompletedDocumentsCount" parameterType="string" resultType="int">
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status = '완료'
+          AND ap.emp_id = #{empId}
+    </select>
+
+
+    <!-- 진행 중 문서 가져오기 -->
+    <select id="findInProgressDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            '진행 중' AS status,
+            emp.emp_name AS creatorName,
+            (SELECT CONCAT(e.emp_name, ' ', p.position_name)
+             FROM tbl_approval sub_ap
+                      JOIN employee e ON sub_ap.emp_id = e.emp_id
+                      JOIN tbl_position p ON e.position_value = p.position_value
+             WHERE sub_ap.pm_id = pm.pm_id
+               AND sub_ap.pm_status IN ('진행 중')
+             ORDER BY sub_ap.approval_order
+                LIMIT 1) AS currentApprover
+        FROM
+            tbl_pm pm
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE
+            ap.pm_status IN ('진행 중', '승인')
+          AND ap.emp_id = #{empId}
+        GROUP BY
+            pm.pm_id
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+
+    </select>
+
+    <!-- 진행 중 문서 개수 가져오기 -->
+    <select id="countInProgressDocuments" resultType="int">
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status IN ('승인', '진행 중')
+          AND ap.emp_id = #{empId}
+    </select>
+
+
+    <!-- 반려된 문서 가져오기 -->
+    <select id="findRejectedDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            ap.pm_status AS status,
+            ap.reason AS reason,
+            emp.emp_name AS creatorName
+        FROM tbl_pm pm
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+        WHERE ap.pm_status = '반려'
+          AND ap.emp_id = #{empId}
+        ORDER BY pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 반려된 문서 개수 가져오기 -->
+    <select id="countRejectedDocuments" resultType="int">
+        SELECT COUNT(DISTINCT pm.pm_id)
+        FROM tbl_pm pm
+                 LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+                 LEFT JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE ap.pm_status = '반려'
+          AND ap.emp_id = #{empId}
+    </select>
+
+    <!-- 휴가 유형 가져오기 -->
+    <select id="findLeaveTypeByPmId" resultType="string">
+        SELECT leave_type
+        FROM tbl_pm
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <!-- 휴가 날짜 조회 -->
+    <select id="findLeaveDateByPmId" resultType="java.time.LocalDate">
+        SELECT leave_date
+        FROM tbl_pm
+        WHERE pm_id = #{pmId}
+    </select>
+
+
+    <update id="updateLeaveType" parameterType="map">
+        UPDATE tbl_pm
+        SET leave_type = #{leaveType}
+        WHERE pm_id = #{pmId}
+    </update>
+
+    <update id="updateLeaveDate" parameterType="map">
+        UPDATE tbl_pm
+        SET leave_date = #{leaveDate}
+        WHERE pm_id = #{pmId}
+    </update>
+
+    <select id="findApprovalDetailById" parameterType="string" resultType="com.ohgiraffers.refactorial.approval.model.dto.ApprovalDetailDTO">
+        SELECT
+            pm_id AS pmId,
+            title,
+            create_date AS createDate,
+            category,
+            status,
+            attachment,
+            creator AS creatorId,
+            approvers,
+            referrers,
+            content,
+            leave_type AS leaveType
+        FROM
+            tbl_approval
+        WHERE
+            pm_id = #{pmId}
+    </select>
+
+
+    <!-- 현재 필요한 승인 순서 가져오기 -->
+    <select id="getCurrentApprovalStep" resultType="int">
+        SELECT MIN(approval_order)
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
+    </select>
+
+    <select id="getApprovers" resultType="string">
+        SELECT emp_id
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+    <update id="updateAllPendingToInProgress">
+        UPDATE tbl_approval
+        SET pm_status = '진행 중'
+        WHERE pm_id = #{pmId} AND pm_status = '대기 중';
+    </update>
+
+
+
+    <select id="findFirstApprover" parameterType="String">
+        SELECT emp_id
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND approval_order = 1;
+    </select>
+
+
+
+
+    <!-- 모든 승인 상태를 완료로 업데이트-->
+    <update id="updateAllApprovalsToCompleted">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId};
+    </update>
+
+
+    <select id="countPendingApprovers" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND pm_status = '대기 중';
+    </select>
+
+    <select id="allApprovalsCompleted" parameterType="String" resultType="boolean">
+        SELECT COUNT(*) = 0
+        FROM tbl_approval
+        WHERE pm_id = #{pmId} AND pm_status IN ('대기 중', '진행 중');
+    </select>
+
+    <update id="updateDocumentStatus" parameterType="map">
+        UPDATE tbl_approval
+        SET pm_status = #{status}
+        WHERE pm_id = #{pmId};
+    </update>
+
+    <update id="updateApprovalAllPass" parameterType="map">
+        UPDATE tbl_approval
+        SET pm_status = '완료'
+        WHERE pm_id = #{pmId};
+    </update>
+
+
+    <!-- 승인자의 최대 승인 순서 가져오기 -->
+    <select id="getMaxApprovalOrder" resultType="int">
+        SELECT MAX(approval_order)
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+    </select>
+
+
+    <select id="getApprovalOrderdozang" resultType="int">
+        SELECT approval_order
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+          AND emp_id = #{currentEmpId}
+    </select>
+
+    <select id="getRejectReasonByApprover" parameterType="map" resultType="String">
+        SELECT reason
+        FROM tbl_approval
+        WHERE pm_id = #{pmId}
+          AND emp_id = #{currentEmpId}
+          AND reason IS NOT NULL;
+    </select>
+
+    <insert id="insertAttendance" parameterType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        INSERT INTO tbl_attendance (att_date, att_time, att_status, emp_id)
+        VALUES (#{attDate}, #{attTime}, #{attStatus}, #{empId})
+    </insert>
+
+    <select id="checkAttendanceExists" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_attendance
+        WHERE emp_id = #{empId}
+          AND att_date = #{attDate}
+    </select>
+
+
+    <select id="findApprovableDocuments" resultType="com.ohgiraffers.refactorial.approval.model.dto.DocumentDTO">
+        SELECT
+            pm.pm_id AS pmId,
+            pm.pm_title AS title,
+            pm.pm_create AS createDate,
+            pm.pm_category AS category,
+            MAX(ap.pm_status) AS status,
+            emp.emp_name AS creatorName,
+            (SELECT CONCAT(e.emp_name, ' ', p.position_name)
+             FROM tbl_approval sub_ap
+                      JOIN employee e ON sub_ap.emp_id = e.emp_id
+                      JOIN tbl_position p ON e.position_value = p.position_value
+             WHERE sub_ap.pm_id = pm.pm_id
+               AND sub_ap.pm_status IN ('대기 중', '진행 중')
+             ORDER BY sub_ap.approval_order
+                LIMIT 1) AS currentApprover
+        FROM
+            tbl_pm pm
+            LEFT JOIN employee emp ON pm.emp_id = emp.emp_id
+            INNER JOIN tbl_approval ap ON pm.pm_id = ap.pm_id
+        WHERE
+            ap.emp_id = #{empId}
+          AND pm.pm_id NOT IN (
+            SELECT DISTINCT pm_id
+            FROM tbl_approval
+            WHERE pm_status IN ('완료', '반려')
+            )
+        GROUP BY
+            pm.pm_id, pm.pm_title, pm.pm_create, pm.pm_category,
+            emp.emp_name
+        ORDER BY
+            pm.pm_create DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <update id="updatePreviousApproversToRejected">
+       <![CDATA[
+        UPDATE tbl_approval
+        SET pm_status = '반려'
+        WHERE pm_id = #{pmId}
+          AND approval_order <= (
+            SELECT temp.approval_order
+            FROM (
+                     SELECT approval_order
+                     FROM tbl_approval
+                     WHERE pm_id = #{pmId} AND emp_id = #{empId}
+                 ) temp
+        )
+        ]]>
+    </update>
+</mapper>

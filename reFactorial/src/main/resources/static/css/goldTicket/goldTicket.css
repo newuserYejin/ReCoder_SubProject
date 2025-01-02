@@ -1,0 +1,113 @@
+section{
+    border: none;
+}
+
+
+.mainContainer{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 0;
+
+    box-sizing: border-box;
+
+    .bannerImg{
+        width: 100%;
+        height: 50%;
+        background-image: url("/images/goldticke_bg_img.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-color: rgba(63,3,36);
+        background-position: bottom;
+
+        display: flex;
+        justify-content: end;
+        align-items: center;
+
+        .ticketImg{
+            width: 45%;
+            height: 70%;
+            background-image: url("/images/goldticket.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            margin-right: 7%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .ticketNum{
+                font-size: 4.5em;
+                width: 70%;
+                height: 80%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: inset 0 0 15px #604d10;
+            }
+        }
+    }
+
+    .infoBox{
+        width: 100%;
+        height: 50%;
+
+        padding: 20px;
+        box-sizing: border-box;
+
+        display: flex;
+        justify-content: space-between;
+
+        .map{
+            height: 100%;
+            aspect-ratio: 1 / 1;
+
+            margin-right: 20px;
+        }
+
+        .personInfoBox{
+            height: 100%;
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .personInfoTitle{
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+
+            .personInfoList{
+                border: solid 1px black;
+                width: 100%;
+                flex: 1;
+
+                overflow-y: auto;
+                overflow-x: hidden;
+
+                .person{
+                    display: flex;
+                    justify-content: space-between;
+
+                    border-bottom: solid 1px #4F4F4F;
+                    padding: 10px 10px;
+
+                    cursor: pointer;
+
+                    >div{text-align: center}
+
+                    .num{width: 10%}
+                    .name{width: 20%}
+                    .date{width: 30%}
+                    .address{width: 40%}
+                }
+            }
+        }
+    }
+
+}

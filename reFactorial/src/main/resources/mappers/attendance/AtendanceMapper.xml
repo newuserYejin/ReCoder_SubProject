@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.refactorial.attendance.dao.AttendanceMapper">
+
+    <resultMap id="attendanceResult" type="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        <id column="att_date" property="attDate" />
+        <id column="emp_id" property="empId" />
+        <result column="att_time" property="attTime" />
+        <result column="att_status" property="attStatus" />
+    </resultMap>
+
+    <insert id="addEmpAttendance" parameterType="com.ohgiraffers.refactorial.attendance.dto.AttendanceDTO">
+        insert into tbl_attendance
+        (att_date, att_time, att_status, emp_id)
+        values
+        (#{attDate},#{attTime},#{attStatus},#{empId})
+    </insert>
+
+    <select id="checkAttendance" parameterType="MAP" resultMap="attendanceResult">
+        SELECT *
+        FROM tbl_attendance
+        WHERE att_date = #{attDate} AND emp_id = #{empId}
+    </select>
+
+    <select id="getAttendance" parameterType="Map" resultMap="attendanceResult">
+        SELECT *
+        FROM tbl_attendance
+        WHERE emp_id = #{empId}
+            AND
+                att_date BETWEEN #{firstDayOfMonth} AND #{lastDayOfMonth}
+    </select>
+
+    <select id="getAttendanceGroupBy" resultType="map" parameterType="java.time.LocalDate">
+        SELECT
+            COALESCE(a.att_status, '결근') AS att_status,
+            COUNT(*) AS count
+        FROM
+            employee e
+            LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id AND a.att_date = #{today}
+        GROUP BY
+            a.att_status
+    </select>
+
+<!--    <select id="getAttendanceGroupBy" resultType="map" parameterType="java.time.LocalDate">-->
+<!--        SELECT-->
+<!--        COALESCE(a.att_status, '결근') AS att_status,-->
+<!--        COUNT(*) AS count-->
+<!--        FROM-->
+<!--        employee e-->
+<!--        LEFT JOIN tbl_attendance a ON e.emp_id = a.emp_id-->
+<!--        WHERE-->
+<!--        a.att_date = #{today}-->
+<!--        GROUP BY-->
+<!--        COALESCE(a.att_status, '결근')-->
+<!--    </select>-->
+
+
+</mapper>

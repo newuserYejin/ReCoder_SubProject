@@ -5,12 +5,16 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>전자 결제</title>
+    <title>전자 결재</title>
 
     <!-- 폰트 적용 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- Wonka 테마용 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
 
     <!-- CSS 파일 연결 -->
     <link rel="stylesheet" th:href="@{/css/common/header.css}">
@@ -20,38 +24,51 @@
     <link rel="stylesheet" href="/css/approval/approvalPage.css">
 </head>
 <body>
-
-<header th:replace="~{/common/header::headerFragment}"></header>
+<div class="snowfall-container" id="snowContainer"></div>
+<header th:replace="~{common/header::headerFragment}"></header>
 <section class="wrapper">
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="sidebar-title">전자결제</div>
+        <div class="sidebar-title">전자결재</div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="title"></div>
-        <form action="/approval/submit" method="post">
+
+        <div class="title">
+            🎩 ReCoder 🎫
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            [[${errorMessage}]]
+        </div>
+
+
+        <form action="/approvals/submitApproval" method="post" enctype="multipart/form-data">
             <!-- 제목 -->
             <div class="form-group">
                 <label for="title">제목:</label>
-                <input type="text" id="title" name="title">
+                <input type="text" id="title" name="title" required>
             </div>
 
             <!-- 승인자 입력 -->
             <div class="form-group">
                 <label for="firstApprover">최초 승인자:</label>
-                <input type="text" id="firstApprover" name="firstApprover">
+                <input type="text" id="firstApprover" name="firstApprover"
+                       onkeydown="searchOnEnter(event, 'firstApprover')">
                 <button type="button" onclick="openFirstApproverPopup('firstApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="midApprover">중간 승인자:</label>
-                <input type="text" id="midApprover" name="midApprover">
+                <input type="text" id="midApprover" name="midApprover"
+                       onkeydown="searchOnEnter(event, 'midApprover')">
+
                 <button type="button" onclick="openMidApproverPopup('midApprover')">검색</button>
             </div>
             <div class="form-group">
                 <label for="finalApprover">최종 승인자:</label>
-                <input type="text" id="finalApprover" name="finalApprover">
+                <input type="text" id="finalApprover" name="finalApprover"
+                       onkeydown="searchOnEnter(event, 'finalApprover')">
                 <button type="button" onclick="openFinalApproverPopup('finalApprover')">검색</button>
             </div>
 
@@ -68,24 +85,40 @@
             <!-- 분류 -->
             <div class="form-group">
                 <label for="category">분류:</label>
-                <select id="category" name="category">
-                    <option value="">선택</option>
+                <select id="category" name="category" onchange="showLeaveTypeDropdown()" required>
+                    <option value="2">자유 게시판</option>
                     <option value="category1">품의서</option>
                     <option value="category2">지출 결의서</option>
                     <option value="category3">휴가 신청서</option>
                 </select>
             </div>
 
+            <!-- 연차, 반차 선택 드롭다운 -->
+            <div class="form-group" id="leaveTypeDropdown" style="display:none;">
+                <label for="leaveType">휴가 유형:</label>
+                <select id="leaveType" name="leaveType">
+                    <option value="연차">연차</option>
+                    <option value="반차">반차</option>
+                </select>
+            </div>
+
+
+            <!-- 휴가 날짜 입력 -->
+            <div class="form-group" id="leaveDate" style="display:none;">
+                <label for="leaveDateInput">휴가 날짜:</label>
+                <input type="date" id="leaveDateInput" name="leaveDate">
+            </div>
+
             <!-- 첨부파일 -->
             <div class="form-group">
-                <label for="file">첨부파일:</label>
-                <input type="file" id="file" name="file">
+                <label for="fileList">첨부파일:</label>
+                <input type="file" id="fileList" name="fileList" multiple>
             </div>
 
             <!-- 내용 -->
             <div class="form-group">
                 <label for="content">내용:</label>
-                <textarea id="content" name="content"></textarea>
+                <textarea id="content" name="content" required></textarea>
             </div>
 
             <!-- 제출 버튼 -->
@@ -95,162 +128,9 @@
         </form>
     </div>
 </section>
-<footer th:replace="~{/common/footer::footerFragment}"></footer>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
+<script src="/js/approval/approvalPage.js"></script>
 
-<script>
-
-    // 최초 승인자 검색 팝업 열기
-
-    function openFirstApproverPopup(firstApprover) {
-        const inputValue = document.getElementById(firstApprover)?.value || ''; // 입력된 값 가져오기
-        console.log('입력된 값:', inputValue);
-
-        // 화면의 너비와 높이를 동적으로 계산
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
-
-        // 중앙 정렬 계산
-        const popupLeft = (screenWidth - popupWidth) / 2;
-        const popupTop = (screenHeight - popupHeight) / 2 - 50;
-
-        // 팝업 열기
-        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
-        window.open(
-            url,
-            'searchPopup',
-            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
-        );
-        window.targetInputId = 'firstApprover';
-    }
-
-
-
-    // 중간 승인자 검색 팝업 열기
-    function openMidApproverPopup(midApprover) {
-        const inputValue = document.getElementById(midApprover)?.value || ''; // 입력된 값 가져오기
-        console.log('입력된 값:', inputValue);
-
-        // 화면의 너비와 높이를 동적으로 계산
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
-
-        // 중앙 정렬 계산
-        const popupLeft = (screenWidth - popupWidth) / 2;
-        const popupTop = (screenHeight - popupHeight) / 2 - 50;
-
-        // 팝업 열기
-        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
-        window.open(
-            url,
-            'searchPopup',
-            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
-        );
-        window.targetInputId = 'midApprover';
-    }
-
-    // 최종 승인자 검색 팝업 열기
-    function openFinalApproverPopup(finalApprover) {
-        const inputValue = document.getElementById(finalApprover)?.value || ''; // 입력된 값 가져오기
-        console.log('입력된 값:', inputValue);
-
-        // 화면의 너비와 높이를 동적으로 계산
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
-
-        // 중앙 정렬 계산
-        const popupLeft = (screenWidth - popupWidth) / 2;
-        const popupTop = (screenHeight - popupHeight) / 2 - 50;
-
-        // 팝업 열기
-        const url = `/approvals/searchEmployee?name=${encodeURIComponent(inputValue)}`;
-        window.open(
-            url,
-            'searchPopup',
-            `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`
-        );
-        window.targetInputId = 'finalApprover';
-    }
-
-    // 참조자 팝업 열기
-    function openReferrerPopup() {
-
-        // 화면의 너비와 높이를 동적으로 계산
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        const popupWidth = 600; // 팝업 너비
-        const popupHeight = 500; // 팝업 높이
-
-        // 중앙 정렬 계산
-        const popupLeft = (screenWidth - popupWidth) / 2;
-        const popupTop = (screenHeight - popupHeight) / 2 - 50;
-
-            const url = '/approvals/searchReferrers?name=';
-            window.open(url, 'referrerPopup',
-                `width=${popupWidth},height=${popupHeight},top=${popupTop},left=${popupLeft},scrollbars=no,resizable=no`);
-
-        window.targetInputId = 'referrer-container';// 참조자 리스트에 추가
-    }
-
-
-
-    // 부모 창에서 호출되는 함수로 참조자를 동적으로추가
-    function addReferrer(name) {
-        const container = document.getElementById('referrer-container');
-
-        // 이미 추가된 참조자를 확인
-        const existingInputs = container.getElementsByClassName('referrer-input');
-        for (let i = 0; i < existingInputs.length; i++) {
-            if (existingInputs[i].value === name) {
-                alert('이미 추가된 참조자입니다.');
-                return; // 중복된 경우 함수 종료
-            }
-        }
-
-        // 중복이 없으면 참조자 추가
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.name = 'referrerNames';
-        input.value = name;
-        input.readOnly = true;
-        input.classList.add('referrer-input'); // 스타일 적용을 위한 클래스
-        container.appendChild(input);
-
-        // 확인용 로그
-        console.log(`참조자 추가: ${name}`);
-    }
-
-
-
-
-
-    // 엔터 키 입력 처리
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            const activeElement = document.activeElement;
-            if (activeElement.tagName === 'INPUT' && activeElement.type === 'text') {
-                event.preventDefault();
-
-                const inputId = activeElement.id; // 현재 포커스된 input의 ID를 가져와 변수로 저장
-                console.log('현재 포커스된 Input ID:', inputId); // 디버깅용 로그 추가
-
-                if (inputId === 'firstApprover') {
-                    openFirstApproverPopup('firstApprover');
-                } else if (inputId === 'midApprover') {
-                    openMidApproverPopup('midApprover');
-                } else if (inputId === 'finalApprover') {
-                    openFinalApproverPopup('finalApprover');
-                }
-            }
-        }
-    });
-
-</script>
 
 </body>
 </html>

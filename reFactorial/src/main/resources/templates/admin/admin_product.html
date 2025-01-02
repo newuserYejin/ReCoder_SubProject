@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_product.css}">
+</head>
+<body>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">제품 관리</div>
+
+                <ul class="sideMenuUl">
+                    <li id="showRegister" class="selected">제품등록</li>
+                    <li id="showEdit">제품수정</li>
+                </ul>
+            </div>
+            <div class="menuMainBox" id="menuMainBox">
+                <!-- 기본으로 제품 등록 화면이 표시됩니다 -->
+                <div id="registerContainer" class="content-container">
+                    <h2>제품 등록</h2>
+                    <form id="addProductForm" onsubmit="event.preventDefault(); addProduct();">
+                        <label for="prodName">제품명:</label>
+                        <input type="text" id="prodName" required>
+
+                        <label for="prodDescription">설명:</label>
+                        <textarea id="prodDescription" required></textarea>
+
+                        <label for="prodPrice">가격:</label>
+                        <input type="number" id="prodPrice" required>
+
+                        <label for="prodImage">이미지 URL:</label>
+                        <input type="text" id="prodImage" required>
+
+                        <label for="prodCategory">카테고리:</label>
+                        <select id="prodCategory" required>
+                            <option value="초콜릿">초콜릿</option>
+                            <option value="껌">껌</option>
+                            <option value="비스킷">비스킷</option>
+                            <option value="캔디">캔디</option>
+                            <option value="젤리">젤리</option>
+                            <option value="과자">과자</option>
+                        </select>
+
+                        <button type="submit">등록</button>
+                    </form>
+                </div>
+
+                <!-- 제품 수정 화면은 기본적으로 숨김 -->
+                <div id="editContainer" class="content-container" style="display: none;">
+                    <h2>제품 수정</h2>
+                    <div class="search-container">
+                        <label for="product-search-input">제품 검색:</label>
+                        <input type="text" id="product-search-input" placeholder="제품명을 입력하세요...">
+                    </div>
+                    <div id="product-list" class="product-list"></div>
+                    <div id="editProductForm" style="display: none;">
+                        <h3>제품 정보 수정</h3>
+                        <form id="updateProductForm">
+                            <input type="hidden" id="editProdId">
+                            <label for="editProdName">제품명:</label>
+                            <input type="text" id="editProdName" required>
+                            <label for="editProdDescription">설명:</label>
+                            <textarea id="editProdDescription" required></textarea>
+                            <label for="editProdPrice">가격:</label>
+                            <input type="number" id="editProdPrice" required>
+                            <label for="editProdImage">이미지 URL:</label>
+                            <input type="text" id="editProdImage" required>
+                            <label for="editProdCategory">카테고리:</label>
+                            <select id="editProdCategory" required>
+                                <option value="초콜릿">초콜릿</option>
+                                <option value="껌">껌</option>
+                                <option value="비스킷">비스킷</option>
+                                <option value="캔디">캔디</option>
+                                <option value="젤리">젤리</option>
+                                <option value="과자">과자</option>
+                            </select>
+                            <label for="editProdStatus">상태:</label>
+                            <select id="editProdStatus" required>
+                                <option value="판매">판매</option>
+                                <option value="비판매">비판매</option>
+                                <option value="단종">단종</option>
+                                <option value="매진">매진</option>
+                            </select>
+                            <button type="button" onclick="updateProduct()">수정하기</button>
+                        </form>
+                        <button id="backToList" onclick="goBackToList()">뒤로가기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+
+    <script src="/js/admin/admin_product.js"></script>
+</body>
+</html>

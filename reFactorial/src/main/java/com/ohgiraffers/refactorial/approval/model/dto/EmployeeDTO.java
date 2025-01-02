@@ -25,6 +25,8 @@ public class EmployeeDTO {
     private int deptCode;          // dept_code
     private int positionValue;     // position_value
     private String viewAuth;       // view_auth
+    private String deptName;      // 부서명
+    private String positionName;  // 직책명
 
 
 

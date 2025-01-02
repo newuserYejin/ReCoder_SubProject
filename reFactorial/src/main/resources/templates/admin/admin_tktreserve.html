@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- 공통 복사 -->
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_header.css}">
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/common/admin_circleBtn.css}">
+    <!-- 여기 까지 -->
+
+    <link rel="stylesheet" th:href="@{/css/admin/admin_tktreserve.css}">
+    <link rel="stylesheet" href="../../static/css/admin/admin_tktreserve.css">
+</head>
+<body>
+    <header th:replace="~{admin/common/admin_header::adminHeaderFragment}"></header>
+    <section>
+        <div class="leftBox">
+            <div th:replace="~{admin/common/admin_circle_menu::adminCircleMenuFragment}"></div>
+        </div>
+
+        <div class="rightBox">
+            <div class="sideMenu">
+                <div class="sideTitle">예약자 관리</div>
+
+                <div>
+                    <label for="searchDate">날짜</label>
+                    <input type="date" name="searchDate" id="searchDate">
+                </div>
+            </div>
+            <form action="/admin/extractPDF" method="post" id="extractForm">
+                <div class="menuMainBox">
+                    <div class="tktreserve_item_box">
+                    </div>
+                </div>
+                <button id="extractFormSubmitBtn" type="submit">추출하기</button>
+            </form>
+        </div>
+    </section>
+    <footer th:replace="~{common/footer::footerFragment}"></footer>
+
+    <script th:src="@{/js/admin/admin_tktreserve.js}"></script>
+
+</body>
+</html>

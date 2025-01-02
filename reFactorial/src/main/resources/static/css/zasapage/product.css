@@ -1,0 +1,271 @@
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        overflow: hidden; /* 전체 페이지 스크롤 방지 */
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        height: calc(100vh - 180px); /* 헤더와 푸터 높이를 빼서 정확한 높이 설정 */
+        margin: 0;
+    }
+
+    .sidebar {
+        width: 20%;
+        border-right: 1px solid #5C1915;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .sidebar-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 15px;
+        margin-top: 46px;
+        text-align: center;
+    }
+
+    .sidebar ul {
+        margin-top: 10px;
+        list-style: none;
+        padding: 0;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .sidebar .selected{
+        font-weight: bold;
+        color: #5C1915;
+    }
+
+    .sidebar li {
+        position: relative;
+        padding: 10px 0;
+        cursor: pointer;
+    }
+
+    .sidebar li::after {
+        content: '';
+        display: block;
+        width: 45%;
+        height: 2px;
+        background-color: black;
+        margin: 5px auto 0;
+    }
+
+    .sidebar li:last-child::after {
+        display: none;
+    }
+
+    .sidebar li:hover {
+        color: #5C1915;
+        font-weight: 1000;
+    }
+
+    .sidebar li a {
+        text-decoration: none;
+        color: inherit;
+        font-weight: inherit;
+    }
+
+    .sidebar li a:hover {
+        color: #5C1915;
+        font-weight: bold;
+    }
+
+
+    .main-content {
+        flex: 1;
+        padding: 40px;
+        background: linear-gradient(135deg, #FFF6F2, #FCF3FF, #F2F8FF);
+        overflow-y: auto;
+        height: 100%; /* 컨테이너의 전체 높이 차지 */
+    }
+
+    .main-content::before {
+        content: '';
+        position: fixed;
+        top: 0; 
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+                radial-gradient(circle at 20% 30%, #FFD7D7 1px, transparent 1px),
+                radial-gradient(circle at 40% 70%, #E8D7FF 1px, transparent 1px),
+                radial-gradient(circle at 60% 40%, #FFE4C4 1px, transparent 1px),
+                radial-gradient(circle at 80% 60%, #D7FFE4 1px, transparent 1px);
+        background-size: 100px 100px;
+        opacity: 0.3;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+
+
+    /* 캐러셀 컨테이너 */
+
+    .carousel-container {
+        perspective: 3000px;
+        flex: 1;
+        width: 100%;
+        height: 100%; /* 높이를 100%로 변경 */
+        display: flex;
+        justify-content: center;
+        align-items: center; /* 수직 중앙 정렬 */
+        position: relative;
+    }
+
+    .carousel {
+        position: relative;
+        width: 80%; /* 캐러셀 너비 제한 */
+        height: 70%; /* 캐러셀 높이 제한 */
+        transform-style: preserve-3d;
+        transition: transform 0.8s ease;
+    }
+
+        .card-wrapper {
+            position: absolute;
+            width: 250px;
+            height: 400px;
+            left: 50%;
+            top: 54%;
+            transform-style: preserve-3d;
+            margin-left: -150px;
+            margin-top: -200px; /* 카드 중앙 정렬 */
+            transition: opacity 0.8s ease;
+
+        }
+
+    .product-card {
+        width: 100%;
+        height: 100%; /* 카드 높이 증가 */
+        padding: 10px;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #FFF8F8);
+        border: 3px solid transparent;
+        background-image:
+                linear-gradient(145deg, #ffffff, #FFF8F8),
+                linear-gradient(45deg, #C4A0FF, #FFB0B0, #FFD9A0, #A0FFB0);
+        background-origin: border-box;
+        background-clip: content-box, border-box;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    /* 제품 이미지 */
+    .product-card img {
+        width: 100%;
+        /*height: 260px;*/
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+    }
+
+    /* 제품 정보 스타일링 */
+    .product-card h3 {
+        font-size: 1.1em;
+        color: #7B4397;
+        margin: 3px 5px 5px;
+    }
+
+    .product-card {
+        p {
+            color: #666;
+            margin-left: 5px;
+            line-height: 1;
+            font-size: 0.9em;
+
+            max-height: 17%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .price {
+            font-size: 1em;
+            color: #DC2430;
+            font-weight: bold;
+
+            margin-top: 5px; /* 상단 마진 추가 */
+            margin-left: 5px;
+
+            overflow-y: hidden;
+        }
+    }
+
+
+
+        /* 컨트롤 버튼 위치 및 스타일 수정 */
+        .control-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(145deg, #C4A0FF, #FFB0B0);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-size: 24px; /* 화살표 크기 증가 */
+        }
+
+        .control-button:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .control-button.prev {
+            left: 10%; /* 위치 조정 */
+        }
+
+        .control-button.next {
+            right: 10%; /* 위치 조정 */
+        }
+
+
+        /* 눈 내리는 효과 */
+        body, html {
+            min-height: 100vh;
+        }
+
+        .snowfall-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .snowflake {
+            position: fixed;
+            color: rgba(176, 224, 230, 0.4);
+            text-shadow:
+                    0 0 5px #add8e6,
+                    0 0 10px #87ceeb,
+                    0 0 15px #b0e0e6;
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-10px) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            75% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }

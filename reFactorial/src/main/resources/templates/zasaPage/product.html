@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!--폰트 적용-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common/header.css}">
+  <link rel="stylesheet" th:href="@{/css/common/footer.css}">
+  <link rel="stylesheet" th:href="@{/css/common/style.css}">
+
+  <link rel="stylesheet" th:href="@{/css/zasapage/product.css}">
+
+</head>
+<body>
+<div class="snowfall-container" id="snowContainer"></div>
+<header th:replace="~{common/header::headerFragment}"></header>
+<section>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-title">자사 페이지</div>
+      <ul>
+        <li class="selected"><a href="/zasaPage/product">제품 페이지</a></li>
+        <li><a href="/zasaPage/training">교육 페이지</a></li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="carousel-container">
+        <button class="control-button prev" onclick="rotateCarousel(-1)">&#10094;</button>
+        <!-- &#10094;는 '<' 화살표, &#10095;는 '>' 화살표 -->
+        <div class="carousel">
+          <!-- 제품 카드들이 자바스크립트로 여기에 추가됩니다 -->
+        </div>
+        <button class="control-button next" onclick="rotateCarousel(1)">&#10095;</button>
+      </div>
+    </div>
+  </div>
+</section>
+<footer th:replace="~{common/footer::footerFragment}"></footer>
+
+
+<script src="/js/snowfall.js"></script>
+
+<script th:inline="javascript">
+
+  const products = /*[[${products}]]*/ [];
+
+  let currentRotation = 0;
+  let selectedIndex = 0;
+
+  // 캐러셀 초기화
+  function initializeCarousel() {
+    const carousel = document.querySelector('.carousel');
+    const angleStep = 360 / products.length;
+    const radius = 1000;  // 카드와의 간격
+    const verticalOffset = -50; // 여기에 원하는 값을 입력 (음수일수록 위로 올라감)
+
+
+
+    carousel.style.transform = `rotateY(${currentRotation}deg)`;
+
+    // 기존 내용 제거
+    carousel.innerHTML = '';
+
+    products.forEach((product, index) => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+
+      const angle = angleStep * index;
+
+      // 카드의 위치 설정
+      cardWrapper.style.transform = `rotateY(${angle}deg) translateZ(${radius}px) translateY(${verticalOffset}px)`;
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      // 카드 내용 설정
+      card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p class="price">${product.price}</p>
+            <p>${product.description}</p>
+        `;
+
+      // 카드가 항상 정면을 보도록 설정 - 여기가 핵심 수정 부분
+      card.style.transform = `rotateY(${-angle - currentRotation}deg)`;
+
+      cardWrapper.appendChild(card);
+      cardWrapper.style.opacity = selectedIndex === index ? '1' : '0.7';
+      carousel.appendChild(cardWrapper);
+    });
+  }
+
+  // 회전 함수도 약간 수정
+  function rotateCarousel(direction) {
+    currentRotation += -direction * (360 / products.length);
+    const carousel = document.querySelector('.carousel');
+    carousel.style.transform = `rotateY(${currentRotation}deg)`;
+
+    selectedIndex = (selectedIndex + direction + products.length) % products.length;
+
+    // 모든 카드의 방향과 투명도 업데이트
+    document.querySelectorAll('.card-wrapper').forEach((wrapper, index) => {
+      const card = wrapper.querySelector('.product-card');
+      const angle = (360 / products.length) * index;
+
+      // 여기가 핵심 수정 부분
+      card.style.transform = `rotateY(${-angle - currentRotation}deg)`;
+      wrapper.style.opacity = selectedIndex === index ? '1' : '0.7';
+
+    });
+  }
+
+  // 페이지 로드 시 캐러셀 초기화
+  document.addEventListener('DOMContentLoaded', initializeCarousel);
+
+
+
+  async function fetchProducts() {
+    const response = await fetch('/admin/product');
+    const products = await response.json();
+
+    updateCarousel(products);
+  }
+
+  function updateCarousel(products) {
+    const carousel = document.querySelector('.carousel');
+    const angleStep = 360 / products.length;
+    const radius = 1000;
+
+    carousel.innerHTML = '';
+
+    // "판매" 상태인 제품만 렌더링
+    products.filter(product => product.status === '판매').forEach((product, index) => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+
+      const angle = angleStep * index;
+
+      cardWrapper.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p class="price">${product.price}</p>
+            <p>${product.description}</p>
+        `;
+
+      cardWrapper.appendChild(card);
+      carousel.appendChild(cardWrapper);
+    });
+
+    products.forEach((product, index) => {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+
+      const angle = angleStep * index;
+
+      cardWrapper.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p class="price">${product.price}</p>
+            <p>${product.description}</p>
+        `;
+
+      cardWrapper.appendChild(card);
+      carousel.appendChild(cardWrapper);
+    });
+  }
+
+  // 페이지 로드 시 최신 제품 리스트 가져오기
+  document.addEventListener('DOMContentLoaded', fetchProducts);
+
+
+
+</script>
+
+</body>
+</html>

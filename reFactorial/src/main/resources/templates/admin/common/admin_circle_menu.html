@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../../static/css/admin/common/admin_circleBtn.css">
+</head>
+<body>
+
+<!-- 버튼 메뉴 전체를 감싸는 div를 만들었다. -->
+<div class="menu" th:fragment="adminCircleMenuFragment" style="--menu-size: 350px;">
+    <!-- 흰색 원과 그 중심으로 아이콘들을 배치함 -->
+
+    <hr class="line" style="--i:0">
+    <hr class="line" style="--i:1">
+    <hr class="line" style="--i:2">
+
+
+    <div class="menu_background">
+        <div class="center-key" onclick="location.href='/admin/main'">🔑</div>
+
+        <li style="--i:0">
+            <a href="/admin/tktreserve">예약자 관리</a>
+        </li>
+        <li style="--i:1">
+            <a href="/admin/employee">사 원</a>
+        </li>
+        <li style="--i:2">
+            <a href="/admin/adminInquiryList">1:1 문의</a>
+        </li>
+        <li style="--i:3">
+            <a href="/admin/notificationEvent?categoryCode=1">공지사항/ 이벤트 등록</a>
+        </li>
+        <li style="--i:4">
+            <a href="/admin/factoryAddressBook">업체 관리</a>
+        </li>
+        <li style="--i:5">
+            <a href="/admin/product">제품 관리</a>
+        </li>
+
+    </div>
+</div>
+
+</body>
+</html>

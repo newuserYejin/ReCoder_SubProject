@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ohgiraffers.refactorial.mail.model.dao.MailEmployeeMapper">
+
+
+    <!-- 보낸 메일 목록 조회 -->
+    <select id="selectSentMails" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+        SELECT m.email_id AS emailId,
+        m.email_title AS emailTitle,
+        m.email_content AS emailContent,
+        m.sent_date AS sentDate,
+        m.sender_emp_id AS senderEmpId,
+        e.emp_name AS senderEmpName,
+        r.receiver_emp_id AS receiverEmpId,
+        e2.emp_name AS receiverEmpName
+        FROM tbl_mail m
+        JOIN employee e ON m.sender_emp_id = e.emp_id
+        JOIN tbl_mail_receivers r ON m.email_id = r.email_id
+        JOIN employee e2 ON r.receiver_emp_id = e2.emp_id
+        WHERE m.sender_emp_id = #{senderEmpId}
+    </select>
+
+    <!-- 받은 메일 목록 조회 -->
+    <select id="selectReceivedMails" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailDTO">
+        SELECT m.email_id AS emailId,
+        m.email_title AS emailTitle,
+        m.email_content AS emailContent,
+        m.sent_date AS sentDate,
+        m.sender_emp_id AS senderEmpId,
+        e1.emp_name AS senderEmpName,
+        r.receiver_emp_id AS receiverEmpId,
+        e2.emp_name AS receiverEmpName,
+        ROW_NUMBER() OVER (ORDER BY m.sent_date DESC) AS rowNum
+        FROM tbl_mail_receivers r
+        JOIN tbl_mail m ON r.email_id = m.email_id
+        JOIN employee e1 ON m.sender_emp_id = e1.emp_id
+        JOIN employee e2 ON r.receiver_emp_id = e2.emp_id
+        WHERE r.receiver_emp_id = #{empId} AND r.trash_status = false
+        ORDER BY m.sent_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 회원 이름으로 검색 -->
+    <select id="searchMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
+        SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        FROM
+        employee e
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
+        WHERE
+        e.emp_name LIKE CONCAT('%', #{searchReceiverInput}, '%')
+    </select>
+
+    <!-- 전체직원조회  -->
+    <select id="getAllMailEmployees" resultType="com.ohgiraffers.refactorial.mail.model.dto.MailEmployeeDTO">
+        SELECT
+        e.emp_id,
+        e.emp_name,
+        e.emp_no,
+        e.emp_address,
+        e.emp_email,
+        e.emp_joined,
+        e.annual_leave,
+        e.emp_pwd,
+        e.profile,
+        e.emp_phone,
+        e.dept_code,
+        e.position_value,
+        e.view_auth,
+        d.dept_name AS deptName,          -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        p.position_name AS positionName   -- AS를 사용하여 필드 이름을 DTO 와 일치시킴
+        FROM
+        employee e
+        JOIN
+        tbl_dept d ON e.dept_code = d.dept_code
+        JOIN
+        tbl_position p ON e.position_value = p.position_value
+    </select>
+
+    <select id="selectReceivedMailsCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_mail_receivers
+        WHERE receiver_emp_id = #{empId}
+    </select>
+</mapper>
