@@ -5,7 +5,7 @@
 <!-- 팀 소개 이미지 -->
 <img src="https://github.com/user-attachments/assets/4e440f6d-53c4-49b3-9deb-2d198c587f3d" width="800" alt="팀 소개">
 
-<br />
+<br /> 
 <br />
 
 
@@ -15,6 +15,9 @@
 
 <hr><br>
 
+## 🗂️프로젝트 소개
+
+<br><hr><br>
 ## 👥 Our Team
 
 
@@ -132,8 +135,12 @@
 
 ![ERD](https://github.com/user-attachments/assets/dace3739-853d-4b91-8d0d-1d04121affb5)
 
+<br><hr><br>
+
+## 5. ⚙️기능설명
 
 
+<img src="https://github.com/user-attachments/assets/59b2619a-8e2f-47bc-a661-e665c3f85ec1" width="1000" alt="로그인페이지">
 
 
 
