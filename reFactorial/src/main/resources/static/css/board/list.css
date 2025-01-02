@@ -244,61 +244,6 @@ a:visited {
     box-sizing: border-box;
 }
 
-/* 가로 구분선 */
-.category-3 .document-grid::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 4rem;
-    right: 4rem;
-    height: 1px;
-    background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(92, 25, 21, 0.1) 20%,
-            rgba(92, 25, 21, 0.2) 50%,
-            rgba(92, 25, 21, 0.1) 80%,
-            transparent
-    );
-    transform: translateY(-50%);
-}
-
-/* 세로 구분선들 */
-.category-3 .document-grid::before {
-    content: '';
-    position: absolute;
-    top: 4rem;
-    bottom: 4rem;
-    left: 33.33%;
-    width: 1px;
-    background: linear-gradient(
-            180deg,
-            transparent,
-            rgba(92, 25, 21, 0.1) 20%,
-            rgba(92, 25, 21, 0.2) 50%,
-            rgba(92, 25, 21, 0.1) 80%,
-            transparent
-    );
-}
-
-/* 두 번째 세로 구분선 */
-.category-3 .document-grid > div:nth-child(2)::before {
-    content: '';
-    position: absolute;
-    top: 4rem;
-    bottom: 4rem;
-    left: 66.66%;
-    width: 1px;
-    background: linear-gradient(
-            180deg,
-            transparent,
-            rgba(92, 25, 21, 0.1) 20%,
-            rgba(92, 25, 21, 0.2) 50%,
-            rgba(92, 25, 21, 0.1) 80%,
-            transparent
-    );
-}
-
 .category-3 .document-card {
     width: 100%;
     height: 250px;

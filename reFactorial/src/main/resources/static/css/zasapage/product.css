@@ -37,6 +37,11 @@
         font-size: 18px;
     }
 
+    .sidebar .selected{
+        font-weight: bold;
+        color: #5C1915;
+    }
+
     .sidebar li {
         position: relative;
         padding: 10px 0;
