@@ -12,7 +12,7 @@ html, body {
 }
 .sidebar {
     width: 20%; /* 사이드바 너비 */
-    border-right: 1px solid black; /* 오른쪽 경계선 */
+    border-right: 1px solid #5C1915; /* 오른쪽 경계선 */
     padding: 20px; /* 내부 여백 */
     overflow-y: auto; /* 사이드바 내용이 넘칠 경우 스크롤 */
 }
@@ -56,7 +56,7 @@ html, body {
 
 .main-content {
     flex: 1; /* 남은 공간을 메인 콘텐츠가 차지 */
-    padding: 20px; /* 내부 여백 */
+    padding: 20px 10px 5px; /* 내부 여백 */
     overflow-y: auto; /* 메인 콘텐츠 내용 넘칠 경우 스크롤 */
     display: flex;
     flex-direction: column;
@@ -229,18 +229,19 @@ a:visited {
 
 .category-3 .document-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, auto);
-    gap: 3rem;
+    gap: 1em;
     width: 100%;
-    max-width: 1200px;
-    margin: 3rem auto 0;
-    min-height: auto;
+    max-width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     background: linear-gradient(to bottom, #ffffff, #f8f9fa);
     border-radius: 2rem;
-    padding-bottom: 2rem;
+    padding: 1em 10px 1em;
+    max-height: calc(100vh - 250px);
+    box-sizing: border-box;
 }
 
 /* 가로 구분선 */
