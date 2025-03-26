@@ -93,7 +93,7 @@
   </tr>
   <tr>
     <td align="center">용욱</td>
-    <td>• 데이터베이스 설계 및 구현<br>• 게시판 <br>• 투표 & 이벤트 </td>
+    <td>• 데이터베이스 설계 및 구현<br>• 게시판 <br>• 투표 & 이벤트 <br>• 캘린더 </td>
   </tr>
   <tr>
     <td align="center">예진</td>
