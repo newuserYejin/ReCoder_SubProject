@@ -1,6 +1,11 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/recoderdb
+#    username: recoder
+#    password: recoder
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
@@ -42,6 +47,7 @@ server:
         enabled: true  # 파일 업로드 기능을 활성화
         max-file-size: 100MB  # 업로드할 수 있는 단일 파일의 최대 크기
         max-request-size: 100MB  # 전체 요청 크기의 최대 크기
+
 
 
 weather:
