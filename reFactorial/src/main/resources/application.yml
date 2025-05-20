@@ -27,6 +27,8 @@ mybatis:
     map-underscore-to-camel-case: true
 
 server:
+  address: 0.0.0.0
+  port: ${PORT:9000}
   servlet:
     session:
       timeout: 3600
